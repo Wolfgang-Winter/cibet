@@ -1,0 +1,27 @@
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <body>
+    <section name="">
+    	<img src="firstPage.jpg" alt="" usemap="#karte"/>
+    	<map id="map1" name="karte">
+    	   <area shape="poly" coords="77,763,215,693,352,763,215,832"
+          href="videos.html#dc" alt="Dual Control Video" title="See a video of Dual Control fuctionality" />
+    	   <area shape="rect" coords="615,767,689,780"
+          href="videos.html#dc" alt="Dual Control Video" title="See a video of Dual Control fuctionality" />
+          
+    	   <area shape="poly" coords="508,937,647,866,784,937,647,1006"
+          href="videos.html#pc" alt="Extended Permission Control Video" title="See a video of Extended Permission Control fuctionality" />
+    	   <area shape="rect" coords="407,940,482,953"
+          href="videos.html#pc" alt="Extended Permission Control Video" title="See a video of Extended Permission Control fuctionality" />
+          
+    	   <area shape="poly" coords="81,1099,216,1029,357,1098,216,1168"
+          href="videos.html#pc" alt="Historisation Control Video" title="See a video of Historisation Control fuctionality" />
+    	   <area shape="rect" coords="619,1104,694,1117"
+          href="videos.html#pc" alt="Historisation Control Video" title="See a video of Historisation Control fuctionality" />
+    	</map>
+    </section>
+
+  </body>
+</document>

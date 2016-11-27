@@ -1,0 +1,11 @@
+com.logitags.cibet.actuator.archive.ArchiveActuator
+com.logitags.cibet.actuator.circuitbreaker.CircuitBreakerActuator
+com.logitags.cibet.actuator.dc.FourEyesActuator
+com.logitags.cibet.actuator.dc.ParallelDcActuator
+com.logitags.cibet.actuator.dc.SixEyesActuator
+com.logitags.cibet.actuator.dc.TwoManRuleActuator
+com.logitags.cibet.actuator.info.InfoLogActuator
+com.logitags.cibet.actuator.info.TrackerActuator
+com.logitags.cibet.actuator.loadcontrol.LoadControlActuator
+com.logitags.cibet.actuator.lock.LockActuator
+com.logitags.cibet.actuator.scheduler.SchedulerActuator

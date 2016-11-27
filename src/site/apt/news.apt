@@ -1,0 +1,189 @@
+News
+
+* Release 1.9 (9.10.2016)
+
+  After a minor release in July this is again a major release which introduces as the most important feature the first of a set of
+  actuators for monitoring: LoadControlActuator. This actuator implements a classical pattern for fault tolerant functionality which is
+  the Shed Load pattern. The actuator comes with a huge bunch of customization and configuration options, the documentation takes 14 pages
+  of the reference guide. Find it out on page 80. Other fault tolerant patterns like circuit breaker will follow in the next releases.   
+
+* Release 1.8 (2.1.2016)
+
+  Some undocumented intermediate releases have been published which contain bug fixes and some smaller functional additions
+  requested by a client. Now, this official release presents one big new functionality: a sensor for controlling HTTP requests on the 
+  client side. This is achieved by conducting HTTP requests through an internal proxy. Now it is possible to control both, 
+  remote EJB invocations and remote HTTP requests both on client and on server side.  
+
+* Release 1.7 (8.8.2015)
+
+  One major change with this release is the different behavior when loading JPA entities with the CibetEntityManager.
+  In previous releases the CibetEntityManager forced that all lazy associations of an entity were loaded and the entity detached from
+  the persistence context. This is convenient for the developer as it is ensured that with ARCHIVE and dual control actuators it
+  is ensured that always the fully loaded entity is serialized and stored. On the other hand this may decrease performance and is not 
+  what is expected from an EntityManager. Now the CibetEntityManager loads entities as expected without loading lazy entities and detaching,
+  but now the developer has to ensure that the entity is fully loaded before a ARCHIVE or dual control actuator is applied. If this is not
+  the case, a LazyInitialisationException will be thrown. 
+
+* Release 1.6.2 (19.5.2015)
+
+  besides some bug fixes main new functionality is a sensor for controlling remote EJBs on the client side. This is a precondition
+  for the monitoring actuators planned in the following releases, 	
+	
+* Release 1.6.1 (12.1.2015)
+
+  an intermediate release which brings an actuator for scheduling business cases. This functionality was requested by a project.
+   
+
+* Release 1.6 (9.11.2014)
+
+  some interesting new  features have been implemented: A new sensor controls all sorts of JPA queries. A JMX MBean is
+  installed automatically during startup which allows changing configuration at runtime. New ENVERS actuator makes an
+  integration of Hibernate Envers for auditing of JPA entities. And much more. See the release notes for all changes 
+  of this release. 
+   
+
+* Release 1.5 (3.5.2014)
+
+  For this release we made major refacturing in the target area of a control event. This could be a JPA entity, a method,
+  an EJB, a URL etc. and are now generalized under the new term resource which is more conform to the theoretical background.
+  A Resource is controlled by sensors and applied actuators have an impact on that resource.
+  
+  Apart from refacturing two new major features have been implemented: 
+  
+  * the Play mode allows to determine the expected control results before actually executing the event on a resource. This 
+    allows to take appropriate actions if for example the expected control result is DENIED.
+    
+  * a new dual control actuator with name PARALLEL_DC allows to execute an event on a resource in parallel by different users.
+    The execution may not have an impact on or modify the system. A third user compares the different results and selects the event that 
+    should be actually executed with impact on the system.  
+      
+
+* Release 1.4 (3.11.2013)
+
+  In this release the internals and some interfaces are streamlined and brought more in line with the theoretical 
+  concepts. This includes a refacturing of the Cibet context concept. You could now make use of an application-,
+  session- and request- scoped context. The possibility of registering and applying custom controls in setpoints
+  was still missing, this feature has now been added.
+  
+  Other important new functionality is the possibility to assign dual control business cases to releasing users and 
+  send notifications about dual control events.  
+
+* Release 1.3 (13.5.2013)
+
+  Major changes of this release besides several bug fixes and small improvements:
+  
+  * Upgrade from JPA 1 to JPA 2
+  
+  * Cibet Provider is a new JPA provider that allows non-intrusive controlling of entity 
+    persistence. It is no more necessary to use CibetEntityManager for applying the JPA sensor,
+    just define a persistence unit with the Cibet provider instead.
+    
+  * Another step to non-intrusiveness: Setting the Cibet context (EntityManager, user) is done by 
+    Cibet itself. No coding is necessary anymore  
+
+  * The new actuator TRACKER and EventResult API allow enhanced monitoring of control results.
+
+* Release 1.2 (26.11.2012)
+
+  We are proud to introduce two new functionalities besides the usual bug fixes and
+  small improvements on the way. The first is the support for <<JDBC>> as a second persistence
+  mechanism next to JPA. A JDBC to JPA mapper allows to use Cibet in a plain JDBC
+  application while a JDBC sensor allows direct controlling of JDBC queries. 
+  
+  The second major improvement is the integration of <<Apache Shiro>> as a second 
+  security framework next to Spring Security. With Shiro integration 
+  {{{./springsecurity.html}many interesting things}} can be done
+  that are not possible in a stand-alone Shiro appication.     
+
+* Release 1.1 (6.5.2012)
+
+  Two new actuators and support for Maven, that are the key points of this release.
+  TWO_MAN_RULE actuator is another dual control actuator that works like FOUR_EYES
+  actuator, but has even stricter requirements 
+  (see {{{http://en.wikipedia.org/wiki/Two-man_rule}Two-man rule}}).
+  
+  LOCKER actuator allows to make a reservation for a business case or action. A 
+  user may for example reserve the release of a dual control event. No other user 
+  can execute that release then.
+  
+  The integration of the Cibet library has become more convenient for Maven 
+  projects. Cibet is now hosted in the Maven Central repository. All you need is 
+  to add 
+  
++-------------------
+  <dependency>
+  	<groupId>com.logitags</groupId>
+  	<artifactId>cibet</artifactId>
+  	<version>1.1</version>
+  </dependency>
++-------------------
+      
+  to your pom.xml.      
+
+* Release 1.0 (26.12.2011)
+
+  We are proud to announce the release of version 1.0 which is a major milestone
+  that we achieved after a period of thorough testing. This release does not 
+  introduce any new functionality but is a maintenance release with the goal to
+  harden the framework and increase its stability. This was achieved by setting
+  up a completely new automated test environment. The details of this test
+  environment can be read {{{./FrameworkTesting.pdf}in an article here}}.
+    
+  Several bugs have been fixed and many small improvements been made.
+
+* Release 0.9 (24.5.2011)
+
+  In this release one major new feature and one major change are implemented.
+  The new feature is a new sensor for http request. With this sensor it is
+  now possible to apply all control logic including dual control principles 
+  not only to domain objects and method calls but also to http requests. See
+  the {{{./documentation.html}User Guide}} on how to make use of the http 
+  sensor. It is as simple as the other sensors.
+  
+  The change regards the configuration of setpoints. We came to the decision
+  that hitherto configuration was too complicated and for most business cases
+  too complex. Therefore we decided according to our principle 
+  {{{Principles_of_Cibet_framework}<Keep it simple>}} to reduce the 
+  flexibility for the benefit
+  of a much higher simplicity. We think that 95% of business cases can now be
+  configured with less than 50% of xml lines than before while for 5% of
+  business cases it could be a little bit more. See as an example the   
+  {{{./scenario-domain.html}scenario for controlling a domain object}} and the 
+  {{{./scenario-usecase.html}scenario for controlling a service call}}        
+
+==============
+
+*------------------------------------------------------------------------------------------------------------------------------*
+| Read {{{http://www.theserverside.com/news/thread.tss?thread_id=61398}article}} about how control theory concepts are applied |
+| in many frameworks like Spring Security, JMX, JAAS on www.serverside.com!                                                    |
+*------------------------------------------------------------------------------------------------------------------------------*
+
+==============
+
+* Release 0.8 (6.11.2010)
+
+  There are two major new functionalities coming with the 0.8 release:
+  
+  The first is the general support of service method control. Up to now,
+  only EJB methods could be set under control. With this release, any 
+  public methods of any class can be controlled.
+  
+  The second new functionality is the integration of Spring Security. Now
+  persistence actions and service calls can be also access controlled with
+  Spring Security. The integration of Cibet and Spring Security gives a lot
+  of advantages and more configuration possibilities as compared to using
+  Spring Security stand-alone.
+  
+  The changes of this release are listed in detail in the 
+  {{{./release-notes.html}release notes}}.   
+
+* Release 0.7 (25.6.2010)
+
+  The actual release 0.7 has undergone some major refactorings and changes in
+  design. Cibet is now based on fundamentals of control theory. That implies 
+  also a thorough renaming of classes and packages. As mentioned on the release 
+  notes page the interfaces are still not stable until release 1.0 and can 
+  be subject to changes. This release is such a big change.
+  The enhancements are obvious: The concepts become clearer and there are a 
+  lot of possibilities to hook in and implement customized functionality. 
+  Please see the abstract on {{{./controltheory.html}concepts of control theory}}.

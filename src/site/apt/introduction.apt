@@ -1,0 +1,121 @@
+Overview
+
+  Trust is good, control is better. While it may not be a good idea to apply 
+  this proverb against your partner in love there are areas in life where 
+  you should. For example the modification of highly critical business data 
+  by an application user is subject to human failure. Typos, wrong customer 
+  number by mistake, lack of information, there are numerous possibilities 
+  why users unintentionally make mistakes. In such 
+  cases <<c>>ontrol <<i>>s <<bet>>ter. The Cibet framework helps 
+  to control the execution of important business processes. To control an 
+  application in the sense of Cibet is not meant on a security level but 
+  on the reliance and trustfulness level.
+
+  Cibet is not only the acronym for <<c>>ontrol <<i>>s <<bet>>ter, cibet 
+  (from the Arab word zabad) or civet is also a distinctive secretion from 
+  the anal glands of the civet cat. In the natural state this is a 
+  substance with a penetrating foul-smelling odor. In a highly diluted 
+  state however, it develops a pleasant, musk-like fragrant flavour which 
+  is used in perfume manufacturing. 
+
+  This describes exactly the position of control and the Cibet framework 
+  in an application. If you apply too much control it stinks: The application
+  developer gets frustrated when he has to spend his time in applying control 
+  and security mechanisms instead of implementing business processes. The 
+  application user 
+  of such an application will have a feeling of "Big brother is watching you" 
+  and will got nerved and frustrated when he has to take care of complicated 
+  control mechanisms while executing business processes. Control in the 
+  right proportion and with an appropriate tool like Cibet however doesn't 
+  distract the developer from business process implementation and lets 
+  the application user feel safe, comfortable and well guarded in his 
+  operations because he is sure that his actions can do no harm and his data 
+  could not get lost or compromised.
+
+* What are now important business processes which should be controlled? 
+
+  Of cause every domain has its own important business processes but in 
+  a general point of view there may exist some typical processes which 
+  could be subject of control: 
+  
+  * creation of new domain objects
+  
+  * modification of data
+  
+  * deletion of data
+  
+  * calling a service 
+  
+  * executing a business case
+
+* How could Cibet control important business processes?
+
+  A simple procedure is to log the event so that at a later time it 
+  could be proofed which person did what action. This kind of logging is 
+  different from normal trace logging and is called audit-proof logging. 
+  A revision or audit of your business processes can exactly follow up any 
+  change in state of business objects or execution of sensible and 
+  important business processes. It can be proofed which user initiated a 
+  state change at what time. The state of business processes and domain 
+  objects can be reconstructed at any point in time.
+
+  Another method to control business processes is the dual control or 
+  four-eyes principle: 
+  
+[4eyes2.jpg] four eyes dual control scheme
+  
+  A business process, let's say the creation of a 
+  new customer account is initiated by one user. For this user there is 
+  no difference in the process whether the creation of a customer account 
+  is under dual control or not, however, in dual control mode, the new 
+  customer account is temporary and not active and usable in other business 
+  processes. It is not yet visible in the production database. A second 
+  user must approve the new customer account and release it before the 
+  account will get productive. If the second user rejects the new customer 
+  account for any reason, the temporary account will not go productive 
+  and is removed.
+
+  Some highly critical business processes may also be controlled by a 
+  six-eyes process. In this case a third user must release the business 
+  process before it becomes productive.
+  
+* Principles of Cibet framework
+
+  Above all we commit ourselves to some principles of software development.
+  All features and developments are subdued and must conform to these 
+  principles as much as possible. These principles are:
+  
+  * <<integrate non-intrusively>>
+  
+    Cibet should be integrated into an application as non-intrusive as 
+    possible. We don't want you to make great modifications in your 
+    existing code and we don't want to make your solution depend on 
+    Cibet. If you find a better solution to fulfill your requirements
+    tomorrow, it should be easy to get rid of Cibet.
+    
+  * <<keep it simple>>
+  
+    Cibet should be easy to use for the developer. That means it should be
+    easy to understand, intuitive and should make use of convention over 
+    configuration wherever possible. This principle means also displaying
+    tolerance against developer errors. 
+    
+  * <<reduce dependencies>>   
+  
+    Typical Java applications have dependencies to some dozens of third-party
+    libraries especially when a dependency management tool such as Maven is 
+    used. Eventually, nobody knows which libraries are really necessary. Cibet
+    tries to make use of as few third-party libraries as possible.
+    
+  * <<design modular>> 
+    
+    The major concepts of Cibet like sensors, actuators and controls are
+    built as modular independent components. This allows to follow the 
+    last principle of reducing dependencies: Only the dependent libraries of
+    those components must be integrated that you really use.
+    
+  * <<design customizable>>
+       
+    Cibet is a framework or platform for your own control solutions. 
+    Therefore all major concepts are designed customizable.    
+  

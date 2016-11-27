@@ -1,0 +1,36 @@
+Hello $createUser,
+
+
+A business case under dual control has been passed back to you. Please see remark. 
+
+The dual controlled business case is registered under id: $dcControllableId (case id: $caseId)
+
+
+control event:             $controlEvent
+
+controlled target:         $targetType 
+#if( $method && $method.length() > 0 )
+($method)
+#end
+
+initiated by:              $createUser on $createDate
+#if( $firstApprovalUser )
+
+first released by:         $firstApprovalUser on $firstApprovalDate
+#end
+#if( $firstApprovalRemark )
+
+remark:                    $firstApprovalRemark
+#end
+
+rejected by:               $approvalUser on $approvalDate
+#if( $approvalRemark )
+
+remark:                    $approvalRemark
+#end
+
+
+
+thanks for your attention
+
+Cibet (http://www.logitags.com/cibet)

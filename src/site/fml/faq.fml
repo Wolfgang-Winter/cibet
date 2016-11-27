@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs xmlns="http://maven.apache.org/FML/1.0.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd"
+  title="Frequently Asked Questions"
+  toplink="false">
+  
+  <part id="Integration">
+  <title>Known Issues</title>
+  
+  <faq id="1">
+    <question>I get a NullPointerException when using Cibet JPA provider in JBoss</question>
+    <answer>
+      <p>When you define a persistence unit with com.logitags.cibet.sensor.jpa.Provider as PersistenceProvider with Hibernate as native PersistenceProvider in JBoss 7 you may get a NullPointerException when using an EntityManager from this unit:</p>
+      <code>
+      java.lang.NullPointerException 
+      		at org.hibernate.engine.transaction.internal.jta.JtaStatusHelper.getStatus(JtaStatusHelper.java:73)</code>
+      <p>This can be avoided by setting property &lt;property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" /&gt; in the persistence unit</p>
+    </answer>
+  </faq>  
+
+  <faq id="2">
+    <question>The Cibet JPA provider could not be found in JBoss-as 7.1.1</question>
+    <answer>
+      <p>When you define a persistence unit with com.logitags.cibet.sensor.jpa.Provider as PersistenceProvider in JBoss-as 7.1.1 you may get the following exception during deployment:</p>
+      <code>
+      javax.persistence.PersistenceException: JBAS011466: PersistenceProvider 'com.logitags.cibet.sensor.jpa.Provider' not found
+                at org.jboss.as.jpa.processor.PersistenceUnitDeploymentProcessor.lookupProvider(PersistenceUnitDeploymentProcessor.java:555)
+                at org.jboss.as.jpa.processor.PersistenceUnitDeploymentProcessor.deployPersistenceUnit(PersistenceUnitDeploymentProcessor.java:295)
+                at org.jboss.as.jpa.processor.PersistenceUnitDeploymentProcessor.addPuService(PersistenceUnitDeploymentProcessor.java:258)
+                at org.jboss.as.jpa.processor.PersistenceUnitDeploymentProcessor.handleWarDeployment(PersistenceUnitDeploymentProcessor.java:194)
+                at org.jboss.as.jpa.processor.PersistenceUnitDeploymentProcessor.deploy(PersistenceUnitDeploymentProcessor.java:118)
+                at org.jboss.as.server.deployment.DeploymentUnitPhaseService.start(DeploymentUnitPhaseService.java:113) [jboss-as-server-7.1.1.Final.jar:7.1.1.Final]
+      </code>
+      <p>This seems to be a bug in JBoss-as 7.1.1. Change to JBoss-eap 6.3</p>
+    </answer>
+  </faq>  
+
+  <faq id="3">
+    <question>I get ClassNotFoundExceptions when using &lt;jar-file&gt;lib/cibet-version.jar&lt;/jar-file&gt; with Hibernate/JBoss</question>
+    <answer>
+      <p>Failed to start service jboss.persistenceunit."cibetArq1.war#Cibet": org.jboss.msc.service.StartException in service jboss.persistenceunit."cibetArq1.war#Cibet": java.lang.NoClassDefFoundError: org/apache/shiro/mgt/DefaultSecurityManager</p>
+      <p>The Hibernate/JBoss PersistenceUnitService scans the cibet.jar file for JPA annotations and the JBoss classloader loads all classes that it finds in the jar. Sometimes you don't need these classes, for example the Shiro classes if you don't use Shiro.</p>
+      <p>To avoid these errors use the &lt;class&gt; tags instead of the &lt;jar-file&gt; tag:</p>
+      <source>
+      &lt;class&gt;com.logitags.cibet.actuator.archive.Archive&lt;/class&gt;
+      &lt;class&gt;com.logitags.cibet.actuator.archive.IntegrityCheck&lt;/class&gt;
+      &lt;class&gt;com.logitags.cibet.actuator.archive.IntegrityCheckResult&lt;/class&gt;
+      &lt;class&gt;com.logitags.cibet.actuator.dc.DcControllable&lt;/class&gt;
+      &lt;class&gt;com.logitags.cibet.actuator.lock.LockedObject&lt;/class&gt;
+      &lt;class&gt;com.logitags.cibet.resource.Resource&lt;/class&gt;
+      &lt;class&gt;com.logitags.cibet.resource.ResourceParameter&lt;/class&gt;
+      &lt;class&gt;com.logitags.cibet.core.EventResult&lt;/class&gt;
+      </source>
+    </answer>
+  </faq>  
+  
+  <faq id="4">
+    <question>In Glassfish I get 'EJB5070: Exception creating stateless session bean' when a Cibet EJB method is invoked</question>
+    <answer>
+	<p>This is a bug we observed in Glassfish 3.1.2.2. See <a href="https://java.net/jira/browse/GLASSFISH-15888">Glassfish issue 15888</a> 
+	and Google for more explanations. There are two workarounds:</p>
+	<ul>
+	  <li>add an empty beans.xml into META-INF of cibet-&lt;version&gt;.jar. </li>
+	  <li>unzip cibet-&lt;version&gt;.jar and put the content directly into the WEB-INF/classes directory of your web application</li>
+	</ul>
+	<p>Both workarounds may lead to ClassNotFoundExceptions because now all Cibet classes are loaded and scanned for 
+	CDI annotations. If you do not use Apache Shiro for example, there will be some Exceptions about Shiro classes not being found.
+	These ClassNotFoundExceptions can be ignored.</p>
+    </answer>
+  </faq>	   
+
+  <faq id="5">
+    <question>With OpenJPA I get 'You have supplied columns for "com.logitags.cibet.actuator.archive.Archive.resource.com.logitags.cibet.resource.Resource.parameters", but this mapping cannot have columns in this context.'</question>
+    <answer>
+	<p>You have to add &lt;mapping-file&gt;orm-openjpa.xml&lt;/mapping-file&gt; to the cibet persistence unit in your persistence.xml. 
+	See <a href="http://openjpa.208410.n2.nabble.com/Strange-behaviour-for-unidirectional-1-M-associations-and-Association-Overrides-td7585874.html">my post in the OpenJPA mailing list</a> 
+	for more explanations about this problem.</p>
+    </answer>
+  </faq>	   
+
+  <faq id="6">
+    <question>I have an ARCHIVE and a SPRING_SECURITY / SHIRO actuator configured. However, when the business case is denied and a DeniedException is thrown, no Archive is written</question>
+    <answer>
+	<p>If EJB service requests are denied a DeniedEjbException is thrown which is a subclass of DeniedException. Some EJB containers 
+	do not correctly recognize this exception as an ApplicationException and roll back the transaction. To prevent this, add an ejb-jar.xml file into the 
+	META-INF directory with the following content:
+	</p>
+      <source>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;ejb-jar xmlns = "http://java.sun.com/xml/ns/javaee"
+         version = "3.1"
+         xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation = "http://java.sun.com/xml/ns/javaee
+           http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"&gt;
+  &lt;assembly-descriptor&gt;
+    &lt;application-exception&gt;
+      &lt;exception-class&gt;
+        com.logitags.cibet.actuator.common.DeniedEjbException
+      &lt;/exception-class&gt;
+      &lt;rollback&gt;false&lt;/rollback&gt;
+    &lt;/application-exception&gt;
+  &lt;/assembly-descriptor&gt;
+&lt;/ejb-jar&gt;
+      </source>
+    </answer>
+  </faq>	   
+
+  <faq id="7">
+    <question>I have an ARCHIVE and a FOUR_EYES / SIX_EYES /TWO_MAN_RULE actuator configured. However, when the business case is postponed and a PostponedException is thrown, no Archive is written</question>
+    <answer>
+	<p>If EJB service requests are postponed by a dual control actuator a PostponedEjbException is thrown which is a subclass of PostponedException. 
+	Some EJB containers do not correctly recognize this exception as an ApplicationException and roll back the transaction. 
+	To prevent this, add an ejb-jar.xml file into the META-INF directory with the following content:
+	</p>
+	<source>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;ejb-jar xmlns = "http://java.sun.com/xml/ns/javaee"
+         version = "3.1"
+         xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation = "http://java.sun.com/xml/ns/javaee
+           http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"&gt;
+  	&lt;assembly-descriptor&gt;
+    &lt;application-exception&gt;
+      &lt;exception-class&gt;
+        com.logitags.cibet.actuator.common.PostponedEjbException
+      &lt;/exception-class&gt;
+      &lt;rollback&gt;false&lt;/rollback&gt;
+    &lt;/application-exception&gt;
+  	&lt;/assembly-descriptor&gt;
+&lt;/ejb-jar&gt;
+	</source>
+    </answer>
+  </faq>	   
+  
+  <faq id="8">
+    <question>When starting the application server I get a NullPointerException in SpringSecurityActuator when defining custom aspects</question>
+    <answer>
+      <p>This is a rare error observed with Glassfish but it is not excluded that it could occur also with other application servers. The situation 
+      is as follows: A Spring application that uses Cibet with custom aspects defined in an aop.xml is deployed. The Spring ContextLoaderListener is 
+      defined in web.xml as listener:</p>
+      <source>
+&lt;listener&gt;
+	&lt;listener-class&gt;org.springframework.web.context.ContextLoaderListener&lt;/listener-class&gt;
+&lt;/listener&gt;
+      </source>
+      <p>The custom aspect defines a pointcut for a managed object, for example an EJB. The pointcut uses wildcards to intercept all methods of that object:</p>
+      <source>
+&lt;aspectj&gt;
+	&lt;aspects&gt;
+	  &lt;concrete-aspect name="com.xyz.tracing.EJBAspectTest" extends="com.logitags.cibet.sensor.pojo.CustomAspect"&gt;
+	  		&lt;pointcut name="cibetIntercept" expression="target(com.logitags.cibet.helper.arquillian.EjbService) &amp;&amp; execution(public * *(..))"/&gt;
+	  &lt;/concrete-aspect&gt;
+	&lt;/aspects&gt;
+	&lt;weaver options="-verbose"&gt;
+	&lt;/weaver&gt;
+&lt;/aspectj&gt;
+      </source>
+      <p>Now Glassfish uses byte code instrumentation on EJBs to add additional methods and during deployment such methods may be called. The custom aspect
+      will be applied for the object already during registering of the managed object in the application server. Applying a Cibet custom aspect leads to
+      initialisation of Cibet and the exception</p>      
+      <code>
+      java.lang.NullPointerException
+        at com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator.checkUrlAccessExpression(SpringSecurityActuator.java:654)
+		</code>
+      <p>The reason is that at this point in time Spring has not been initialised and the Spring context has not been injected in SpringSecurityActuator.
+      In Glassfish, the sequence of initialisation during startup is like this:</p>
+      <p>1. registering of aspects</p>
+      <p>2. registering of managed objects like EJBs</p>
+      <p>3. Initialisation of Spring context</p>
+      <p>It is therefore necessary to define custom aspects in a way that they are not executed before Spring has been initialised. This can be done for 
+      example by declaring more concrete methods that shall be intercepted:</p>
+      <source>
+&lt;aspectj&gt;
+	&lt;aspects&gt;
+	  &lt;concrete-aspect name="com.xyz.tracing.EJBAspectTest" extends="com.logitags.cibet.sensor.pojo.CustomAspect"&gt;
+	  		&lt;pointcut name="cibetIntercept" expression="target(com.logitags.cibet.helper.arquillian.EjbService) &amp;&amp; execution(public String logThis*(String))"/&gt;
+	  &lt;/concrete-aspect&gt;
+	&lt;/aspects&gt;
+	&lt;weaver options="-verbose"&gt;
+	&lt;/weaver&gt;
+&lt;/aspectj&gt;
+      </source>
+    </answer>
+  </faq>  
+  
+  </part>
+</faqs>  

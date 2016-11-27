@@ -1,0 +1,2 @@
+com.logitags.cibet.sensor.jpa.Provider
+com.logitags.cibet.sensor.jdbc.bridge.JdbcBridgeProvider

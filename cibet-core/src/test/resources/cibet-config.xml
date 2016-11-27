@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com 
+   ../../main/resources/cibet-config_1.0.xsd">
+
+<!-- 
+	<actuator name="LOADCONTROL">
+		<properties>
+			<customMonitors>com.logitags.cibet.actuator.loadcontrol.ThreadTimeMonitor2, com.logitags.cibet.actuator.loadcontrol.ThreadTimeMonitor2</customMonitors>					
+		</properties>
+	</actuator>
+
+	<actuator name="ARCHIVE2">
+		<class>com.logitags.cibet.actuator.archive.ArchiveActuator</class>
+		<properties>
+			<jndiName>CibetEntityManager.jndiName</jndiName>		
+		</properties>
+	</actuator>
+
+	<actuator name="SCHED1">
+		<class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class>
+		<properties>
+			<timerStart>+ 6</timerStart>
+			<throwPostponedException>true</throwPostponedException>
+			<autoRemoveScheduledDate>true</autoRemoveScheduledDate>
+			<batchInterceptor>com.logitags.cibet.helper.SchedulerPersistIntercept</batchInterceptor>
+		</properties>
+	</actuator>
+
+	<setpoint id="A">
+		<controls>
+			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
+			<event>UPDATE</event>
+			<target>
+				com.logitags.cibet.helper.TEntity
+			</target>
+		</controls>
+		<actuator name="FOUR_EYES"/>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="B">
+		<controls>
+			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
+			<event>INSERT</event>
+			<target>com.logitags.cibet.helper.TComplexEntity</target>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="C">
+		<controls>
+			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
+			<event>INVOKE</event>
+			<target>com.logitags.cibet.sensor.jpa.CibetEntityManager</target>
+			<method>createNamedQuery</method>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="D">
+		<controls>
+			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
+			<event>INVOKE</event>
+			<target>com.logitags.cibet.sensor.jpa.CibetEntityManager</target>
+			<method>close()</method>
+		</controls>
+		<actuator name="ARCHIVE2"/>
+	</setpoint>
+ -->
+ 
+	<setpoint id="com.logitags.cibet.actuator.loadcontrol.x">
+		<controls>
+			<target>com.cibethelper.loadcontrol.MonitorTestClass</target>
+			<method>cibet*</method>
+		</controls>
+		<actuator name="LOADCONTROL"/>
+	</setpoint>
+
+</cibet>   

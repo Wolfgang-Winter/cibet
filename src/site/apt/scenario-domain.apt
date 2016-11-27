@@ -1,0 +1,150 @@
+A scenario for controlling a domain object
+
+  Business requirements could be complex. Here is an example of cibet-config.xml
+  for controlling
+  a domain object. In this case it is a customer. First the business rules are
+  listed and then it is shown how these rules will be mapped by a Cibet
+  configuration of eight setpoints. The rules are:
+  
+  * New customers of the premium category can be created and deleted only 
+    by users with role PREMIUMOFFICER in a four-eyes control mode.
+    
+  * All creations and removals of customers must be traced.
+  
+  * Customers of other categories can be created and deleted by any user 
+    in a four-eyes control mode.     
+  
+  * All 4-eyes controlled creations can be released by users of role 
+    RELEASER
+  
+  * 4-eyes controlled deletions can be released only by users of role 
+    PREMIUMOFFICER
+  
+  * When an action is released the customer state is archived. The state 
+    can later be restored
+  
+  * Rejection of 4-eyes controlled creations and deletions of normal customers 
+    can be done by users of role NORMALUSER or PREMIUMOFFICER 
+    
+  * customers of premium category can be rejected only by PREMIUMOFFICER users. 
+  
+  * Customers can be modified by any user with role NORMALUSER as long as 
+    the customer account and the category are untouched.
+    
+  * When the account or category are modified it must be done by a user 
+    in role PREMIUMOFFICER in a four eyes control mode.  
+
+  * The release of this modification must be done by a user in role 
+    PREMIUMOFFICER.
+    
+  * All customer modifications are archived.
+  
+  * Restoring a customer state from the archive can be made by 
+    PREMIUMOFFICER users with four eyes control. 
+ 
+  []
+  
+-------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.2.xsd">
+
+  <actuator name="SPRINGSECURITY_PREMIUMOFFICER">
+     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+     <properties>
+        <preAuthorize>hasRole(ROLE_PREMIUMOFFICER)</preAuthorize>
+     </properties>
+  </actuator>
+
+  <actuator name="SPRINGSECURITY_RELEASER">
+     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+     <properties>
+        <preAuthorize>hasRole(ROLE_RELEASER)</preAuthorize>
+     </properties>
+  </actuator>
+  
+  <actuator name="SPRINGSECURITY_NORMALUSER">
+     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+     <properties>
+        <preAuthorize>hasRole(ROLE_NORMALUSER)</preAuthorize>
+     </properties>
+  </actuator>
+  
+
+  <setpoint id="D">
+    <controls>
+      <tenant>MM Bank</tenant>
+      <event>INSERT, DELETE, REJECT_INSERT, REJECT_DELETE</event>
+      <target>com.bank.business.Customer</target>
+      <condition>$Customer.getCategory() != 'PREMIUM'</condition>
+    </controls>
+    <actuator name="FOUR_EYES"/>
+    <actuator name="INFOLOG"/>
+  </setpoint>
+
+  <setpoint id="D1" extends="D">
+    <controls>
+      <condition>$Customer.getCategory() == 'PREMIUM'</condition>
+    </controls>
+    <actuator name="SPRINGSECURITY_PREMIUMOFFICER" />
+    <actuator name="FOUR_EYES"/>
+    <actuator name="INFOLOG"/>
+  </setpoint>
+
+  <setpoint id="D2" extends="D">
+    <controls>
+      <event>RELEASE_INSERT</event>
+      <condition></condition>
+    </controls>
+    <actuator name="SPRINGSECURITY_RELEASER"/>
+    <actuator name="ARCHIVE"/>
+  </setpoint>
+
+  <setpoint id="D3" extends="D2">
+    <controls>
+     <event>RELEASE_DELETE</event>
+    </controls>
+    <actuator name="SPRINGSECURITY_PREMIUMOFFICER"/>
+    <actuator name="ARCHIVE"/>
+  </setpoint>
+
+  <setpoint id="D4" extends="D">
+    <controls>
+      <event>UPDATE</event>
+      <stateChange exclude="true">account, category</stateChange>
+      <condition></condition>
+    </controls>
+    <actuator name="SPRINGSECURITY_NORMALUSER"/>
+    <actuator name="ARCHIVE"/>
+  </setpoint>
+
+  <setpoint id="D5" extends="D2">
+    <controls>
+      <event>UPDATE, REJECT_UPDATE</event>
+      <stateChange>account, category</stateChange>
+    </controls>
+    <actuator name="SPRINGSECURITY_PREMIUMOFFICER"/>
+    <actuator name="FOUR_EYES"/>                                   
+  </setpoint>
+
+  <setpoint id="D6" extends="D5">
+    <controls>
+      <event>RELEASE_UPDATE</event>
+    </controls>
+    <actuator name="SPRINGSECURITY_RELEASER"/>
+    <actuator name="ARCHIVE"/>
+  </setpoint>
+
+  <setpoint id="D7" extends="D2">
+    <controls>
+      <event>RESTORE</event>
+    </controls>
+    <actuator name="SPRINGSECURITY_PREMIUMOFFICER"/>
+    <actuator name="FOUR_EYES"/>                                   
+    <actuator name="ARCHIVE"/>
+  </setpoint>
+
+</cibet>
+-------------------  
+    
+   

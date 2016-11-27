@@ -1,0 +1,909 @@
+Version 2.0
+
+  * custom actuators can be loaded with ServiceLoader pattern
+  
+  * allocationSize of Archive increased to 50
+  
+  * Archive integrityCheck MessageDigest only over current record
+  
+  * Archive integrity check functionality moved into Archive class
+  
+  * ArchiveService renamed to ArchiveLoader, made static and some functionality moved to Archive class
+  
+  * Primary key of entities changed to UUID
+  
+  * JDBCBridgePersistenceProvider for providing JDBCBridgeEntityManagerFactory for Cibet EntityManager
+  
+  * ResourceHandler.fill methods for notification replaced by getNotificationAttributes
+  
+  * locking of method simplified: only method name is used to identify method
+  
+  * synchronize Locker.lock methods
+  
+  * remove interfaces of ArchiveService, DcService, SchedulerService, ShiroService, SpringSecurityService and Locker
+    and make implementations static.
+    
+    
+  
+
+Version 1.9 (9.10.2016)
+
+
+  * isEagerLoadedAndDetached moved from EventMetadata to Resource
+  
+  * common packages in actuator and sensor package
+  
+  * new LoadControl actuator
+  
+  * catch Throwable instead of Exception in all sensors
+  
+  * multiple proxy servers
+  
+  * multiple configuration files
+  
+  * improve performance: do lazy encoding of http parameters and creation of uniqueId
+  
+  * Bugfix CustomAspect when Spring libs are not in the classpath
+  
+  * Compilation with Java 1.8
+  
+  * Fixed all JavaDoc comments that maven-javadoc-plugin does not compile with 1.8
+  
+  * BugFix: config file not found when reinitialising with JMX in Tomcat/Tomee due to ClassLoader issue
+  
+  * Bugfix: JAXB context not instantiated when reinitialising with JMX in Tomcat/Tomee due to ClassLoader issue
+  
+  * Property interceptorClass in SchedulerActuator renamed to batchInterceptor and type changed from Class to SchedulerTaskInterceptor
+
+  * new property groupId in Archive and DcControllable
+  
+  * SQL script for postgresql
+  
+  * Bugfix: Actuators registered in Setpoints are not reinitialized when reinit actuators in the Configuration JMX bean
+  
+      
+    
+Version Version 1.8.1 (5.7.2016)
+
+  * Do not handle NoResultException as error: log NoResultException in CibetQuery as INFO and set executionStatus to EXECUTED
+
+  * Remove verbose logging in aop.xml
+	
+  * Allow non-tenant specific loading of Archives and DcControllables in ArchiveService, DcService and SchedulerService.
+	
+
+Version 1.8 (2.1.2016)
+
+  * configure loading eager and detaching entity in ARCHIVE and DC actuators before storing as Archive or DcControllable.
+  
+  * configure loadEager for CibetEntityManager in persistence unit
+  
+  * initContext and endContext. start context either
+  - by CibetFilter, CibetContextInterceptor, CibetContextAspect
+  - a sensor
+  - manually with startContext() and endContext()
+  - implicitly by Actuator-Manager classes
+  - implicitly Scheduler batches
+  
+  * Bugfix uniqueId of http resource doesn't take http parameters into account
+  
+  * Bugfix: re-create unique resource id in EntityManager.persist and when releasing INSERT events
+  
+  * SchedulerService: new method List<Difference> findExecutedDifferences(DcControllable dc) which lists the executed modifications 
+    on a JPA entity at schedule execution time.
+    
+  * DcService: passback(EntityManager entityManager, DcControllable co, String remark) for passing back scheduled or postponed JPA entities
+
+  * DcService: submit(EntityManager entityManager, DcControllable co, String remark) for re-submitting scheduled or postponed JPA entities
+  
+  * new sensor HTTP-PROXY for controlling http requests on the client side.   
+  
+  * log stacktrace with the error message when Exception is thrown in sensors
+  
+  * Bugfix: In CibetEntityManager.merge detach entity when executionstatus is not EXECUTING
+  
+  * updated dependent libraries to the newest versions
+   
+  * add descriptions to methods and parameters of Cibet ConfigurationService MBean
+  
+  * support one MBean instance per deployed application
+  
+    
+Version 1.7.3 (29.11.2015)
+
+  * Bugfix: ArchiveComparator 
+  
+  * ArchiveService.loadArchivesWithDifferences compares only with previous archives in status EXECUTED 
+
+  * DcService: reject(EntityManager entityManager, DcControllable co, String remark) for rejecting scheduled or postponed JPA entities
+
+  * log stacktrace with the warning message when Exception is thrown in sensors
+
+
+Version 1.7.2 (10.11.2015)
+
+   * Bugfix: fix NPE when comparing objects that are not Java beans
+    
+  
+Version 1.7.1 (7.11.2015)
+   
+   * Bugfix: when releasing a resource set scheduledDate only if DC executionStatus != SCHEDULED.
+   
+   * Bugfix: In JpaUpdateResourceHandler.apply() reset control event into context just before calling merge 
+   
+   * implement release and reject of scheduled business cases
+   
+   * SchedulerActuator: load eager only when scheduled date is set in context
+   
+   * POJO sensor renamed to ASPECT, HTTP(SERVER) to HTTP-FILTER
+   
+
+Version 1.7 (8.8.2015)
+
+  * Bugfix: If CibetContextInterceptor is executed more than one time in a http request the Cibet EntityManager is lost in scope
+  
+  * Allow URI exclude patterns for CibetFilter and CibetContextFilter
+  
+  * Allow anonymous login with CibetFilter. User is taken from remoteUser or principal if present. Otherwise from remote IP and port
+  
+  * Redesign of AuthenticationProvider functionality as chained providers.
+  
+  * Allow relative time configuration for SchedulerActuator.timerStart with +
+  
+  * Execution of scheduled business cases is done as RELEASE ControlEvent
+  
+  * Bugfix: Fixed doubled creation of DcControllable during execution of scheduler when both SCHEDULER and FOUR_EYES are applied
+  
+  * Callback functionality for Scheduler batch execution
+  
+  * return all scheduled DcControllable in ScheduledException, not only the first one.
+  
+  * allow ignoring ScheduledException after inspection of an already scheduled resource  
+
+  * Bugfix close context in CibetEntityManager when it is not managed
+  
+  * New CibetContext annotation to manage context in pojo invocations   
+  
+  * CibetEntityManager returns loaded entities as is, without lazy loading and detaching. This is done now in before methods of
+    ARCHIVE, DC and SCHEDULER actuators 
+
+Version 1.6.2 (19.5.2015)
+
+  * SchedulerActuator, TwoManRuleActuator: take care for NotSerializableException when setting proxied objects into Resource
+  
+  * Bugfix in SpringSecurityActuator: do not execute beforeEvent for other resources when processing http resources
+  
+  * Bugfix in CibetEntityManager: native EM could be closed when dual control event is rejected
+  
+  * Bugfix in ConditionControl: fixed script exception if condition contains attributes which are not present for the given resource. Error 
+    occurs if a setpoint contains only condition control  
+    
+  * sensor EJB3 renamed to EJB
+  
+  * sensor SERVLET renamed to HTTP(SERVER)  
+  
+  * #37: handle exceptions in sensors after... actuator methods. Set execution status to ERROR
+  
+  * Bugfix: MethodControl with method parameters is not correctly evaluated when the metadata contain additional parameters
+  
+  * #44: Client-side sensor for EJB invocations
+  
+  * guideline for migration of serialized objects
+
+
+Version 1.6.1 (12.1.2015)
+
+  * Bugfix: Wrong ControlEvent in Context when method is invoked and within the method execution another resource is controlled
+  
+  * #88: new SchedulerActuator 
+  
+  * Bugfix EJB lookup strategies look also for Singletons
+  
+  * DcService new methods for releasing that take Connection as parameter for JDBC resources and without EM parameter for 
+    non-persistence resources.
+    
+  * Bugfix: JdbcResourceHandler apply method must use application EntityManager instead of Cibet EntityManager. 
+  
+  * Comparing objects is migrated to java-object-diff. CibetUtil.compare() returns a List of Difference objects
+  
+  * Bugfix: close EntityManagerFactory in CibetContextFilter.destroy()
+  
+  * ArchiveService.compare() methods removed  
+  
+  * new CibetContextInterceptor for initialising EntityManager and user in EJB invocations
+  
+  * Bugfix: when entities are added to a collection in a parent entity, the primary keys of the added entities were not 
+    stored in Archive and DcControllable resources. This has been fixed.
+    
+  * package structure refactured
+  
+  * Bugfix: remove context in Filter even if endTransaction() throws Exception
+  
+  * Bugfix: CibetFilter must not overwrite destroy() method of CibetContextFilter
+  
+  * Bugfix: Deregister JDBC driver on shutdown
+  
+  * INSERT SQL statement for CIB_SEQUENCE added to installation scripts 
+
+
+Version 1.6 (9.11.2014)
+
+  * Bugfix: In CibetUtil.loadLazyEntities() do not access transient fields and @Transient annotated fields and methods
+  
+  * #2: Setting of POJO sensor through configuration of custom aspect in aop.xml
+  
+  * JAXB generated class InExAttributeBinding generates public Boolean getExclude() instead of public Boolean isExclude()
+  
+  * set property integrityCheck static in ArchiveActuator
+  
+  * #3: Encryption of sensible data in Archive and DcControllable
+  
+  * #4: Management of secret/key though a reference that is stored in Archive and DcControllable
+  
+  * configuration values of Setpoints in configuration file can be quoted to allow comma and apostrophe in values
+  
+  * #86: Sensor for JPA queries
+  
+  * #15: application monitoring and controlling by MBean
+  
+  * JdbcBridgeEntityManager: createQuery methods return always a Query object. 
+  
+  * ApprovalStatus, NotificationType and ExecutionStatus unified to ExecutionStatus
+  
+  * #20: New dual control event PASSBACK and SUBMIT: A releasing user can return the postponed business case under dual control
+     to the user who initiated it for it to be changed. After change, the inititating user submits the business case again.
+
+  * Bugfix: apply encrypt and integritycheck properties of self defined ArchiveActuators with own name.  
+
+  * #87: Store additional attributes of JPA entities with Archive and DcControllable. Can be used for searching.  
+   
+  * #32: new EnversActuator to control persistence auditing with Hibernate Envers
+  
+  * increase performance: when persistent events are controlled by DC it is no more checked if the entity is persistent.
+  
+  * UnapprovedEntityException contains now the DcControllable object that represents the unapproved resource.
+
+  * PostponedException contains now the DcControllable object which has been created and stored in the database to memorize 
+    the business case 
+  
+  * ExecutionStatus RELEASED has been removed and replaced by EXECUTED
+  
+  * @Column annotations added to entities with length of columns to avoid warnings in Glassfish/EclipseLink  
+  
+
+Version 1.5 (3.5.2014)
+
+  * Bugfix: fixed Exception in CibetContextFilter when http session is invalidated
+  
+  * Bugfix: added argNames to CibetAspect
+  
+  * #73: EventMetadata interface streamlined
+  
+  * NOT NULL restriction removed for ARCHIVE.createUser. user could be null in Archive, when no user 
+    is logged in, an Archive may be persisted as well.
+    
+  * Bugfix: Fixed Exception when ARCHIVE actuator is set for RELEASE and the release is denied by SHIRO 
+    or SPRING_SECURITY
+    
+  * Bugfix: Release of an INSERT event sets object id in all previous Archives of that caseId, not 
+    only the INSERT archive
+    
+  * Bugfix: Spring applications with more than one AbstractAccessDecisionManagers could throw 
+    NoSuchBeanDefinitionException during startup. More than one AbstractAccessDecisionManagers
+    are possible now.
+    
+  * Bugfix: set the EntityManager type in Cibet filter to avoid rollback of transaction when IllegalStateException is thrown
+    in RequestScopeContext.setEntityManager() (observed only in Glassfish)
+    
+  * Bugfix: Fixed ClassNotFoundException in ArchiveActuator when storing http attributes that are not in ClassLoader
+  
+  * Bugfix: ClassNotFoundException of DeniedException in SE environment
+  
+  * Bugfix: reset application EntityManager into request context in CibetEntityManager in SE applications
+  
+  * Bugfix: fallback to retrieve @ID value from annotated attribute if PersistenceUnitUtil.getIdentity returns null
+    (observed in not enhanced entities with EclipseLink)
+    
+  * Add version to Archive for optimistic locking    
+  
+  * Bugfix: ShiroActuator fixed processing when requiresAuthentication, requiresUser or requiresGuest are set to false
+  
+  * Bugfix: begin transaction when EntityManager is already set in CibetServletContext and no transaction is active
+  
+  * automatic setting of JdbcBridgeEntityManager in CibetContextFilter in JDBC applications. 
+    See http://tomcat.apache.org/tomcat-7.0-doc/jndi-resources-howto.html
+
+  * Intercept annotation renamed to CibetIntercept
+  
+  * #51: @CibetIntercept can be set on method level or on class level
+  
+  * ReleaseException is renamed to ResourceApplyException as it is thrown not only during release but 
+    also during reject, redo and restore. 
+      
+  * CibetUtil: performance increased of loading of lazy entities. Static attributes and objects of type 
+    Class and Date are not loaded 
+    
+  * Bugfix: in multi-threaded environments updating of first Archive in ArchivePersister could lead to OptimisticLockException
+    in rare situations. Archive is refreshed from database.
+
+  * JdbcBridgeEntityManager.refresh(Object) implemented
+  
+  * Bugfix: ArchivePersister refresh first Archive when lastArchiveId is not equal to the current lastArchiveId.
+  
+  * Refactoring: new concept of Resource. The Resource is the item that is controlled when it is monitored by a sensor.
+    A Resource is e.g. a persistence entity, a method, an HTTP URL or a database table.  
+    
+  * remark property moved from Session scope to request scope. Remark parameter in methods release,
+    reject, redo and restore overwrite remark property in request scope if present.
+    
+  * Servlet sensor CibetFilter returns EventResult as header in http response. With CibetUtil, the String typed header value
+    can be decoded into an EventResult object. 
+
+  * #66, #68: new functionality play. In playing mode the event is executed in a sandbox and the EventResult can be checked for the
+    result if the event was executed in normal mode.
+    
+  * #71: new dual control actuator PARALLEL_DC: This actuator realizes a dual control scheme where a business case is executed 
+    more than once, optionally by different users, without having any impact to the system. Another user compares the results 
+    together with the input parameters and decides which of the variants to reject and which to release. 
+  
+  * #17: new ControlEvent SELECT for controlling the JPA find- methods. 
+  
+Version 1.4 (3.11.2013)
+
+  * properties secretKey and integrityCheck of ArchiveActuator changed from static to non-static.
+  
+  * names of properties of SpringSecurityActuator changed to start with a low case to make them
+    Java beans compliant 
+    
+  * Issue #59: Use commons beanutils to set actuator properties from xml configuration   
+  
+  * Setpoint changed methods to add Controls: instead of added, the Controls are set in order
+    to make the interface stringent. Setting a control replaces the existing.
+    
+  * Control interface enhanced to better support custom controls. 
+    
+  * Issue #63: Move inheritance code of Controls into abstract class. Allows custom controls 
+    to make use of this code. Inheritance functionality moved to AbstractControl 
+  
+  * issue #27: Allow registering of Control implementations in cibet-config.xml
+  
+  * allow definition of custom controls in setpoints. 
+  
+  * re-changed ControlEvent from String to Enumeration (undo from v1.1)
+  
+  * Actuator interface changed: beforeInsert, beforeDelete, beforeUpdate and beforeInvoke
+    are summarized to beforeEvent. afterInsert, afterDelete, afterUpdate and afterInvoke
+    are summarized to afterEvent.
+    
+  * two new ControlEvents added: RESTORE_INSERT and RESTORE_UPDATE
+    
+  * executionStatus attribute added to Archive. Shows the execution result of the business case. 
+      
+  * ArchiveActuator stores also denied business cases with executionStatus = DENIED.
+  
+  * internal ControlEvents are removed. DcControllable has new attribute approvalStatus instead. 
+  
+  * DcControllable objects are kept in database after release/reject.
+  
+  * AuthenticationProvider has new method getUserAddress()
+  
+  * if ApprovalUser and ApprovalAddress are set into CibetContext it will be stored with the 
+    DcControllable and approval can be done only by this user.
+    
+  * issue #46, #40: Notification of users of control events like release/reject and assignments
+    per email or http
+  
+  * issue #25: CibetContext has an application, a session and a request scoped context
+  
+  * CibetContext split into Request and Session scope, internal and external interfaces. Developers 
+    can access request scope with Context.requestScope and session scope with Context.sessionScope.
+    
+  * ConditionControl: request scope properties are put into the JavaScript context as $REQUESTSCOPE
+    and session scope properties as $SESSIONSCOPE instead of $PROPERTIES. Application context
+    properties are put as $APPLICATIONSCOPE. Property $USER is no longer supported and removed.  
+  
+  * ConfigurationManager renamed Configuration and made Singleton.
+  
+  * Configuration of AuthenticationProvider in cibet_config.xml allows for setting of properties
+  
+  * changed from JAVA 1.6 to 1.7
+  
+  * Notification when business case under dual control has been postponed, released or rejected.
+    Notification by email or http
+    
+  * Controllable object stores remarks of creating, first-releasing and final-releasing user.  
+  
+  * Instantiation of a JdbcBridgeEntityManager needs an IdGenerator parameter. Constructors that 
+    take only one parameter are removed. 
+    
+  * MethodControl evaluates all control events. Restriction on INVOKE removed.  
+  
+  * All Manager classes renamed to Service and DefaultService. Singleton removed from Controller 
+  
+
+Version 1.3 (13.5.2013)
+
+  * Bugfix: memory leak when context isn't removed at the end of the request in CibetFilter.
+  
+  * Issue #18: Control chains have been tested.
+  
+  * Bugfix: JDBC prepared statements didn't store parameters correctly when executed 
+    multiple times with changing parameters.
+    
+  * Bugfix: CibetUtil.loadLazyEntities(): load nested entities of entities that 
+    are queried with CibetEntityManager
+    
+  * JavaEE6: Inject CibetContext EJB (former ActuatorInvoker) in CibetFilter 
+  
+  * added @Temporal annotations for compatibility with EclipseLink
+  
+  * added identification variables to named queries FROM clauses for compatibility with EclipseLink
+  
+  * use enum literals in named queries for compatibility with EclipseLink
+  
+  * Bugfix: Cannot store non-serializable attributes in CibetFilter (occurs in JBoss 5)
+  
+  * preset EntityManager in filter
+  
+  * check CibetContext.getEntityManager() == null 
+  
+  * ArchiveActuator: When updating an entity, the actual state is archived, not the previous 
+    state as before.
+    
+  * loading of lazy entities performance increased and streamlined.
+  
+  * Bugfix for OpenJPA: Primary key is not stored in Archive and DcControllable: 
+    flush EntityManager before executing afterInsert in ArchiveActuator and DC actuators
+    
+  * Issue #21: new EventResult interface for monitoring all results of intercepted business cases
+    
+  * new Tracker actuator: Writes all results of intercepted business cases into the database
+  
+  * update from JPA1 to JPA2
+  
+  * package sensor.jpa1 renamed to sensor.jpa 
+  
+  * introduced separate persistence unit for Cibet entities. This allows to control arbitrary 
+	  other persistence units  
+
+  * added CibetContext.setRollbackOnly() to control transaction for persisting Cibet entities.
+   
+  * new interface AuthenticationProvider for automatic setting of user and tenant into Cibet context.
+   
+  * dependencies to Shiro and Spring Security libraries removed when they are not in the classpath.
+	 ClassLoader.loadClass() checks if ShiroActuator and SpringSecurityActuator can be loaded.
+	   
+  * Issue #61: Implement the JPA sensor as a JPA provider 
+  
+  * DcManager: methods release() and reject() take EntityManager for the entity to release/reject 
+    as parameter
+
+
+Version 1.2 (26.11.2012)
+
+  * CibetFilter method lookup() made protected to allow overwriting.
+  
+  * Bugfix: dependent on JPA implementation ArchiveManagerImpl.restore() could create 
+    a wrong Archive. The find method evaluates then with wrong RESTORE event. When setter 
+    methods of the entity are under control, they evaluate to true. The RESTORE event must 
+    be set just before persisting or merging the entity.
+    
+  * new JdbcBridgeEntityManager: Allows controlling non-JPA application that use JDBC
+    connections and datasources to connect to the database. The JdbcBridgeEntityManager
+    is a bridge between JPA and JDBC. Works with all sensors, even with the JPA sensor
+    (though JPA is normally not used in a JDBC application)
+    
+  * ConditionControl: All variables set into the script engine are preceded by a $ now
+  
+  * Checksum String for archives does not contain primary key anymore.
+  
+  * Interface change: com.logitags.cibet.actuator.archive.ArchiveManager.loadArchives(Class objectClass)
+    changed to List<Archive> loadArchives(String targetType); 
+    Target type could be e.g. the name of a class or a table name.   
+    
+  * Class Parameter constructor signature changed  
+  
+  * Invoker implementations made stateless. Method setParameter() removed
+  
+  * Issue 3476553: new JDBC sensor: Allows intercepting and controlling plain JDBC requests.
+  
+  * SpringSecurityActuator: catch NoSuchBeanDefinitionException if expected beans are not
+    available in Spring application context.
+    
+  * Issue 3567727: SpringSecurityManager allows log on and off of a second user while 
+    the first user stays logged on. The second user can be granted permissions for 
+    Two-man-rule actuator.
+    
+  * actuator properties from configuration file are set with setter method instead of direct
+    field access. This allows implementing adjustment logic in the setter method which was 
+    before in method refineProperty. The last method is removed from the interface.
+
+  * package structure changed. Some classes have been moved to new packages in order
+    to have all classes in leaf packages.   
+    
+  * Allow unset EntityManager in CibetContext: method getEntityManager() does not throw
+    Exception anymore if no EntityManager is set in CibetContext.
+    
+  * CibetFilter: transaction commit/rollback is done only if EntityManager is set in
+    CibetContext, otherwise the request is not executed within a transaction.
+    
+  * ArchiveActuator: allow empty property setting like \<integrityCheck /\> and 
+    \<integrityCheck\>\</integrityCheck\>. This corresponds to
+    \<integrityCheck\>true\</integrityCheck\>
+    The same is allowed for throwPostponedException in the DcActuators, 
+    TwoManRuleActuator.removeSecondUserAfterRelease, LockActuator.throwDeniedException,
+    automaticLockRemoval, automaticUnlock and SpringSecurityActuator.throwDeniedException,
+    secondPrincipal   
+    
+  * Issue 3461917: new ShiroActuator: Integration with {{{http://shiro.apache.org/}Apache Shiro}}
+    allows authorization of events. Permissions are set in the Cibet configuration.       
+
+Version 1.1 (6.5.2012)
+
+  * Issue 3461911: new CibetContextFilter
+	 makes the link between CibetContext and http session. Allows one-time setting of 
+	 context and the filter ensures that on each http request the context is exchanged 
+	 between http session and CibetContext. CibetFilter (for SERVLET sensor) inherits 
+	 from CibetContextFilter.
+	
+  * DeniedException contains denied user and causing exception as attributes for 
+    information to end user
+    
+  * changed ControlEvent from enumeration to simple String. This will allow
+    user-specific ControlEvents in a later release
+    
+  * new abstract ControlEvents ALL (all ControlEvents except UNKNOWN) and
+    PERSIST (summarizes INSERT, UPDATE, DELETE and RESTORE) and DC_CONTROL 
+    (summarizes RELEASE, FIRST_RELEASE and REJECT)
+    
+  * Issue 3461860: TWO_MAN_RULE actuator. 
+    This actuator applies another dual control scheme which is an enhancement of the 
+    FOUR_EYES actuator. Additionally to the rule that an event must be validated 
+    and released by a second user,
+    an additional constraint is applied: The two users must be present at the same time
+    when executing / releasing the event. This actuator can be used with all sensors.
+    
+  * Issue 3461909:     
+    LOCKER actuator allows the temporary locking of an event on a resource like 
+    persisting an entity, releasing of a dual control event, invocation of a method 
+    or requesting a URL. Only the user who sets the lock can execute the event. The 
+    lock makes a reservation for the user. Implementation in package actuator.lock
+    
+  * Cibet is now deployed in Maven Central repository. This makes it very easy to use 
+    it in a Maven application. Just add a dependency to Cibet in your pom.xml.
+
+Version 1.0 (26.12.2011)
+
+  * internal project restructuring
+  
+  * internal restructuring of tests
+  
+  * benchmarks for setpoint evaluation
+  
+  * CibetUtil: Runtime exceptions contain causing exception 
+  
+  * exception handling in CibetUtil, AnnotationUtil, 
+    CibetFilter, HttpRequestInvoker, FactoryInvoker
+    
+  * CibetAspect: check param attribute of @Intercept
+  
+  * AnnotationUtil: improved handling of generics
+  
+  * use Mockito for mocking test classes
+  
+  * bugfix: make SpringBeanInvoker.beanId threadsafe
+  
+  * EJBInvoker: cache jndi names and InitialContext
+  
+  * AbstractEventMetadata, FourEyesActuator, SpringSecurityActuator: set 
+    generic type of PostponedException and DeniedException 
+  
+  * ConfigurationManager: synchronize registerControl() and registerActuator()
+  
+  * BindingHelper merged with ConfigurationManager
+  
+  * Setpoint: constructor throws IllegalArgumentException
+  
+  * Setpoint: make resolveControlEvent() case insensitive
+  
+  * ArchiveManager: loadArchivesByObjectId parameter changed to Object
+  
+  * DcManager: findUnreleased finds not with wildcards for tenant
+  
+  * Bugfix: CibetUtil.compare(): The element order of collections is arbitrary 
+    when loading with JPA. Therefore collections are sorted before comparing 
+    the elements.  
+    
+  * ArchiveManager.restore(): method returns null if the restore event is 
+    under dual control
+    
+  * Bugfix: remove target output in ClassEventMetadata.toString(). Problems 
+    with looping AspectJ calls 
+    
+  * EjbInvoker: if JNDI name is configured use only this one and don't 
+    search for other possible names. 
+    
+  * CibetContext.userId renamed to CibetContext.user
+  
+  * ConditionControl: Variable USERID renamed to USER
+  
+  * InvalidUserException extends ReleaseException. Throw IllegalArgumentException
+    instead InvalidUserException when no user set in CibetContext. 
+  
+  * add ApplicationException declaration for PostponedEjbException and
+    DeniedEjbException into ejb-jar.xml of the module which catches the exception
+    (which is src/test/resources for the tests)
+    
+  * Bugfix: don't consider milliseconds for archive checksum string 
+    calculation. Some databases do not store milliseconds. 
+    
+  * Bugfix: Use serializable dummy objects for ServletRequest and ServletResponse
+    in HttpEventMetadata to transfer to ActuatorInvoker EJB instead of real 
+    HttpServletRequest and HttpServletResponse
+  
+  * documentation of environment
+  
+  * tests against MySql database
+
+Version 0.9 (24.5.2011)
+
+  * integrate Spring Security with delegation from CibetDelegatingMethodSecurityMetadataSource 
+    to DelegatingMethodSecurityMetadataSource
+    
+  * separator for tenant hierarchies changed from - to |
+  
+  * jndiName made a property of dual control and Archive controllers
+  
+  * bugfix: configuration of more than one SecurityActuator in one Setpoint 
+    used same cachekey. Now the actuator name is added to the cachekey.
+    
+  * refacturing of setpoint configuration xml schema
+  
+  * condition control can evaluate script files located from URI or classpath
+  
+  * Controller and Control interface methods made more generic with 
+    EventMetadata interface
+    
+  * bugfix: ConfigurationManager.unregisterSetpoint(String) fixed to remove 
+    the setpoint from the map
+    
+  * new http sensor
+  
+  * archive and dc parameter name and type are stored in tables
+  
+  * bug fix: when no actuators are configured for reject and first release 
+    events the action was executed by error
+    
+  * bug fix: When PostponedException and DeniedException are thrown in EJB 
+    environment database transaction is not commited. Created new 
+    PostponedException and DeniedException which are ApplicationExceptions  
+
+  * bug fix: fix column name lengths for Oracle length restrictions
+  
+  * bug fix: fixed ID generator strategy for Archive entity
+  
+  * bug fix: sequence of method parameters sometimes not loaded in the 
+    correct order from database.
+    
+  * bug fix: ArchiveActuator properties checkIntegrity made static and 
+    secretKey synchronized      
+
+Version 0.8 (6.11.2010)
+
+  * @Override annotations from interface methods removed because they make 
+    problems with aspectj
+  
+  * New sensor for controlling POJO service class methods
+   
+  * POJO sensor supports constructor, static, factory, Singleton or Spring 
+    bean instantiation for release and redo events 
+  
+  * Control implementations and actuators support static method invocation
+    for release and redo events
+  
+  * reorganization of actuator package structure
+  
+  * ID GeneratedValue strategy changed from Table to Auto
+  
+  * database and abstract classes dependencies between dc and archive resolved
+
+  * new SpringSecurityActuator. Authorization control of service method 
+    invocations based on Spring Security. Supports authorization of control 
+    events.
+    
+  * pull mechanism to give client response about an event execution. 
+    Client can ask CibetContext about the execute status of the last event. 
+    Could be one of EXECUTED, POSTPONED, REJECTED or DENIED
+  
+  * optional push mechanism to give client response about an event execution. 
+    If the event is not executed because a dual control mechanism is
+    applied a PostponedException 
+    can be thrown. If the event is not authorized a DeniedException is thrown. 
+    Throwing of an exception can be configured on actuator or 
+    setpoint level. Default is not to throw an exception.
+    
+  * new control events RELEASE_..., FIRST_RELEASE_... and REJECT_..... 
+    Possibility to configure setpoints also with all RELEASE, FIRST_RELEASE, 
+    REJECT, REDO and RESTORE events.  
+    
+  * bugfix Setpoint does not implement Serializable
+
+Version 0.7 (25.6.2010)
+
+  * findbugs reports added
+
+  * minor bug fixes from findbugs
+  
+  * bug fix: CibetUtil compare method for entities with lazy loaded associated objects
+  
+  * refactoring of classes and packages: 
+  
+    * coupling between archive and dc packages removed 
+  
+    * control action and control state removed and transferred to control event
+  
+    * release and reject methods removed from Controller interface
+  
+    * renaming of ControlledObject and its sub-classes
+    
+    * action package renamed to sensor
+    
+    * owner renamed into tenant
+    
+    * config package renamed to controller
+    
+    * Controller renamed to Actuator
+    
+  * AbstractActuator super class for Actuators to hide interface enhancements
+  
+  * refactoring of configuration:
+  
+    * DTD validation exchanged for XSD schema validation
+    
+    * JAXB binding of configuration classes
+    
+    * Control interface for pluggable control evaluation
+    
+    * AbstractControl super class for Control to hide interface enhancements
+    
+    * configuration dependent on method signature for INVOKE events
+    
+    * configuration dependent on conditions for method parameters
+    
+    * class and method defaults and wildcards, package-dependent configuration
+    
+    * configuration dependent on state change of domain object attributes
+      
+    * defined sequence of actuators is evaluated
+    
+    * configuration dependent on JavaScript conditions
+    
+    * actuator definition: possibility to define the same actuator 
+      with different properties under different names.
+      
+    * configuration dependent on calling class and method 
+    
+    * new configuration API
+       
+         
+
+Version 0.6 (12.4.2010)
+
+  * log4j exchanged for commons-logging
+  
+  * ArchiveManager, DcManager and ConfigurationManager interfaces added
+  
+  * ArchiveManager, DcManager: API method for comparison of modified objects under dual control
+  
+  * ArchiveManager: API for searching Archive objects from the database
+  
+  * ArchiveManager: redo for method invocation archives
+  
+  * ArchiveManager: restore for data modification archives
+  
+  * CibetEntityManager.merge() returns the merged object
+  
+  * DcManager.release() returns result of method invocation
+  
+  * ARCHIVE scheme archives the old state instead of the new state when an object is updated
+  
+
+Version 0.5.1 (19.2.2010)
+
+  * OpenEJB support
+  
+  * fixed integrity check when no records
+  
+  * fixed integrity check when new records added after missing records
+  
+  * set allocation size of Archive to 1  
+
+  * perfumery example application
+
+Version 0.5 (6.12.2009)
+
+  * bug fix: missing object id in serialized archive object
+  
+  * bug fix: store invocation result in ARCHIVE scheme
+  
+  * project totally restructured to support plugin mechanism
+  
+  * pluggable control schemes with SchemeController interface
+  
+  * release result value is encoded result value of method.
+  
+  * release/reject remark changed to String type 
+  
+  * test coverage augmented
+  
+  * separate configuration tags for entity and method control
+  
+  * new INFOLOG scheme
+  
+  * attributes integrityCheck and secreteKey shifted to ArchiveController  
+  
+Version 0.4.1 (8.11.2009)
+
+  * make ConfigurationCache central manager for overall Cibet 
+    configuration. Rename to ConfigurationManager
+    
+  * ConfigurationManager.restart() methods allows reconfiguration of 
+    overall parameters. 
+    
+  * ControlManager made static
+  
+  * Introduced checksums in archives to guarantee data integrity
+  
+  * new method in ControlManager to check archive integrity
+  
+  * configure methods moved from ControlManager to ConfigurationManager
+  
+  * automatic detection of EJB JNDI name in EJBFactory
+  
+  * configuration parameter jndiName added to cibet-config.xml    
+
+Version 0.4 (24.10.2009)
+
+  * set EntityManager into local thread context
+  
+  * Method invocation interception for JavaEE implemented
+  
+  * Attribute incidentId added to relate Archive entries of the same incident
+  
+  * Cobertura test coverage tool integrated
+
+Version 0.3.2 (12.10.2009)
+
+  * removed internal Derby database
+  
+  * persistence context must be set from outside
+  
+  * transaction management removed
+  
+  * sample persistence.xml for initialisation of ConfigurationCache through MBean
+  
+  * tests for Java EE environment 
+  
+  * bug fixes for Java EE
+  
+  * documentation improved
+
+Version 0.3.1 (29.9.2009)
+
+  * internal cibet entities are managed in own internal persistence context
+  
+  * embedded encrypted Derby database for internal cibet entities
+
+  * control configuration read from xml file during initialisation
+
+  * internal database connection read from xml file during initialisation
+  
+  * cibet context to store and retrieve user id and owner instead of annotations
+
+Version 0.3 (22.9.2009)
+
+  first release
+  
+  * The dual control mechanism is not implemented for method invocations
+  
+  * Archive entries in database are not secured against corruption  

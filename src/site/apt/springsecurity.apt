@@ -1,0 +1,48 @@
+Integration with Security Frameworks
+
+  {{{http://static.springsource.org/spring-security/site/}Spring Security}} and 
+  {{{http://shiro.apache.org/}Apache Shiro}} are powerful and highly customizable 
+  authentication and access-control frameworks. The integration of Spring Security 
+  and Shiro into Cibet yields great advantages and possibilities for Cibet as well
+  as for Spring Security and Apache Shiro.
+  
+  Authentication is out of scope of Cibet and only the authorization 
+  functionality of the security frameworks is integrated. In a Spring Security 
+  or Apache Shiro application the access rules are defined as method annotations,
+  JSP tags or programmatically. With Cibet another possibility is to define the
+  rules in the Cibet configuration file 
+  (see {{{./documentation.html}User Guide}} for details). 
+  
+  With Cibet integration you have much more flexible configuration possibilities 
+  for your access rules. Here are some things that you can 
+  do with Cibet that you can not do with stand-alone Spring Security or Shiro:
+  
+  * set dynamic permission rules by configuration. Permission
+    rules can be changed without redeployment or restarting of the application.   
+  
+  * grant access dependent on date and time. Example: restrict execution 
+    of payments to working hours between 9 to 5.
+    
+  * set permissions dependent on any business logic with the help of a script engine. 
+    Example: define different access rules dependent on the state of the user 
+    
+  * define different access rules for the same method, depending on the 
+    context. Example: Allowing a dual control method invocation to 
+    one group of users and the release to another group while a redo of 
+    the same method invocation to a third group.
+    
+  * define different access rules dependent on the client (tenant) in a 
+    multi-client system. Example: define restrictions on a service method 
+    for one client while another client has no restrictions
+    
+  * Define persistence rules for domain objects. Example: grant deletion of customer 
+    domain objects to a special user group
+    
+  * restricting update of domain objects depending on the data which are modified. 
+    Example: deny update of a customer when his bank account number
+    changes and assign this right to a special group
+    
+  * apply different access rules dependent on the technical caller.
+    Example: define different access rules for a method if called from administration 
+    GUI, call center GUI, web service or batch process
+    

@@ -1,0 +1,169 @@
+A scenario for controlling a service call
+
+  Business requirements could be complex. Here is an example of cibet-config.xml 
+  for controlling
+  a service call. In this case it is a payment service. First the business 
+  rules are listed and then it is shown how these rules will be mapped by 
+  a Cibet configuration of nine setpoints. The rules are:
+
+  * Any payment requests in the banking service can be invoked from the 
+    administration GUI by any user with role NORMALUSER in four eyes 
+    dual control mode.
+    
+  * Payments can also be executed by batch processes during working days 
+    without four eyes control.
+    
+  * When executed from batch the payment service call is archived and can
+    be re-executed later manually.   
+
+  * During week-end, batch processes can not be executed.
+  
+  * The four eyes controlled service calls can be released or rejected 
+    on working days by a user in role RELEASE.  
+ 
+  * The release is archived.
+  
+  * During week-end, the service call can not be released but can be rejected.
+  
+  * Payments executed from batch processes can be redone manually by 
+    users in role NORMALUSER if the amount is less than 1000.   
+    
+  * If the amount is greater than 1000 payments can be repeated only by 
+    PREMIUMOFFICER users in four eyes mode.
+    
+  * A repetition of payments with amounts greater than 10000 is not allowed.  
+  
+  []
+  
+-------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.2.xsd">
+
+  <actuator name="SPRINGSECURITY_PREMIUMOFFICER">
+     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+     <properties>
+        <preAuthorize>hasRole(ROLE_PREMIUMOFFICER)</preAuthorize>
+     </properties>
+  </actuator>
+
+  <actuator name="SPRINGSECURITY_RELEASER">
+     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+     <properties>
+        <preAuthorize>hasRole(ROLE_RELEASER)</preAuthorize>
+     </properties>
+  </actuator>
+  
+  <actuator name="SPRINGSECURITY_NORMALUSER">
+     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+     <properties>
+        <preAuthorize>hasRole(ROLE_NORMALUSER)</preAuthorize>
+     </properties>
+  </actuator>
+
+  <actuator name="SPRINGSECURITY_DENY">
+     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+     <properties>
+        <preAuthorize>denyAll()</preAuthorize>
+     </properties>
+  </actuator>
+
+  <setpoint id="C">
+    <controls>
+      <tenant>ten1</tenant>
+      <event>INVOKE</event>
+      <target>com.bank.service.*</target>
+      <method>pay</method>
+      <invoker>com.bank.gui.*</invoker>
+    </controls>
+    <actuator name="SPRINGSECURITY_NORMALUSER"/>
+    <actuator name="FOUR_EYES"/>
+  </setpoint>
+
+  <setpoint id="C1" extends="C">
+    <controls>
+      <invoker>com.bank.batch.*</invoker>
+      <condition>
+        importPackage(java.util);
+        var today = Calendar.getInstance();
+        today.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY 
+          &amp;&amp; today.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
+      </condition> 
+    </controls>
+    <actuator name="ARCHIVE"/>
+  </setpoint>
+
+  <setpoint id="C2" extends="C1">
+    <controls>
+      <condition>
+        importPackage(java.util);
+        var today = Calendar.getInstance();
+        today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY 
+          || today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+      </condition> 
+    </controls>
+    <actuator name="SPRINGSECURITY_DENY"/>
+  </setpoint>  
+
+  <setpoint id="C3" extends="C">
+    <controls>
+      <event>RELEASE</event>
+      <condition>
+        importPackage(java.util);
+        var today = Calendar.getInstance();
+        today.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY 
+          &amp;&amp; today.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
+      </condition> 
+    </controls>
+    <actuator name="SPRINGSECURITY_RELEASER"/>
+    <actuator name="ARCHIVE"/>
+  </setpoint>  
+
+  <setpoint id="C4" extends="C3">
+    <controls>
+      <condition>
+        importPackage(java.util);
+        var today = Calendar.getInstance();
+        today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY 
+          || today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+      </condition> 
+    </controls>
+    <actuator name="SPRINGSECURITY_DENY"/>
+  </setpoint>  
+
+  <setpoint id="C5" extends="C">
+    <controls>
+      <event>REJECT</event>
+    </controls>
+    <actuator name="SPRINGSECURITY_RELEASER"/>
+  </setpoint>  
+
+  <setpoint id="C6" extends="C">
+    <controls>
+      <event>REDO</event>
+      <condition>$PARAM0 &lt;= 1000</condition>
+    </controls>
+    <actuator name="SPRINGSECURITY_NORMALUSER"/>
+    <actuator name="ARCHIVE"/>
+  </setpoint>  
+
+  <setpoint id="C7" extends="C6">
+    <controls>
+      <event>REDO, RELEASE, REJECT</event>
+      <condition>$PARAM0 &gt; 1000</condition>
+    </controls>
+    <actuator name="SPRINGSECURITY_PREMIUMOFFICER"/>
+    <actuator name="FOUR_EYES"/>
+    <actuator name="ARCHIVE"/>
+  </setpoint>  
+
+  <setpoint id="C8" extends="C6">
+    <controls>
+      <condition>$PARAM0 &gt; 10000</condition>
+    </controls>
+    <actuator name="SPRINGSECURITY_DENY"/>
+  </setpoint>  
+
+</cibet>
+-------------------
+  

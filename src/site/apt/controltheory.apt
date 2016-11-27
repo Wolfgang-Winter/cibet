@@ -1,0 +1,108 @@
+Concepts of Control Theory
+
+*------------------------------------------------------------------------------------------------------------------------------*
+| Read {{{http://www.theserverside.com/news/thread.tss?thread_id=61398}article}} about how control theory concepts are applied |
+| in many frameworks like Spring Security, JMX, JAAS on www.serverside.com!                                                    |
+*------------------------------------------------------------------------------------------------------------------------------*
+
+  Control theory is a discipline originated in mathematics and engineering 
+  science but was adopted also in psychology, social sciences and other 
+  research domains. It deals with influencing the behavior and operational 
+  conditions of dynamical systems. The fundamentals of control theory can 
+  also be applied to software architectures that have a need for 
+  controlling dynamical behavior. Control theory deals with topics that are
+  also of importance in software development:   
+   
+  \ 
+     
+  * <<Stability>> of a dynamical system is described by Lyapunov stability 
+    criteria (business rules must be obeyed and functionality must be granted)
+
+  * <<Observability>> is the possibility of observing the state of a 
+    system through output measurements
+
+  * <<Controllability>> is the possibility of forcing the system into a 
+    particular state by using an appropriate control signal
+
+  * <<Robustness>> of a control system is given if a controllers properties 
+    do not change much if applied to a system slightly different from the 
+    one used for its synthesis
+    
+  \ 
+   
+  In control theory a lot of models have been developed but they all can 
+  be put down to two basic designs, the closed loop and the open loop 
+  controller. In the following figure a common closed loop controller 
+  design is shown:
+  
+  \ 
+  
+[control_theory-closed_loop.jpg] Closed loop control system
+
+  \ 
+  
+  An example for a closed loop control system is the heating system of a 
+  house for controlling temperature. A sensor monitors the output of the 
+  system which is in this case the air temperature. The controller compares 
+  the measured values with a reference or setpoint and calculates from 
+  the reference rules if the heater must be switched on or a hot water 
+  valve must be opened. The heater or hot water valve can be regarded as 
+  an actuator. In control theory an actuator is a mechanical device for 
+  controlling the system. It is operated by a source of energy, usually 
+  in the form of an electric current or hydraulic fluid pressure, and 
+  converts that into some kind of motion.
+  The heater increases the temperature which is 
+  then an input variable of the system. This is an example of a feedback 
+  controller: The variable measured by the sensor is the same as the 
+  controller is trying to control. The controlled variable is "fed back" 
+  into the controller. Feedback control usually results in intermediate 
+  periods where the controlled variable is not at the desired setpoint. 
+  This slowness of feedback can be minimized by using an appropriate open 
+  loop controller:
+  
+  \ 
+
+[control_theory-open_loop.jpg] Open loop control system
+
+  \   
+
+  In this design a disturbance is measured by the sensor before it has 
+  an effect on the system. If in the above example it is known that 
+  opening a window will decrease the air temperature a sensor could 
+  measure the opening of the window and switch on the heater before the 
+  air temperature actually has gone down. This is an example of a 
+  feed-forward controller: The controller acts before a disturbance 
+  affects the system. The difficulty with feed-forward controllers is 
+  that all possible disturbances and their influence on the system must 
+  be known, accounted for and observed by an appropriate sensor. If in 
+  the example the opening of the door is not observed the feed-forward 
+  controller will let the house cool down.
+  
+  Another characteristic of controllers is how many variables of the 
+  system they control:
+  
+[control_theory-MIMO-SISO.jpg] controller types  
+  
+  Single-Input-Single-Output controllers (SISO) measure one system 
+  variable like air temperature in the above example of the house 
+  heating system. Multi-Input-Multi-Output controllers control more than 
+  one system variables. In real control systems often a synthesis of 
+  open and closed loop, feedback and feed-forward, SISO and MIMO 
+  controllers are used in sequential, hierarchical, nested or networked 
+  combination.
+  
+  The Cibet framework is a control system for controlling business 
+  processes on resources which can be described in the following figure:
+  
+  \ 
+  
+[cibet-control1.jpg] Cibet control system  
+
+  \ 
+   
+  In fact it is an open loop controller. An event is observed by a 
+  sensor which is appropriate to the controlled resource. The controller checks this signal, compares it 
+  with the configuration and actual context and decides which actions 
+  to take and which actuator to apply. The actions of the actuators 
+  are then an input to the resource.
+               

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+	version="2.0">
+	<description>Special mapping for OpenJPA because of bug in OpenJPA OneToMany with JoinColumn</description>
+	
+	<entity class="com.logitags.cibet.actuator.archive.Archive" name="Archive"  metadata-complete="true">  
+		<table name="CIB_ARCHIVE"/> 
+		<named-query name="ARCHIVE_SEL_ALL">
+      	<query>SELECT a FROM Archive a ORDER BY a.createDate</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.archive.Archive.SEL_BY_GROUPID">
+      	<query>SELECT a FROM Archive a WHERE a.resource.groupId = :groupId ORDER BY a.createDate</query>
+    	</named-query>    
+		<named-query name="ARCHIVE_SEL_BY_PRIMARYKEYID">
+      	<query>SELECT a FROM Archive a WHERE a.resource.targetType = :targetType AND a.resource.primaryKeyId = :primaryKeyId ORDER BY a.createDate</query>
+    	</named-query>    
+		<named-query name="ARCHIVE_SEL_ALL_BY_TENANT">
+      	<query>SELECT a FROM Archive a WHERE a.tenant LIKE :tenant ORDER BY a.createDate</query>
+    	</named-query>    
+		<named-query name="ARCHIVE_SEL_ALL_BY_CASEID">
+      	<query>SELECT a FROM Archive a WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate</query>
+    	</named-query>    
+		<named-query name="ARCHIVE_SEL_ALL_BY_CASEID_NO_TENANT">
+      	<query>SELECT a FROM Archive a WHERE a.caseId = :caseId ORDER BY a.createDate</query>
+    	</named-query>    
+		<named-query name="ARCHIVE_SEL_BY_METHODNAME">
+      	<query>SELECT a FROM Archive a WHERE a.tenant = :tenant AND a.resource.targetType = :objectClass AND a.resource.method = :methodName ORDER BY a.createDate</query>
+    	</named-query>    
+		<named-query name="ARCHIVE_SEL_BY_METHODNAME_NO_TENANT">
+      	<query>SELECT a FROM Archive a WHERE a.resource.targetType = :objectClass AND a.resource.method = :methodName ORDER BY a.createDate</query>
+    	</named-query>    
+		<named-query name="ARCHIVE_SEL_ALL_BY_CLASS">
+      	<query>SELECT a FROM Archive a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :targetType ORDER BY a.createDate</query>
+    	</named-query>    
+		<named-query name="ARCHIVE_SEL_ALL_BY_CLASS_NO_TENANT">
+      	<query>SELECT a FROM Archive a WHERE a.resource.targetType = :targetType ORDER BY a.createDate</query>
+    	</named-query>    
+		<attributes>
+			<id name="archiveId">
+			</id>
+			<basic name="remark"/>
+			<basic name="checksum"/>
+			<basic name="controlEvent">
+				<enumerated>STRING</enumerated>
+			</basic>
+			<basic name="createUser"/>
+			<basic name="createDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="tenant"/>
+			<basic name="caseId"/>
+			<basic name="executionStatus">
+				<enumerated>STRING</enumerated>
+			</basic>
+			<version name="version"/>
+			<embedded name="resource">
+				<association-override name="parameters">
+					<join-table name="CIB_ARCHIVEPARAMETER">
+						<join-column name="ARCHIVEID" referenced-column-name="archiveId" />
+						<inverse-join-column name="PARAMETERID" referenced-column-name="parameterId" unique="true" />
+					</join-table>
+				</association-override>
+			</embedded>
+		</attributes>
+	</entity>
+
+	<entity class="com.logitags.cibet.actuator.dc.DcControllable" name="DcControllable" metadata-complete="true">       
+		<table name="CIB_DCCONTROLLABLE"/> 
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.DCCONTROLLABLE_SEL_BY_TENANT_CLASS">
+      	<query>SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :oclass AND (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_GROUPID">
+      	<query>SELECT a FROM DcControllable a WHERE a.resource.groupId = :groupId</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.DCCONTROLLABLE_SEL_BY_CLASS">
+      	<query>SELECT a FROM DcControllable a WHERE a.resource.targetType = :oclass AND (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_TENANT">
+      	<query>SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_ALL">
+      	<query>SELECT a FROM DcControllable a WHERE (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_ID_CLASS">
+      	<query>SELECT ob FROM DcControllable ob WHERE ob.resource.primaryKeyId = :objectId AND ob.resource.targetType = :objectClass AND (ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_UNIQUEID">
+      	<query>SELECT d FROM DcControllable d WHERE d.resource.uniqueId = :uniqueId ORDER BY d.createDate</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_USER">
+      	<query>SELECT d FROM DcControllable d WHERE d.createUser = :user AND d.tenant=:tenant</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_USER_NO_TENANT">
+      	<query>SELECT d FROM DcControllable d WHERE d.createUser = :user</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_CASEID">
+      	<query>SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_CASEID_NO_TENANT">
+      	<query>SELECT a FROM DcControllable a WHERE a.caseId = :caseId ORDER BY a.createDate</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED_BY_TENANT">
+      	<query>SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED">
+      	<query>SELECT a FROM DcControllable a WHERE a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED_BY_TARGETTYPE">
+      	<query>SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :oclass AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT">
+      	<query>SELECT a FROM DcControllable a WHERE a.resource.targetType = :oclass AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED</query>
+    	</named-query>    
+		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED_BY_DATE">
+      	<query>SELECT a FROM DcControllable a WHERE a.actuator = :actuator AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED AND a.scheduledDate &lt;= :currentDate</query>
+    	</named-query>    
+		<attributes>
+			<id name="dcControllableId">
+			</id>
+			<basic name="firstApprovalUser">
+				<column name="FIRSTAPPROVUSER"/>
+			</basic>
+			<basic name="firstApprovalDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="firstApprovalAddress">
+				<column name="FIRSTAPPROVADDR"/>
+			</basic>
+			<basic name="firstApprovalRemark">
+				<column name="FIRSTAPPROVREMARK"/>
+			</basic>
+			<basic name="approvalUser"/>
+			<basic name="approvalAddress"/>
+			<basic name="approvalDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="approvalRemark"/>
+			<basic name="actuator"/>
+			<basic name="controlEvent">
+				<enumerated>STRING</enumerated>
+			</basic>
+			<basic name="createUser"/>
+			<basic name="createDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="createAddress"/>
+			<basic name="createRemark"/>
+			<basic name="tenant"/>
+			<basic name="caseId"/>
+			<basic name="executionStatus">
+				<enumerated>STRING</enumerated>
+			</basic>
+			<basic name="scheduledDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<basic name="executionDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
+			<version name="version"/>
+			<embedded name="resource">
+				<association-override name="parameters">
+					<join-table name="CIB_DCPARAMETER">
+						<join-column name="DCCONTROLLABLEID" referenced-column-name="dcControllableId" />
+						<inverse-join-column name="PARAMETERID" referenced-column-name="parameterId" unique="true" />
+					</join-table>
+				</association-override>
+			</embedded>
+		</attributes>
+	</entity>
+	
+	<embeddable class="com.logitags.cibet.resource.Resource" metadata-complete="true">
+		<attributes>
+			<basic name="targetType"/>
+			<basic name="invokerClass"/>
+			<basic name="invokerParam"/>
+			<basic name="target">
+				<lob/>
+			</basic>
+			<basic name="primaryKeyId"/>
+			<basic name="result">
+				<lob/>
+			</basic>
+			<basic name="resourceHandlerClass"/>
+			<basic name="method"/>
+			<basic name="uniqueId"/>
+			<basic name="keyReference"/>
+			<basic name="encrypted"/>
+			<basic name="groupId"/>
+			<one-to-many name="parameters" >
+				<join-table />
+				<cascade>
+					<cascade-all/>
+				</cascade>
+			</one-to-many>
+			<transient name="resultObject"/>
+			<transient name="methodObject"/>
+			<transient name="object"/>
+			<transient name="setColumns"/>
+			<transient name="primaryKeyObject"/>
+			<transient name="invoker"/>
+			<transient name="httpRequest"/>
+			<transient name="resourceHandler"/>
+		</attributes>
+	</embeddable>
+	
+</entity-mappings>	

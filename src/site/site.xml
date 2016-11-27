@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+ <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-default-skin</artifactId>
+    <version>1.0</version>
+  </skin>
+
+  <bannerLeft>
+    <name>cibet logo
+    </name>
+    <src>cibet-logo1-ohne transparency.gif</src>
+  </bannerLeft>
+  <bannerRight>
+    <src>cibet-logo2.gif</src>
+  </bannerRight>
+  <body>
+
+    <menu name="Main">
+      <item name="Home" href="index.html"/>
+      <item name="News" href="news.html"/>
+    </menu>
+
+    <menu name="Documentation">
+      <item name="Introduction" href="introduction.html"/>
+      <item name="Control Theory" href="controltheory.html" />
+      <item name="Cibet in 5 minutes" href="fiveminutes.html"/>
+      <item name="User Guide" href="./Cibet_Reference_Guide.pdf"/>
+      <item name="cibet-config.xsd" href="xml-schema.html"/>
+      <item name="Integration with Security Frameworks" href="springsecurity.html"/>
+      <item name="Articles" href="articles.html"/>
+      <item name="Videos" href="videos.html"/>
+      <item name="FAQ" href="faq.html"/>
+    </menu>
+
+    <menu name="Get Cibet">
+      <item name="Release Notes" href="release-notes.html" />
+      <item name="Download" href="download.html"/>
+      <item name="Road Map" href="roadmap.html" />
+    </menu>
+
+    <menu name="Example Application">
+      <item name="Perfumery" href="examples.html"/>
+      <item name="Documentation" href="examples-doc.html"/>
+       <item name="Scenario I" href="scenario-domain.html"/>
+       <item name="Scenario II" href="scenario-usecase.html"/>
+    </menu>
+
+    <menu ref="reports"/>
+
+  </body>
+</project>

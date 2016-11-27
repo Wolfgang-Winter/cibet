@@ -1,0 +1,46 @@
+Articles
+
+  * Control theory is a discipline originated in mathematics and engineering 
+    science but was adopted also in psychology, social sciences and other 
+    research domains. It deals with influencing the behaviour of dynamical 
+    systems. In this article it is shown that concepts of control theory can 
+    also be applied to software architectures that have a need for controlling 
+    dynamical behaviour. Software applications that react to external input 
+    in form of GUI requests, batch input or service calls are indeed 
+    dynamical systems whose behaviour depends on current event, environment 
+    and actual system state.
+    {{{http://www.theserverside.com/news/thread.tss?thread_id=61398}Read the full article here, fromTheServerSide}}
+    
+	[]
+	\ 
+
+  * In an exclusive article for TheServerSide.com, Dr. Wolfgang Winter 
+    explains and describes a unique approach to controlling how an application 
+    is being used which is accomplished by the monitoring of processes and 
+    the status of domain objects. It's an interesting read, and it will give 
+    you a new and interesting perspective on the topic. 
+    {{{http://www.theserverside.com/news/thread.tss?thread_id=60325}Read more ...}}
+    
+    []
+    \ 
+    
+  * Frameworks and applications in system integration mode have higher 
+    requirements on module and integration tests than hosted applications. 
+    Frameworks must work in various runtime environments, comprising operating 
+    systems, application servers, web containers and databases. 
+    {{{./FrameworkTesting.pdf}This article}} presents the setup of a test 
+    environment that allows executing 
+    automated module and integration tests in multiple runtime environments. 
+    Execution of tests in these environments fits seamlessly into the Maven 
+    build process.  
+
+    []
+    \ 
+
+  * An interesting scientific article about application of control theory in Java environments is
+    {{{http://thesai.org/Downloads/Volume2No8/Paper%2020-Control%20Systems%20application%20in%20Java%20based%20Enterprise%20and%20Cloud%20Environments%20%E2%80%93%20A%20Survey.pdf}Control Systems application in Java based Enterprise and Cloud Environments – A Survey}} 
+    published in 2011 by Ravi Kumar Gullapalli, Chelliah Muthusamy and A. Vinaya Babu. It gives a comprehensive overview of control theory 
+    applied in Java applications and environments and quotes also Cibet as an example.
+      
+    
+    

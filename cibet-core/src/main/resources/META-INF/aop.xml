@@ -1,0 +1,10 @@
+<aspectj>
+	<aspects>
+		<aspect name="com.logitags.cibet.sensor.pojo.CibetAspect" />
+		<aspect name="com.logitags.cibet.context.CibetContextAspect"/>
+	</aspects>
+<!-- 
+	<weaver options="-verbose">
+	</weaver>
+ -->	
+</aspectj>

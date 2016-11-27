@@ -1,0 +1,27 @@
+Hello $approvalUser,
+
+
+A business case under 6-eyes dual control has been assigned to you for a first approval. 
+You may release or reject the case. Please visit the dialogue for releasing/rejecting.
+
+The dual controlled business case is registered under id: $dcControllableId (case id: $caseId)
+
+
+control event:             $controlEvent
+
+controlled target:         $targetType 
+#if( $method && $method.length() > 0 )
+($method)
+#end
+
+initiated by:              $createUser on $createDate
+#if( $createRemark )
+
+creation remark:           $createRemark
+#end
+
+
+
+thanks for your attention
+
+Cibet (http://www.logitags.com/cibet)

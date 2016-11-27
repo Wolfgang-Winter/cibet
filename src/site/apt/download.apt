@@ -1,0 +1,21 @@
+Download Page
+
+* <<Current version>>
+
+*-------------------------+-------------------------------------------------+  
+| Binaries v1.9           | {{{./cibet-1.9.jar}cibet-1.9.jar}}              |
+*-------------------------+-------------------------------------------------+  
+| Reference Guide         | {{{./Cibet_Reference_Guide.pdf}Cibet_Reference_Guide.pdf}} |
+*-------------------------+-------------------------------------------------+  
+| Reference Guide with differences | {{{./Cibet_Reference_Guide_diff.pdf}Cibet_Reference_Guide_diff.pdf}} |
+*-------------------------+-------------------------------------------------+  
+| Perfumery example application 1.0 | {{{./perfumery-1.0.zip}perfumery-1.0.zip}} |
+*-------------------------+-------------------------------------------------+  
+| Sources v1.9            | {{{./cibet-1.9-sources.jar}cibet-1.9-sources.jar}} |
+*-------------------------+-------------------------------------------------+  
+  
+* <<Older versions>>
+
+  Older versions can be downloaded from {{{http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.logitags%22%20AND%20a%3A%22cibet%22}Maven Central}}
+
+
