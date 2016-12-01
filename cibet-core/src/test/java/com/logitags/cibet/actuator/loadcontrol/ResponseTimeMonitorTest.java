@@ -37,6 +37,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.cibethelper.loadcontrol.MonitorTestClass;
+import com.cibethelper.loadcontrol.TAlarmExecution;
 import com.logitags.cibet.config.Configuration;
 
 public class ResponseTimeMonitorTest {
@@ -46,7 +47,7 @@ public class ResponseTimeMonitorTest {
    private static final String JMX_OBJECTNAME_PREFIX = Configuration.JMX_BASE + ":type=LoadControlActuator,app="
          + Configuration.getApplicationName() + ",name=";
 
-   private static final String SP = "SP2-javaMethod";
+   private static final String SP = "com.logitags.cibet.actuator.loadcontrol.x";
 
    public static AtomicInteger counter = new AtomicInteger(0);
    public static AtomicInteger thresholdExceed = new AtomicInteger(0);
@@ -76,7 +77,7 @@ public class ResponseTimeMonitorTest {
          Assert.assertTrue(responsetime > 0);
 
          MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-         String nam = "com.logitags.cibet:app=,name=LOADCONTROL,setpoint=SP2-javaMethod,type=LoadControlActuator";
+         String nam = "com.logitags.cibet:app=,name=LOADCONTROL,setpoint=" + SP + ",type=LoadControlActuator";
          ObjectName oname = new ObjectName(nam);
          Assert.assertTrue(mbs.isRegistered(oname));
 
@@ -117,6 +118,7 @@ public class ResponseTimeMonitorTest {
          thresholdExceed = new AtomicInteger(0);
          act.getResponseTimeMonitor().setAlarmThreshold("-1");
          act.getResponseTimeMonitor().setStatus(MonitorStatus.OFF);
+         act.getResponseTimeMonitor().reset(SP);
       }
    }
 
@@ -151,6 +153,7 @@ public class ResponseTimeMonitorTest {
          thresholdExceed = new AtomicInteger(0);
          act.getResponseTimeMonitor().setAlarmThreshold("-1");
          act.getResponseTimeMonitor().setStatus(MonitorStatus.OFF);
+         act.getResponseTimeMonitor().reset(SP);
       }
    }
 
@@ -188,6 +191,7 @@ public class ResponseTimeMonitorTest {
          act.getResponseTimeMonitor().setShedThreshold("-1");
          act.getResponseTimeMonitor().setShedTime("1000");
          act.getResponseTimeMonitor().setStatus(MonitorStatus.OFF);
+         act.getResponseTimeMonitor().reset(SP);
       }
    }
 
@@ -224,6 +228,7 @@ public class ResponseTimeMonitorTest {
          shedCounter = new AtomicInteger(0);
          act.getResponseTimeMonitor().setShedThreshold("-1");
          act.getResponseTimeMonitor().setStatus(MonitorStatus.OFF);
+         act.getResponseTimeMonitor().reset(SP);
       }
    }
 

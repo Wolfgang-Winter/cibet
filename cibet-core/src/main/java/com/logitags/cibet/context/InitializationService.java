@@ -55,6 +55,8 @@ public class InitializationService {
 
    private static InitializationService instance;
 
+   private boolean isEMInitialized = false;
+
    public static synchronized InitializationService instance() {
       if (instance == null) {
          instance = new InitializationService();
@@ -120,13 +122,10 @@ public class InitializationService {
             log.info("\n-----------------------------\n"
                   + "EntityManagerFactory for JTA persistence unit Cibet could not be created. The If this is NOT a Java EE application this "
                   + "is not an error. Otherwise, the EntityManagerFactory must be made available in JNDI like\n"
-                  + "<persistence-unit-ref>\n"
-                  + "  <persistence-unit-ref-name>" + EMF_JNDINAME
-                  + "</persistence-unit-ref-name>\n"
-                  + "  <persistence-unit-name>Cibet</persistence-unit-name>\n"
-                  + "</persistence-unit-ref>"
-                  + "\n[Original error message: "
-                  + e.getMessage() + "]\n-----------------------------");
+                  + "<persistence-unit-ref>\n" + "  <persistence-unit-ref-name>" + EMF_JNDINAME
+                  + "</persistence-unit-ref-name>\n" + "  <persistence-unit-name>Cibet</persistence-unit-name>\n"
+                  + "</persistence-unit-ref>" + "\n[Original error message: " + e.getMessage()
+                  + "]\n-----------------------------");
          }
 
          // CibetEEContext ejb = EjbLookup.lookupEjb(
@@ -183,7 +182,10 @@ public class InitializationService {
          ejb.setCallerPrincipalNameIntoContext();
       }
 
-      getOrCreateEntityManagers();
+      if (!isEMInitialized) {
+         getOrCreateEntityManagers();
+         isEMInitialized = true;
+      }
 
       Configuration.instance();
       return startManaging;
@@ -213,6 +215,7 @@ public class InitializationService {
       } finally {
          Context.internalSessionScope().clear();
          Context.internalRequestScope().clear();
+         isEMInitialized = false;
          log.info("Cibet Context ended");
       }
    }

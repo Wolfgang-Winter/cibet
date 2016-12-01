@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://www.logitags.com 
    ../../main/resources/cibet-config_1.0.xsd">
 
-<!-- 
 	<actuator name="LOADCONTROL">
 		<properties>
-			<customMonitors>com.logitags.cibet.actuator.loadcontrol.ThreadTimeMonitor2, com.logitags.cibet.actuator.loadcontrol.ThreadTimeMonitor2</customMonitors>					
+			<customMonitors>com.cibethelper.loadcontrol.DummyMonitor, com.cibethelper.loadcontrol.DummyMonitor</customMonitors>					
 		</properties>
 	</actuator>
 
+<!-- 
 	<actuator name="ARCHIVE2">
 		<class>com.logitags.cibet.actuator.archive.ArchiveActuator</class>
 		<properties>

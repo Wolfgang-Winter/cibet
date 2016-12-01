@@ -44,10 +44,13 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+
+import com.cibethelper.base.AbstractTestUnit;
 
 public class MonitorTestClass {
 
@@ -419,9 +422,46 @@ public class MonitorTestClass {
       return ioSync(count, param2);
    }
 
+   public void insertJMEntity(int nr) {
+      Random rnd = new Random(new Date().getTime());
+
+      if (fac == null) {
+         fac = Persistence.createEntityManagerFactory("localTest", AbstractTestUnit.derby());
+      }
+
+      EntityManager em = fac.createEntityManager();
+      em.getTransaction().begin();
+
+      for (int i = 1; i < nr; i++) {
+         int i1 = rnd.nextInt(999);
+         int i2 = rnd.nextInt(999);
+
+         JMEntity ent = new JMEntity("nameValue" + i1, i1, "owner" + i2);
+         em.persist(ent);
+      }
+      em.getTransaction().commit();
+      em.close();
+   }
+
+   public void deleteJMEntity() {
+      if (fac == null) {
+         fac = Persistence.createEntityManagerFactory("localTest", AbstractTestUnit.derby());
+      }
+
+      EntityManager em = fac.createEntityManager();
+      em.getTransaction().begin();
+
+      Query q = em.createQuery("delete from JMEntity");
+      int nr = q.executeUpdate();
+      log.info(nr + " db entries deleted");
+
+      em.getTransaction().commit();
+      em.close();
+   }
+
    public String cibetSelect(int count, String param2) {
       if (fac == null) {
-         fac = Persistence.createEntityManagerFactory("CibetLocal-Derby");
+         fac = Persistence.createEntityManagerFactory("localTest", AbstractTestUnit.derby());
       }
 
       EntityManager em = fac.createEntityManager();

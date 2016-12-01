@@ -89,7 +89,6 @@ public class ThroughputMonitor extends AbstractMonitor {
       MonitorResult result = MonitorResult.PASSED;
       if (shedThreshold > -1 || valveThreshold > -1 || alarmThreshold > -1) {
          int currentThroughput = getThroughput(currentSetpointId);
-
          result = tryShed(currentThroughput, callback, metadata, currentSetpointId);
          if (result == MonitorResult.SHED)
             return result;
@@ -133,7 +132,7 @@ public class ThroughputMonitor extends AbstractMonitor {
       if (shedThreshold > -1 && currentThroughput >= shedThreshold) {
          if (callback != null) {
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.SHED);
             lcdata.setMonitoredValue(getName());
             lcdata.setThreshold(String.valueOf(shedThreshold));
             lcdata.setValue(String.valueOf(currentThroughput));
@@ -177,7 +176,7 @@ public class ThroughputMonitor extends AbstractMonitor {
                   throttleCount.get(setpointId).decrementAndGet();
                   if (callback != null) {
                      LoadControlData lcdata = new LoadControlData(setpointId, metadata.getResource(),
-                           metadata.getControlEvent(), getName());
+                           metadata.getControlEvent(), getName(), MonitorResult.THROTTLED);
                      lcdata.setThrottleTime(System.currentTimeMillis() - startTime);
                      lcdata.setMonitoredValue(getName());
                      lcdata.setThreshold(String.valueOf(valveThreshold));
@@ -193,7 +192,7 @@ public class ThroughputMonitor extends AbstractMonitor {
          throttleCount.get(setpointId).decrementAndGet();
          if (callback != null) {
             LoadControlData lcdata = new LoadControlData(setpointId, metadata.getResource(), metadata.getControlEvent(),
-                  getName());
+                  getName(), MonitorResult.SHED);
             lcdata.setThrottleTime(System.currentTimeMillis() - startTime);
             lcdata.setMonitoredValue(getName());
             lcdata.setThreshold(String.valueOf(valveThreshold));
@@ -218,7 +217,7 @@ public class ThroughputMonitor extends AbstractMonitor {
                counter = alarmThresholdCount.get(setpointId).get();
             }
             LoadControlData lcdata = new LoadControlData(setpointId, metadata.getResource(), metadata.getControlEvent(),
-                  getName());
+                  getName(), MonitorResult.ALARM);
             lcdata.setAlarmCount(counter);
             lcdata.setMonitoredValue(getName());
             lcdata.setThreshold(String.valueOf(alarmThreshold));

@@ -224,7 +224,7 @@ public class ThreadTimeMonitor extends AbstractMonitor {
    private void alarm(long duration, long counter, LoadControlCallback callback, EventMetadata metadata,
          String setpointId, String threshold) {
       LoadControlData lcdata = new LoadControlData(setpointId, metadata.getResource(), metadata.getControlEvent(),
-            getName());
+            getName(), MonitorResult.ALARM);
       lcdata.setAlarmCount(counter);
       lcdata.setMonitoredValue(getName());
       lcdata.setThreshold(threshold);

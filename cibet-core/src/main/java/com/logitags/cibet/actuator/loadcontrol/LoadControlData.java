@@ -33,11 +33,12 @@ import com.logitags.cibet.resource.Resource;
  */
 public class LoadControlData {
 
-   public LoadControlData(String spid, Resource r, ControlEvent ce, String mon) {
+   public LoadControlData(String spid, Resource r, ControlEvent ce, String mon, MonitorResult monResult) {
       setpointId = spid;
       resource = r;
       controlEvent = ce;
       monitor = mon;
+      monitorResult = monResult;
    }
 
    /**
@@ -90,6 +91,19 @@ public class LoadControlData {
     * the number of times that the throughput has reached or exceeded the threshold.
     */
    private long alarmCount;
+
+   /**
+    * Type of LoadControl
+    */
+   private MonitorResult monitorResult;
+
+   public MonitorResult getMonitorResult() {
+      return monitorResult;
+   }
+
+   public void setMonitorResult(MonitorResult monitorResult) {
+      this.monitorResult = monitorResult;
+   }
 
    /**
     * @return the setpointId
@@ -187,7 +201,9 @@ public class LoadControlData {
       b.append(monitoredValue);
       b.append(" Setpoint: ");
       b.append(setpointId);
-      b.append(" [threshold: ");
+      b.append(" [");
+      b.append(monitorResult);
+      b.append(" threshold: ");
       b.append(threshold);
       b.append(" /is: ");
       b.append(value);

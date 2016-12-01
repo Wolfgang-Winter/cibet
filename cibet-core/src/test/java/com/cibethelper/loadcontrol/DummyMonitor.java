@@ -22,18 +22,24 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.actuator.loadcontrol;
+package com.cibethelper.loadcontrol;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.actuator.loadcontrol.AbstractMonitor;
+import com.logitags.cibet.actuator.loadcontrol.LoadControlCallback;
+import com.logitags.cibet.actuator.loadcontrol.MonitorResult;
+import com.logitags.cibet.actuator.loadcontrol.MonitorStatus;
+import com.logitags.cibet.actuator.loadcontrol.ThreadTimeMonitor;
+import com.logitags.cibet.actuator.loadcontrol.ThreadTimeMonitorTest;
 import com.logitags.cibet.core.EventMetadata;
 
 /**
  * monitors thread cpu time and thread user time. Supports alarm.
  * 
  */
-public class ThreadTimeMonitor2 extends AbstractMonitor {
+public class DummyMonitor extends AbstractMonitor {
 
    /**
     * 
@@ -41,31 +47,39 @@ public class ThreadTimeMonitor2 extends AbstractMonitor {
    private static final long serialVersionUID = 1L;
    private static Log log = LogFactory.getLog(ThreadTimeMonitor.class);
 
-   public ThreadTimeMonitor2() {
-      log.debug("constructor ThreadTimeMonitor2");
+   public static final String NAME = "DUMMY";
+
+   public DummyMonitor() {
+      log.debug("constructor DummyMonitor");
    }
 
    @Override
    public MonitorResult beforeEvent(MonitorResult previousResult, LoadControlCallback alarm, EventMetadata metadata,
          String currentSetpointId) {
-      log.info("beforeEvent ThreadTimeMonitor2");
-      if (previousResult == MonitorResult.SHED || status != MonitorStatus.ON) return previousResult;
+      if (previousResult == MonitorResult.SHED || status != MonitorStatus.ON) {
+         return previousResult;
+      }
+
+      log.info("beforeEvent DummyMonitor");
+      ThreadTimeMonitorTest.customCounter.incrementAndGet();
       return MonitorResult.PASSED;
    }
 
    @Override
    public void afterEvent(LoadControlCallback callback, EventMetadata metadata, String spId) {
-      log.info("afterEvent ThreadTimeMonitor2");
+      if (status != MonitorStatus.ON)
+         return;
+      log.info("afterEvent DummyMonitor");
    }
 
    @Override
    public void reset(String setpointId) {
-      log.info("reset ThreadTimeMonitor2 with SP " + setpointId);
+      log.info("reset DummyMonitor with SP " + setpointId);
    }
 
    @Override
    public void close() {
-      log.info("close ThreadTimeMonitor2");
+      log.info("close DummyMonitor");
    }
 
    /*
@@ -75,7 +89,7 @@ public class ThreadTimeMonitor2 extends AbstractMonitor {
     */
    @Override
    public String getName() {
-      return "ThreadTimeMonitor2ForTesting";
+      return NAME;
    }
 
 }

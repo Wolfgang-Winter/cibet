@@ -32,16 +32,19 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.cibethelper.loadcontrol.DummyMonitor;
 import com.cibethelper.loadcontrol.MonitorTestClass;
+import com.cibethelper.loadcontrol.TAlarmExecution;
 import com.logitags.cibet.config.Configuration;
 
 public class ThreadTimeMonitorTest {
 
    private static Logger log = Logger.getLogger(ThreadTimeMonitorTest.class);
 
-   private static final String SP = "SP2-javaMethod";
+   private static final String SP = "com.logitags.cibet.actuator.loadcontrol.x";
 
    public static AtomicInteger counter = new AtomicInteger(0);
+   public static AtomicInteger customCounter = new AtomicInteger(0);
 
    @BeforeClass
    public static void beforeClass() throws Exception {
@@ -185,6 +188,7 @@ public class ThreadTimeMonitorTest {
          counter = new AtomicInteger(0);
          act.getThreadTimeMonitor().setAlarmCpuTimeThreshold("-1");
          act.getThreadTimeMonitor().setStatus(MonitorStatus.OFF);
+         act.getThreadTimeMonitor().reset(SP);
       }
    }
 
@@ -193,6 +197,14 @@ public class ThreadTimeMonitorTest {
       log.debug("start ThreadTimeMonitorTest alarmUserTimePercent()");
       LoadControlActuator act = (LoadControlActuator) Configuration.instance()
             .getActuator(LoadControlActuator.DEFAULTNAME);
+
+      Assert.assertEquals(2, act.getCustomMonitors().length);
+      for (Monitor m : act.getCustomMonitors()) {
+         m.setStatus(MonitorStatus.ON);
+      }
+      Monitor m1 = act.getCustomMonitor(DummyMonitor.NAME);
+      Assert.assertNotNull(m1);
+
       try {
          act.getThreadTimeMonitor().reset(SP);
          act.getThreadTimeMonitor().setStatus(MonitorStatus.ON);
@@ -211,10 +223,17 @@ public class ThreadTimeMonitorTest {
          }
          Assert.assertEquals(3, counter.get());
 
+         log.info("customCounter= " + customCounter.get());
+         Assert.assertEquals(44, customCounter.get());
+
       } finally {
          counter = new AtomicInteger(0);
          act.getThreadTimeMonitor().setAlarmUserTimeThreshold("-1");
          act.getThreadTimeMonitor().setStatus(MonitorStatus.OFF);
+         for (Monitor m : act.getCustomMonitors()) {
+            m.setStatus(MonitorStatus.OFF);
+         }
+         customCounter.set(0);
       }
    }
 

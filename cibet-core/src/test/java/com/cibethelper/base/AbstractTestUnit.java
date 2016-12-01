@@ -14,8 +14,10 @@ package com.cibethelper.base;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -50,6 +52,15 @@ public abstract class AbstractTestUnit {
    protected boolean skip = false;
 
    protected static final String SEL_DCCONTROLLABLE = "SELECT c FROM DcControllable c WHERE c.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED";
+
+   public static Map<String, String> derby() {
+      Map<String, String> props = new HashMap<>();
+      props.put("javax.persistence.jdbc.driver", "org.apache.derby.jdbc.ClientDriver");
+      props.put("javax.persistence.jdbc.url", "jdbc:derby://localhost:1527/cibettest");
+      props.put("javax.persistence.jdbc.user", "APP");
+      props.put("javax.persistence.jdbc.password", "x");
+      return props;
+   }
 
    @Before
    public void initConfiguration() throws Exception {

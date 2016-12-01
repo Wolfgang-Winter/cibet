@@ -120,7 +120,7 @@ public class FileDescriptorMonitor extends AbstractMonitor {
       if (shedThresholdPercent > -1 && fdCountPercent > shedThresholdPercent) {
          if (callback != null) {
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.SHED);
             lcdata.setMonitoredValue(PERCENTVALUESTRING);
             lcdata.setThreshold(String.valueOf(shedThresholdPercent));
             lcdata.setValue(String.valueOf(fdCountPercent));
@@ -131,7 +131,7 @@ public class FileDescriptorMonitor extends AbstractMonitor {
       } else if (shedThresholdAbs > -1 && fdCount > shedThresholdAbs) {
          if (callback != null) {
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.SHED);
             lcdata.setMonitoredValue(ABSVALUESTRING);
             lcdata.setThreshold(String.valueOf(shedThresholdAbs));
             lcdata.setValue(String.valueOf(fdCount));
@@ -173,7 +173,7 @@ public class FileDescriptorMonitor extends AbstractMonitor {
                   throttleCount.get(currentSetpointId).decrementAndGet();
                   if (callback != null) {
                      LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                           metadata.getControlEvent(), getName());
+                           metadata.getControlEvent(), getName(), MonitorResult.THROTTLED);
                      lcdata.setThrottleTime(System.currentTimeMillis() - startTime);
                      if (valveThresholdAbs > 0) {
                         lcdata.setMonitoredValue(ABSVALUESTRING);
@@ -195,7 +195,7 @@ public class FileDescriptorMonitor extends AbstractMonitor {
          throttleCount.get(currentSetpointId).decrementAndGet();
          if (callback != null) {
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.SHED);
             lcdata.setThrottleTime(System.currentTimeMillis() - startTime);
             if (fdCount > valveThresholdAbs && valveThresholdAbs > 0) {
                lcdata.setMonitoredValue(ABSVALUESTRING);
@@ -230,7 +230,7 @@ public class FileDescriptorMonitor extends AbstractMonitor {
             }
 
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.ALARM);
             lcdata.setAlarmCount(counter);
             lcdata.setMonitoredValue(ABSVALUESTRING);
             lcdata.setThreshold(String.valueOf(alarmThresholdAbs));
@@ -251,7 +251,7 @@ public class FileDescriptorMonitor extends AbstractMonitor {
             }
 
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.ALARM);
             lcdata.setAlarmCount(counter);
             lcdata.setMonitoredValue(PERCENTVALUESTRING);
             lcdata.setThreshold(String.valueOf(alarmThresholdPercent));

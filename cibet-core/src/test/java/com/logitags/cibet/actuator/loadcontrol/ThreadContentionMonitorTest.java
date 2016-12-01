@@ -35,11 +35,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.cibethelper.loadcontrol.MonitorTestClass;
+import com.cibethelper.loadcontrol.TAlarmExecution;
 import com.logitags.cibet.config.Configuration;
 
 public class ThreadContentionMonitorTest {
 
    private static Logger log = Logger.getLogger(ThreadContentionMonitorTest.class);
+
+   private static final String SP = "com.logitags.cibet.actuator.loadcontrol.x";
 
    private long average;
    private long current;
@@ -63,9 +66,9 @@ public class ThreadContentionMonitorTest {
 
          MonitorTestClass mon = new MonitorTestClass();
          mon.cibetCalcSync(3000000, "");
-         average = act.getThreadContentionMonitor().getAverageBlockedTime("SP2-javaMethod");
+         average = act.getThreadContentionMonitor().getAverageBlockedTime(SP);
          // current = act.getThreadContentionMonitor().getCurrentBlockedTime("method-1");
-         current = act.getThreadContentionMonitor().getCurrentBlockedTime("SP2-javaMethod");
+         current = act.getThreadContentionMonitor().getCurrentBlockedTime(SP);
          log.info("average=" + average);
          log.info("current=" + current);
       }

@@ -33,6 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.cibethelper.loadcontrol.MonitorTestClass;
+import com.cibethelper.loadcontrol.TAlarmExecution;
 import com.logitags.cibet.config.Configuration;
 
 public class MemoryMonitorTest {

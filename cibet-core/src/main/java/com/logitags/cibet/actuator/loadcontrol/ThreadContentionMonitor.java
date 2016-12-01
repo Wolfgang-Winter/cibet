@@ -59,19 +59,17 @@ public class ThreadContentionMonitor extends AbstractMonitor {
    private volatile Map<String, long[]> thresholdExceeded = new HashMap<String, long[]>();
 
    /**
-    * time span in which requests are shed after the threshold is exceeded. The
-    * value can be given absolute or relative. If absolute it is given in ms. If
-    * relative, it is in % of the average response time and the value must end
-    * with %. Default is 1000ms
+    * time span in which requests are shed after the threshold is exceeded. The value can be given absolute or relative.
+    * If absolute it is given in ms. If relative, it is in % of the average response time and the value must end with %.
+    * Default is 1000ms
     */
    private String shedTime = "1000";
    private double shedTimePercent = -1;
    private double shedTimeAbs = 1000;
 
    /**
-    * Allowed exceed of the average blocked time. The value can be given
-    * absolute or relative. If absolute it is given in ms. If relative, it is in
-    * % of the average blocked time and the value must end with %.
+    * Allowed exceed of the average blocked time. The value can be given absolute or relative. If absolute it is given
+    * in ms. If relative, it is in % of the average blocked time and the value must end with %.
     */
    private String shedThreshold = "-1";
    private double shedThresholdPercent = -1;
@@ -207,7 +205,7 @@ public class ThreadContentionMonitor extends AbstractMonitor {
    private void alarm(long duration, long counter, LoadControlCallback callback, EventMetadata metadata,
          String setpointId) {
       LoadControlData lcdata = new LoadControlData(setpointId, metadata.getResource(), metadata.getControlEvent(),
-            getName());
+            getName(), MonitorResult.ALARM);
       lcdata.setAlarmCount(counter);
       lcdata.setMonitoredValue(getName());
       lcdata.setThreshold(alarmThreshold);
@@ -218,7 +216,7 @@ public class ThreadContentionMonitor extends AbstractMonitor {
    private void shed(LoadControlCallback callback, EventMetadata metadata, String currentSetpointId) {
       if (callback != null) {
          LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-               metadata.getControlEvent(), getName());
+               metadata.getControlEvent(), getName(), MonitorResult.SHED);
          lcdata.setMonitoredValue(getName());
          lcdata.setThreshold(shedThreshold);
          lcdata.setValue(String.valueOf(thresholdExceeded.get(currentSetpointId)[1]));

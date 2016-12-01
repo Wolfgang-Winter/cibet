@@ -178,7 +178,7 @@ public class MemoryMonitor extends AbstractMonitor {
                   // call valve callback
                   if (callback != null) {
                      LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                           metadata.getControlEvent(), getName());
+                           metadata.getControlEvent(), getName(), MonitorResult.THROTTLED);
                      lcdata.setThrottleTime(System.currentTimeMillis() - startTime);
                      if (uThreshold > 0) {
                         lcdata.setMonitoredValue(MONITORVALUE_USAGE);
@@ -199,7 +199,7 @@ public class MemoryMonitor extends AbstractMonitor {
          throttleCount.get(currentSetpointId).decrementAndGet();
          if (callback != null) {
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.SHED);
             lcdata.setThrottleTime(System.currentTimeMillis() - startTime);
             if (uThreshold > 0 && tenurePool.getUsage().getUsed() > uThreshold) {
                lcdata.setMonitoredValue(MONITORVALUE_USAGE);
@@ -224,7 +224,7 @@ public class MemoryMonitor extends AbstractMonitor {
       if (tenurePool.isCollectionUsageThresholdExceeded()) {
          if (callback != null) {
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.SHED);
             lcdata.setMonitoredValue(MONITORVALUE_COLLECTIONUSAGE);
             lcdata.setThreshold(collectionUsageShedThreshold);
             lcdata.setValue(String.valueOf(tenurePool.getCollectionUsage().getUsed()));
@@ -235,7 +235,7 @@ public class MemoryMonitor extends AbstractMonitor {
       } else if (tenurePool.isUsageThresholdExceeded()) {
          if (callback != null) {
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.SHED);
             lcdata.setMonitoredValue(MONITORVALUE_USAGE);
             lcdata.setThreshold(usageShedThreshold);
             lcdata.setValue(String.valueOf(tenurePool.getUsage().getUsed()));
@@ -267,7 +267,7 @@ public class MemoryMonitor extends AbstractMonitor {
                counter = usageAlarmThresholdCount.get(setpointId).get();
             }
             LoadControlData lcdata = new LoadControlData(setpointId, metadata.getResource(), metadata.getControlEvent(),
-                  getName());
+                  getName(), MonitorResult.ALARM);
             lcdata.setAlarmCount(counter);
             lcdata.setMonitoredValue(MONITORVALUE_USAGE);
             lcdata.setThreshold(String.valueOf(uThreshold));
@@ -299,7 +299,7 @@ public class MemoryMonitor extends AbstractMonitor {
                counter = collectionUsageAlarmThresholdCount.get(setpointId).get();
             }
             LoadControlData lcdata = new LoadControlData(setpointId, metadata.getResource(), metadata.getControlEvent(),
-                  getName());
+                  getName(), MonitorResult.ALARM);
             lcdata.setAlarmCount(counter);
             lcdata.setMonitoredValue(MONITORVALUE_COLLECTIONUSAGE);
             lcdata.setThreshold(String.valueOf(cuThreshold));

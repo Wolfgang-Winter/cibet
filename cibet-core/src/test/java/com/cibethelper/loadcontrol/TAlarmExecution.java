@@ -22,9 +22,26 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.actuator.loadcontrol;
+package com.cibethelper.loadcontrol;
 
 import org.apache.log4j.Logger;
+
+import com.logitags.cibet.actuator.loadcontrol.CpuLoadMonitor;
+import com.logitags.cibet.actuator.loadcontrol.CpuLoadMonitorTest;
+import com.logitags.cibet.actuator.loadcontrol.LoadControlCallback;
+import com.logitags.cibet.actuator.loadcontrol.LoadControlData;
+import com.logitags.cibet.actuator.loadcontrol.MemoryMonitor;
+import com.logitags.cibet.actuator.loadcontrol.MemoryMonitorTest;
+import com.logitags.cibet.actuator.loadcontrol.ResponseTimeMonitor;
+import com.logitags.cibet.actuator.loadcontrol.ResponseTimeMonitorTest;
+import com.logitags.cibet.actuator.loadcontrol.ThreadContentionMonitor;
+import com.logitags.cibet.actuator.loadcontrol.ThreadContentionMonitorTest;
+import com.logitags.cibet.actuator.loadcontrol.ThreadCountMonitor;
+import com.logitags.cibet.actuator.loadcontrol.ThreadCountMonitorTest;
+import com.logitags.cibet.actuator.loadcontrol.ThreadTimeMonitor;
+import com.logitags.cibet.actuator.loadcontrol.ThreadTimeMonitorTest;
+import com.logitags.cibet.actuator.loadcontrol.ThroughputMonitor;
+import com.logitags.cibet.actuator.loadcontrol.DB_ThroughputMonitorTest;
 
 public class TAlarmExecution implements LoadControlCallback {
 
@@ -50,7 +67,7 @@ public class TAlarmExecution implements LoadControlCallback {
          ThreadCountMonitorTest.shed.incrementAndGet();
       } else if (ThroughputMonitor.class.getSimpleName().equals(data.getMonitor())) {
          log.warn("ThroughputMonitor on Shed called: " + data);
-         ThroughputMonitorTest.shedCounter.incrementAndGet();
+         DB_ThroughputMonitorTest.shedCounter.incrementAndGet();
       }
    }
 
@@ -84,7 +101,7 @@ public class TAlarmExecution implements LoadControlCallback {
          ThreadCountMonitorTest.counter.incrementAndGet();
       } else if (ThroughputMonitor.class.getSimpleName().equals(data.getMonitor())) {
          log.warn("ThroughputMonitor on Alarm called: " + data);
-         ThroughputMonitorTest.alarmCounter.incrementAndGet();
+         DB_ThroughputMonitorTest.alarmCounter.incrementAndGet();
       }
    }
 
@@ -101,7 +118,7 @@ public class TAlarmExecution implements LoadControlCallback {
          ThreadCountMonitorTest.counter.incrementAndGet();
       } else if (ThroughputMonitor.class.getSimpleName().equals(data.getMonitor())) {
          log.warn("ThroughputMonitor on Valve called: " + data);
-         ThroughputMonitorTest.throttleCounter.incrementAndGet();
+         DB_ThroughputMonitorTest.throttleCounter.incrementAndGet();
       }
    }
 

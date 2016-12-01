@@ -204,6 +204,24 @@
          <scope>test</scope>
       </dependency>
 
+      <!-- dependencies necessary for testing with hibernate -->
+      <dependency>
+         <groupId>org.hibernate</groupId>
+         <artifactId>hibernate-entitymanager</artifactId>
+         <version>4.2.15.Final</version>
+         <scope>test</scope>
+      </dependency>
+      
+      <dependency>
+         <groupId>org.apache.derby</groupId>
+         <artifactId>derbyclient</artifactId>
+         <version>10.10.2.0</version>
+         <scope>test</scope>
+      </dependency>
+      
+      <!-- end dependencies necessary for testing with hibernate -->
+
+
 	</dependencies>
 
 	<build>

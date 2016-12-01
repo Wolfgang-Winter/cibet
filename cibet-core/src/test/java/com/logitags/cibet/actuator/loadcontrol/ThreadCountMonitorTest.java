@@ -35,6 +35,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.cibethelper.loadcontrol.MonitorTestClass;
+import com.cibethelper.loadcontrol.TAlarmExecution;
 import com.logitags.cibet.config.Configuration;
 
 public class ThreadCountMonitorTest {
@@ -42,7 +43,8 @@ public class ThreadCountMonitorTest {
    private static Logger log = Logger.getLogger(ThreadCountMonitorTest.class);
 
    private volatile long current;
-   private static final String SP = "SP2-javaMethod";
+
+   private static final String SP = "com.logitags.cibet.actuator.loadcontrol.x";
 
    public static AtomicInteger counter = new AtomicInteger(0);
    public static AtomicInteger shed = new AtomicInteger(0);

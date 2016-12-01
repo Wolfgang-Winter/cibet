@@ -187,7 +187,7 @@ public class CpuLoadMonitor extends AbstractMonitor {
                   throttleCount.get(currentSetpointId).decrementAndGet();
                   if (callback != null) {
                      LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                           metadata.getControlEvent(), getName());
+                           metadata.getControlEvent(), getName(), MonitorResult.THROTTLED);
                      lcdata.setThrottleTime(System.currentTimeMillis() - startTime);
                      if (_systemValveThreshold <= 0) {
                         lcdata.setMonitoredValue(MONITORVALUE_PROCESSCPU);
@@ -209,7 +209,7 @@ public class CpuLoadMonitor extends AbstractMonitor {
          throttleCount.get(currentSetpointId).decrementAndGet();
          if (callback != null) {
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.SHED);
             lcdata.setThrottleTime(System.currentTimeMillis() - startTime);
             if (systemCpuLoad > _systemValveThreshold && _systemValveThreshold > 0) {
                lcdata.setMonitoredValue(MONITORVALUE_SYSTEMCPU);
@@ -234,7 +234,7 @@ public class CpuLoadMonitor extends AbstractMonitor {
       if (threshold > -1 && cpuLoad > threshold) {
          if (callback != null) {
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.SHED);
             lcdata.setMonitoredValue(monitorValueName);
             lcdata.setThreshold(String.valueOf(threshold));
             lcdata.setValue(String.valueOf(cpuLoad));
@@ -259,7 +259,7 @@ public class CpuLoadMonitor extends AbstractMonitor {
             }
 
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.ALARM);
             lcdata.setAlarmCount(counter);
             lcdata.setMonitoredValue(MONITORVALUE_SYSTEMCPU);
             lcdata.setThreshold(String.valueOf(_systemAlarmThreshold));
@@ -286,7 +286,7 @@ public class CpuLoadMonitor extends AbstractMonitor {
             }
 
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.ALARM);
             lcdata.setAlarmCount(counter);
             lcdata.setMonitoredValue(MONITORVALUE_PROCESSCPU);
             lcdata.setThreshold(String.valueOf(_processAlarmThreshold));

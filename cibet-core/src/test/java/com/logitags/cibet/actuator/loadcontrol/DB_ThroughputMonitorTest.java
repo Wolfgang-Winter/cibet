@@ -28,29 +28,29 @@ import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.cibethelper.loadcontrol.MonitorTestClass;
+import com.cibethelper.loadcontrol.TAlarmExecution;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.CibetContext;
 
-public class ThroughputMonitorTest {
+public class DB_ThroughputMonitorTest {
 
-   private static Logger log = Logger.getLogger(ThroughputMonitorTest.class);
+   private static Logger log = Logger.getLogger(DB_ThroughputMonitorTest.class);
 
-   private static final String SP = "SP2-javaMethod";
+   private static final String SP = "com.logitags.cibet.actuator.loadcontrol.x";
 
    public static AtomicInteger throttleCounter = new AtomicInteger(0);
    public static AtomicInteger alarmCounter = new AtomicInteger(0);
    public static AtomicInteger shedCounter = new AtomicInteger(0);
 
-   private VMLoadControlJMXBean vm = new VMLoadControlJMXBean();
-
    private LoadControlActuator act = (LoadControlActuator) Configuration.instance()
          .getActuator(LoadControlActuator.DEFAULTNAME);
-   private MonitorTestClass mon = new MonitorTestClass();
+   private static MonitorTestClass mon = new MonitorTestClass();
 
    @BeforeClass
    public static void beforeClass() throws Exception {
@@ -59,6 +59,16 @@ public class ThroughputMonitorTest {
       f.setAccessible(true);
       f.set(null, null);
       Configuration.instance();
+
+      log.debug("xx1");
+      mon.insertJMEntity(3000);
+      log.debug("xx1");
+
+   }
+
+   @AfterClass
+   public static void afterClass() {
+      mon.deleteJMEntity();
    }
 
    @Test
@@ -128,9 +138,12 @@ public class ThroughputMonitorTest {
          act.getThroughputMonitor().setStatus(MonitorStatus.ON);
          act.setLoadControlCallback(new TAlarmExecution());
          act.getThroughputMonitor().setValveThreshold(7);
+         act.getThroughputMonitor().setThrottleMaxTime(2000);
 
          for (int i = 1; i < 25; i++) {
+            log.debug("beforeselect");
             mon.cibetSelect(1000000, null);
+            log.debug("afterselect");
             int th = act.getThroughputMonitor().getThroughput(SP);
             log.debug("throughput=" + th);
          }
@@ -139,6 +152,9 @@ public class ThroughputMonitorTest {
          log.info("shedCounter=" + shedCounter.get());
          Assert.assertTrue(throttleCounter.get() > 2);
          Assert.assertEquals(0, shedCounter.get());
+
+      } catch (Exception e) {
+         log.error(e.getMessage(), e);
 
       } finally {
          shedCounter.set(0);

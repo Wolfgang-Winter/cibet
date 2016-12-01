@@ -127,7 +127,7 @@ public class ThreadCountMonitor extends AbstractMonitor {
    private void shed(int counter, LoadControlCallback callback, EventMetadata metadata, String currentSetpointId) {
       if (callback != null) {
          LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-               metadata.getControlEvent(), getName());
+               metadata.getControlEvent(), getName(), MonitorResult.SHED);
          lcdata.setMonitoredValue(getName());
          lcdata.setThreshold(String.valueOf(shedThreshold));
          lcdata.setValue(String.valueOf(counter));
@@ -158,7 +158,7 @@ public class ThreadCountMonitor extends AbstractMonitor {
                   throttleCount.get(setpointId).decrementAndGet();
                   if (callback != null) {
                      LoadControlData lcdata = new LoadControlData(setpointId, metadata.getResource(),
-                           metadata.getControlEvent(), getName());
+                           metadata.getControlEvent(), getName(), MonitorResult.THROTTLED);
                      lcdata.setThrottleTime(System.currentTimeMillis() - startTime);
                      lcdata.setMonitoredValue(getName());
                      lcdata.setThreshold(String.valueOf(valveThreshold));
@@ -174,7 +174,7 @@ public class ThreadCountMonitor extends AbstractMonitor {
          throttleCount.get(setpointId).decrementAndGet();
          if (callback != null) {
             LoadControlData lcdata = new LoadControlData(setpointId, metadata.getResource(), metadata.getControlEvent(),
-                  getName());
+                  getName(), MonitorResult.SHED);
             lcdata.setThrottleTime(System.currentTimeMillis() - startTime);
             lcdata.setMonitoredValue(getName());
             lcdata.setThreshold(String.valueOf(valveThreshold));
@@ -199,7 +199,7 @@ public class ThreadCountMonitor extends AbstractMonitor {
             }
 
             LoadControlData lcdata = new LoadControlData(currentSetpointId, metadata.getResource(),
-                  metadata.getControlEvent(), getName());
+                  metadata.getControlEvent(), getName(), MonitorResult.ALARM);
             lcdata.setAlarmCount(alarmcounter);
             lcdata.setMonitoredValue(getName());
             lcdata.setThreshold(String.valueOf(alarmThreshold));

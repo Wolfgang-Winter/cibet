@@ -48,8 +48,7 @@ import com.logitags.cibet.core.ExecutionStatus;
 import com.udojava.jmx.wrapper.JMXBeanWrapper;
 
 /**
- * Controls load on an application per setpoint. Load is controlled in three
- * ways:
+ * Controls load on an application per setpoint. Load is controlled in three ways:
  * <p>
  * alarm - if a threshold is exceeded, an alarm is raised
  * <p>
@@ -261,9 +260,7 @@ public class LoadControlActuator extends AbstractActuator {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.actuator.AbstractActuator#beforeEvent(com.logitags.
-    * cibet.core.EventMetadata)
+    * @see com.logitags.cibet.actuator.AbstractActuator#beforeEvent(com.logitags. cibet.core.EventMetadata)
     */
    @Override
    public void beforeEvent(EventMetadata ctx) {
@@ -298,16 +295,15 @@ public class LoadControlActuator extends AbstractActuator {
 
          if (loadControlCallback != null) {
             LoadControlData lcdata = new LoadControlData(currentSetpointId, ctx.getResource(), ctx.getControlEvent(),
-                  getName());
+                  getName(), MonitorResult.PASSED);
             loadControlCallback.onAccepted(lcdata);
          }
       }
    }
 
    /**
-    * Executed after the business case. The afterEvent methods of all Monitors
-    * are called. This method can be overwritten to add own Monitor
-    * implementations.
+    * Executed after the business case. The afterEvent methods of all Monitors are called. This method can be
+    * overwritten to add own Monitor implementations.
     * 
     * @see com.logitags.cibet.actuator.common.AbstractActuator#afterEvent(com.logitags.cibet.core.EventMetadata)
     */
@@ -333,8 +329,8 @@ public class LoadControlActuator extends AbstractActuator {
    }
 
    /**
-    * executes the beforeEvent methods of all Monitors. This method must be
-    * overwritten to add own Monitor implementations.
+    * executes the beforeEvent methods of all Monitors. This method must be overwritten to add own Monitor
+    * implementations.
     * 
     * @param ctx
     *           EventMetadata
@@ -476,6 +472,24 @@ public class LoadControlActuator extends AbstractActuator {
     */
    public Monitor[] getCustomMonitors() {
       return customMonitors;
+   }
+
+   /**
+    * returns the monitor with the given name
+    * 
+    * @param name
+    * @return Monitor or null if not existing
+    */
+   public Monitor getCustomMonitor(String name) {
+      if (name == null) {
+         throw new IllegalArgumentException("Parameter name must not be null");
+      }
+      for (Monitor m : customMonitors) {
+         if (name.equals(m.getName())) {
+            return m;
+         }
+      }
+      return null;
    }
 
    /**
