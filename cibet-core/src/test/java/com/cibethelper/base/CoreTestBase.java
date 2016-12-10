@@ -14,19 +14,12 @@ package com.cibethelper.base;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.UsernamePasswordToken;
-import org.apache.shiro.subject.Subject;
 import org.junit.AfterClass;
-import org.junit.Before;
 
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
@@ -34,92 +27,44 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.config.Setpoint;
-import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 
-public abstract class AbstractTestUnit {
+public abstract class CoreTestBase {
 
-   private static Logger log = Logger.getLogger(AbstractTestUnit.class);
+   private static Logger log = Logger.getLogger(CoreTestBase.class);
 
-   protected static String TENANT = "testTenant";
+   protected static final String TENANT = "testTenant";
 
    protected static final String USER = "USER";
 
-   protected static final String JDBC_SUFFIX = "-CibetDriver";
-
-   protected static Configuration cman;
-
-   protected boolean skip = false;
-
-   protected static final String SEL_DCCONTROLLABLE = "SELECT c FROM DcControllable c WHERE c.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED";
-
-   public static Map<String, String> derby() {
-      Map<String, String> props = new HashMap<>();
-      props.put("javax.persistence.jdbc.driver", "org.apache.derby.jdbc.ClientDriver");
-      props.put("javax.persistence.jdbc.url", "jdbc:derby://localhost:1527/cibettest");
-      props.put("javax.persistence.jdbc.user", "APP");
-      props.put("javax.persistence.jdbc.password", "x");
-      return props;
-   }
-
-   @Before
-   public void initConfiguration() throws Exception {
-      log.debug("start initConfiguration()");
-      // Configuration.instance().stopProxies();
-      // resetConfigFilename();
-      Context.internalSessionScope().clear();
-      Context.internalRequestScope().clear();
-
-      Field instance = Configuration.class.getDeclaredField("instance");
-      instance.setAccessible(true);
-      instance.set(null, null);
-      cman = Configuration.instance();
-
-      // if (cman == null) {
-      // cman = Configuration.instance();
-      // } else {
-      // cman.initialise();
-      // }
-      Context.internalRequestScope().setManaged(true);
-      log.info("finished before test");
-   }
-
    @AfterClass
-   public static void resetConfigFilename() throws Exception {
-      log.debug("do after: resetConfigFilename");
-      Field FILENAME = Configuration.class.getDeclaredField("CONFIGURATION_FILENAME");
-      FILENAME.setAccessible(true);
-      FILENAME.set(null, "cibet-config.xml");
-      Context.internalSessionScope().clear();
-      Context.internalRequestScope().clear();
+   public static void afterClass() throws Exception {
+      initConfiguration("cibet-config.xml");
    }
 
-   protected String init(String configName) throws Exception {
-      Field FILENAME = Configuration.class.getDeclaredField("CONFIGURATION_FILENAME");
-      FILENAME.setAccessible(true);
-      FILENAME.set(null, configName);
+   protected static String initConfiguration(String configName) {
+      try {
+         Field FILENAME = Configuration.class.getDeclaredField("CONFIGURATION_FILENAME");
+         FILENAME.setAccessible(true);
+         FILENAME.set(null, configName);
+      } catch (Exception e) {
+         throw new RuntimeException(e);
+      }
 
       ConfigurationService confMan = new ConfigurationService();
-
       return confMan.initialise();
    }
 
-   protected void authenticateShiro(String user, String password) {
-      AuthenticationToken token = new UsernamePasswordToken(user, password);
-      Subject subject = SecurityUtils.getSubject();
-      subject.login(token);
-   }
-
-   public void registerSetpoint(Class<?> clazz, String act, String methodName, ControlEvent... events) {
+   protected void registerSetpoint(Class<?> clazz, String act, String methodName, ControlEvent... events) {
       Setpoint sp = registerSetpoint(clazz, act, events);
       sp.setMethod(methodName);
    }
 
-   public Setpoint registerSetpoint(Class<?> clazz, String act, ControlEvent... events) {
+   protected Setpoint registerSetpoint(Class<?> clazz, String act, ControlEvent... events) {
       return registerSetpoint(clazz.getName(), act, events);
    }
 
-   public Setpoint registerSetpoint(String clazz, String act, ControlEvent... events) {
+   protected Setpoint registerSetpoint(String clazz, String act, ControlEvent... events) {
       Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()), null);
       sp.setTarget(clazz);
       List<String> evl = new ArrayList<String>();
@@ -133,7 +78,7 @@ public abstract class AbstractTestUnit {
       return sp;
    }
 
-   public Setpoint registerSetpoint(String clazz, List<String> acts, ControlEvent... events) {
+   protected Setpoint registerSetpoint(String clazz, List<String> acts, ControlEvent... events) {
       Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()), null);
       sp.setTarget(clazz);
       List<String> evl = new ArrayList<String>();
@@ -147,6 +92,11 @@ public abstract class AbstractTestUnit {
       }
       cman.registerSetpoint(sp);
       return sp;
+   }
+
+   protected void registerSetpoint(Class<?> clazz, List<String> acts, String methodName, ControlEvent... events) {
+      Setpoint sp = registerSetpoint(clazz.getName(), acts, events);
+      sp.setMethod(methodName);
    }
 
    protected TEntity createTEntity(int counter, String name) {

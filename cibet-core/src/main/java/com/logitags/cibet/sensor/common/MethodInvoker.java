@@ -55,7 +55,6 @@ public abstract class MethodInvoker implements Invoker {
             return method.invoke(invokedObject, getParamValues(parameters));
          }
       } catch (Exception e) {
-         log.error(e.getMessage(), e);
          throw e;
       }
    }

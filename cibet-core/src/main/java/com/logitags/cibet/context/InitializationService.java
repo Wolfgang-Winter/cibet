@@ -147,6 +147,15 @@ public class InitializationService {
    }
 
    /**
+    * starts the Cibet context
+    * 
+    * @return
+    */
+   public boolean startContext() {
+      return startContext(null);
+   }
+
+   /**
     * Clears ThreadLocals in case they have not been removed in thread before giving back to thread pool. Initializes
     * EntityManager and AuthenticationProvider.
     * 

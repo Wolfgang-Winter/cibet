@@ -50,8 +50,6 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
-import com.cibethelper.base.AbstractTestUnit;
-
 public class MonitorTestClass {
 
    private static Logger log = Logger.getLogger(MonitorTestClass.class);
@@ -426,7 +424,7 @@ public class MonitorTestClass {
       Random rnd = new Random(new Date().getTime());
 
       if (fac == null) {
-         fac = Persistence.createEntityManagerFactory("localTest", AbstractTestUnit.derby());
+         fac = Persistence.createEntityManagerFactory("localTest");
       }
 
       EntityManager em = fac.createEntityManager();
@@ -445,7 +443,7 @@ public class MonitorTestClass {
 
    public void deleteJMEntity() {
       if (fac == null) {
-         fac = Persistence.createEntityManagerFactory("localTest", AbstractTestUnit.derby());
+         fac = Persistence.createEntityManagerFactory("localTest");
       }
 
       EntityManager em = fac.createEntityManager();
@@ -461,7 +459,7 @@ public class MonitorTestClass {
 
    public String cibetSelect(int count, String param2) {
       if (fac == null) {
-         fac = Persistence.createEntityManagerFactory("localTest", AbstractTestUnit.derby());
+         fac = Persistence.createEntityManagerFactory("localTest");
       }
 
       EntityManager em = fac.createEntityManager();

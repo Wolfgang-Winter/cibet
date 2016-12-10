@@ -36,10 +36,6 @@ public class DefaultController implements Controller {
    *
    */
    public void evaluate(EventMetadata metadata) {
-      if (log.isDebugEnabled()) {
-         log.debug("evaluate EventMetadata:: " + metadata);
-      }
-
       if (metadata == null) {
          String msg = "failed to evaluate setpoints: metadata is null";
          log.error(msg);

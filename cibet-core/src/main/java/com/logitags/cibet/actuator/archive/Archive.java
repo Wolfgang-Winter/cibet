@@ -190,7 +190,7 @@ public class Archive implements Serializable {
             if (Context.requestScope().getGroupId() != null) {
                resource.setGroupId(Context.requestScope().getGroupId());
             } else if (resource.getPrimaryKeyId() != null) {
-               resource.setGroupId(resource.getObject() + "-" + resource.getPrimaryKeyId());
+               resource.setGroupId(resource.getTargetType() + "-" + resource.getPrimaryKeyId());
             }
          }
       }

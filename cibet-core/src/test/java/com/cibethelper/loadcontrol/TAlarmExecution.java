@@ -40,8 +40,6 @@ import com.logitags.cibet.actuator.loadcontrol.ThreadCountMonitor;
 import com.logitags.cibet.actuator.loadcontrol.ThreadCountMonitorTest;
 import com.logitags.cibet.actuator.loadcontrol.ThreadTimeMonitor;
 import com.logitags.cibet.actuator.loadcontrol.ThreadTimeMonitorTest;
-import com.logitags.cibet.actuator.loadcontrol.ThroughputMonitor;
-import com.logitags.cibet.actuator.loadcontrol.DB_ThroughputMonitorTest;
 
 public class TAlarmExecution implements LoadControlCallback {
 
@@ -65,9 +63,6 @@ public class TAlarmExecution implements LoadControlCallback {
       } else if (ThreadCountMonitor.class.getSimpleName().equals(data.getMonitor())) {
          log.warn("ThreadCountMonitor on Shed called: " + data);
          ThreadCountMonitorTest.shed.incrementAndGet();
-      } else if (ThroughputMonitor.class.getSimpleName().equals(data.getMonitor())) {
-         log.warn("ThroughputMonitor on Shed called: " + data);
-         DB_ThroughputMonitorTest.shedCounter.incrementAndGet();
       }
    }
 
@@ -99,9 +94,6 @@ public class TAlarmExecution implements LoadControlCallback {
       } else if (ThreadCountMonitor.class.getSimpleName().equals(data.getMonitor())) {
          log.warn("ThreadCountMonitor on Alarm called: " + data);
          ThreadCountMonitorTest.counter.incrementAndGet();
-      } else if (ThroughputMonitor.class.getSimpleName().equals(data.getMonitor())) {
-         log.warn("ThroughputMonitor on Alarm called: " + data);
-         DB_ThroughputMonitorTest.alarmCounter.incrementAndGet();
       }
    }
 
@@ -116,9 +108,6 @@ public class TAlarmExecution implements LoadControlCallback {
       } else if (ThreadCountMonitor.class.getSimpleName().equals(data.getMonitor())) {
          log.warn("ThreadCountMonitor on Valve called: " + data);
          ThreadCountMonitorTest.counter.incrementAndGet();
-      } else if (ThroughputMonitor.class.getSimpleName().equals(data.getMonitor())) {
-         log.warn("ThroughputMonitor on Valve called: " + data);
-         DB_ThroughputMonitorTest.throttleCounter.incrementAndGet();
       }
    }
 
