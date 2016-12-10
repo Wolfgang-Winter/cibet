@@ -29,5 +29,14 @@
 			<scope>provided</scope>
 		</dependency>
 
+      <!-- TEST DEPENDENCIES -->
+
+      <dependency>
+         <groupId>com.logitags</groupId>
+         <artifactId>cibet-core</artifactId>
+         <classifier>tests</classifier>
+         <scope>test</scope>
+      </dependency>
+
 	</dependencies>
 </project>
