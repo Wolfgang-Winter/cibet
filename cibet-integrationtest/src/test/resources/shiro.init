@@ -1,0 +1,17 @@
+[users]
+admin = secret, admin
+lonestarr = vespa, goodguy, schwartz
+darkhelmet = ludicrousspeed, badguy, schwartz
+
+[roles]
+# 'admin' role has all permissions, indicated by the wildcard '*'
+admin = *
+
+# The 'schwartz' role can do anything (*) with any lightsaber:
+schwartz = lightsaber:*
+
+# The 'goodguy' role is allowed to 'drive' (action) the winnebago (type) with
+# license plate 'eagle5' (instance specific id)
+goodguy = winnebago:drive:eagle5
+
+badguy = jaeger:schiess:*

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com 
+   ../../main/resources/cibet-config_1.2.xsd">
+
+	<authenticationProvider>
+		<class>com.logitags.cibet.authentication.SpringSecurityAuthenticationProvider</class>
+	</authenticationProvider>
+
+</cibet>   
