@@ -19,11 +19,9 @@ import org.apache.shiro.mgt.DefaultSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 
-import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalSessionScope;
 
-@CibetContext
 public abstract class ShiroService {
 
    private static Log log = LogFactory.getLog(ShiroService.class);

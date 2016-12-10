@@ -28,7 +28,6 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.CibetUtil;
@@ -37,7 +36,7 @@ import com.logitags.cibet.core.CibetUtil;
  * Default implementation of the interface
  */
 @Component
-@CibetContext
+// @CibetContext
 public class SpringSecurityService implements ApplicationContextAware {
 
    private static Log log = LogFactory.getLog(SpringSecurityService.class);

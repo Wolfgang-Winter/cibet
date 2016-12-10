@@ -106,9 +106,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.core.AbstractActuator#beforeEvent(com.logitags.cibet
-    * .core.EventMetadata)
+    * @see com.logitags.cibet.core.AbstractActuator#beforeEvent(com.logitags.cibet .core.EventMetadata)
     */
    @Override
    public void beforeEvent(EventMetadata ctx) {
@@ -128,9 +126,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.core.AbstractActuator#afterEvent(com.logitags.cibet
-    * .core.EventMetadata)
+    * @see com.logitags.cibet.core.AbstractActuator#afterEvent(com.logitags.cibet .core.EventMetadata)
     */
    @Override
    public void afterEvent(EventMetadata ctx) {
@@ -187,6 +183,10 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
       // 3. Get MethodSecurityInterceptor from Spring context
       MethodSecurityInterceptor interceptor;
       try {
+         if (context == null) {
+            throw new IllegalStateException(
+                  "Failure in Spring configuration: org.springframework.context.ApplicationContext not injected in SpringSecurityActuator");
+         }
          interceptor = context.getBean(MethodSecurityInterceptor.class);
       } catch (NoSuchBeanDefinitionException e1) {
          String msg = "Failed to find a MethodSecurityInterceptor bean in Spring context. Configure Spring context correctly: "
@@ -359,6 +359,10 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
       // 3. Get MethodSecurityInterceptor from Spring context
       MethodSecurityInterceptor interceptor;
       try {
+         if (context == null) {
+            throw new IllegalStateException(
+                  "Failure in Spring configuration: org.springframework.context.ApplicationContext not injected in SpringSecurityActuator");
+         }
          interceptor = context.getBean(MethodSecurityInterceptor.class);
       } catch (NoSuchBeanDefinitionException e1) {
          String msg = "Failed to find a MethodSecurityInterceptor bean in Spring context. Configure Spring context correctly: "
@@ -447,6 +451,10 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
       // 3. Get MethodSecurityInterceptor from Spring context
       FilterSecurityInterceptor interceptor;
       try {
+         if (context == null) {
+            throw new IllegalStateException(
+                  "Failure in Spring configuration: org.springframework.context.ApplicationContext not injected in SpringSecurityActuator");
+         }
          interceptor = context.getBean(FilterSecurityInterceptor.class);
       } catch (NoSuchBeanDefinitionException e1) {
          String msg = "Failed to find a FilterSecurityInterceptor bean in Spring context. Configure Spring context correctly: "

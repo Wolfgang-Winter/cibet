@@ -20,14 +20,19 @@ import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.Factory;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.cibethelper.base.AbstractTestUnit;
+import com.cibethelper.ShiroTestBase;
+import com.cibethelper.base.CoreTestBase;
+import com.cibethelper.base.CoreTestService;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.common.DeniedException;
+import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
@@ -39,10 +44,9 @@ import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
 import junit.framework.Assert;
 
 /**
- * add -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9.
- * jar to java command
+ * add -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9. jar to java command
  */
-public class ShiroActuatorTest extends AbstractTestUnit {
+public class ShiroActuatorTest extends CoreTestBase {
 
    private static Logger log = Logger.getLogger(ShiroActuatorTest.class);
 
@@ -55,17 +59,25 @@ public class ShiroActuatorTest extends AbstractTestUnit {
       log.debug("end ShiroActuatorTest @BeforeClass");
    }
 
+   @Before
+   public void before() {
+      log.info("BEFORE TEST");
+      InitializationService.instance().startContext();
+      initConfiguration("x");
+   }
+
    @Test
    public void invoke() throws Exception {
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       Collection<String> col = new ArrayList<String>();
       col.add("goodguy");
       col.add("schwartz");
       act.setHasAllRoles(col);
 
-      authenticateShiro("lonestarr", "vespa");
+      ShiroTestBase.authenticateShiro("lonestarr", "vespa");
 
       TComplexEntity ent1 = new TComplexEntity();
       ent1.setCompValue(22);
@@ -74,14 +86,16 @@ public class ShiroActuatorTest extends AbstractTestUnit {
 
    @Test
    public void invokeDenied() {
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+      log.debug("start invokeDenied()");
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       Collection<String> col = new ArrayList<String>();
       col.add("nott");
       act.setHasAllRoles(col);
 
-      authenticateShiro("lonestarr", "vespa");
+      ShiroTestBase.authenticateShiro("lonestarr", "vespa");
 
       TComplexEntity ent1 = new TComplexEntity();
       ent1.setCompValue(22);
@@ -90,9 +104,10 @@ public class ShiroActuatorTest extends AbstractTestUnit {
 
    @Test
    public void invokeDenied2() {
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setAndGetCompValue", ControlEvent.INVOKE);
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setAndGetCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       Collection<String> col = new ArrayList<String>();
       col.add("nott");
       act.setHasAllRoles(col);
@@ -140,13 +155,14 @@ public class ShiroActuatorTest extends AbstractTestUnit {
    @Test
    public void isPermittedAll() throws Exception {
       log.debug("start isPermittedAll");
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       String[] roles = new String[] { "lightsaber:activate:ll" };
       act.setIsPermittedAll(roles);
 
-      authenticateShiro("lonestarr", "vespa");
+      ShiroTestBase.authenticateShiro("lonestarr", "vespa");
 
       TComplexEntity ent1 = new TComplexEntity();
       ent1.setCompValue(22);
@@ -156,13 +172,14 @@ public class ShiroActuatorTest extends AbstractTestUnit {
    @Test
    public void isPermittedAllTwoPermissions() throws Exception {
       log.debug("start isPermittedAllTwoPermissions");
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       String[] roles = new String[] { "lightsaber:activate:ll", "lightsaber:delete" };
       act.setIsPermittedAll(roles);
 
-      authenticateShiro("lonestarr", "vespa");
+      ShiroTestBase.authenticateShiro("lonestarr", "vespa");
 
       TComplexEntity ent1 = new TComplexEntity();
       ent1.setCompValue(22);
@@ -172,13 +189,14 @@ public class ShiroActuatorTest extends AbstractTestUnit {
    @Test
    public void isPermittedAllDenied() throws Exception {
       log.debug("start isPermittedAllDenied");
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       String[] roles = new String[] { "lightsaber:activate:ll", "saber:delete" };
       act.setIsPermittedAll(roles);
 
-      authenticateShiro("lonestarr", "vespa");
+      ShiroTestBase.authenticateShiro("lonestarr", "vespa");
 
       TComplexEntity ent1 = new TComplexEntity();
       ent1.setCompValue(22);
@@ -187,12 +205,13 @@ public class ShiroActuatorTest extends AbstractTestUnit {
 
    @Test
    public void requiresGuestDenied() throws Exception {
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       act.setRequiresGuest(true);
 
-      authenticateShiro("lonestarr", "vespa");
+      ShiroTestBase.authenticateShiro("lonestarr", "vespa");
 
       TComplexEntity ent1 = new TComplexEntity();
       ent1.setCompValue(22);
@@ -201,9 +220,10 @@ public class ShiroActuatorTest extends AbstractTestUnit {
 
    @Test
    public void requiresGuest() throws Exception {
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       act.setRequiresGuest(true);
 
       Subject subject = SecurityUtils.getSubject();
@@ -216,9 +236,10 @@ public class ShiroActuatorTest extends AbstractTestUnit {
 
    @Test
    public void requiresAuthDenied() throws Exception {
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       act.setRequiresAuthentication(true);
 
       Subject subject = SecurityUtils.getSubject();
@@ -231,12 +252,13 @@ public class ShiroActuatorTest extends AbstractTestUnit {
 
    @Test
    public void requiresAuth() throws Exception {
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       act.setRequiresAuthentication(true);
 
-      authenticateShiro("lonestarr", "vespa");
+      ShiroTestBase.authenticateShiro("lonestarr", "vespa");
 
       TComplexEntity ent1 = new TComplexEntity();
       ent1.setCompValue(22);
@@ -247,9 +269,10 @@ public class ShiroActuatorTest extends AbstractTestUnit {
    public void requiresUserDenied() throws Exception {
       log.debug("start requiresUserDenied()");
 
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       act.setRequiresUser(true);
 
       Subject subject = SecurityUtils.getSubject();
@@ -262,12 +285,13 @@ public class ShiroActuatorTest extends AbstractTestUnit {
 
    @Test
    public void requiresUser() throws Exception {
-      registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+      CoreTestService.registerSetpoint(TComplexEntity.class, ShiroActuator.DEFAULTNAME, "setCompValue",
+            ControlEvent.INVOKE);
 
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       act.setRequiresUser(true);
 
-      authenticateShiro("lonestarr", "vespa");
+      ShiroTestBase.authenticateShiro("lonestarr", "vespa");
 
       TComplexEntity ent1 = new TComplexEntity();
       ent1.setCompValue(22);
@@ -276,7 +300,7 @@ public class ShiroActuatorTest extends AbstractTestUnit {
 
    @Test
    public void noSecondPrincipal() throws Exception {
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       act.setSecondPrincipal(true);
       act.setRequiresUser(null);
       act.setThrowDeniedException(true);
@@ -289,7 +313,7 @@ public class ShiroActuatorTest extends AbstractTestUnit {
 
    @Test
    public void hasSecond() throws Exception {
-      ShiroActuator act = (ShiroActuator) cman.getActuator(ShiroActuator.DEFAULTNAME);
+      ShiroActuator act = (ShiroActuator) Configuration.instance().getActuator(ShiroActuator.DEFAULTNAME);
       act.setSecondPrincipal(true);
       act.setRequiresGuest(null);
       act.setThrowDeniedException(true);
