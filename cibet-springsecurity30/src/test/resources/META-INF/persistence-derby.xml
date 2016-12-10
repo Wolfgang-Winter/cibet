@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+        version="2.0">
+  
+   <persistence-unit name="CibetLocal" transaction-type="RESOURCE_LOCAL">
+      <provider>org.hibernate.ejb.HibernatePersistence</provider>
+      <class>com.logitags.cibet.actuator.lock.LockedObject</class>
+      <class>com.logitags.cibet.core.EventResult</class>
+      <class>com.logitags.cibet.resource.Resource</class>
+      <class>com.logitags.cibet.resource.ResourceParameter</class>
+      <class>com.logitags.cibet.actuator.archive.Archive</class>
+      <class>com.logitags.cibet.actuator.dc.DcControllable</class>
+      
+      <properties>
+         <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+         <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
+         <property name="javax.persistence.jdbc.user" value="APP"/>
+         <property name="javax.persistence.jdbc.password" value="x"/>
+
+         <property name="hibernate.show_sql" value="true" />
+         <property name="hibernate.format_sql" value="true" />
+<!--          <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
+      </properties>
+   </persistence-unit>
+
+   <persistence-unit name="localTest" transaction-type="RESOURCE_LOCAL">
+      <provider>com.logitags.cibet.sensor.jpa.Provider</provider>
+      <class>com.cibethelper.entities.TEntity</class>
+      <class>com.cibethelper.entities.TComplexEntity</class>
+      <class>com.cibethelper.loadcontrol.JMEntity</class>
+      
+      <properties>
+         <property name="com.logitags.cibet.persistence.provider" value="org.hibernate.ejb.HibernatePersistence"/>
+         
+         <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+         <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
+         <property name="javax.persistence.jdbc.user" value="APP"/>
+         <property name="javax.persistence.jdbc.password" value="x"/>
+
+<!--         <property name="hibernate.show_sql" value="true" /> -->
+         <property name="hibernate.format_sql" value="true" />
+<!--          <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
+         <property name="hibernate.listeners.envers.autoRegister" value="true"/>
+      </properties>
+   </persistence-unit>
+
+
+</persistence>

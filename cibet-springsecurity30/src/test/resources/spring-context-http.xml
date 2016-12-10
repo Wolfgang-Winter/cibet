@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:sec="http://www.springframework.org/schema/security" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+       	   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       	   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+           http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.3.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+  <context:component-scan base-package="com.logitags.cibet"/>
+  
+  <aop:config proxy-target-class="true"/>
+
+  <sec:http auto-config='true'>
+    <!--sec:intercept-url pattern="/**" access="hasRole('ROLE_USER')" /-->
+  </sec:http>
+
+  <sec:authentication-manager>
+    <sec:authentication-provider>
+      <sec:user-service>
+        <sec:user name="jimi" password="jimispassword" authorities="ROLE_USER, ROLE_ADMIN" />
+        <sec:user name="bob" password="bobspassword" authorities="ROLE_USER" />
+      </sec:user-service>
+    </sec:authentication-provider>
+  </sec:authentication-manager>
+
+  <!-- bean id="MySpringExampleBean" class="com.logitags.cibet.util.SpringExampleBean">
+  </bean>
+
+  <bean id="MySpringExampleBean2" class="com.logitags.cibet.util.SpringExampleBean2">
+  </bean>
+
+  <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+      <property name="permissionEvaluator" ref="permissionEvaluator"/>
+  </bean>
+
+  <bean id="MyBean1" class="com.logitags.cibet.util.NoControlActuator"/>
+  <bean id="MyBean2" class="com.logitags.cibet.util.NoControlActuator"/>
+
+
+  <bean id="permissionEvaluator" class="org.springframework.security.acls.AclPermissionEvaluator">
+      <constructor-arg ref="aclService"/>
+  </bean>
+
+  <bean id="aclService" class="org.springframework.security.acls.jdbc.JdbcMutableAclService">
+    <constructor-arg ref="dataSource"/>
+    <constructor-arg ref="lookupStrategy"/>
+    <constructor-arg ref="aclCache"/>
+  </bean>
+  
+  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+      <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+      <property name="url" value="jdbc:hsqldb:mem:test"/>
+      <property name="username" value="sa"/>
+      <property name="password" value=""/>
+  </bean>  
+
+  <bean id="lookupStrategy" class="org.springframework.security.acls.jdbc.BasicLookupStrategy">
+    <constructor-arg ref="dataSource"/>
+    <constructor-arg ref="aclCache"/>
+    <constructor-arg>
+        <bean class="org.springframework.security.acls.domain.AclAuthorizationStrategyImpl">
+            <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
+                    <constructor-arg value="ROLE_ADMINISTRATOR"/>
+                </bean>
+                <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
+                    <constructor-arg value="ROLE_ADMINISTRATOR"/>
+                </bean>
+                <bean class="org.springframework.security.core.authority.GrantedAuthorityImpl">
+                    <constructor-arg value="ROLE_ADMINISTRATOR"/>
+                </bean>
+            </list>
+            </constructor-arg>
+        </bean>
+    </constructor-arg>
+    <constructor-arg>
+      <bean class="org.springframework.security.acls.domain.ConsoleAuditLogger"/>
+    </constructor-arg>
+  </bean>
+
+  <bean id="aclCache" class="org.springframework.security.acls.domain.EhCacheBasedAclCache">
+    <constructor-arg>
+      <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+        <property name="cacheManager">
+          <bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"/>
+        </property>
+        <property name="cacheName" value="aclCache"/>
+      </bean>
+    </constructor-arg>
+  </bean-->
+  
+  <!-- sec:global-method-security pre-post-annotations="enabled" >
+      <sec:expression-handler ref="expressionHandler"/>
+  </sec:global-method-security-->
+  <!--sec:global-method-security secured-annotations="enabled" /-->
+  <!--sec:global-method-security jsr250-annotations="enabled" /-->
+  <!--sec:global-method-security /-->
+    
+	<!-- sec:authentication-manager>
+    <sec:authentication-provider>
+      <sec:user-service>
+        <sec:user name="test" password="test" authorities="ROLE_WALTER, WILLI" />
+      </sec:user-service>
+    </sec:authentication-provider>
+  </sec:authentication-manager-->
+    
+</beans>

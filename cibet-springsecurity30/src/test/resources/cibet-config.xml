@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com 
+   ../../main/resources/cibet-config_1.0.xsd">
+
+	<actuator name="SEC">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<properties>
+			<permitAll></permitAll>
+			<!-- PreAuthorize>hasRole( 'WALTER')</PreAuthorize-->
+			<throwDeniedException>true</throwDeniedException>
+		</properties>
+	</actuator>
+	
+	<setpoint id="ZZSD23">
+		<controls>
+			<event>INVOKE</event>
+			<target>com.cibethelper.entities.TComplexEntity</target>
+			<method>setCompValue</method>
+		</controls>
+		<actuator name="SEC"/>
+	</setpoint>
+
+</cibet>   

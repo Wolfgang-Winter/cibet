@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+        version="2.0">
+  
+   <persistence-unit name="localTest" transaction-type="RESOURCE_LOCAL">
+      <provider>com.logitags.cibet.sensor.jpa.Provider</provider>
+      <class>com.cibethelper.entities.TEntity</class>
+      <class>com.cibethelper.entities.TComplexEntity</class>
+      <class>com.cibethelper.loadcontrol.JMEntity</class>
+      
+      <properties>
+         <property name="com.logitags.cibet.persistence.provider" value="org.hibernate.ejb.HibernatePersistence"/>
+         
+         <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.Oracle10gDialect"/>
+         <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@192.168.1.64:1521:xe"/>
+         <property name="javax.persistence.jdbc.user" value="cibet"/>
+         <property name="javax.persistence.jdbc.password" value="cibet"/>
+
+         <property name="hibernate.show_sql" value="true" />
+         <property name="hibernate.format_sql" value="true" />
+         <property name="hibernate.listeners.envers.autoRegister" value="true"/>
+      </properties>
+   </persistence-unit>
+
+</persistence>
