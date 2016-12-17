@@ -43,6 +43,7 @@ public abstract class CoreTestBase {
    }
 
    protected static String initConfiguration(String configName) {
+      log.debug("++initConfiguration " + configName);
       try {
          Field FILENAME = Configuration.class.getDeclaredField("CONFIGURATION_FILENAME");
          FILENAME.setAccessible(true);
@@ -52,7 +53,9 @@ public abstract class CoreTestBase {
       }
 
       ConfigurationService confMan = new ConfigurationService();
-      return confMan.initialise();
+      String res = confMan.initialise();
+      log.debug("end ++initConfiguration: " + res);
+      return res;
    }
 
    protected void registerSetpoint(Class<?> clazz, String act, String methodName, ControlEvent... events) {

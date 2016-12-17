@@ -107,8 +107,8 @@ import com.logitags.cibet.sensor.http.CibetMitmManager;
 import com.udojava.jmx.wrapper.JMXBeanWrapper;
 
 /**
- * Manages the overall configuration of Cibet framework. Loads and caches
- * ControlConfiguration objects from cibet-config.xml.
+ * Manages the overall configuration of Cibet framework. Loads and caches ControlConfiguration objects from
+ * cibet-config.xml.
  */
 public class Configuration {
 
@@ -143,7 +143,7 @@ public class Configuration {
 
    private ChainedAuthenticationProvider chainedAuthenticationProvider = new ChainedAuthenticationProvider();
 
-   private static String applicationName = "";
+   private static String applicationName;
 
    private NotificationProvider notificationProvider;
 
@@ -204,6 +204,8 @@ public class Configuration {
 
          if (appName != null && appName.length() > 0) {
             applicationName = appName;
+         } else {
+            applicationName = "";
          }
       }
       return applicationName;
@@ -257,8 +259,8 @@ public class Configuration {
    }
 
    /**
-    * Reinitializes the AuthenticationProvider by detecting the used security
-    * framework and re-reading the configuration file.
+    * Reinitializes the AuthenticationProvider by detecting the used security framework and re-reading the configuration
+    * file.
     * 
     * @param cibets
     *           list of cibet configurations
@@ -277,8 +279,7 @@ public class Configuration {
    }
 
    /**
-    * Reinitializes the NotificationProvider by re-reading the configuration
-    * file.
+    * Reinitializes the NotificationProvider by re-reading the configuration file.
     * 
     * @param cibets
     *           list of cibet configurations
@@ -518,8 +519,7 @@ public class Configuration {
    }
 
    /**
-    * removes the Setpoint with the given ID from the list of registered
-    * Setpoints.
+    * removes the Setpoint with the given ID from the list of registered Setpoints.
     * 
     * @param setpointId
     */
@@ -532,8 +532,7 @@ public class Configuration {
    }
 
    /**
-    * removes the Control with the given name from the registered list of
-    * Controls.
+    * removes the Control with the given name from the registered list of Controls.
     * 
     * @param name
     */
@@ -780,8 +779,7 @@ public class Configuration {
    }
 
    /**
-    * registers an actuator from the configuration file. Overwrites build-in
-    * actuators with the same name.
+    * registers an actuator from the configuration file. Overwrites build-in actuators with the same name.
     * 
     * @param controller
     */
@@ -1007,11 +1005,9 @@ public class Configuration {
    }
 
    /**
-    * starts the proxy for the HTTP(CLIENT) sensor. Optional System properties
-    * cibet.proxy.mode, cibet.proxy.port, cibet.proxy.chainedProxyHost,
-    * cibet.proxy.chainedProxyPort, cibet.proxy.bufferSize,
-    * cibet.proxy.clientKeystore and cibet.proxy.clientKeystorePassword override
-    * the values in the ProxyConfig parameter.
+    * starts the proxy for the HTTP(CLIENT) sensor. Optional System properties cibet.proxy.mode, cibet.proxy.port,
+    * cibet.proxy.chainedProxyHost, cibet.proxy.chainedProxyPort, cibet.proxy.bufferSize, cibet.proxy.clientKeystore and
+    * cibet.proxy.clientKeystorePassword override the values in the ProxyConfig parameter.
     * 
     * @param pconfigs
     *           map of configs

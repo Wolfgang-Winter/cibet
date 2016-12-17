@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com 
+   ../../main/resources/cibet-config_1.3.xsd">
+
+	<setpoint id="A">
+		<controls>
+			<tenant></tenant>
+			<event></event>
+			<target></target>
+			<method></method>
+			<invoker></invoker>
+			<stateChange></stateChange>
+			<condition></condition>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="A1" extends="B2">
+		<controls>
+			<condition>file:testscript2.js</condition>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="B">
+		<controls>
+			<tenant>ten</tenant>
+			<event>UPDATE</event>
+			<target>com.logitags.cibet.ConfigurationIntegrationTest,
+			com.logitags.cibet.control.ControllerImplTest</target>
+			<method>cleanUp,evaluateWithParents</method>
+			<invoker>net.nixxi.*</invoker>
+			<condition>file:D:\projects\cibet/src/test/resources/testscript1.js</condition>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="B1" extends="B">
+		<controls>
+			<event>INVOKE, RELEASE</event>
+			<invoker></invoker>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="B2" extends="B1">
+		<controls>
+			<condition></condition>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+</cibet>   

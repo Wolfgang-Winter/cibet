@@ -9,7 +9,24 @@
 		</properties>
 	</actuator>
 
-<!-- 
+   <actuator name="TESTSUBSUB">
+      <class>com.cibethelper.base.SubSub4EyesController</class>
+      <properties>
+         <dummy1>1234456789123</dummy1>
+         <dummy2>false</dummy2>
+         <intParamB>234</intParamB>
+         <doubleParam>45.67</doubleParam>
+         <doubleParamB>34.22</doubleParamB>
+         <floatParam>12.55</floatParam>
+         <floatParamB>102.456</floatParamB>
+         <strParam>Hallo</strParam>
+         <boolParam>True</boolParam>
+         <shortParamB>12</shortParamB>
+         <shortParam>12</shortParam>
+         <longParam>123456</longParam>
+      </properties>
+   </actuator>
+
 	<actuator name="ARCHIVE2">
 		<class>com.logitags.cibet.actuator.archive.ArchiveActuator</class>
 		<properties>
@@ -17,6 +34,7 @@
 		</properties>
 	</actuator>
 
+<!-- 
 	<actuator name="SCHED1">
 		<class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class>
 		<properties>
@@ -26,13 +44,14 @@
 			<batchInterceptor>com.logitags.cibet.helper.SchedulerPersistIntercept</batchInterceptor>
 		</properties>
 	</actuator>
+-->
 
 	<setpoint id="A">
 		<controls>
 			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
 			<event>UPDATE</event>
 			<target>
-				com.logitags.cibet.helper.TEntity
+				com.cibethelper.entities.TEntity
 			</target>
 		</controls>
 		<actuator name="FOUR_EYES"/>
@@ -43,17 +62,17 @@
 		<controls>
 			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
 			<event>INSERT</event>
-			<target>com.logitags.cibet.helper.TComplexEntity</target>
+			<target>com.cibethelper.entities.TComplexEntity</target>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
-
+ 
 	<setpoint id="C">
 		<controls>
 			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
 			<event>INVOKE</event>
-			<target>com.logitags.cibet.sensor.jpa.CibetEntityManager</target>
-			<method>createNamedQuery</method>
+			<target>com.cibethelper.base.TrueCustomControl</target>
+			<method>setGaga</method>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
@@ -62,12 +81,11 @@
 		<controls>
 			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
 			<event>INVOKE</event>
-			<target>com.logitags.cibet.sensor.jpa.CibetEntityManager</target>
-			<method>close()</method>
+			<target>com.cibethelper.base.TrueCustomControl</target>
+			<method>getName()</method>
 		</controls>
 		<actuator name="ARCHIVE2"/>
 	</setpoint>
- -->
  
 	<setpoint id="com.logitags.cibet.actuator.loadcontrol.x">
 		<controls>

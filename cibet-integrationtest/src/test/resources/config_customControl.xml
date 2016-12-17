@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com 
+   ../../main/resources/cibet-config_1.3.xsd">
+
+
+	<control name="SEC1">
+		<class>com.cibethelper.base.FalseCustomControl</class>
+		<properties>
+			<ga>45</ga>
+		</properties>
+	</control>
+
+	<control name="TRUE">
+		<class>com.cibethelper.base.TrueCustomControl</class>
+		<properties>
+			<gaga>45</gaga>
+		</properties>
+	</control>
+
+	<actuator name="FOUR_EYES">
+		<properties>
+			<throwPostponedException>true</throwPostponedException>
+		</properties>
+	</actuator>
+
+	<setpoint id="K1">
+		<controls>
+			<event>INVOKE</event>
+			<customControl name="TRUE">dsfg</customControl>
+			<target>com.cibethelper.entities.TComplexEntity, http://localhost:9090/webapp/other*,
+					http://localhost:9190/webapp/other*</target>
+			<method>setOwner, GET,POST</method>
+			<invoker exclude="false">fff</invoker>
+		</controls>
+		<actuator name="INFOLOG"/>
+	</setpoint>
+
+	<setpoint id="K2">
+		<controls>
+			<event>INVOKE</event>
+			<customControl name="TRUE"></customControl>
+			<target>com.cibethelper.entities.TComplexEntity,http://localhost:9090/webapp/other*,
+					http://localhost:9190/webapp/other*</target>
+			<method>setOwner,  GET,POST</method>
+			<invoker exclude="false"></invoker>
+		</controls>
+		<actuator name="INFOLOG"/>
+	</setpoint>
+
+	<setpoint id="K3">
+		<controls>
+			<event>INVOKE</event>
+			<customControl name="TRUE" />
+			<target>com.cibethelper.entities.TComplexEntity, http://localhost:9090/webapp/other*,
+					http://localhost:9190/webapp/other*</target>
+			<method>setOwner,  GET,POST</method>
+			<invoker />
+		</controls>
+		<actuator name="INFOLOG"/>
+	</setpoint>
+
+</cibet>   

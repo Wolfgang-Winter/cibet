@@ -33,7 +33,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.cibethelper.entities.DBTAlarmExecution;
+import com.cibethelper.DBTAlarmExecution;
 import com.cibethelper.loadcontrol.MonitorTestClass;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.CibetContext;

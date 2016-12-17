@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.3.xsd">
+
+   <notificationProvider>
+      <class>com.logitags.cibet.notification.EmailNotificationProvider</class>
+      <properties>
+         <from>from@test.de</from>
+         <smtpHost>localhost</smtpHost>
+         <smtpPort>8854</smtpPort>
+      </properties>
+   </notificationProvider>
+   
+	<securityProvider>
+		<class>com.logitags.cibet.security.DefaultSecurityProvider</class>
+		<properties>
+			<secrets mapKey="key1" current="true">2366Au37nBB.0ya?</secrets>
+			<secrets mapKey="key2" current="false">1234567</secrets>
+		</properties>
+	</securityProvider>
+	
+	<control name="SEC1">
+      <class>com.cibethelper.base.FalseCustomControl</class>
+      <properties>
+         <ga>45</ga>
+      </properties>
+   </control>
+
+   <control name="TRUE">
+      <class>com.cibethelper.base.TrueCustomControl</class>
+      <properties>
+         <gaga>45</gaga>
+      </properties>
+   </control>
+	
+	<actuator name="Sub4EyesController">
+		<class>com.cibethelper.base.Sub4EyesController</class>
+		<properties>
+			<storedProperties>prop1, prop2</storedProperties>
+		</properties>
+	</actuator>
+
+   <actuator name="ARCHIVE">
+      <properties>
+         <integrityCheck>true</integrityCheck>
+			<storedProperties>prop1, prop2</storedProperties>
+      </properties>
+   </actuator>
+
+</cibet>   

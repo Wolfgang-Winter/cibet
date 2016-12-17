@@ -33,7 +33,6 @@ import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.common.DeniedException;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
-import com.logitags.cibet.actuator.dc.DcReleaser;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.config.Configuration;
@@ -122,7 +121,7 @@ public class DB_SpringSecurityTest extends SpringTestBase {
       Context.sessionScope().setUser("releaser");
       List<DcControllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
       log.debug(l.get(0));
-      DcReleaser.release(Context.requestScope().getEntityManager(), l.get(0), null);
+      l.get(0).release(Context.requestScope().getEntityManager(), null);
 
       // CibetContext.getEntityManager().clear();
       l = DcLoader.findUnreleased(TComplexEntity.class.getName());
@@ -139,7 +138,7 @@ public class DB_SpringSecurityTest extends SpringTestBase {
 
       ssa.setThrowDeniedException(true);
       try {
-         DcReleaser.release(Context.requestScope().getEntityManager(), l.get(0), null);
+         l.get(0).release(Context.requestScope().getEntityManager(), null);
          Assert.fail();
       } catch (DeniedException e) {
       }
@@ -148,7 +147,7 @@ public class DB_SpringSecurityTest extends SpringTestBase {
       log.debug(l.get(0));
       l = DcLoader.findUnreleased(TComplexEntity.class.getName());
       log.debug(l.get(0));
-      DcReleaser.release(Context.requestScope().getEntityManager(), l.get(0), "ok");
+      l.get(0).release(Context.requestScope().getEntityManager(), "ok");
 
       // cibetEman.getTransaction().commit();
       log.debug("end");
@@ -181,7 +180,7 @@ public class DB_SpringSecurityTest extends SpringTestBase {
       // release
       Context.sessionScope().setUser("releaser");
       List<DcControllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
-      DcReleaser.release(Context.requestScope().getEntityManager(), l.get(0), null);
+      l.get(0).release(Context.requestScope().getEntityManager(), null);
       Assert.assertEquals(22, ent1.getStatValue());
    }
 
@@ -235,7 +234,7 @@ public class DB_SpringSecurityTest extends SpringTestBase {
       // release
       Context.sessionScope().setUser("releaser");
       List<DcControllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
-      DcReleaser.release(Context.requestScope().getEntityManager(), l.get(0), null);
+      l.get(0).release(Context.requestScope().getEntityManager(), null);
       Assert.assertEquals(33, ent1.getStatValue());
    }
 

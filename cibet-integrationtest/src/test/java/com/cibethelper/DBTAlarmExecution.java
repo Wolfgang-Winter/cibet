@@ -22,7 +22,7 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.cibethelper.entities;
+package com.cibethelper;
 
 import org.apache.log4j.Logger;
 

@@ -21,6 +21,7 @@ import javax.persistence.AssociationOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
@@ -36,6 +37,8 @@ import javax.persistence.Version;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.config.Configuration;
+import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -321,6 +324,174 @@ public class DcControllable implements Serializable {
          throw new IllegalStateException(err);
       }
       return (List<Difference>) rp.getUnencodedValue();
+   }
+
+   /**
+    * releases an event on a JPA resource. If it is the second release of a 6-eyes process the controlled object entry
+    * is updated. If it is a 4-eyes process the real object is updated.
+    * 
+    * @param entityManager
+    *           EntityManager for performing the release. Could be null in case of a INVOKE event. If JDBC, use new
+    *           JdbcBridgeEntityManager(connection)
+    * @param remark
+    *           comment
+    * @throws ResourceApplyException
+    *            if the release action fails.
+    */
+   @CibetContext
+   public Object release(EntityManager entityManager, String remark) throws ResourceApplyException {
+      log.debug("start DefaultDcService.release");
+
+      if (entityManager != null) {
+         Context.internalRequestScope().setApplicationEntityManager(entityManager);
+      }
+      if (getExecutionStatus() != ExecutionStatus.SCHEDULED) {
+         Context.internalRequestScope().setScheduledDate(getScheduledDate());
+      }
+      DcActuator dc = (DcActuator) Configuration.instance().getActuator(getActuator());
+      Object obj = dc.release(this, remark);
+      return obj;
+   }
+
+   /**
+    * release an event on a resource. Normally the resource involves no persistence here.
+    * 
+    * @param remark
+    *           comment
+    * @return method return value or null
+    * @throws ResourceApplyException
+    *            in case of error
+    */
+   @CibetContext
+   public Object release(String remark) throws ResourceApplyException {
+      if (getControlEvent().isChildOf(ControlEvent.PERSIST)) {
+         throw new IllegalArgumentException(
+               "This release method is not usable for DcControllable with ControlEvent PERSIST. "
+                     + "Use the release method which takes an EntityManager as parameter");
+      }
+
+      return release((EntityManager) null, remark);
+   }
+
+   /**
+    * rejects a non-JPA controlled resource.
+    * 
+    * @param remark
+    *           comment
+    * @throws ResourceApplyException
+    *            in case of error
+    */
+   @CibetContext
+   public void reject(String remark) throws ResourceApplyException {
+      if (getControlEvent().isChildOf(ControlEvent.PERSIST)) {
+         throw new IllegalArgumentException(
+               "This reject method is not usable for DcControllable with ControlEvent PERSIST. "
+                     + "Use the reject method which takes an EntityManager as parameter");
+      }
+      reject(null, remark);
+   }
+
+   /**
+    * rejects a controlled JPA entity. Rejects a postponed or scheduled DcControllable object if it is not yet released
+    * or executed by the scheduler batch process. This reject method must be called when the postponed or scheduled
+    * event is a PERSISTENCE event on an entity.
+    */
+   @CibetContext
+   public void reject(EntityManager entityManager, String remark) throws ResourceApplyException {
+      if (entityManager != null) {
+         Context.internalRequestScope().setApplicationEntityManager(entityManager);
+      }
+
+      DcActuator dc = (DcActuator) Configuration.instance().getActuator(getActuator());
+      dc.reject(this, remark);
+   }
+
+   /**
+    * returns the given dual control event back to the event producer. The event producer must correct the Controllable
+    * or resource data before it can be released. The difference to reject() is that after rejection the controlled
+    * resource is open for all users while when passed back to the event producing user, only this user can work on the
+    * Controllable and the controlled resource.
+    * 
+    * @param remark
+    *           message from the passing back user to the passed back user
+    * @throws ResourceApplyException
+    *            in case of error
+    */
+   @CibetContext
+   public void passBack(String remark) throws ResourceApplyException {
+      if (getControlEvent().isChildOf(ControlEvent.PERSIST)) {
+         throw new IllegalArgumentException(
+               "This passBack method is not usable for DcControllable with ControlEvent PERSIST. "
+                     + "Use the passBack method which takes an EntityManager as parameter");
+      }
+
+      passBack(null, remark);
+   }
+
+   /**
+    * returns the given dual control event back to the event producer. The event producer must correct the Controllable
+    * or resource data before it can be released. The difference to reject() is that after rejection the controlled
+    * resource is open for all users while when passed back to the event producing user, only this user can work on the
+    * Controllable and the controlled resource.
+    * 
+    * @param entityManager
+    *           the EntityManager used to persist the controlled entity
+    * @param remark
+    *           message from the passing back user to the passed back user
+    * @throws ResourceApplyException
+    *            in case of error
+    */
+   @CibetContext
+   public void passBack(EntityManager entityManager, String remark) throws ResourceApplyException {
+      if (entityManager != null) {
+         Context.internalRequestScope().setApplicationEntityManager(entityManager);
+      }
+
+      DcActuator dc = (DcActuator) Configuration.instance().getActuator(getActuator());
+      dc.passBack(this, remark);
+   }
+
+   /**
+    * submits a DcControllable for release. Used by the user who created the DcControllable and to whom it is passed
+    * back (see {@link #passBack(DcControllable, String)}). The ExecutionStatus will be set to POSTPONED or
+    * FIRST_POSTPONED. Notifications will be sent if configured.
+    * 
+    * @param remark
+    *           comment
+    * @throws ResourceApplyException
+    *            in case of error
+    */
+   @CibetContext
+   public void submit(String remark) throws ResourceApplyException {
+      if (getControlEvent().isChildOf(ControlEvent.PERSIST)) {
+         throw new IllegalArgumentException(
+               "This submit method is not usable for DcControllable with ControlEvent PERSIST. "
+                     + "Use the submit method which takes an EntityManager as parameter");
+      }
+
+      submit(null, remark);
+   }
+
+   /**
+    * submits a DcControllable for release. Used by the user who created the DcControllable and to whom it is passed
+    * back (see {@link #passBack(DcControllable, String)}). The ExecutionStatus will be set to POSTPONED or
+    * FIRST_POSTPONED. Notifications will be sent if configured.
+    * 
+    * @param entityManager
+    *           the EntityManager used to persist the controlled entity
+    * @param remark
+    *           comment
+    * @throws ResourceApplyException
+    *            if an error occurs
+    */
+   @CibetContext
+   public void submit(EntityManager entityManager, String remark) throws ResourceApplyException {
+      if (entityManager != null) {
+         Context.internalRequestScope().setApplicationEntityManager(entityManager);
+      }
+
+      DcActuator dc = (DcActuator) Configuration.instance().getActuator(getActuator());
+      dc.submit(this, remark);
    }
 
    /**

@@ -349,6 +349,7 @@
 				<configuration>
 					<enableAssertions>false</enableAssertions>
 					<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx4096m -Xms2048m</argLine>
+					<testFailureIgnore>true</testFailureIgnore>
 				</configuration>
 			</plugin>
 

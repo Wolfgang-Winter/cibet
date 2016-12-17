@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com 
+   ../../main/resources/cibet-config_1.0.xsd">
+
+	<actuator name="TESTSUBSUB">
+		<class>com.cibethelper.base.SubSub4EyesController</class>
+		<properties>
+			<dummy1>1234456789123</dummy1>
+			<dummy2>false</dummy2>
+			<intParamB>234</intParamB>
+			<doubleParam>45.67</doubleParam>
+			<doubleParamB>34.22</doubleParamB>
+			<floatParam>12.55</floatParam>
+			<floatParamB>102.456</floatParamB>
+			<strParam>Hallo</strParam>
+			<boolParam>True</boolParam>
+			<shortParamB>12</shortParamB>
+			<longParam>123456</longParam>
+			<not_present_attribute>12</not_present_attribute>
+		</properties>
+	</actuator>
+
+</cibet>   
