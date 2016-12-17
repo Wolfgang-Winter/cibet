@@ -1,50 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.0.xsd">
+   ../../main/resources/cibet-config_1.3.xsd">
 
 	<actuator name="LOADCONTROL">
 		<properties>
-			<customMonitors>com.cibethelper.loadcontrol.DummyMonitor, com.cibethelper.loadcontrol.DummyMonitor</customMonitors>					
+			<customMonitors>com.cibethelper.loadcontrol.DummyMonitor,
+				com.cibethelper.loadcontrol.DummyMonitor</customMonitors>
 		</properties>
 	</actuator>
 
-   <actuator name="TESTSUBSUB">
-      <class>com.cibethelper.base.SubSub4EyesController</class>
-      <properties>
-         <dummy1>1234456789123</dummy1>
-         <dummy2>false</dummy2>
-         <intParamB>234</intParamB>
-         <doubleParam>45.67</doubleParam>
-         <doubleParamB>34.22</doubleParamB>
-         <floatParam>12.55</floatParam>
-         <floatParamB>102.456</floatParamB>
-         <strParam>Hallo</strParam>
-         <boolParam>True</boolParam>
-         <shortParamB>12</shortParamB>
-         <shortParam>12</shortParam>
-         <longParam>123456</longParam>
-      </properties>
-   </actuator>
+	<actuator name="TESTSUBSUB">
+		<class>com.cibethelper.base.SubSub4EyesController</class>
+		<properties>
+			<dummy1>1234456789123</dummy1>
+			<dummy2>false</dummy2>
+			<intParamB>234</intParamB>
+			<doubleParam>45.67</doubleParam>
+			<doubleParamB>34.22</doubleParamB>
+			<floatParam>12.55</floatParam>
+			<floatParamB>102.456</floatParamB>
+			<strParam>Hallo</strParam>
+			<boolParam>True</boolParam>
+			<shortParamB>12</shortParamB>
+			<shortParam>12</shortParam>
+			<longParam>123456</longParam>
+		</properties>
+	</actuator>
 
 	<actuator name="ARCHIVE2">
 		<class>com.logitags.cibet.actuator.archive.ArchiveActuator</class>
 		<properties>
-			<jndiName>CibetEntityManager.jndiName</jndiName>		
+			<jndiName>CibetEntityManager.jndiName</jndiName>
 		</properties>
 	</actuator>
 
-<!-- 
-	<actuator name="SCHED1">
-		<class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class>
-		<properties>
-			<timerStart>+ 6</timerStart>
-			<throwPostponedException>true</throwPostponedException>
-			<autoRemoveScheduledDate>true</autoRemoveScheduledDate>
-			<batchInterceptor>com.logitags.cibet.helper.SchedulerPersistIntercept</batchInterceptor>
-		</properties>
-	</actuator>
--->
+	<!-- <actuator name="SCHED1"> <class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class> 
+		<properties> <timerStart>+ 6</timerStart> <throwPostponedException>true</throwPostponedException> 
+		<autoRemoveScheduledDate>true</autoRemoveScheduledDate> <batchInterceptor>com.logitags.cibet.helper.SchedulerPersistIntercept</batchInterceptor> 
+		</properties> </actuator> -->
 
 	<setpoint id="A">
 		<controls>
@@ -54,8 +48,8 @@
 				com.cibethelper.entities.TEntity
 			</target>
 		</controls>
-		<actuator name="FOUR_EYES"/>
-		<actuator name="ARCHIVE"/>
+		<actuator name="FOUR_EYES" />
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="B">
@@ -64,9 +58,9 @@
 			<event>INSERT</event>
 			<target>com.cibethelper.entities.TComplexEntity</target>
 		</controls>
-		<actuator name="ARCHIVE"/>
+		<actuator name="ARCHIVE" />
 	</setpoint>
- 
+
 	<setpoint id="C">
 		<controls>
 			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
@@ -74,7 +68,7 @@
 			<target>com.cibethelper.base.TrueCustomControl</target>
 			<method>setGaga</method>
 		</controls>
-		<actuator name="ARCHIVE"/>
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="D">
@@ -84,15 +78,73 @@
 			<target>com.cibethelper.base.TrueCustomControl</target>
 			<method>getName()</method>
 		</controls>
-		<actuator name="ARCHIVE2"/>
+		<actuator name="ARCHIVE2" />
 	</setpoint>
- 
+
 	<setpoint id="com.logitags.cibet.actuator.loadcontrol.x">
 		<controls>
 			<target>com.cibethelper.loadcontrol.MonitorTestClass</target>
 			<method>cibet*</method>
 		</controls>
-		<actuator name="LOADCONTROL"/>
+		<actuator name="LOADCONTROL" />
 	</setpoint>
+
+	<setpoint id="ConditionControlTest-1">
+		<controls>
+			<event>INSERT</event>
+			<target>com.logitags.cibet.util.TEntity</target>
+			<invoker>
+				com.logitags.cibet.controller.controls.InvokerControlTest.evaluateInclude1()
+			</invoker>
+			<stateChange exclude="true">counter, ten.counter</stateChange>
+			<condition>
+				var date = java.util.Calendar.getInstance();
+				date.get(java.util.Calendar.YEAR) &gt;= 2003
+				&amp;&amp; date.get(java.util.Calendar.YEAR) &lt;= 2050
+				&amp;&amp; $EVENT.name().equals("INVOKE")
+				&amp;&amp; $SESSIONSCOPE.getProperty("Klaus") != null
+				&amp;&amp; $SESSIONSCOPE.getProperty("Klaus").getCounter() == 7
+				&amp;&amp; $SESSIONSCOPE.getProperty("Emil") == 2
+			</condition>
+		</controls>
+		<actuator name="ARCHIVE" />
+	</setpoint>
+
+   <setpoint id="ConditionControlTest-2">
+      <controls>
+         <event>INSERT</event>
+         <target>com.logitags.cibet.util.TEntity</target>
+         <method>getBytes(int)</method>
+         <invoker exclude="true">
+                com.logitags.cibet.ConfigurationTest.methodEvaluation2(),
+                com.logitags.x*,
+         </invoker>
+         <stateChange>counter, ten.counter</stateChange>
+         <condition>
+              var DATE = new java.util.Date();
+              print(DATE);
+              print($PARAM2);
+              $TARGET.getCounter() == 7
+              &amp;&amp; $PARAM0 == 2
+              &amp;&amp; $PARAM2.before(DATE)
+              &amp;&amp; $PARAM3 == null
+              &amp;&amp; $TARGET.getCounter() == 7
+         </condition>
+      </controls>
+      <actuator name="ARCHIVE"/>
+   </setpoint>
+
+   <setpoint id="ConditionControlTest-3">
+      <controls>
+         <tenant>ten1</tenant>
+         <event>INSERT, INVOKE</event>
+         <target>com.logitags.*</target>
+         <method>hasenmethode()</method>
+         <invoker exclude="true">com.logitags.cibet.*</invoker>
+         <stateChange>nixxi</stateChange>
+         <condition>"Sting".equals($TARGET.getOwner())</condition>
+      </controls>
+      <actuator name="ARCHIVE"/>
+   </setpoint>
 
 </cibet>   
