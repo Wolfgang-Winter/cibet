@@ -19,6 +19,7 @@ import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.Factory;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -26,8 +27,6 @@ import com.cibethelper.DummySecurityManager;
 import com.cibethelper.ShiroTestBase;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalSessionScope;
-
-import junit.framework.Assert;
 
 /**
  * add -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9. jar to java command

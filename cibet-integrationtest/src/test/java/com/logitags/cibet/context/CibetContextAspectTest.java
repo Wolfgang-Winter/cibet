@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,8 +52,6 @@ import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.jndi.EjbLookup;
 import com.logitags.cibet.sensor.jdbc.bridge.TableIdGenerator;
-
-import junit.framework.Assert;
 
 public class CibetContextAspectTest extends CoreTestBase {
 

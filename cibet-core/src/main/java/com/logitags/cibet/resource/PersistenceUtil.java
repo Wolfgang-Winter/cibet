@@ -76,6 +76,13 @@ public abstract class PersistenceUtil {
          } else {
             // jpa
             Object cleanObject = getCleanResource(metadata.getResource());
+            if (cleanObject == null) {
+               String msg = "failed to load object from database: no object of class "
+                     + metadata.getResource().getObject().getClass().getName() + " with id "
+                     + metadata.getResource().getPrimaryKeyObject() + " found";
+               log.error(msg);
+               throw new IllegalStateException(msg);
+            }
             diffs = CibetUtil.compare(metadata.getResource().getObject(), cleanObject);
          }
          metadata.getProperties().put(DIRTY_DIFFERENCES_KEY, diffs);
@@ -98,10 +105,10 @@ public abstract class PersistenceUtil {
                String msg = "failed to load object from database: no value for primary key found in persisted object "
                      + resource.getObject();
                log.error(msg);
-               throw new RuntimeException(msg);
+               throw new IllegalStateException(msg);
             }
          } catch (AnnotationNotFoundException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new IllegalStateException(e.getMessage(), e);
          }
 
          EntityManager internalEM = Context.internalRequestScope().getApplicationEntityManager2();
@@ -112,7 +119,7 @@ public abstract class PersistenceUtil {
                   + ". This instance of EntityManager may not be the same " + "as the EntityManager set with method "
                   + "setEntityManager(EntityManager manager)";
             log.error(msg);
-            throw new RuntimeException(msg);
+            throw new IllegalStateException(msg);
          }
 
          Object storedObject = internalEM.find(resource.getObject().getClass(), resource.getPrimaryKeyObject());
@@ -120,7 +127,7 @@ public abstract class PersistenceUtil {
             String msg = "failed to load object from database: no object of class "
                   + resource.getObject().getClass().getName() + " with id " + resource.getPrimaryKeyObject() + " found";
             log.error(msg);
-            throw new RuntimeException(msg);
+            throw new IllegalStateException(msg);
          }
          CibetUtil.loadLazyEntities(storedObject, resource.getObject().getClass());
 

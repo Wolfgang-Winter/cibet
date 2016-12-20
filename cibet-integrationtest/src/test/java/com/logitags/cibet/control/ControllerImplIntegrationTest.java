@@ -23,6 +23,7 @@ import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,8 +40,6 @@ import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
-
-import junit.framework.Assert;
 
 /**
  * -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9.jar

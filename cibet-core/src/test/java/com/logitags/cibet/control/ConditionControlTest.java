@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.cibethelper.base.CoreTestBase;
@@ -34,8 +35,6 @@ import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
 import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
-
-import junit.framework.Assert;
 
 public class ConditionControlTest extends CoreTestBase {
 

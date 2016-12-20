@@ -27,6 +27,7 @@ package com.cibethelper;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.dc.DcControllable;
@@ -34,8 +35,6 @@ import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.CibetContextAspectTest;
 import com.logitags.cibet.context.Context;
-
-import junit.framework.Assert;
 
 @CibetContext
 public class CibetContextAspectTestHelper {

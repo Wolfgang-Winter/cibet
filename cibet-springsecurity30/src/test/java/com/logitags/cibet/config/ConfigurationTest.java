@@ -19,6 +19,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.cibethelper.base.CoreTestBase;
@@ -26,8 +27,6 @@ import com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator;
 import com.logitags.cibet.authentication.AuthenticationProvider;
 import com.logitags.cibet.authentication.ChainedAuthenticationProvider;
 import com.logitags.cibet.authentication.SpringSecurityAuthenticationProvider;
-
-import junit.framework.Assert;
 
 public class ConfigurationTest extends CoreTestBase {
 

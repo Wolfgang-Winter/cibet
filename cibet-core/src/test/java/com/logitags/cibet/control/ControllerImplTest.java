@@ -19,6 +19,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -38,6 +41,7 @@ import com.logitags.cibet.actuator.dc.SixEyesActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.resource.ParameterType;
@@ -45,8 +49,6 @@ import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
 import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
-
-import junit.framework.Assert;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ControllerImplTest extends CoreTestBase {
@@ -58,6 +60,16 @@ public class ControllerImplTest extends CoreTestBase {
 
    @Mock
    private EntityManager em2;
+
+   @Before
+   public void before() {
+      InitializationService.instance().startContext();
+   }
+
+   @After
+   public void after() {
+      InitializationService.instance().endContext();
+   }
 
    private TComplexEntity createEntity() {
       TEntity te = createTEntity(5, "Hase");
@@ -128,8 +140,8 @@ public class ControllerImplTest extends CoreTestBase {
    @Test
    public void evaluateStateChange() throws Exception {
       log.info("start evaluateStateChange()");
-      Context.sessionScope().setTenant("ten1");
       initConfiguration("config_controller.xml");
+      Context.sessionScope().setTenant("ten1");
 
       TEntity te = createTEntity(5, "Hase");
       TComplexEntity cte = new TComplexEntity();
@@ -139,7 +151,7 @@ public class ControllerImplTest extends CoreTestBase {
       cte.setOwner("Hase");
 
       createEntity();
-
+      log.debug("xxx");
       Resource res = new Resource(JpaResourceHandler.class, cte);
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
       Controller ev = new DefaultController();

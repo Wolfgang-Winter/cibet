@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com 
+   ../../main/resources/cibet-config_1.0.xsd">
+
+	<setpoint id="A">
+		<controls>
+			<tenant>ten1</tenant>
+			<event>INSERT, INVOKE</event>
+			<target>*</target>
+			<method>getBytes(), doX</method>
+			<stateChange>nixxi, lazyList</stateChange>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="C">
+		<controls>
+			<event>INSERT</event>
+			<target>com.cibethelper.entities.TEntity</target>
+			<method>"getBytes(int, String)", "getBytes(int, java.lang.String,
+						com.cibethelper.entities.TEntity)";
+						"getBytes(int[], java.lang.String[][])"</method>
+			<stateChange>counter, ten.counter</stateChange>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+</cibet>   

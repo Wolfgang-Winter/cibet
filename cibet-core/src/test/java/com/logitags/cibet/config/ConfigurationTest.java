@@ -21,6 +21,7 @@ import javax.management.ObjectName;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.cibethelper.base.CoreTestBase;
@@ -39,8 +40,6 @@ import com.logitags.cibet.control.TargetControl;
 import com.logitags.cibet.control.TenantControl;
 import com.logitags.cibet.notification.EmailNotificationProvider;
 import com.logitags.cibet.security.DefaultSecurityProvider;
-
-import junit.framework.Assert;
 
 public class ConfigurationTest extends CoreTestBase {
 
@@ -83,7 +82,7 @@ public class ConfigurationTest extends CoreTestBase {
       Assert.assertEquals(1234456789123L, controller.getDummy1());
       Assert.assertEquals(false, controller.isDummy2());
       Assert.assertEquals(new Integer(234), controller.getIntParamB());
-      Assert.assertEquals(45.67, controller.getDoubleParam());
+      Assert.assertEquals(45.67, controller.getDoubleParam(), 0);
       Assert.assertEquals(new Double(34.22), controller.getDoubleParamB());
       Assert.assertTrue("Is: " + controller.getFloatParam(), 12.55f == controller.getFloatParam());
       Assert.assertEquals(new Float(102.456), controller.getFloatParamB());
@@ -107,9 +106,9 @@ public class ConfigurationTest extends CoreTestBase {
       Assert.assertEquals(1234456789123l, act.getDummy1());
       Assert.assertEquals(false, act.isDummy2());
       Assert.assertEquals(new Integer(234), act.getIntParamB());
-      Assert.assertEquals(45.67, act.getDoubleParam());
+      Assert.assertEquals(45.67, act.getDoubleParam(), 0);
       Assert.assertEquals(new Double(34.22), act.getDoubleParamB());
-      Assert.assertEquals((float) 12.55, act.getFloatParam());
+      Assert.assertEquals((float) 12.55, act.getFloatParam(), 0);
       Assert.assertEquals(new Float(102.456), act.getFloatParamB());
       Assert.assertEquals("Hallo", act.getStrParam());
       Assert.assertEquals(Boolean.TRUE, act.getBoolParam());

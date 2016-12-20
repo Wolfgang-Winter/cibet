@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.access.AccessDeniedException;
@@ -43,8 +44,6 @@ import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.sensor.ejb.EjbResourceHandler;
 import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
 import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
-
-import junit.framework.Assert;
 
 /**
  * add -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9. jar to java command

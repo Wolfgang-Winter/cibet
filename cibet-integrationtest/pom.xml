@@ -59,4 +59,34 @@
 
 	</dependencies>
 
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.8</version>
+            <executions>
+               <execution>
+                  <id>database</id>
+                  <phase>process-test-resources</phase>
+                  <goals>
+                     <goal>run</goal>
+                  </goals>
+                  <configuration>
+                     <target>
+                        <echo message="set ${db} persistence.xml" />
+                        <move failonerror="true"
+                           file="${project.build.testOutputDirectory}/META-INF/persistence-${db}.xml"
+                           tofile="${project.build.testOutputDirectory}/META-INF/persistence.xml" />
+                        <move failonerror="true"
+                           file="${project.build.testOutputDirectory}/META-INF/jdbc-connection-${db}.properties"
+                           tofile="${project.build.testOutputDirectory}/META-INF/jdbc-connection.properties" />
+                     </target>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+   
 </project>

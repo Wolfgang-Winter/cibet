@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.logitags.com 
+   ../../main/resources/cibet-config_1.0.xsd">
+
+      <setpoint id="A">
+         <controls>
+         	<tenant>ten1</tenant>
+         	<event>INSERT, INVOKE</event>
+            <target>*</target>
+            <method>*</method>
+            <invoker exclude="true">
+              *,  com.cibethelper.*
+            </invoker>
+            <stateChange>nixxi</stateChange>
+            <condition>$TARGET.getCounter() &lt; -1 </condition>
+         </controls>
+		<actuator name="ARCHIVE"/>
+      </setpoint>
+
+      <setpoint id="C">
+         <controls>
+         	<event>INSERT</event>
+            <target>com.cibethelper.entities.TEntity</target>
+            <method>getBytes(int)</method>
+			<invoker exclude="true">
+                com.logitags.cibet.config.ConfigurationTest.registerNullSetpopint(),
+                com.logitags.x*,
+            </invoker>
+            <stateChange>counter, ten.counter</stateChange>
+            <condition>
+              var DATE = new java.util.Date();
+              print(DATE);
+              print($PARAM2);
+              $TARGET.getCounter() == 7
+              &amp;&amp; $PARAM0 == 2
+              &amp;&amp; $PARAM2.before(DATE)
+              &amp;&amp; $PARAM3 == null
+			  &amp;&amp; $TARGET.getCounter() == 7
+			</condition>
+         </controls>
+		<actuator name="ARCHIVE"/>
+      </setpoint>
+
+      <setpoint id="D">
+         <controls>
+         	<tenant>ten1</tenant>
+         	<event>INSERT, INVOKE</event>
+            <target>com.logitags.*</target>
+            <method>hasenmethode()</method>
+            <invoker exclude="true">
+               com.logitags.cibet.*,com.cibethelper.*
+            </invoker>
+            <stateChange>nixxi</stateChange>
+            <condition>"Sting".equals($TARGET.getOwner())</condition>
+         </controls>
+		<actuator name="ARCHIVE"/>
+      </setpoint>
+
+      <setpoint id="E">
+         <controls>
+         	<tenant>ten1</tenant>
+         	<event>INSERT, INVOKE</event>
+            <target>com.logitags.*</target>
+            <method>hasenmethode()</method>
+			   <invoker exclude="true">
+            	 com.logitags.cibet.*,com.cibethelper.*
+            </invoker>
+            <stateChange>nixxi</stateChange>
+            <condition>$PARAM1.getCounter() != 17</condition>
+         </controls>
+		<actuator name="ARCHIVE"/>
+      </setpoint>
+
+</cibet>   

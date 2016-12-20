@@ -44,8 +44,6 @@ public class StateChangeControl extends AbstractControl {
 
    public static final String NAME = "stateChange";
 
-   private static final String DIRTY_DIFFERENCES_KEY = "__DIRTY_DIFFERENCES";
-
    private boolean isInConstrained(List<String> constraints, List<Difference> diffs) {
       for (Difference diff : diffs) {
          if (constraints.contains(diff.getCanonicalPath())) {

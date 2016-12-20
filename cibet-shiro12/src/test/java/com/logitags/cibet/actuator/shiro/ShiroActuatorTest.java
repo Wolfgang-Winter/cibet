@@ -20,6 +20,7 @@ import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.Factory;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,8 +40,6 @@ import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
 import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
-
-import junit.framework.Assert;
 
 /**
  * add -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9. jar to java command

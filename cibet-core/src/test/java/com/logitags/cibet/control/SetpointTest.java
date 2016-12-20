@@ -19,6 +19,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.logitags.cibet.actuator.common.Actuator;
@@ -27,8 +28,6 @@ import com.logitags.cibet.bindings.SetpointBinding;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.core.ControlEvent;
-
-import junit.framework.Assert;
 
 public class SetpointTest {
 

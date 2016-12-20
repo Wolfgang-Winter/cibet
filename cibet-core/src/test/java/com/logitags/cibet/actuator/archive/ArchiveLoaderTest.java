@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.cibethelper.entities.Syntetic1Entity;
@@ -30,8 +31,6 @@ import com.logitags.cibet.diff.Difference;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
 import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
-
-import junit.framework.Assert;
 
 public class ArchiveLoaderTest {
 
