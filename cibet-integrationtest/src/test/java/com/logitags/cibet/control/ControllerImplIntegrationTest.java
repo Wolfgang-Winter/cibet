@@ -14,27 +14,15 @@
  */
 package com.logitags.cibet.control;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.cibethelper.base.CoreTestBase;
+import com.cibethelper.base.DBHelper;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TEntity;
-import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
@@ -44,62 +32,17 @@ import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
 /**
  * -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9.jar
  */
-public class ControllerImplIntegrationTest extends CoreTestBase {
-
-   private static EntityManager applEman;
-   private static EntityManagerFactory fac;
-
-   @BeforeClass
-   public static void beforeClass() throws Exception {
-      fac = Persistence.createEntityManagerFactory("localTest");
-      applEman = fac.createEntityManager();
-   }
-
-   @Before
-   public void doBefore() throws Exception {
-      log.debug("CibetContextAspectTest.doBefore");
-      applEman.getTransaction().begin();
-   }
+public class ControllerImplIntegrationTest extends DBHelper {
 
    /**
     * logger for tracing
     */
    private static Logger log = Logger.getLogger(ControllerImplIntegrationTest.class);
 
-   @After
-   public void delete() {
-      log.debug("after test: delete");
-      applEman.getTransaction().rollback();
-
-      applEman.getTransaction().begin();
-
-      Context.internalRequestScope().getEntityManager().flush();
-      Query q = applEman.createNamedQuery(TComplexEntity.SEL_ALL);
-      List<TComplexEntity> l = q.getResultList();
-      for (TComplexEntity tComplexEntity : l) {
-         applEman.remove(tComplexEntity);
-      }
-
-      Query q2 = applEman.createNamedQuery(TEntity.DEL_ALL);
-      q2.executeUpdate();
-
-      Query q3 = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_CLASS);
-      q3.setParameter("tenant", "ten%");
-      q3.setParameter("targetType", "com.logitags.cibet.helper.TComplexEntity");
-      List<Archive> alist = q3.getResultList();
-      for (Archive ar : alist) {
-         applEman.remove(ar);
-      }
-
-      applEman.getTransaction().commit();
-      InitializationService.instance().endContext();
-   }
-
    @Test
    public void evaluateNoMatch() throws Exception {
       log.info("start evaluateNoMatch()");
       initConfiguration("config_controller.xml");
-      InitializationService.instance().startContext();
 
       TEntity te = createTEntity(5, "Hase");
       TComplexEntity cte = new TComplexEntity();
@@ -118,7 +61,6 @@ public class ControllerImplIntegrationTest extends CoreTestBase {
    public void evaluateInsert() throws Exception {
       log.info("start evaluateInsert()");
       initConfiguration("config_controller.xml");
-      InitializationService.instance().startContext();
 
       TComplexEntity cte = persistTComplexEntity();
 
@@ -134,7 +76,6 @@ public class ControllerImplIntegrationTest extends CoreTestBase {
    public void evaluateUpdateTenant() throws Exception {
       log.info("start evaluateUpdateTenant()");
       initConfiguration("config_controller.xml");
-      InitializationService.instance().startContext();
 
       if (Context.internalRequestScope().getApplicationEntityManager2() == null) {
          Context.internalRequestScope().setApplicationEntityManager2(fac.createEntityManager());
@@ -158,7 +99,6 @@ public class ControllerImplIntegrationTest extends CoreTestBase {
    public void evaluateInsertStateChange() throws Exception {
       log.info("start evaluateInsertStateChange()");
       initConfiguration("config_controller.xml");
-      InitializationService.instance().startContext();
 
       TComplexEntity cte = persistTComplexEntity();
 
@@ -177,7 +117,6 @@ public class ControllerImplIntegrationTest extends CoreTestBase {
    public void evaluatorImpl1() throws Exception {
       log.info("start evaluatorImpl1()");
       initConfiguration("config_controller.xml");
-      InitializationService.instance().startContext();
 
       if (Context.internalRequestScope().getApplicationEntityManager2() == null) {
          Context.internalRequestScope().setApplicationEntityManager2(fac.createEntityManager());
@@ -219,7 +158,6 @@ public class ControllerImplIntegrationTest extends CoreTestBase {
    public void customControl() throws Exception {
       log.debug("start customControl()");
       initConfiguration("config_customControl.xml");
-      InitializationService.instance().startContext();
 
       TComplexEntity cte = new TComplexEntity();
       cte.setOwner("new1");

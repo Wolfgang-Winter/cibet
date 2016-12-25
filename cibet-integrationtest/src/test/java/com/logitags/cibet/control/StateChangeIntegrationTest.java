@@ -19,25 +19,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.cibethelper.base.CoreTestBase;
+import com.cibethelper.base.DBHelper;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.resource.Resource;
@@ -46,7 +39,7 @@ import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
 /**
  *
  */
-public class StateChangeIntegrationTest extends CoreTestBase {
+public class StateChangeIntegrationTest extends DBHelper {
 
    /**
     * logger for tracing
@@ -54,42 +47,6 @@ public class StateChangeIntegrationTest extends CoreTestBase {
    private static Logger log = Logger.getLogger(StateChangeIntegrationTest.class);
 
    private Configuration cman = Configuration.instance();
-   private static EntityManager applEman;
-   private static EntityManagerFactory fac;
-
-   @BeforeClass
-   public static void beforeClass() throws Exception {
-      fac = Persistence.createEntityManagerFactory("localTest");
-      applEman = fac.createEntityManager();
-   }
-
-   @Before
-   public void doBefore() throws Exception {
-      log.debug("CibetContextAspectTest.doBefore");
-      InitializationService.instance().startContext();
-      applEman.getTransaction().begin();
-   }
-
-   @After
-   public void delete() {
-      log.debug("after test: delete");
-      applEman.getTransaction().rollback();
-
-      applEman.getTransaction().begin();
-
-      Context.internalRequestScope().getEntityManager().flush();
-      Query q = applEman.createNamedQuery(TComplexEntity.SEL_ALL);
-      List<TComplexEntity> l = q.getResultList();
-      for (TComplexEntity tComplexEntity : l) {
-         applEman.remove(tComplexEntity);
-      }
-
-      Query q2 = applEman.createNamedQuery(TEntity.DEL_ALL);
-      q2.executeUpdate();
-
-      applEman.getTransaction().commit();
-      InitializationService.instance().endContext();
-   }
 
    private List<Setpoint> evaluate(EventMetadata md, List<Setpoint> spoints) {
       Control eval = new StateChangeControl();

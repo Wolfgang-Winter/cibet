@@ -106,7 +106,7 @@ public abstract class CoreTestBase {
       TEntity te = new TEntity();
       te.setCounter(counter);
       te.setNameValue(name);
-      te.setOwner(name);
+      te.setOwner(TENANT);
       return te;
    }
 

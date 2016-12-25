@@ -20,7 +20,6 @@
          <property name="javax.persistence.jdbc.user" value="APP"/>
          <property name="javax.persistence.jdbc.password" value="x"/>
 
-         <property name="hibernate.show_sql" value="true" />
          <property name="hibernate.format_sql" value="true" />
 <!--          <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
       </properties>
@@ -30,7 +29,10 @@
       <provider>com.logitags.cibet.sensor.jpa.Provider</provider>
       <class>com.cibethelper.entities.TEntity</class>
       <class>com.cibethelper.entities.TComplexEntity</class>
+      <class>com.cibethelper.entities.TComplexEntity2</class>
       <class>com.cibethelper.loadcontrol.JMEntity</class>
+      <class>com.cibethelper.AuditedTEntity</class>
+      <class>com.cibethelper.AuditedTComplexEntity</class>
       
       <properties>
          <property name="com.logitags.cibet.persistence.provider" value="org.hibernate.ejb.HibernatePersistence"/>
@@ -44,7 +46,7 @@
 <!--         <property name="hibernate.show_sql" value="true" /> -->
          <property name="hibernate.format_sql" value="true" />
 <!--          <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
-         <property name="hibernate.listeners.envers.autoRegister" value="true"/>
+         <property name="hibernate.listeners.envers.autoRegister" value="false"/>
       </properties>
    </persistence-unit>
 

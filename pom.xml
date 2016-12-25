@@ -140,6 +140,14 @@
 				<version>${project.version}</version>
 			</dependency>
 
+         <dependency>
+            <groupId>com.logitags</groupId>
+            <artifactId>cibet-envers42</artifactId>
+            <version>${project.version}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+         </dependency>
+
 			<dependency>
 				<groupId>com.logitags</groupId>
 				<artifactId>cibet-shiro12</artifactId>
@@ -183,6 +191,12 @@
 			<version>1.10</version>
 		</dependency>
 
+      <dependency>
+         <groupId>javax.mail</groupId>
+         <artifactId>mail</artifactId>
+         <version>1.5.0-b01</version>
+         <type>jar</type>
+      </dependency>
 
 
 		<!-- TEST DEPENDENCIES -->

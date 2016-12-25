@@ -45,18 +45,15 @@ public class CibetIntegrator extends EnversIntegrator {
    private AuditConfiguration enversConfiguration;
 
    @Override
-   public void disintegrate(SessionFactoryImplementor arg0,
-         SessionFactoryServiceRegistry arg1) {
+   public void disintegrate(SessionFactoryImplementor arg0, SessionFactoryServiceRegistry arg1) {
       super.disintegrate(arg0, arg1);
    }
 
    @Override
-   public void integrate(Configuration configuration,
-         SessionFactoryImplementor sessionFactory,
+   public void integrate(Configuration configuration, SessionFactoryImplementor sessionFactory,
          SessionFactoryServiceRegistry serviceRegistry) {
       log.info("start CibetIntegrator");
-      final boolean autoRegister = ConfigurationHelper.getBoolean(
-            AUTO_REGISTER, configuration.getProperties(), true);
+      final boolean autoRegister = ConfigurationHelper.getBoolean(AUTO_REGISTER, configuration.getProperties(), true);
       if (autoRegister) {
          log.debug("Skipping Cibet Envers listener auto registration");
          return;
@@ -64,25 +61,18 @@ public class CibetIntegrator extends EnversIntegrator {
 
       log.info("CibetIntegrator registers Cibet Envers listeners");
 
-      EventListenerRegistry listenerRegistry = serviceRegistry
-            .getService(EventListenerRegistry.class);
-      listenerRegistry
-            .addDuplicationStrategy(EnversListenerDuplicationStrategy.INSTANCE);
+      EventListenerRegistry listenerRegistry = serviceRegistry.getService(EventListenerRegistry.class);
+      listenerRegistry.addDuplicationStrategy(EnversListenerDuplicationStrategy.INSTANCE);
 
       enversConfiguration = AuditConfiguration.getFor(configuration,
             serviceRegistry.getService(ClassLoaderService.class));
 
       if (enversConfiguration.getEntCfg().hasAuditedEntities()) {
-         listenerRegistry.appendListeners(EventType.POST_DELETE,
-               new CibetPostDeleteEventListener(enversConfiguration));
-         listenerRegistry.appendListeners(EventType.POST_INSERT,
-               new CibetPostInsertEventListener(enversConfiguration));
-         listenerRegistry.appendListeners(EventType.POST_UPDATE,
-               new CibetPostUpdateEventListener(enversConfiguration));
-         listenerRegistry
-               .appendListeners(EventType.POST_COLLECTION_RECREATE,
-                     new CibetPostCollectionRecreateEventListener(
-                           enversConfiguration));
+         listenerRegistry.appendListeners(EventType.POST_DELETE, new CibetPostDeleteEventListener(enversConfiguration));
+         listenerRegistry.appendListeners(EventType.POST_INSERT, new CibetPostInsertEventListener(enversConfiguration));
+         listenerRegistry.appendListeners(EventType.POST_UPDATE, new CibetPostUpdateEventListener(enversConfiguration));
+         listenerRegistry.appendListeners(EventType.POST_COLLECTION_RECREATE,
+               new CibetPostCollectionRecreateEventListener(enversConfiguration));
          listenerRegistry.appendListeners(EventType.PRE_COLLECTION_REMOVE,
                new CibetPreCollectionRemoveEventListener(enversConfiguration));
          listenerRegistry.appendListeners(EventType.PRE_COLLECTION_UPDATE,
@@ -91,8 +81,7 @@ public class CibetIntegrator extends EnversIntegrator {
    }
 
    @Override
-   public void integrate(MetadataImplementor arg0,
-         SessionFactoryImplementor arg1, SessionFactoryServiceRegistry arg2) {
+   public void integrate(MetadataImplementor arg0, SessionFactoryImplementor arg1, SessionFactoryServiceRegistry arg2) {
       if (enversConfiguration != null) {
          enversConfiguration.destroy();
       }

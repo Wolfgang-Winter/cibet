@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com 
+   ../../main/resources/cibet-config_1.3.xsd">
+
+	<actuator name="ARCHIVE">
+		<properties>
+			<storedProperties>compValue, owner</storedProperties>
+		</properties>
+	</actuator>
+   
+	<setpoint id="envers-1">
+		<controls>
+			<event>INSERT</event>
+			<target>com.cibethelper.AuditedTComplexEntity</target>
+			<invoker>com.logitags.cibet.actuator.envers.EnversActuatorIntegrationTest.persist1()</invoker>
+		</controls>
+		<actuator name="ARCHIVE"/>
+		<actuator name="ENVERS"/>
+	</setpoint>
+
+	<setpoint id="envers-2">
+		<controls>
+			<event>DELETE</event>
+			<target>com.cibethelper.AuditedTComplexEntity</target>
+			<invoker>com.logitags.cibet.actuator.envers.EnversActuatorIntegrationTest.delete1()</invoker>
+		</controls>
+		<actuator name="ENVERS"/>
+	</setpoint>
+
+	<setpoint id="envers-3">
+		<controls>
+			<event>UPDATE</event>
+			<target>com.cibethelper.AuditedTComplexEntity</target>
+			<invoker>com.logitags.cibet.actuator.envers.EnversActuatorIntegrationTest.update1()</invoker>
+		</controls>
+		<actuator name="ENVERS"/>
+	</setpoint>
+   
+</cibet>   

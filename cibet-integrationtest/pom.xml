@@ -27,6 +27,17 @@
 			<artifactId>cibet-jpa20</artifactId>
 		</dependency>
 
+      <dependency>
+         <groupId>com.logitags</groupId>
+         <artifactId>cibet-envers42</artifactId>
+      </dependency>
+
+      <dependency>
+         <groupId>com.logitags</groupId>
+         <artifactId>cibet-envers42</artifactId>
+         <classifier>tests</classifier>
+      </dependency>
+
 		<dependency>
 			<groupId>com.logitags</groupId>
 			<artifactId>cibet-springsecurity30</artifactId>
@@ -55,6 +66,29 @@
          <artifactId>cglib</artifactId>
          <version>2.2.2</version>
          <type>jar</type>
+      </dependency>
+
+      <!-- TEST DEPENDENCIES -->
+
+      <dependency>
+         <groupId>dumbster</groupId>
+         <artifactId>dumbster</artifactId>
+         <version>1.6</version>
+         <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.mail</groupId>
+               <artifactId>mail</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.activation</groupId>
+         <artifactId>activation</artifactId>
+         <version>1.1.1</version>
+         <type>jar</type>
+         <scope>test</scope>
       </dependency>
 
 	</dependencies>
