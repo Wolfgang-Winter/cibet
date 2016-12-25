@@ -17,13 +17,19 @@
 --#
 
 CREATE TABLE cib_testentity (
-        id bigint NOT NULL AUTO_INCREMENT,
-        nameValue VARCHAR(255),
-        counter INT NOT NULL,
-        userid VARCHAR(255),
-        owner VARCHAR(255),
-        PRIMARY KEY (id)
+   ID BIGINT NOT NULL AUTO_INCREMENT, 
+   NAMEVALUE VARCHAR(255), 
+   COUNTER INT NOT NULL, 
+   USERID VARCHAR(255), 
+   OWNER VARCHAR(255)
+   XCALDATE DATE,
+   XCALTIMESTAMP DATETIME,
+   XDATE DATE,
+   XTIME TIME,
+   XTIMESTAMP DATETIME
+   PRIMARY KEY (id)
 );
+
 
 CREATE TABLE cib_complextestentity (
         id bigint NOT NULL AUTO_INCREMENT,
@@ -88,11 +94,6 @@ CREATE TABLE
     );
     
     
---CREATE TABLE CIB_COMPLEXTESTENTITY_CIB_TESTENTITY (
---CIB_COMPLEXTESTENTITY_ID BIGINT NOT NULL, 
---EAGERLIST_ID BIGINT, 
---LAZYLIST_ID BIGINT);
-
 CREATE TABLE TPSENTITY (
 	id						BIGINT NOT NULL,
 	langstring			VARCHAR(255),
@@ -116,6 +117,7 @@ CREATE TABLE cib_complextestentity2 (
         compValue INT NOT NULL,
         ten_id bigint,
         version INT NOT NULL,
+        SELFOWNER2 varchar(255),
         PRIMARY KEY (id),
         CONSTRAINT FK_CC1 FOREIGN KEY (ten_id) REFERENCES cib_testentity (id),
         INDEX FK_CC2 (ten_id)
