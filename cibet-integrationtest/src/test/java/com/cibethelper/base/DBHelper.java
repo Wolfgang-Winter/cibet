@@ -24,6 +24,7 @@
  */
 package com.cibethelper.base;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -42,6 +43,7 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.common.PostponedException;
 import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InitializationService;
 
@@ -100,6 +102,12 @@ public abstract class DBHelper extends CoreTestBase {
       List<DcControllable> dclist = q4.getResultList();
       for (DcControllable dc : dclist) {
          Context.internalRequestScope().getEntityManager().remove(dc);
+      }
+
+      Query q5 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
+      Iterator<LockedObject> itLO = q5.getResultList().iterator();
+      while (itLO.hasNext()) {
+         Context.internalRequestScope().getEntityManager().remove(itLO.next());
       }
 
       applEman.getTransaction().commit();
