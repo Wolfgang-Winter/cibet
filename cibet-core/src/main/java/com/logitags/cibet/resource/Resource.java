@@ -401,14 +401,15 @@ public class Resource implements Serializable {
 
    public String toString() {
       StringBuffer b = new StringBuffer();
-      b.append("targetType: ");
       b.append(targetType);
-      b.append(" ; method: ");
+      b.append("::");
       b.append(method);
-      b.append(" ; primaryKeyId: ");
-      b.append(primaryKeyId);
-      b.append(" ; ResourceHandler: ");
-      b.append(resourceHandlerClass);
+      if (primaryKeyId != null) {
+         b.append(" ; primaryKeyId: ");
+         b.append(primaryKeyId);
+      }
+      b.append(" ; ");
+      b.append(getResourceHandler().getClass().getSimpleName());
       return b.toString();
    }
 

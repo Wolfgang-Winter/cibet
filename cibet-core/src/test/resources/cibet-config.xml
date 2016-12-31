@@ -44,10 +44,14 @@
 		</properties>
 	</actuator>
 
-	<!-- <actuator name="SCHED1"> <class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class> 
-		<properties> <timerStart>+ 6</timerStart> <throwPostponedException>true</throwPostponedException> 
-		<autoRemoveScheduledDate>true</autoRemoveScheduledDate> <batchInterceptor>com.logitags.cibet.helper.SchedulerPersistIntercept</batchInterceptor> 
-		</properties> </actuator> -->
+	<actuator name="SCHED1"> <class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class> 
+		<properties> 
+		    <timerStart>+ 6</timerStart>
+		    <throwPostponedException>true</throwPostponedException> 
+		    <autoRemoveScheduledDate>true</autoRemoveScheduledDate>
+		    <batchInterceptor>com.cibethelper.base.SchedulerPersistIntercept</batchInterceptor> 
+		</properties>
+	</actuator>
 
 	<setpoint id="A">
 		<controls>

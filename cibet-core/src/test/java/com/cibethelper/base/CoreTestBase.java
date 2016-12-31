@@ -102,6 +102,12 @@ public abstract class CoreTestBase {
       sp.setMethod(methodName);
    }
 
+   protected Setpoint registerSetpoint(String target, String method, List<String> acts, ControlEvent... events) {
+      Setpoint sp = registerSetpoint(target, acts, events);
+      sp.setMethod(method);
+      return sp;
+   }
+
    protected TEntity createTEntity(int counter, String name) {
       TEntity te = new TEntity();
       te.setCounter(counter);

@@ -297,6 +297,11 @@ public class SchedulerActuator extends FourEyesActuator {
 
    protected void setActuatorSpecificProperties(DcControllable dc) {
       dc.setExecutionStatus(ExecutionStatus.SCHEDULED);
+
+      if (JpaResourceHandler.class.getName().equals(dc.getResource().getResourceHandlerClass())
+            && dc.getControlEvent() == ControlEvent.UPDATE) {
+         dc.getResource().setResourceHandlerClass(JpaUpdateResourceHandler.class.getName());
+      }
    }
 
    protected void checkScheduledResource(EventMetadata ctx) {

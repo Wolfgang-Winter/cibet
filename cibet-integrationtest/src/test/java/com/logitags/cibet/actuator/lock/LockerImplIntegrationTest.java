@@ -17,6 +17,7 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,6 +28,7 @@ import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
 import com.logitags.cibet.actuator.common.DeniedException;
 import com.logitags.cibet.config.Configuration;
+import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
@@ -36,6 +38,12 @@ import com.logitags.cibet.core.ExecutionStatus;
 public class LockerImplIntegrationTest extends DBHelper {
 
    private static Logger log = Logger.getLogger(LockerImplIntegrationTest.class);
+
+   @After
+   public void subDoAfter() {
+      log.info("subDoAfter");
+      new ConfigurationService().initialise();
+   }
 
    @Test
    public void isLockedObject() throws AlreadyLockedException {
@@ -280,6 +288,9 @@ public class LockerImplIntegrationTest extends DBHelper {
       log.debug("EventResult=" + ev);
       Assert.assertEquals(ExecutionStatus.DENIED, ev.getExecutionStatus());
 
+      Context.requestScope().getEntityManager().getTransaction().commit();
+      Context.requestScope().getEntityManager().getTransaction().begin();
+
       // other user tries to remove strict lock
       try {
          Locker.removeLockStrict(lo);
@@ -428,7 +439,7 @@ public class LockerImplIntegrationTest extends DBHelper {
       List<Archive> list = ArchiveLoader.loadArchives(TEntity.class.getName());
       Assert.assertEquals(1, list.size());
 
-      Query q = applEman.createQuery("SELECT a FROM LockedObject a");
+      Query q = Context.requestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
       l2 = q.getResultList();
       Assert.assertEquals(1, l2.size());
       Assert.assertEquals(LockState.UNLOCKED, l2.get(0).getLockState());

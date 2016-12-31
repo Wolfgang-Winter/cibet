@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0">
+      
+	<display-name>Arquillian test application</display-name>
+
+
+	<filter>
+		<filter-name>cibetContextFilter</filter-name>
+		<filter-class>com.logitags.cibet.context.CibetContextFilter</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>servletSensor</filter-name>
+		<filter-class>com.logitags.cibet.sensor.http.CibetFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>cibetContextFilter</filter-name>
+		<url-pattern>*.cibet</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>servletSensor</filter-name>
+		<url-pattern>*.url</url-pattern>
+	</filter-mapping>
+
+<!-- 
+	<servlet>
+		<servlet-name>TestServlet</servlet-name>
+		<servlet-class>com.logitags.cibet.arquillian.Arquillian1Servlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>*.cibet</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>*.url</url-pattern>
+	</servlet-mapping>
+ -->
+ 
+	<persistence-context-ref>
+		<persistence-context-ref-name>persistence/Cibet2pp</persistence-context-ref-name>
+		<persistence-unit-name>APPL-UNIT</persistence-unit-name>
+	</persistence-context-ref>
+	
+   <persistence-unit-ref>
+      <persistence-unit-ref-name>java:comp/env/Cibet</persistence-unit-ref-name>
+      <persistence-unit-name>Cibet</persistence-unit-name>
+   </persistence-unit-ref>	
+</web-app>
+      

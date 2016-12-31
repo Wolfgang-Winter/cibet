@@ -175,15 +175,14 @@ public class EventMetadata implements Serializable {
 
    public String toString() {
       StringBuffer b = new StringBuffer();
-      b.append("controlEvent=");
       b.append(controlEvent);
-      b.append(" ; caseId=");
-      b.append(caseId);
       b.append(" ; executionStatus=");
       b.append(executionStatus);
-      b.append(" ; Resource [");
+      b.append(" ; [");
       b.append(resource);
       b.append("]");
+      b.append(" ; caseId=");
+      b.append(caseId);
       b.append("\n------> Applied Setpoints: ");
       b.append(getSetpointIds());
       b.append(" ; applied Actuators: ");

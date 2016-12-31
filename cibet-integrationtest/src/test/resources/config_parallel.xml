@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.2.xsd">
+
+	<actuator name="PAR1">
+		<class>com.logitags.cibet.actuator.dc.ParallelDcActuator</class>
+		<properties>
+			<executions>3</executions>
+			<differentUsers>false</differentUsers>
+			<timelag>1</timelag>
+		</properties>
+	</actuator>
+
+
+	<setpoint id="SD36">
+		<controls>
+			<target>http://localhost:8788/HttpParallelDcIT/test/parallel</target>
+			<method>GET</method>
+		</controls>
+		<actuator name="PARALLEL_DC"/>
+	</setpoint>
+
+	<setpoint id="SP-par1">
+		<controls>
+			<event>INVOKE</event>
+			<target>http://localhost:8788/HttpParallelDcIT/test/parallel2</target>
+			<method>GET</method>
+		</controls>
+		<actuator name="PAR1"/>
+	</setpoint>
+
+</cibet>   

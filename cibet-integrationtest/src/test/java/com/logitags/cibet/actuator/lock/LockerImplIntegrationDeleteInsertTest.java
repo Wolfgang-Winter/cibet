@@ -17,6 +17,7 @@ import java.util.List;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,6 +29,7 @@ import com.logitags.cibet.actuator.archive.ArchiveLoader;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
+import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -35,6 +37,12 @@ import com.logitags.cibet.core.ExecutionStatus;
 public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
 
    private static Logger log = Logger.getLogger(LockerImplIntegrationDeleteInsertTest.class);
+
+   @After
+   public void subDoAfter() {
+      log.info("subDoAfter");
+      new ConfigurationService().initialise();
+   }
 
    @Test
    public void lockObject() throws AlreadyLockedException {

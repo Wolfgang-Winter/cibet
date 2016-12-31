@@ -1,0 +1,19 @@
+<aspectj>
+	<aspects>
+	  <concrete-aspect name="com.xyz.tracing.AspectTest" extends="com.logitags.cibet.sensor.pojo.CustomAspect">
+	  		<pointcut name="cibetIntercept" expression="target(com.cibethelper.base.SubArchiveController) &amp;&amp; execution(public String getName())"/>
+	  </concrete-aspect>
+
+	  <concrete-aspect name="com.xyz.tracing.EJBAspectTest" extends="com.logitags.cibet.sensor.pojo.CustomAspect">
+	  		<pointcut name="cibetIntercept" expression="target(com.cibethelper.ejb.EjbService) &amp;&amp; execution(public * *(..))"/>
+	  </concrete-aspect>
+
+	  <concrete-aspect name="com.xyz.tracing.SpringAspectTest" extends="com.logitags.cibet.sensor.pojo.CustomAspect">
+	  		<pointcut name="cibetIntercept" expression="target(com.cibethelper.base.NoControlActuator) &amp;&amp; execution(public String getNameForSpringTest())"/>
+	  </concrete-aspect>
+	</aspects>
+
+<!-- 
+	<weaver options="-verbose"></weaver>
+-->
+</aspectj>

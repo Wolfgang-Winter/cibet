@@ -77,7 +77,7 @@ public class InitializationService {
          }
       } catch (Exception e) {
          log.info("\n-----------------------------\n" + "EntityManagerFactory for resource-local persistence unit "
-               + LOCAL_PERSISTENCEUNIT + " could not be created. If this is a Java EE application this is not an error."
+               + LOCAL_PERSISTENCEUNIT + " could not be created. If this is a Java EE application this is NOT an error."
                + "\nWill try to create EntityManagerFactory for JTA persistence unit Cibet later\n[Original error message: "
                + e.getMessage() + "]\n-----------------------------");
       }
@@ -120,7 +120,7 @@ public class InitializationService {
             return entityManager;
          } catch (NamingException e) {
             log.info("\n-----------------------------\n"
-                  + "EntityManagerFactory for JTA persistence unit Cibet could not be created. The If this is NOT a Java EE application this "
+                  + "EntityManagerFactory for JTA persistence unit Cibet could not be created. If this is NOT a Java EE application this "
                   + "is not an error. Otherwise, the EntityManagerFactory must be made available in JNDI like\n"
                   + "<persistence-unit-ref>\n" + "  <persistence-unit-ref-name>" + EMF_JNDINAME
                   + "</persistence-unit-ref-name>\n" + "  <persistence-unit-name>Cibet</persistence-unit-name>\n"

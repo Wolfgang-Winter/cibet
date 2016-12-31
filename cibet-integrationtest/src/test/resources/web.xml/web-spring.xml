@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0">
+      
+	<display-name>Arquillian test application</display-name>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:spring-context.xml</param-value>
+	</context-param>
+
+
+	<filter>
+		<filter-name>cibetFilter</filter-name>
+		<filter-class>com.logitags.cibet.sensor.http.CibetFilter</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>springSecurity</filter-name>
+		<filter-class> org.springframework.security.web.context.SecurityContextPersistenceFilter</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+
+	<filter-mapping>
+		<filter-name>springSecurity</filter-name>
+		<url-pattern>/test/spring/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/test/spring/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>cibetFilter</filter-name>
+		<url-pattern>/</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>cibetFilter</filter-name>
+		<url-pattern>/test/*</url-pattern>
+	</filter-mapping>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<servlet>
+		<servlet-name>TestServlet</servlet-name>
+		<servlet-class>com.cibethelper.servlet.ArquillianTestServlet1</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+   <persistence-unit-ref>
+      <persistence-unit-ref-name>java:comp/env/Cibet</persistence-unit-ref-name>
+      <persistence-unit-name>Cibet</persistence-unit-name>
+   </persistence-unit-ref> 
+	
+</web-app>
+      

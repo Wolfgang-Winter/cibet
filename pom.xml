@@ -425,6 +425,11 @@
 						<goals>
 							<goal>test-jar</goal>
 						</goals>
+						<configuration>
+						   <excludes>
+						      <exclude>**/log4j.properties</exclude>
+						   </excludes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

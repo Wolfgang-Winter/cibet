@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.2.xsd">
+
+	<notificationProvider>
+		<class>com.logitags.cibet.notification.EmailNotificationProvider</class>
+		<properties>
+			<from>from@test.de</from>
+			<smtpHost>localhost</smtpHost>
+			<smtpPort>8854</smtpPort>
+		</properties>
+	</notificationProvider>
+
+	<actuator name="ARCHIVE-PROP">
+		<class>com.logitags.cibet.actuator.archive.ArchiveActuator</class>
+		<properties>
+			<storedProperties>compValue, owner</storedProperties>
+		</properties>
+	</actuator>
+
+	<setpoint id="SD25">
+		<controls>
+			<event>INSERT,UPDATE,DELETE</event>
+			<target>com.cibethelper.entities.TEntity</target>
+			<tenant>testTenant</tenant>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="SD25b">
+		<controls>
+			<event>INSERT</event>
+			<target>com.cibethelper.entities.TEntity</target>
+			<invoker>CibetRemoteEJBImpl.persist</invoker>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="SD26">
+		<controls>
+			<event>RELEASE</event>
+			<target>com.cibethelper.entities.TEntity</target>
+		</controls>
+		<actuator name="FOUR_EYES"/>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+</cibet>   
