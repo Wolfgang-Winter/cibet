@@ -138,7 +138,8 @@ public class SessionScopeContext implements InternalSessionScope {
       getProperties().put(key, value);
 
       HttpServletRequest req = httpRequest.get();
-      if (req == null) return;
+      if (req == null)
+         return;
       HttpSession ses = req.getSession();
       if (ses != null) {
          log.debug("update HttpSession: " + key);
@@ -157,7 +158,8 @@ public class SessionScopeContext implements InternalSessionScope {
       getProperties().remove(key);
 
       HttpServletRequest req = httpRequest.get();
-      if (req == null) return;
+      if (req == null)
+         return;
       HttpSession ses = req.getSession();
       if (ses != null) {
          log.debug("remove from HttpSession: " + key);

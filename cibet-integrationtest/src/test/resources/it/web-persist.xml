@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0">
+	<display-name>Testwar test application</display-name>
+
+
+	<filter>
+		<filter-name>ejbcibetFilter</filter-name>
+		<filter-class>com.logitags.cibet.sensor.http.CibetFilter</filter-class>
+		<init-param>
+			<param-name>EJB_JNDI_NAME</param-name>
+			<param-value>CibetEEContextEJBLocal</param-value>
+		</init-param>
+	</filter>
+
+	<filter>
+		<filter-name>cibetFilter</filter-name>
+		<filter-class>com.logitags.cibet.sensor.http.CibetFilter</filter-class>
+		<init-param>
+			<param-name>excludes</param-name>
+			<param-value>.*/excl, .*/pppp/.*</param-value>
+		</init-param>
+		<init-param>
+			<param-name>allowAnonymous</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+
+	<filter>
+		<filter-name>cibetFilterNoAnonym</filter-name>
+		<filter-class>com.logitags.cibet.sensor.http.CibetFilter</filter-class>
+		<init-param>
+			<param-name>allowAnonymous</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</filter>
+
+	<filter>
+		<filter-name>cibetContextFilter</filter-name>
+		<filter-class>com.logitags.cibet.context.CibetContextFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>ejbcibetFilter</filter-name>
+		<url-pattern>/eee</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>ejbcibetFilter</filter-name>
+		<url-pattern>/othereee</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>cibetFilter</filter-name>
+		<url-pattern>/testInvoke</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+		<filter-name>cibetFilter</filter-name>
+		<url-pattern>/ts/*</url-pattern>
+	</filter-mapping>
+
+   <filter-mapping>
+      <filter-name>cibetFilter</filter-name>
+      <url-pattern>/test/*</url-pattern>
+   </filter-mapping>
+
+	<filter-mapping>
+		<filter-name>cibetFilterNoAnonym</filter-name>
+		<url-pattern>/basicAuth</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>cibetContextFilter</filter-name>
+		<url-pattern>/login</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>cibetContextFilter</filter-name>
+		<url-pattern>/login2</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>cibetContextFilter</filter-name>
+		<url-pattern>/afterLogin</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>cibetContextFilter</filter-name>
+		<url-pattern>/logout</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>cibetContextFilter</filter-name>
+		<url-pattern>/persist</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>cibetContextFilter</filter-name>
+		<url-pattern>/persist2</url-pattern>
+	</filter-mapping>
+
+
+	<servlet>
+		<servlet-name>TestServlet</servlet-name>
+		<servlet-class>com.cibethelper.servlet.PersistServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+
+   <persistence-unit-ref>
+      <persistence-unit-ref-name>java:comp/env/Cibet</persistence-unit-ref-name>
+      <persistence-unit-name>Cibet</persistence-unit-name>
+   </persistence-unit-ref> 
+
+</web-app>
+      

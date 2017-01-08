@@ -54,9 +54,8 @@ public class RequestScopeContext implements InternalRequestScope {
    private ThreadLocalMap tlm = new ThreadLocalMap();
 
    /**
-    * returns the first EventResult object not in status EXECUTING within the
-    * EventResult tree. Returns null if no event or the event is still
-    * executing.
+    * returns the first EventResult object not in status EXECUTING within the EventResult tree. Returns null if no event
+    * or the event is still executing.
     * 
     * @return
     */
@@ -175,9 +174,8 @@ public class RequestScopeContext implements InternalRequestScope {
    }
 
    /**
-    * registers the given new EventResult. It is either added as new root of the
-    * EventResult tree or added to the tail of the childrens list of the last
-    * EventResult in status EXECUTING.
+    * registers the given new EventResult. It is either added as new root of the EventResult tree or added to the tail
+    * of the childrens list of the last EventResult in status EXECUTING.
     * 
     * @param thisResult
     * @return
@@ -207,8 +205,7 @@ public class RequestScopeContext implements InternalRequestScope {
    }
 
    /**
-    * Return the applications INTERNAL EntityManager instance or null if not
-    * set.
+    * Return the applications INTERNAL EntityManager instance or null if not set.
     * 
     * @return
     */
@@ -221,8 +218,7 @@ public class RequestScopeContext implements InternalRequestScope {
    }
 
    /**
-    * sets the applications EntityManager for JPA sensors for the application
-    * entities.
+    * sets the applications EntityManager for JPA sensors for the application entities.
     * 
     * @param manager
     */
@@ -240,8 +236,7 @@ public class RequestScopeContext implements InternalRequestScope {
    }
 
    /**
-    * returns the applications EntityManager that is used to persist the
-    * applications entities (not Cibet entities)
+    * returns the applications EntityManager that is used to persist the applications entities (not Cibet entities)
     * 
     * @return
     * @throws CibetException
@@ -260,8 +255,7 @@ public class RequestScopeContext implements InternalRequestScope {
    }
 
    /**
-    * Return the Cibet EntityManager instance. Could be null, if not set in
-    * context.
+    * Return the Cibet EntityManager instance. Could be null, if not set in context.
     * 
     * @return
     */
@@ -275,9 +269,8 @@ public class RequestScopeContext implements InternalRequestScope {
    }
 
    /**
-    * returns the applications EntityManager that is used to persist the
-    * applications entities (not Cibet entities). Returns null if no
-    * EntityManager set in context
+    * returns the applications EntityManager that is used to persist the applications entities (not Cibet entities).
+    * Returns null if no EntityManager set in context
     * 
     * @return
     */

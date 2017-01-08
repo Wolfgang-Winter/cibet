@@ -47,12 +47,12 @@ import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InitializationService;
 
-public abstract class DBHelper extends CoreTestBase {
+public class DBHelper extends CoreTestBase {
 
    private static Logger log = Logger.getLogger(DBHelper.class);
 
-   protected static EntityManager applEman;
-   protected static EntityManagerFactory fac;
+   public static EntityManager applEman;
+   public static EntityManagerFactory fac;
 
    @BeforeClass
    public static void beforeClass() throws Exception {
@@ -72,7 +72,9 @@ public abstract class DBHelper extends CoreTestBase {
    @After
    public void doAfter() {
       log.debug("DBHelper:doAfter()");
-      applEman.getTransaction().rollback();
+      if (applEman.getTransaction().isActive()) {
+         applEman.getTransaction().rollback();
+      }
 
       applEman.getTransaction().begin();
 

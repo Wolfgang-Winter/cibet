@@ -178,6 +178,7 @@ public class InitializationService {
                .getAuthenticationProvider();
          for (AuthenticationProvider a : authProviders) {
             if (a != null) {
+               log.info("register AuthenticationProvider " + a.getClass());
                requestScopeAuthProvider.getProviderChain().add(a);
             }
          }

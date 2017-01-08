@@ -36,9 +36,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
+import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
-import com.logitags.cibet.actuator.dc.InvalidUserException;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.actuator.dc.UnapprovedResourceException;
 import com.logitags.cibet.config.Configuration;

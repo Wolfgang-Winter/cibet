@@ -22,7 +22,7 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.it;
+package com.logitags.cibet.http;
 
 import java.io.File;
 import java.util.List;
@@ -56,9 +56,9 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
+import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
-import com.logitags.cibet.actuator.dc.InvalidUserException;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InitializationService;
@@ -66,6 +66,7 @@ import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
+import com.logitags.cibet.it.AbstractArquillian;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.http.Headers;
@@ -85,7 +86,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
    public static WebArchive createDeployment() {
       String warName = HttpParallelDcIT.class.getSimpleName() + ".war";
       WebArchive archive = ShrinkWrap.create(WebArchive.class, warName);
-      archive.setWebXML("web.xml/web-spring.xml");
+      archive.setWebXML("it/web-spring.xml");
 
       archive.addClasses(AbstractArquillian.class, CoreTestBase.class, AbstractTEntity.class, TEntity.class,
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class, RemoteEJB.class,
@@ -107,10 +108,6 @@ public class HttpParallelDcIT extends AbstractArquillian {
       archive.as(ZipExporter.class).exportTo(new File("target/" + warName), true);
 
       return archive;
-   }
-
-   protected String getBaseURL() {
-      return "http://localhost:8788/" + this.getClass().getSimpleName();
    }
 
    @Before

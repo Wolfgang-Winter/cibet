@@ -24,25 +24,19 @@
 
 	<filter-mapping>
 		<filter-name>servletSensor</filter-name>
-		<url-pattern>*.url</url-pattern>
+		<url-pattern>/test/*</url-pattern>
 	</filter-mapping>
 
-<!-- 
-	<servlet>
-		<servlet-name>TestServlet</servlet-name>
-		<servlet-class>com.logitags.cibet.arquillian.Arquillian1Servlet</servlet-class>
-	</servlet>
+   <servlet>
+      <servlet-name>TestServlet</servlet-name>
+      <servlet-class>com.cibethelper.servlet.ArquillianTestServlet1</servlet-class>
+   </servlet>
 
-	<servlet-mapping>
-		<servlet-name>TestServlet</servlet-name>
-		<url-pattern>*.cibet</url-pattern>
-	</servlet-mapping>
+   <servlet-mapping>
+      <servlet-name>TestServlet</servlet-name>
+      <url-pattern>/</url-pattern>
+   </servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>TestServlet</servlet-name>
-		<url-pattern>*.url</url-pattern>
-	</servlet-mapping>
- -->
  
 	<persistence-context-ref>
 		<persistence-context-ref-name>persistence/Cibet2pp</persistence-context-ref-name>

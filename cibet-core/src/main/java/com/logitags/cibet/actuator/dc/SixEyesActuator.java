@@ -19,6 +19,7 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;

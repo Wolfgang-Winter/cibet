@@ -171,7 +171,7 @@ public class ArquillianTestServlet1 extends HttpServlet {
       log.info("\n----------------------\ncall ArquillianTestServlet1 [" + req.getServletPath()
             + "]\n----------------------");
 
-      String msg = "message: " + concatParameters(req);
+      String msg = "OK message: " + concatParameters(req);
 
       if (req.getServletPath().equals("/test/setuser")) {
          msg = setUser(req, resp);

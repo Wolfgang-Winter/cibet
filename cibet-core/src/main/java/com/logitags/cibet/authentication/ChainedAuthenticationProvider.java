@@ -126,4 +126,13 @@ public class ChainedAuthenticationProvider extends AbstractAuthenticationProvide
       return b.toString();
    }
 
+   public String toString() {
+      StringBuffer b = new StringBuffer();
+      for (AuthenticationProvider p : providerChain) {
+         b.append(p);
+         b.append("\n");
+      }
+      return b.toString();
+   }
+
 }

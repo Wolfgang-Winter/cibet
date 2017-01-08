@@ -1,0 +1,9 @@
+actuator: $actuator
+
+controlEvent: $controlEvent
+
+tenant: $tenant
+
+sessionScope.user: $sessionScope.getUser()
+
+notificationType: $notificationType

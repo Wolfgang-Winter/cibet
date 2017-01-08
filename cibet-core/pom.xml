@@ -87,6 +87,22 @@
 			<scope>provided</scope>
 		</dependency>
 		
+		<!-- PROVIDED DEPENDENCIES -->
+		
+      <dependency>
+         <groupId>dumbster</groupId>
+         <artifactId>dumbster</artifactId>
+         <version>1.6</version>
+         <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>javax.mail</groupId>
+               <artifactId>mail</artifactId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+		
 	</dependencies>
 
 	<build>
@@ -111,4 +127,44 @@
 
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>migrationtest</id>
+			<build>
+				<testResources>
+					<testResource>
+						<directory>src/test/java</directory>
+						<includes>
+							<include>**/migration/*</include>
+						</includes>
+					</testResource>
+				</testResources>
+
+				<plugins>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>test-jar</goal>
+								</goals>
+								<configuration>
+									<includes>
+										<include>**/migration/*</include>
+									</includes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+
+   
+   </profiles>	
 </project>

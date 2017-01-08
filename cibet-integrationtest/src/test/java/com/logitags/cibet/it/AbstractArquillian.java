@@ -211,4 +211,12 @@ public abstract class AbstractArquillian extends CoreTestBase {
       return list;
    }
 
+   protected String getBaseURL() {
+      return "http://localhost:8788/" + this.getClass().getSimpleName();
+   }
+
+   protected String getBaseSSLURL() {
+      return "https://localhost:8743/" + this.getClass().getSimpleName();
+   }
+
 }

@@ -57,9 +57,9 @@ import com.cibethelper.entities.TCompareEntity;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
+import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
-import com.logitags.cibet.actuator.dc.InvalidUserException;
 import com.logitags.cibet.actuator.dc.ParallelDcActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.authentication.AnonymousAuthenticationProvider;
@@ -91,7 +91,7 @@ public class ParallelDcIT extends AbstractArquillian {
    public static WebArchive createDeployment() {
       String warName = ParallelDcIT.class.getSimpleName() + ".war";
       WebArchive archive = ShrinkWrap.create(WebArchive.class, warName);
-      archive.setWebXML("web.xml/web2.xml");
+      archive.setWebXML("it/web2.xml");
 
       archive.addClasses(AbstractArquillian.class, CoreTestBase.class, AbstractTEntity.class, TEntity.class,
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class, RemoteEJB.class,

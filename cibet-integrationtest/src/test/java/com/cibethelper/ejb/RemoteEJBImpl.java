@@ -40,8 +40,12 @@ import javax.persistence.Query;
 import org.apache.log4j.Logger;
 
 import com.cibethelper.entities.TEntity;
+import com.logitags.cibet.actuator.lock.AlreadyLockedException;
+import com.logitags.cibet.actuator.lock.LockedObject;
+import com.logitags.cibet.actuator.lock.Locker;
 import com.logitags.cibet.context.CibetContextInterceptor;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.sensor.ejb.CibetInterceptor;
 
@@ -122,6 +126,11 @@ public class RemoteEJBImpl implements RemoteEJB {
       q.executeUpdate();
       EventResult ev = Context.requestScope().getExecutedEventResult();
       return ev;
+   }
+
+   public LockedObject lock(String targetType) throws AlreadyLockedException {
+      LockedObject lo = Locker.lock(targetType, ControlEvent.INVOKE, "testremark");
+      return lo;
    }
 
 }

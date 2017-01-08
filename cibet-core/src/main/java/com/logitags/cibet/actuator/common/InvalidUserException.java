@@ -10,12 +10,12 @@
  *******************************************************************************
  */
 
-package com.logitags.cibet.actuator.dc;
+package com.logitags.cibet.actuator.common;
 
 import com.logitags.cibet.core.CibetException;
 
 /**
- *
+ * Thrown if the current user is not allowed to execute an action or if no user is set in Cbeit context at all.
  */
 public class InvalidUserException extends CibetException {
    /**

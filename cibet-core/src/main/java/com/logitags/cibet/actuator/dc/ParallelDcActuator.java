@@ -33,6 +33,7 @@ import javax.persistence.Query;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.actuator.common.PostponedException;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;

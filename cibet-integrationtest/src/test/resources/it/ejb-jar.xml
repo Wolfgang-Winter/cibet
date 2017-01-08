@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns = "http://java.sun.com/xml/ns/javaee"
+         version = "3.1"
+         xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation = "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd">
+
+	<enterprise-beans>
+		<session>
+			<ejb-name>EESchedulerTask</ejb-name>
+			<persistence-context-ref>
+				<persistence-context-ref-name>persistence/EMTestSS</persistence-context-ref-name>
+				<persistence-unit-name>APPL-UNIT</persistence-unit-name>
+			</persistence-context-ref>
+		</session>
+	</enterprise-beans>
+ 
+</ejb-jar>
+

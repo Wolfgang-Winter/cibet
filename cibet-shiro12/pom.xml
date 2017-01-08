@@ -14,15 +14,14 @@
 			<artifactId>cibet-core</artifactId>
 		</dependency>
 
+      <dependency>
+         <groupId>org.apache.shiro</groupId>
+         <artifactId>shiro-core</artifactId>
+         <version>1.2.2</version>
+      </dependency>
 
       <!-- PROVIDED DEPENDENCIES -->
 
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-core</artifactId>
-			<version>1.2.2</version>
-			<scope>provided</scope>
-		</dependency>
 
 
       <!-- TEST DEPENDENCIES -->

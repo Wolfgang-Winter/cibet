@@ -29,6 +29,7 @@ import com.cibethelper.entities.TEntity;
 import com.dumbster.smtp.SimpleSmtpServer;
 import com.dumbster.smtp.SmtpMessage;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
+import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;

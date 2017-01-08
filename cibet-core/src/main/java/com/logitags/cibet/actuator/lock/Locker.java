@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.common.DeniedException;
+import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.AnnotationUtil;
@@ -329,6 +330,10 @@ public abstract class Locker {
    }
 
    private static LockedObject createLockedObject(String targetType, ControlEvent event, String remark) {
+      if (Context.internalSessionScope().getUser() == null) {
+         throw new InvalidUserException("Failed to execute lock operation: No user in Cibet context");
+      }
+
       LockedObject lo = new LockedObject();
       lo.setLockDate(new Date());
       lo.setLockedBy(Context.internalSessionScope().getUser());
