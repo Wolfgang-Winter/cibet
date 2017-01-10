@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -264,6 +265,25 @@ public class CibetTestEJB {
       list.add(entity);
       list.add(long1);
       return list;
+   }
+
+   public List<Object> testInvoke2(String str1) {
+      throw new RuntimeException("This is a artificial Exception invoked");
+   }
+
+   public String longCalculation(int loops) {
+      log.info("start longCalculation");
+      long start = System.currentTimeMillis();
+      Random rnd = new Random(start);
+      for (int i = 1; i < loops; i++) {
+         double d = rnd.nextDouble();
+         Math.atan(Math.atan(Math.atan(Math.atan(Math.atan(Math.atan(Math.atan(Math.atan(Math.atan(d)))))))));
+      }
+
+      long end = System.currentTimeMillis();
+      long duration = end - start;
+      log.info("duration: " + duration);
+      return "DURATIONRESULT=" + String.valueOf(duration);
    }
 
    public int executeNativeQuery(String qn, Object... objects) {

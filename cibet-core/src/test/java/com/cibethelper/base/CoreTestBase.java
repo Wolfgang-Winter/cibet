@@ -24,6 +24,9 @@ import org.junit.AfterClass;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
+import com.logitags.cibet.actuator.archive.ArchiveActuator;
+import com.logitags.cibet.actuator.common.Actuator;
+import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.config.Setpoint;
@@ -106,6 +109,22 @@ public abstract class CoreTestBase {
       Setpoint sp = registerSetpoint(target, acts, events);
       sp.setMethod(method);
       return sp;
+   }
+
+   public void registerSetpoint(Class<?> clazz, List<String> schemes, String methodName, String jndiName,
+         ControlEvent... events) {
+      registerSetpoint(clazz, schemes, methodName, events);
+
+      Configuration cman = Configuration.instance();
+      for (String scheme : schemes) {
+         Actuator act = cman.getActuator(scheme);
+         if (act instanceof FourEyesActuator) {
+            ((FourEyesActuator) act).setJndiName(jndiName);
+         }
+         if (act instanceof ArchiveActuator) {
+            ((ArchiveActuator) act).setJndiName(jndiName);
+         }
+      }
    }
 
    protected TEntity createTEntity(int counter, String name) {
