@@ -240,7 +240,7 @@ public class CibetTestEJB {
    }
 
    public Object release(DcControllable co, String remark) throws ResourceApplyException {
-      Object obj = co.release(Context.internalRequestScope().getApplicationEntityManager(), remark);
+      Object obj = co.release(remark);
       return obj;
    }
 

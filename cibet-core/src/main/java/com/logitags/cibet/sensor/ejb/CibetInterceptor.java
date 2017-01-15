@@ -11,6 +11,7 @@
  */
 package com.logitags.cibet.sensor.ejb;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,7 +39,12 @@ import com.logitags.cibet.resource.ResourceParameter;
 /**
  * EJB interceptor that controls method invocation.
  */
-public class CibetInterceptor {
+public class CibetInterceptor implements Serializable {
+
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
 
    private Log log = LogFactory.getLog(CibetInterceptor.class);
 

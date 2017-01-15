@@ -24,6 +24,8 @@
  */
 package com.logitags.cibet.context;
 
+import java.io.Serializable;
+
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
 
@@ -34,8 +36,12 @@ import com.logitags.cibet.authentication.AnonymousAuthenticationProvider;
 import com.logitags.cibet.authentication.AuthenticationProvider;
 import com.logitags.cibet.authentication.InvocationContextAuthenticationProvider;
 
-public class CibetContextInterceptor {
+public class CibetContextInterceptor implements Serializable {
 
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
    private Log log = LogFactory.getLog(CibetContextInterceptor.class);
 
    @AroundInvoke

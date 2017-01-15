@@ -118,6 +118,18 @@
 			<scope>test</scope>
 		</dependency>
 
+<!-- 
+		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>arquillian-tomee-remote</artifactId>
+			<version>1.7.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.container</groupId>
+			<artifactId>arquillian-tomcat-remote-7</artifactId>
+			<version>1.0.0.CR9</version>
+		</dependency>
+ -->		
 	</dependencies>
 
 	<dependencyManagement>
