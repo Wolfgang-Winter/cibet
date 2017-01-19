@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
@@ -52,6 +53,7 @@ import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
+import com.logitags.cibet.actuator.dc.UnapprovedResourceException;
 import com.logitags.cibet.actuator.info.InfoLogActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
@@ -261,19 +263,6 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Query q = applEman.createNativeQuery("SELECT * FROM CIB_TESTENTITY");
       List<TEntity> l = q.getResultList();
       Assert.assertEquals(0, l.size());
-
-      // Connection conn = null;
-      // try {
-      // DataSource ds = new CibetTestDataSource(database);
-      // conn = ds.getConnection();
-      // PreparedStatement ps = conn.prepareStatement("SELECT * FROM CIB_TESTENTITY");
-      // ResultSet rs = ps.executeQuery();
-      // Assert.assertFalse(rs.next());
-      // } finally {
-      // if (conn != null)
-      // conn.close();
-      // }
-
       List<Archive> list = ejb.queryArchiveByTenant();
       Assert.assertEquals(0, list.size());
    }
@@ -308,7 +297,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(entity.getId(), ent.getId());
    }
 
-   @Test
+   // @Test
    public void interceptPersist4Eyes() throws Exception {
       log.info("start interceptPersist4Eyes()");
 
@@ -346,7 +335,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals("java.lang.Object", mexParam.getClassname());
    }
 
-   // @Test
+   @Test
    public void interceptComplexSignatureArchive() throws Exception {
       log.info("start interceptComplexSignatureArchive()");
 
@@ -354,9 +343,9 @@ public class CibetInterceptorIT extends AbstractArquillian {
 
       TEntity entity = createTEntity(88, "kkkas");
       byte[] bytes = "Pausenclown".getBytes();
-      List<Object> list = ejb.testInvoke("H�ls", -34, 456, bytes, entity, new Long(43));
+      List<Object> list = ejb.testInvoke("Hals", -34, 456, bytes, entity, new Long(43));
       Assert.assertEquals(6, list.size());
-      Assert.assertEquals("H�ls", list.get(0));
+      Assert.assertEquals("Hals", list.get(0));
       Assert.assertEquals(-34, list.get(1));
       Assert.assertEquals(456, list.get(2));
       byte[] bytesList = (byte[]) list.get(3);
@@ -365,7 +354,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       }
       TEntity entList = (TEntity) list.get(4);
       Assert.assertEquals("kkkas", entList.getNameValue());
-      Assert.assertEquals("kkkas", entList.getOwner());
+      Assert.assertEquals(TENANT, entList.getOwner());
       Assert.assertEquals(new Long(43), ((Long) list.get(5)));
 
       List<Archive> list1 = ejb.queryArchiveByTenant();
@@ -384,7 +373,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Iterator<ResourceParameter> iter = res.getParameters().iterator();
       ResourceParameter param = iter.next();
       Assert.assertEquals("java.lang.String", param.getClassname());
-      Assert.assertEquals("H�ls", param.getUnencodedValue());
+      Assert.assertEquals("Hals", param.getUnencodedValue());
 
       param = iter.next();
       Assert.assertEquals("int", param.getClassname());
@@ -406,7 +395,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(TEntity.class.getName(), param.getClassname());
       TEntity v5 = (TEntity) param.getUnencodedValue();
       Assert.assertEquals("kkkas", v5.getNameValue());
-      Assert.assertEquals("kkkas", v5.getOwner());
+      Assert.assertEquals(TENANT, v5.getOwner());
 
       param = iter.next();
       Assert.assertEquals("java.lang.Long", param.getClassname());
@@ -416,7 +405,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       List<?> li = (List<?>) CibetUtil.decode(res.getResult());
 
       Assert.assertEquals(6, li.size());
-      Assert.assertEquals("H�ls", li.get(0));
+      Assert.assertEquals("Hals", li.get(0));
       Assert.assertTrue((Integer) li.get(1) == -34);
       Assert.assertTrue((Integer) li.get(2) == 456);
       v4 = (byte[]) li.get(3);
@@ -425,12 +414,12 @@ public class CibetInterceptorIT extends AbstractArquillian {
       }
       v5 = (TEntity) li.get(4);
       Assert.assertEquals("kkkas", v5.getNameValue());
-      Assert.assertEquals("kkkas", v5.getOwner());
+      Assert.assertEquals(TENANT, v5.getOwner());
       v6 = (Long) li.get(5);
       Assert.assertEquals(43, v6.longValue());
    }
 
-   // @Test
+   @Test
    public void interceptComplexSignatureArchiveWNull() throws Exception {
       log.info("start interceptComplexSignatureArchiveWNull()");
 
@@ -482,7 +471,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertNull(param.getUnencodedValue());
    }
 
-   // @Test
+   @Test
    public void interceptRelease() throws Exception {
       log.info("start interceptRelease()");
 
@@ -525,7 +514,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(2, alist.size());
    }
 
-   // @Test
+   @Test
    public void interceptReleaseWithJNDIName() throws Exception {
       log.info("start test interceptReleaseWithJNDIName()");
 
@@ -574,7 +563,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertTrue("Happy New Year".equals(arch.getRemark()));
    }
 
-   // @Test
+   @Test
    public void statefulEJB() throws Exception {
       log.info("start test statefulEJB()");
 
@@ -595,7 +584,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       }
    }
 
-   // @Test
+   @Test
    public void interceptReleaseWithException() throws Exception {
       log.info("start test interceptReleaseWithException()");
 
@@ -628,7 +617,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       }
    }
 
-   // @Test
+   @Test
    public void redoArchive() throws Exception {
       log.info("start redoArchive()");
       // ArchiveActuator archa = (ArchiveActuator) cman
@@ -640,9 +629,9 @@ public class CibetInterceptorIT extends AbstractArquillian {
 
       TEntity entity = createTEntity(56, "gg");
       byte[] bytes = "Pausenclown".getBytes();
-      List<Object> list = ejb.testInvoke("H�ls", -34, 456, bytes, entity, new Long(43));
+      List<Object> list = ejb.testInvoke("Häls", -34, 456, bytes, entity, new Long(43));
       Assert.assertEquals(6, list.size());
-      Assert.assertEquals("H�ls", list.get(0));
+      Assert.assertEquals("Häls", list.get(0));
       Assert.assertEquals(-34, list.get(1));
       Assert.assertEquals(456, list.get(2));
       byte[] bytesList = (byte[]) list.get(3);
@@ -681,7 +670,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals("gutes Schweinchen", mar1.getRemark());
    }
 
-   // @Test
+   @Test
    public void redo4Eyes() throws Exception {
       log.info("start redo4Eyes()");
 
@@ -693,7 +682,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
 
       TEntity entity = createTEntity(23, "Hase");
       byte[] bytes = "Pausenclown".getBytes();
-      List<Object> list = ejb.testInvoke("H�ls", -34, 456, bytes, entity, new Long(43));
+      List<Object> list = ejb.testInvoke("Löse", -34, 456, bytes, entity, new Long(43));
       Assert.assertNull(list);
 
       // check archive
@@ -714,7 +703,8 @@ public class CibetInterceptorIT extends AbstractArquillian {
       try {
          ejb.redo(arlist.get(0));
          Assert.fail();
-      } catch (ResourceApplyException e) {
+      } catch (EJBException e) {
+         Assert.assertEquals(UnapprovedResourceException.class, e.getCause().getClass());
       }
 
       arlist = ArchiveLoader.loadArchives(CibetTestEJB.class.getName());
