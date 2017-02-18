@@ -27,8 +27,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.cibethelper.JdbcHelper;
-import com.cibethelper.base.CoreTestBase;
+import com.cibethelper.base.JdbcHelper;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.core.ControlEvent;
@@ -40,7 +39,7 @@ import com.logitags.cibet.sensor.jdbc.driver.SqlParser;
 /**
  *
  */
-public class JdbcStateChangeIntegrationTest extends CoreTestBase {
+public class JdbcStateChangeIntegrationTest extends JdbcHelper {
 
    private Connection connection;
 

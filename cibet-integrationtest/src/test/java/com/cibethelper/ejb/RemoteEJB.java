@@ -24,6 +24,8 @@
  */
 package com.cibethelper.ejb;
 
+import java.util.List;
+
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.lock.AlreadyLockedException;
 import com.logitags.cibet.actuator.lock.LockedObject;
@@ -42,4 +44,7 @@ public interface RemoteEJB {
    EventResult executeUpdateQuery(String qn, Object... objects);
 
    LockedObject lock(String targetType) throws AlreadyLockedException;
+
+   List<Object> testInvoke(String str1, int int1, int int2, byte[] bytes1, TEntity entity, Long long1);
+
 }

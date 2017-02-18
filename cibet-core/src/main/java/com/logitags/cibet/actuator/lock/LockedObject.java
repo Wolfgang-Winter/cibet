@@ -65,8 +65,7 @@ public class LockedObject implements Serializable {
    private byte[] object;
 
    /**
-    * the unique ID of the object which is locked. If null, all objects of the
-    * given class are locked.
+    * the unique ID of the object which is locked. If null, all objects of the given class are locked.
     */
    @Column(length = 50)
    private String objectId;
@@ -106,7 +105,7 @@ public class LockedObject implements Serializable {
    private int version;
 
    @PrePersist
-   protected void prePersist() {
+   public void prePersist() {
       lockedObjectId = UUID.randomUUID().toString();
    }
 

@@ -27,6 +27,8 @@ public class Provider implements PersistenceProvider {
    private static final String SECURE_ECLIPSELINK_PERSISTENCE_PROVIDER = "com.logitags.cibet.sensor.jpa.EclipselinkProvider";
    private static final String EAGERLOADING_PROPERTY = "com.logitags.cibet.persistence.loadEager";
 
+   private static final String PERSISTENCE_FILE = "META-INF/persistence.xml";
+
    private PersistenceProvider persistenceProvider;
 
    @Override
@@ -40,21 +42,7 @@ public class Provider implements PersistenceProvider {
    @Override
    public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map map) {
       log.info("createContainerEntityManagerFactory");
-      if (log.isDebugEnabled()) {
-         log.debug("properties: ---------------------");
-         if (map != null) {
-            Iterator<?> it = map.keySet().iterator();
-            while (it.hasNext()) {
-               Object key = it.next();
-               log.debug(key + " = " + map.get(key));
-            }
-         }
-
-         if (log.isDebugEnabled()) {
-            log.debug("PersistenceUnitInfo properties: ---------------------");
-            log.debug(info);
-         }
-      }
+      logInfo(info, map);
 
       info = new DelegatingPersistenceUnitInfo(getNativePersistenceProviderClassName(info, map), info);
 
@@ -77,10 +65,7 @@ public class Provider implements PersistenceProvider {
       if (getClass().getName().equals(info.getPersistenceProviderClassName())
             || (map != null && getClass().getName().equals(map.get(PERSISTENCE_PROVIDER_PROPERTY)))) {
          log.info("create resource_local EntityManagerFactory");
-         if (log.isDebugEnabled()) {
-            log.debug("PersistenceUnitInfo properties: ---------------------");
-            log.debug(info);
-         }
+         logInfo(info, map);
 
          boolean loadEager = isLoadEager(info, map);
          persistenceProvider = createNativePersistenceProvider(info, map);
@@ -98,7 +83,7 @@ public class Provider implements PersistenceProvider {
       try {
          PersistenceXmlParser persistenceXmlParser = new PersistenceXmlParser();
          for (Enumeration<URL> persistenceFiles = Thread.currentThread().getContextClassLoader()
-               .getResources("META-INF/persistence.xml"); persistenceFiles.hasMoreElements();) {
+               .getResources(PERSISTENCE_FILE); persistenceFiles.hasMoreElements();) {
             URL persistenceFile = persistenceFiles.nextElement();
             persistenceXmlParser.parse(persistenceFile);
             if (persistenceXmlParser.containsPersistenceUnitInfo(persistenceUnitName)) {
@@ -122,7 +107,25 @@ public class Provider implements PersistenceProvider {
                   "No persistence provider specified for " + CibetEntityManagerFactory.class.getName()
                         + ". Specify its class name via property \"" + NATIVE_PERSISTENCE_PROVIDER_PROPERTY + "\"");
          }
-         Class<?> persistenceProviderClass = getClassLoader(persistenceUnitInfo).loadClass(className);
+
+         Class<?> persistenceProviderClass = null;
+         try {
+            if (persistenceUnitInfo.getClassLoader() != null) {
+               log.info("classLoader: " + persistenceUnitInfo.getClassLoader());
+               log.info("classLoader class: " + persistenceUnitInfo.getClassLoader().getClass());
+               persistenceProviderClass = persistenceUnitInfo.getClassLoader().loadClass(className);
+            }
+         } catch (ClassNotFoundException e) {
+            log.info(e.getMessage(), e);
+            log.info("not found");
+            persistenceProviderClass = Thread.currentThread().getContextClassLoader().loadClass(className);
+         }
+
+         if (persistenceProviderClass == null) {
+            persistenceProviderClass = Thread.currentThread().getContextClassLoader().loadClass(className);
+         }
+
+         // Class<?> persistenceProviderClass = getClassLoader(persistenceUnitInfo).loadClass(className);
          return (PersistenceProvider) persistenceProviderClass.newInstance();
       } catch (InstantiationException e) {
          throw new PersistenceException(e);
@@ -171,6 +174,7 @@ public class Provider implements PersistenceProvider {
    }
 
    private ClassLoader getClassLoader(PersistenceUnitInfo persistenceUnitInfo) {
+      log.debug("ClassLoader: " + persistenceUnitInfo.getClassLoader());
       if (persistenceUnitInfo.getClassLoader() != null) {
          return persistenceUnitInfo.getClassLoader();
       }
@@ -188,4 +192,22 @@ public class Provider implements PersistenceProvider {
       }
    }
 
+   protected void logInfo(PersistenceUnitInfo info, Map map) {
+      if (log.isDebugEnabled()) {
+         if (map != null && map.size() > 0) {
+            log.debug(this + " properties: ---------------------");
+            Iterator<?> it = map.keySet().iterator();
+            while (it.hasNext()) {
+               Object key = it.next();
+               log.debug(key + " = " + map.get(key));
+            }
+         }
+
+         if (log.isDebugEnabled()) {
+            log.debug("PersistenceUnitInfo properties: ---------------------");
+            log.debug(info);
+         }
+      }
+
+   }
 }

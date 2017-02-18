@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0">
+      
+	<display-name>Arquillian test application</display-name>
+
+	<filter>
+		<filter-name>contextSetFilter</filter-name>
+		<filter-class>com.cibethelper.servlet.ContextSetFilter</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>cibetContextFilter</filter-name>
+		<filter-class>com.logitags.cibet.context.CibetContextFilter</filter-class>
+	</filter>
+
+	<filter>
+		<filter-name>servletSensor</filter-name>
+		<filter-class>com.logitags.cibet.sensor.http.CibetFilter</filter-class>
+		<init-param>
+			<param-name>excludes</param-name>
+			<param-value>.*/excl, .*/pppp/.*</param-value>
+		</init-param>
+		<init-param>
+			<param-name>allowAnonymous</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+
+	<filter>
+		<filter-name>cibetFilterNoAnonym</filter-name>
+		<filter-class>com.logitags.cibet.sensor.http.CibetFilter</filter-class>
+		<init-param>
+			<param-name>allowAnonymous</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>contextSetFilter</filter-name>
+		<url-pattern>/test/context/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>cibetContextFilter</filter-name>
+		<url-pattern>*.cibet</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>servletSensor</filter-name>
+		<url-pattern>/test/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>cibetFilterNoAnonym</filter-name>
+		<url-pattern>/basicAuth</url-pattern>
+	</filter-mapping>
+
+   <servlet>
+      <servlet-name>TestServlet</servlet-name>
+      <servlet-class>com.cibethelper.servlet.ArquillianTestServlet1</servlet-class>
+   </servlet>
+
+   <servlet-mapping>
+      <servlet-name>TestServlet</servlet-name>
+      <url-pattern>/</url-pattern>
+   </servlet-mapping>
+
+ 
+	<persistence-context-ref>
+		<persistence-context-ref-name>persistence/Cibet2pp</persistence-context-ref-name>
+		<persistence-unit-name>APPL-UNIT</persistence-unit-name>
+	</persistence-context-ref>
+	
+   <persistence-unit-ref>
+      <persistence-unit-ref-name>java:comp/env/Cibet</persistence-unit-ref-name>
+      <persistence-unit-name>Cibet</persistence-unit-name>
+   </persistence-unit-ref>	
+</web-app>
+      

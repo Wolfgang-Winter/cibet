@@ -15,7 +15,7 @@
   
   <aop:config proxy-target-class="true"/>
   
-  <sec:http auto-config='true' use-expressions="true"/>
+  <sec:http auto-config='true' use-expressions="false"/>
 
   <sec:global-method-security 
    jsr250-annotations="enabled" 

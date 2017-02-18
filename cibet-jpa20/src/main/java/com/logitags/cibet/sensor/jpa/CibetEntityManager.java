@@ -55,10 +55,6 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
 
    private boolean loadEager;
 
-   public CibetEntityManager() {
-      this(Context.internalRequestScope().getEntityManager(), false);
-   }
-
    public CibetEntityManager(CibetEntityManagerFactory fac, EntityManager em, boolean lEager) {
       this(em, lEager);
       log.debug("create CibetEntityManager with " + fac + ", " + em);

@@ -19,7 +19,6 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -105,12 +104,12 @@ public class DcControllableDefinition extends AbstractEntityDefinition {
             "SELECT " + DCCONTROLLABLE + " FROM cib_dccontrollable WHERE createuser = ?");
 
       queries.put(DcControllable.SEL_SCHED_BY_DATE, "SELECT " + DCCONTROLLABLE
-            + " FROM dccontrollable WHERE actuator = ? AND executionstatus = 'SCHEDULED' AND scheduleddate <= ?");
+            + " FROM cib_dccontrollable WHERE actuator = ? AND executionstatus = 'SCHEDULED' AND scheduleddate <= ?");
 
       queries.put(DcControllable.SEL_SCHED_BY_TARGETTYPE, "SELECT " + DCCONTROLLABLE
-            + " FROM dccontrollable WHERE tenant LIKE ? AND targettype = ? AND executionstatus = 'SCHEDULED'");
-      queries.put(DcControllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT,
-            "SELECT " + DCCONTROLLABLE + " FROM dccontrollable WHERE targettype = ? AND executionstatus = 'SCHEDULED'");
+            + " FROM cib_dccontrollable WHERE tenant LIKE ? AND targettype = ? AND executionstatus = 'SCHEDULED'");
+      queries.put(DcControllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT, "SELECT " + DCCONTROLLABLE
+            + " FROM cib_dccontrollable WHERE targettype = ? AND executionstatus = 'SCHEDULED'");
 
       queries.put(DcControllable.SEL_SCHED_BY_TENANT, "SELECT " + DCCONTROLLABLE
             + " FROM cib_dccontrollable WHERE tenant LIKE ? AND executionstatus = 'SCHEDULED'");
@@ -198,7 +197,7 @@ public class DcControllableDefinition extends AbstractEntityDefinition {
    public void persist(Connection jdbcConnection, Object obj) throws SQLException {
       DcControllable dc = (DcControllable) obj;
 
-      dc.setDcControllableId(UUID.randomUUID().toString());
+      dc.prePersist();
       dc.setVersion(1);
       PreparedStatement ps = jdbcConnection.prepareStatement(INSERT_DCCONTROLLABLE);
       try {
@@ -267,7 +266,7 @@ public class DcControllableDefinition extends AbstractEntityDefinition {
       PreparedStatement ps = jdbcConnection.prepareStatement(INSERT_DCPARAMETER);
       try {
          for (ResourceParameter par : dc.getResource().getParameters()) {
-            par.setParameterId(UUID.randomUUID().toString());
+            par.beforePersist();
 
             ps.setString(1, par.getParameterId());
             ps.setString(2, dc.getDcControllableId());

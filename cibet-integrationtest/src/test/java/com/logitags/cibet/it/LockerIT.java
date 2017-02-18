@@ -86,7 +86,7 @@ public class LockerIT extends AbstractArquillian {
    }
 
    @Before
-   public void beforeParallelDcIT() {
+   public void beforeLockerIT() {
       log.debug("execute before()");
       new ConfigurationService().initialise();
       InitializationService.instance().startContext();
@@ -96,7 +96,7 @@ public class LockerIT extends AbstractArquillian {
    }
 
    @After
-   public void afterParallelDcIT() {
+   public void afterLockerIT() {
       InitializationService.instance().endContext();
    }
 

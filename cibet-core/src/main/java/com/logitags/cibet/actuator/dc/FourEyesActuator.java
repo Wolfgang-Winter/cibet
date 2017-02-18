@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
@@ -225,7 +226,10 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
 
       case INSERT:
       case RESTORE_INSERT:
-         Context.internalRequestScope().getApplicationEntityManager().flush();
+         EntityManager em = Context.internalRequestScope().getNullableApplicationEntityManager();
+         if (em != null) {
+            em.flush();
+         }
          dcObj = createControlledObject(ControlEvent.INSERT, ctx);
          break;
 

@@ -40,6 +40,7 @@ import com.logitags.cibet.actuator.dc.SixEyesActuator;
 import com.logitags.cibet.actuator.info.InfoLogActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
@@ -1085,6 +1086,24 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       a = iter.next();
       Assert.assertEquals(1, map.get(a).size());
       Assert.assertEquals(ControlEvent.UPDATE, a.getControlEvent());
+   }
+
+   @Test
+   public void testTargetRollback() throws Exception {
+      List<String> schemes = new ArrayList<String>();
+      schemes.add(ArchiveActuator.DEFAULTNAME);
+      registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.INSERT);
+
+      persistTEntity();
+      Context.requestScope().setRollbackOnly(true);
+      applEman.getTransaction().rollback();
+      applEman.getTransaction().begin();
+
+      InitializationService.instance().endContext();
+      InitializationService.instance().startContext();
+
+      List<Archive> alist = ArchiveLoader.loadAllArchives();
+      Assert.assertEquals(0, alist.size());
    }
 
 }

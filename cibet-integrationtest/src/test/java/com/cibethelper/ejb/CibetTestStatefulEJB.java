@@ -13,6 +13,7 @@ package com.cibethelper.ejb;
 
 import java.util.List;
 
+import javax.ejb.Remote;
 import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
 
@@ -21,10 +22,10 @@ import org.apache.log4j.Logger;
 import com.logitags.cibet.sensor.ejb.CibetInterceptor;
 
 // mappedName for Glassfish
-//@Stateful(name = "com.logitags.cibet.helper.CibetTestStatefulEJBImpl", mappedName = "CibetTestStatefulEJBImpl_MN")
 @Stateful(name = "com.cibethelper.ejb.CibetTestStatefulEJB")
+@Remote
 @Interceptors(CibetInterceptor.class)
-public class CibetTestStatefulEJB {
+public class CibetTestStatefulEJB implements CibetTest2EJB {
 
    private static Logger log = Logger.getLogger(CibetTestStatefulEJB.class);
 

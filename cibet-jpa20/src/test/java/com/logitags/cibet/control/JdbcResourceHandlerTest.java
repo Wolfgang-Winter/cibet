@@ -7,7 +7,7 @@
  *
  * All rights reserved
  *
- * Copyright 2016 Dr. Wolfgang Winter
+ * Copyright 2012 Dr. Wolfgang Winter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,26 +22,25 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.cibethelper;
+package com.logitags.cibet.control;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
+import java.util.Map;
 
-public abstract class JdbcHelper {
+import org.junit.Assert;
+import org.junit.Test;
 
-   private static final String PROPERTIES = "META-INF/jdbc-connection.properties";
-   private static final String URL = "db.url";
-   private static final String USER = "db.user";
-   private static final String PASSWORD = "db.password";
+import com.logitags.cibet.resource.Resource;
+import com.logitags.cibet.sensor.jdbc.driver.JdbcResourceHandler;
 
-   public static Connection createConnection() throws IOException, SQLException {
-      Properties props = new Properties();
-      props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(PROPERTIES));
+public class JdbcResourceHandlerTest {
 
-      return DriverManager.getConnection(props.getProperty(URL), props.getProperty(USER), props.getProperty(PASSWORD));
+   @Test
+   public void getNotificationAttributesJdbcResourceHandler() {
+      Resource r = new Resource();
+      r.setTargetType("tt");
+      JdbcResourceHandler hd = new JdbcResourceHandler(r);
+      Map<String, Object> formparams = hd.getNotificationAttributes();
+      Assert.assertEquals(3, formparams.size());
    }
 
 }

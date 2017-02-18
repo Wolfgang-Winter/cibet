@@ -25,7 +25,9 @@
 package com.cibethelper.ejb;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -131,6 +133,18 @@ public class RemoteEJBImpl implements RemoteEJB {
    public LockedObject lock(String targetType) throws AlreadyLockedException {
       LockedObject lo = Locker.lock(targetType, ControlEvent.INVOKE, "testremark");
       return lo;
+   }
+
+   public List<Object> testInvoke(String str1, int int1, int int2, byte[] bytes1, TEntity entity, Long long1) {
+      log.info("start CibetTestEJBImpl.testInvoke");
+      List<Object> list = new ArrayList<Object>();
+      list.add(str1);
+      list.add(int1);
+      list.add(int2);
+      list.add(bytes1);
+      list.add(entity);
+      list.add(long1);
+      return list;
    }
 
 }

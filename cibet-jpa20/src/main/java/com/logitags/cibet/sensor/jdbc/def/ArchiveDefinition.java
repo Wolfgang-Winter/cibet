@@ -19,7 +19,6 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -170,7 +169,7 @@ public class ArchiveDefinition extends AbstractEntityDefinition {
    @Override
    public void persist(Connection jdbcConnection, Object obj) throws SQLException {
       Archive ar = (Archive) obj;
-      ar.setArchiveId(UUID.randomUUID().toString());
+      ar.prePersist();
       PreparedStatement ps = jdbcConnection.prepareStatement(INSERT_ARCHIVE);
       try {
          ps.setString(1, ar.getArchiveId());
@@ -214,7 +213,7 @@ public class ArchiveDefinition extends AbstractEntityDefinition {
       PreparedStatement ps = jdbcConnection.prepareStatement(INSERT_ARCHIVEPARAMETER);
       try {
          for (ResourceParameter par : ar.getResource().getParameters()) {
-            par.setParameterId(UUID.randomUUID().toString());
+            par.beforePersist();
 
             ps.setString(1, par.getParameterId());
             ps.setString(2, ar.getArchiveId());
@@ -288,9 +287,7 @@ public class ArchiveDefinition extends AbstractEntityDefinition {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.jdbc.def.AbstractEntityDefinition#remove(java
-    * .sql.Connection, java.lang.Object)
+    * @see com.logitags.cibet.sensor.jdbc.def.AbstractEntityDefinition#remove(java .sql.Connection, java.lang.Object)
     */
    @Override
    public void remove(Connection jdbcConnection, Object obj) throws SQLException {

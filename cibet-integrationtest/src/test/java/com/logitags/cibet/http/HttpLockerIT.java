@@ -53,9 +53,9 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.it.AbstractArquillian;
 
 @RunWith(Arquillian.class)
-public class HttpLockerIt extends AbstractArquillian {
+public class HttpLockerIT extends AbstractArquillian {
 
-   private static Logger log = Logger.getLogger(HttpLockerIt.class);
+   private static Logger log = Logger.getLogger(HttpLockerIT.class);
 
    protected String URL_TS = getBaseURL() + "/test/url";
 
@@ -66,7 +66,7 @@ public class HttpLockerIt extends AbstractArquillian {
 
    @Deployment
    public static WebArchive createDeployment() {
-      String warName = HttpLockerIt.class.getSimpleName() + ".war";
+      String warName = HttpLockerIT.class.getSimpleName() + ".war";
       WebArchive archive = ShrinkWrap.create(WebArchive.class, warName);
       archive.setWebXML("it/web2.xml");
 

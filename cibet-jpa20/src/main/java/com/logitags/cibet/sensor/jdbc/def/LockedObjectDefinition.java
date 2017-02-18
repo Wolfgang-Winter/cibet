@@ -19,7 +19,6 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -115,7 +114,7 @@ public class LockedObjectDefinition extends AbstractEntityDefinition {
    @Override
    public void persist(Connection jdbcConnection, Object obj) throws SQLException {
       LockedObject lo = (LockedObject) obj;
-      lo.setLockedObjectId(UUID.randomUUID().toString());
+      lo.prePersist();
       PreparedStatement ps = jdbcConnection.prepareStatement(INSERT_LOCKEDOBJECT);
       try {
          ps.setString(1, lo.getLockedObjectId());

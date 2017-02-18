@@ -245,7 +245,7 @@ public class DcControllable implements Serializable {
    private Resource resource;
 
    @PrePersist
-   protected void prePersist() {
+   public void prePersist() {
       if (resource != null) {
          resource.getUniqueId();
          if (resource.getGroupId() == null) {

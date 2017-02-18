@@ -28,7 +28,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -40,7 +39,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.cibethelper.SpringTestAuthenticationManager;
 import com.cibethelper.base.CoreTestBase;
 import com.cibethelper.ejb.CibetTestEJB;
-import com.cibethelper.ejb.CibetTestStatefulEJB;
 import com.cibethelper.entities.AbstractTEntity;
 import com.cibethelper.entities.ITComplexEntity;
 import com.cibethelper.entities.TCompareEntity;
@@ -51,6 +49,7 @@ import com.logitags.cibet.actuator.common.DeniedException;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator;
+import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InitializationService;
@@ -64,15 +63,8 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
 
    private static Logger log = Logger.getLogger(SpringCibetInterceptorIT.class);
 
-   protected static final String SEL_DCCONTROLLABLE = "SELECT c FROM DcControllable c WHERE c.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED";
-
-   private static final String JNDINAME = "java:module/" + CibetTestEJB.class.getSimpleName();
-
    @EJB
    private CibetTestEJB ejb;
-
-   @EJB
-   private CibetTestStatefulEJB ejbS;
 
    @Deployment
    public static WebArchive createDeployment() {
@@ -82,11 +74,14 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
 
       archive.addClasses(AbstractArquillian.class, CoreTestBase.class, AbstractTEntity.class, TEntity.class,
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class,
-            CibetTestEJB.class);
+            CibetTestEJB.class, SpringTestAuthenticationManager.class);
 
-      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa20").withTransitivity()
-            .asFile();
+      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa20")
+            .withoutTransitivity().asFile();
       archive.addAsLibraries(cibet);
+      File[] spring = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-springsecurity30")
+            .withTransitivity().asFile();
+      archive.addAsLibraries(spring);
 
       archive.addAsWebInfResource("META-INF/persistence-it-derby.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
@@ -98,18 +93,15 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
       return archive;
    }
 
-   @BeforeClass
-   public static void beforeClassSpringCibetInterceptorIT() {
-      new ClassPathXmlApplicationContext(new String[] { "spring-context.xml" });
-
-   }
-
    @Before
    public void beforeCibetInterceptorIT() {
+      InitializationService.instance().startContext();
       DefaultSecurityProvider sprov = new DefaultSecurityProvider();
       sprov.getSecrets().put("checkIntegrityMethodArchive", "2366Au37nBB.0ya?");
       sprov.setCurrentSecretKey("checkIntegrityMethodArchive");
+      cman = Configuration.instance();
       cman.registerSecurityProvider(sprov);
+      new ClassPathXmlApplicationContext(new String[] { "spring-context.xml" });
    }
 
    @After
@@ -223,7 +215,7 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
       EventResult evResult = Context.requestScope().getExecutedEventResult();
       log.debug("evResult==" + evResult);
 
-      Assert.assertEquals("[EjbResource] targetType: com.logitags.cibet.helper.CibetTestEJB ; method: release",
+      Assert.assertEquals("[EjbResource] targetType: com.cibethelper.ejb.CibetTestEJB ; method: release",
             evResult.getResource());
       Assert.assertEquals(1, evResult.getChildResults().size());
       Assert.assertEquals(ExecutionStatus.DENIED, evResult.getChildResults().get(0).getExecutionStatus());

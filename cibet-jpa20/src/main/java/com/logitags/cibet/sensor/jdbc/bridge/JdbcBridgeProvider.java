@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.ProviderUtil;
+import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +41,13 @@ public class JdbcBridgeProvider extends Provider {
 
    private Log log = LogFactory.getLog(JdbcBridgeProvider.class);
 
+   private static final String JAVAX_URL = "javax.persistence.jdbc.url";
+   private static final String JAVAX_USER = "javax.persistence.jdbc.user";
+   private static final String JAVAX_PASSWORD = "javax.persistence.jdbc.password";
+   private static final String HIBERNATE_URL = "hibernate.connection.url";
+   private static final String HIBERNATE_USER = "hibernate.connection.user";
+   private static final String HIBERNATE_PASSWORD = "hibernate.connection.password";
+
    @Override
    public EntityManagerFactory createEntityManagerFactory(String unitName, Map map) {
       PersistenceUnitInfo info = createPersistenceUnitInfo(unitName);
@@ -50,13 +58,10 @@ public class JdbcBridgeProvider extends Provider {
 
       if (getClass().getName().equals(info.getPersistenceProviderClassName())
             || (map != null && getClass().getName().equals(map.get(PERSISTENCE_PROVIDER_PROPERTY)))) {
-         log.info("create JdbcBridgeEntityManagerFactory");
-         if (log.isDebugEnabled()) {
-            log.debug("PersistenceUnitInfo properties: ---------------------");
-            log.debug(info);
-         }
+         log.info("create resource-local JdbcBridgeEntityManagerFactory");
+         logInfo(info, map);
 
-         return new JdbcBridgeEntityManagerFactory(info.getNonJtaDataSource());
+         return new JdbcBridgeEntityManagerFactory(resolveDataSource(info));
 
       } else {
          log.debug(this.getClass().getName() + " does not match provider for persistence unit " + unitName);
@@ -66,14 +71,41 @@ public class JdbcBridgeProvider extends Provider {
 
    @Override
    public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map map) {
-      String err = this.getClass().getName() + " cannot be applied/injected in a container managed envronment.";
-      log.error(err);
-      throw new IllegalStateException(err);
+      log.info("create container JdbcBridgeEntityManagerFactory");
+      logInfo(info, map);
+
+      return new JdbcBridgeEntityManagerFactory(info.getJtaDataSource());
+
+      // String err = this.getClass().getName() + " cannot be applied/injected in a container managed envronment.";
+      // log.error(err);
+      // throw new IllegalStateException(err);
    }
 
    @Override
    public ProviderUtil getProviderUtil() {
       return new EmptyProviderUtil();
+   }
+
+   private DataSource resolveDataSource(PersistenceUnitInfo info) {
+      String url = null;
+      String user = null;
+      String password = null;
+
+      if (info.getProperties().containsKey(HIBERNATE_URL)) {
+         url = info.getProperties().getProperty(HIBERNATE_URL);
+         user = info.getProperties().getProperty(HIBERNATE_USER);
+         password = info.getProperties().getProperty(HIBERNATE_PASSWORD);
+         return new DefaultDataSource(url, user, password);
+      }
+
+      if (info.getProperties().containsKey(JAVAX_URL)) {
+         url = info.getProperties().getProperty(JAVAX_URL);
+         user = info.getProperties().getProperty(JAVAX_USER);
+         password = info.getProperties().getProperty(JAVAX_PASSWORD);
+         return new DefaultDataSource(url, user, password);
+      }
+
+      return info.getNonJtaDataSource();
    }
 
 }

@@ -86,7 +86,9 @@ public abstract class CoreTestBase {
 
    protected Setpoint registerSetpoint(String clazz, List<String> acts, ControlEvent... events) {
       Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()), null);
-      sp.setTarget(clazz);
+      if (clazz != null) {
+         sp.setTarget(clazz);
+      }
       List<String> evl = new ArrayList<String>();
       for (ControlEvent ce : events) {
          evl.add(ce.name());

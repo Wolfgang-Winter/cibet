@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com 
+   ../../main/resources/cibet-config_1.0.xsd">
+
+	<actuator name="SEC1">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<properties>
+			<urlAccess>ROLE_ADMINI</urlAccess>
+		</properties>
+	</actuator>
+
+	<actuator name="SEC2">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<properties>
+			<urlAccess>hasRole('admin") and hasIpAddress('127.0.0.1') </urlAccess>
+		</properties>
+	</actuator>
+
+	<actuator name="SEC3">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<properties>
+			<urlAccess>IS_AUTHENTICATED_ANONYMOUSLY</urlAccess>
+		</properties>
+	</actuator>
+
+	<setpoint id="http-spring1">
+		<controls>
+			<event>INVOKE</event>
+			<target>http://localhost:8788/HttpSpringSecurityIT/test/ts*</target>
+			<method>GET,POST</method>
+		</controls>
+		<actuator name="SEC1"/>
+	</setpoint>
+
+	<setpoint id="http-spring2">
+		<controls>
+			<event>INVOKE</event>
+			<target>http://localhost:8788/*</target>
+			<method>OPTIONS</method>
+		</controls>
+		<actuator name="SEC2"/>
+	</setpoint>
+
+	<setpoint id="http-spring3">
+		<controls>
+			<event>INVOKE</event>
+			<target>http://localhost:8788/*</target>
+			<method>PUT</method>
+		</controls>
+		<actuator name="SEC3"/>
+	</setpoint>
+
+</cibet>   

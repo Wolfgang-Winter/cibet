@@ -25,6 +25,24 @@
       </properties>
    </persistence-unit>
 
+   <persistence-unit name="jdbc-CibetLocal" transaction-type="RESOURCE_LOCAL">
+      <provider>com.logitags.cibet.sensor.jdbc.bridge.JdbcBridgeProvider</provider>
+      <class>com.logitags.cibet.actuator.lock.LockedObject</class>
+      <class>com.logitags.cibet.core.EventResult</class>
+      <class>com.logitags.cibet.resource.Resource</class>
+      <class>com.logitags.cibet.resource.ResourceParameter</class>
+      <class>com.logitags.cibet.actuator.archive.Archive</class>
+      <class>com.logitags.cibet.actuator.dc.DcControllable</class>
+      
+      <properties>
+         <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+         <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
+         <property name="javax.persistence.jdbc.user" value="APP"/>
+         <property name="javax.persistence.jdbc.password" value="x"/>
+      </properties>
+   </persistence-unit>
+
    <persistence-unit name="localTest" transaction-type="RESOURCE_LOCAL">
       <provider>com.logitags.cibet.sensor.jpa.Provider</provider>
       <class>com.cibethelper.entities.TEntity</class>

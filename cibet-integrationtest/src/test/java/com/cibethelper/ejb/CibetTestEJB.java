@@ -48,7 +48,7 @@ import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.jndi.EjbLookup;
 import com.logitags.cibet.sensor.ejb.CibetInterceptor;
 
-@Stateless
+@Stateless(name = "com.cibethelper.ejb.CibetTestEJB")
 @Interceptors(CibetInterceptor.class)
 public class CibetTestEJB {
 
@@ -250,7 +250,7 @@ public class CibetTestEJB {
 
    public Object playRelease(DcControllable co, String remark) throws ResourceApplyException {
       Context.requestScope().startPlay();
-      Object res = co.release(Context.internalRequestScope().getApplicationEntityManager(), remark);
+      Object res = co.release(remark);
       Context.requestScope().stopPlay();
       return res;
    }

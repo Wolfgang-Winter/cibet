@@ -116,6 +116,9 @@ public class EESchedulerTask extends SESchedulerTask implements SchedulerTask {
    }
 
    private EntityManager setApplicationEntityManager(String reference) {
+      if (!reference.startsWith("java:comp/env/")) {
+         reference = "java:comp/env/" + reference;
+      }
       try {
          InitialContext context = new InitialContext();
          EntityManager entityManager = (EntityManager) context.lookup(reference);

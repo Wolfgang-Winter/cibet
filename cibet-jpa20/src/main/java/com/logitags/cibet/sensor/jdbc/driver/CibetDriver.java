@@ -24,6 +24,9 @@ import java.util.logging.Logger;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.context.Context;
+import com.logitags.cibet.sensor.jdbc.bridge.JdbcBridgeEntityManager;
+
 /**
  * Implementation of Driver interface that acts as a Cibet sensor for JDBC requests. URLs are formatted like this:
  * jdbc:cibet:native sql driver class:native URL (without leading jdbc:)
@@ -55,10 +58,14 @@ public class CibetDriver implements Driver {
 
    @Override
    public Connection connect(String url, Properties info) throws SQLException {
-      if (!acceptsURL(url)) return null;
+      if (!acceptsURL(url))
+         return null;
       Driver nativeDriver = parseNativeDriver(url);
       Connection conn = nativeDriver.connect(parseNativeUrl(url), info);
-      return new CibetConnection(conn);
+
+      Connection cibetConnection = new CibetConnection(conn);
+      Context.internalRequestScope().setApplicationEntityManager(new JdbcBridgeEntityManager(cibetConnection));
+      return cibetConnection;
    }
 
    @Override
@@ -97,8 +104,9 @@ public class CibetDriver implements Driver {
       try {
          Class.forName(driverName);
       } catch (ClassNotFoundException e) {
-         throw new CibetJdbcException("Failed to instantiate JDBC driver " + driverName + " parsed from URL " + url
-               + ": " + e.getMessage(), e);
+         throw new CibetJdbcException(
+               "Failed to instantiate JDBC driver " + driverName + " parsed from URL " + url + ": " + e.getMessage(),
+               e);
       }
       String nativeUrl = "jdbc" + url.substring(thirdColon);
       return DriverManager.getDriver(nativeUrl);

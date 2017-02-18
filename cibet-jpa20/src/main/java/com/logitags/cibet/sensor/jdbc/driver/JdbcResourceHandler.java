@@ -113,14 +113,14 @@ public class JdbcResourceHandler implements Serializable, ResourceHandler {
       boolean close = false;
       try {
          Object delegate = Context.internalRequestScope().getApplicationEntityManager().getDelegate();
-         log.debug("EM delegate: " + delegate);
          if (delegate instanceof Connection) {
             conn = (Connection) delegate;
          } else if (delegate instanceof DataSource) {
             conn = ((DataSource) delegate).getConnection();
             close = true;
          } else {
-            throw new ResourceApplyException("EntityManager in CibetContext is not of type JdbcBridgeEntityManager");
+            throw new ResourceApplyException(
+                  "Application EntityManager in CibetContext is not of type JdbcBridgeEntityManager");
          }
          log.debug("EM connection: " + conn);
 

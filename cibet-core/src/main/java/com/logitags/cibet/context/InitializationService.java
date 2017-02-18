@@ -49,7 +49,7 @@ public class InitializationService {
    private static Log log = LogFactory.getLog(InitializationService.class);
 
    private static String LOCAL_PERSISTENCEUNIT = "CibetLocal";
-   private static String EMF_JNDINAME = "java:comp/env/Cibet";
+   private static final String EMF_JNDINAME = "java:comp/env/Cibet";
 
    private EntityManagerFactory EMF;
 
@@ -127,21 +127,6 @@ public class InitializationService {
                   + "</persistence-unit-ref>" + "\n[Original error message: " + e.getMessage()
                   + "]\n-----------------------------");
          }
-
-         // CibetEEContext ejb = EjbLookup.lookupEjb(
-         // (String)
-         // Context.requestScope().getProperty(InternalRequestScope.CONTEXTEJB_JNDINAME),
-         // CibetEEContextEJB.class);
-         // if (ejb != null) {
-         // if (!ejb.setEntityManagerIntoContext()) {
-         // log.warn("Failed to create EntityManager from JTA PersistenceUnit
-         // Cibet."
-         // + " Set an EntityManager manually into CibetContext!");
-         // } else {
-         // entityManager =
-         // Context.internalRequestScope().getNullableEntityManager();
-         // }
-         // }
       }
       return entityManager;
    }

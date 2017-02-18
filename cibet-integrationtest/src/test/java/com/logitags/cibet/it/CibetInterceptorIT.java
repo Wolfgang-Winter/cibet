@@ -126,7 +126,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       new ConfigurationService().initialise();
    }
 
-   // @Test
+   @Test
    public void interceptReleaseWithInfolog() throws Exception {
       log.info("start interceptReleaseWithInfolog()");
 
@@ -222,7 +222,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(ControlEvent.RELEASE_INVOKE, arch.getControlEvent());
    }
 
-   // @Test
+   @Test
    public void interceptReleaseWithJNDINameError() throws Exception {
       log.info("start interceptReleaseWithJNDINameError()");
 
@@ -297,7 +297,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(entity.getId(), ent.getId());
    }
 
-   // @Test
+   @Test
    public void interceptPersist4Eyes() throws Exception {
       log.info("start interceptPersist4Eyes()");
 
@@ -620,10 +620,6 @@ public class CibetInterceptorIT extends AbstractArquillian {
    @Test
    public void redoArchive() throws Exception {
       log.info("start redoArchive()");
-      // ArchiveActuator archa = (ArchiveActuator) cman
-      // .getActuator(ArchiveActuator.DEFAULTNAME);
-      // archa.setIntegrityCheck(false);
-
       registerSetpoint(CibetTestEJB.class, ArchiveActuator.DEFAULTNAME, "testInvoke", ControlEvent.INVOKE,
             ControlEvent.REDO);
 
@@ -742,7 +738,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals("Happy New Year", mar2.getRemark());
    }
 
-   // @Test
+   @Test
    public void intercept4EyesWithException() throws Exception {
       log.info("start intercept4EyesWithException()");
       registerSetpoint(CibetTestEJB.class, FourEyesActuator.DEFAULTNAME, "testInvoke", ControlEvent.INVOKE);
@@ -761,7 +757,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(1, l.size());
    }
 
-   // @Test
+   @Test
    public void playInterceptReleaseWithInfolog() throws Exception {
       log.info("start playInterceptReleaseWithInfolog()");
       log.debug("Managed: " + Context.internalRequestScope().isManaged());
@@ -777,7 +773,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       // play: invoke 4-eyes
       TEntity entity = createTEntity(5, "valuexx");
       byte[] bytes = "Pausenclown".getBytes();
-      List<Object> list = ejb.testInvoke("H�ls", -34, 456, bytes, entity, new Long(43));
+      List<Object> list = ejb.testInvoke("Häls", -34, 456, bytes, entity, new Long(43));
       Assert.assertNull(list);
       EventResult er = Context.requestScope().stopPlay();
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
@@ -787,7 +783,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(0, list1.size());
 
       // invoke 4-eyes
-      list = ejb.testInvoke("H�ls", -34, 456, bytes, entity, new Long(43));
+      list = ejb.testInvoke("Häls", -34, 456, bytes, entity, new Long(43));
       Assert.assertNull(list);
 
       list1 = ejb.queryArchiveByTenant();
@@ -810,14 +806,14 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertNull(res);
 
       // check
-      List<DcControllable> list2 = (List<DcControllable>) ejb.queryResultSet(SEL_DCCONTROLLABLE);
+      List<DcControllable> list2 = DcLoader.findAllUnreleased();
       Assert.assertEquals(1, list2.size());
 
       list1 = ejb.queryArchiveByTenant();
       Assert.assertEquals(1, list1.size());
    }
 
-   // @Test
+   @Test
    public void interceptPersistWithException() throws Exception {
       log.info("start interceptPersistWithException()");
 

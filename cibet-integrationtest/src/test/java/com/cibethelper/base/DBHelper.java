@@ -24,6 +24,8 @@
  */
 package com.cibethelper.base;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,7 +38,12 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.cibethelper.SpringTestAuthenticationManager;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
@@ -67,6 +74,7 @@ public class DBHelper extends CoreTestBase {
       InitializationService.instance().startContext();
       applEman.getTransaction().begin();
       Context.sessionScope().setUser(USER);
+      Context.sessionScope().setTenant(TENANT);
    }
 
    @After
@@ -125,6 +133,46 @@ public class DBHelper extends CoreTestBase {
       applEman.flush();
       applEman.clear();
       return te;
+   }
+
+   protected TEntity persistTEntityWithoutClear() {
+      TEntity te = createTEntity(5, "valuexx");
+      try {
+         applEman.persist(te);
+      } catch (PostponedException e) {
+      }
+      applEman.flush();
+      return te;
+   }
+
+   protected TEntity persistTEntity(int counter, Date now, Calendar cal) {
+      TEntity entity = new TEntity();
+      entity.setCounter(counter);
+      entity.setNameValue("valuexx");
+      entity.setOwner(TENANT);
+      entity.setXdate(now);
+      entity.setXCaldate(cal);
+      entity.setXCaltimestamp(cal);
+      entity.setXtime(now);
+      entity.setXtimestamp(now);
+      try {
+         applEman.persist(entity);
+      } catch (PostponedException e) {
+      }
+      applEman.flush();
+      applEman.clear();
+      return entity;
+   }
+
+   protected void authenticate(String... roles) throws AuthenticationException {
+      SpringTestAuthenticationManager authManager = new SpringTestAuthenticationManager();
+      for (String role : roles) {
+         authManager.addAuthority(role);
+      }
+
+      Authentication request = new UsernamePasswordAuthenticationToken("test", "test");
+      Authentication result = authManager.authenticate(request);
+      SecurityContextHolder.getContext().setAuthentication(result);
    }
 
 }

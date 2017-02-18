@@ -225,7 +225,7 @@ public class HttpRequestInvoker implements Invoker {
          if ("java.lang.String".equals(param.getClassname())) {
             if (b.length() > 0)
                b.append("&");
-            b.append(param.getName());
+            b.append(URLEncoder.encode(param.getName(), "UTF-8"));
             b.append("=");
             b.append(URLEncoder.encode((String) param.getUnencodedValue(), "UTF-8"));
 
@@ -233,7 +233,7 @@ public class HttpRequestInvoker implements Invoker {
             for (String value : (String[]) param.getUnencodedValue()) {
                if (b.length() > 0)
                   b.append("&");
-               b.append(param.getName());
+               b.append(URLEncoder.encode(param.getName(), "UTF-8"));
                b.append("=");
                b.append(URLEncoder.encode(value, "UTF-8"));
             }

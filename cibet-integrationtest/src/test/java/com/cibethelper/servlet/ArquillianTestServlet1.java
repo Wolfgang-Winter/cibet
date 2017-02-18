@@ -32,7 +32,10 @@ import java.io.PrintWriter;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.annotation.Resource;
@@ -189,6 +192,11 @@ public class ArquillianTestServlet1 extends HttpServlet {
          msg = proxy(req, resp);
       } else if (req.getServletPath().equals("/test/timeout")) {
          msg = timeout(req, resp);
+      } else if (req.getServletPath().equals("/test/testInvoke")) {
+         doTestInvoke(req, resp);
+      } else if (req.getServletPath().equals("/test/exception")) {
+         log.debug("throw Exception");
+         throw new ServletException("deliberately thrown exception!");
       }
 
       PrintWriter writer = resp.getWriter();
@@ -373,6 +381,66 @@ public class ArquillianTestServlet1 extends HttpServlet {
          log.debug("no store " + te);
          return "NO Persist, counter: " + te.getCounter();
       }
+   }
+
+   private void doTestInvoke(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      log.debug("servlet testInvoke called");
+      Map<String, String> params = new TreeMap<String, String>();
+
+      for (Object key : req.getParameterMap().keySet()) {
+         String[] values = (String[]) req.getParameterMap().get(key);
+         if (values != null && values.length == 1) {
+            log.debug("parameter: " + key + "=" + values[0]);
+            params.put((String) key, values[0]);
+
+         } else {
+            log.debug("add multiparameter " + key);
+            String valBuffer = "";
+            for (String value : values) {
+               valBuffer = valBuffer + value;
+               valBuffer = valBuffer + "|";
+            }
+            params.put((String) key, valBuffer);
+         }
+      }
+
+      StringBuffer b = new StringBuffer();
+      for (String key : params.keySet()) {
+         b.append(key);
+         b.append("=");
+         b.append(params.get(key));
+         b.append(" ; ");
+      }
+
+      // headers
+      b.append("HEADERS: ");
+      Enumeration<String> headers = req.getHeaderNames();
+      while (headers.hasMoreElements()) {
+         String headerName = headers.nextElement();
+         Enumeration<String> header = req.getHeaders(headerName);
+         List<String> headerValues = new ArrayList<String>();
+         while (header.hasMoreElements()) {
+            headerValues.add(header.nextElement());
+         }
+         if (headerValues.size() == 1) {
+            b.append(headerName);
+            b.append(" = ");
+            b.append(headerValues.get(0));
+            b.append(" ; ");
+         } else {
+            for (String v : headerValues) {
+               b.append(headerName);
+               b.append(" = ");
+               b.append(v);
+               b.append(" ; ");
+            }
+         }
+      }
+
+      log.debug(b);
+      PrintWriter writer = resp.getWriter();
+      writer.print("TestInvoke done: " + b);
+      writer.close();
    }
 
    private String callRemoteEjb(HttpServletRequest req, HttpServletResponse resp) throws IOException {

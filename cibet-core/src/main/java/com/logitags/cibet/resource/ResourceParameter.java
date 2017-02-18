@@ -48,8 +48,7 @@ public class ResourceParameter implements Serializable {
    private String parameterId;
 
    /**
-    * The parameter value as String. Only set when JPA search attributes are
-    * configured in an actuator
+    * The parameter value as String. Only set when JPA search attributes are configured in an actuator
     */
    private String stringValue;
 
@@ -76,8 +75,7 @@ public class ResourceParameter implements Serializable {
    private transient Object unencodedValue;
 
    /**
-    * parameter sequence is important for method signatures. Oracle loads
-    * parameters sometimes not in the correct order.
+    * parameter sequence is important for method signatures. Oracle loads parameters sometimes not in the correct order.
     */
    private int sequence;
 
@@ -122,7 +120,9 @@ public class ResourceParameter implements Serializable {
          }
       }
 
-      parameterId = UUID.randomUUID().toString();
+      if (parameterId == null) {
+         parameterId = UUID.randomUUID().toString();
+      }
    }
 
    /**
@@ -232,8 +232,7 @@ public class ResourceParameter implements Serializable {
    }
 
    /**
-    * parameter sequence is important for method signatures. Oracle loads
-    * parameters sometimes not in the correct order.
+    * parameter sequence is important for method signatures. Oracle loads parameters sometimes not in the correct order.
     * 
     * @return the sequence
     */
@@ -242,8 +241,7 @@ public class ResourceParameter implements Serializable {
    }
 
    /**
-    * parameter sequence is important for method signatures. Oracle loads
-    * parameters sometimes not in the correct order.
+    * parameter sequence is important for method signatures. Oracle loads parameters sometimes not in the correct order.
     * 
     * @param sequence
     *           the sequence to set
@@ -268,8 +266,7 @@ public class ResourceParameter implements Serializable {
    }
 
    /**
-    * The parameter value as String. Only set when JPA search attributes are
-    * configured in an actuator
+    * The parameter value as String. Only set when JPA search attributes are configured in an actuator
     * 
     * @return the value
     */
@@ -278,8 +275,7 @@ public class ResourceParameter implements Serializable {
    }
 
    /**
-    * The parameter value as String. Only set when JPA search attributes are
-    * configured in an actuator
+    * The parameter value as String. Only set when JPA search attributes are configured in an actuator
     * 
     * @param uniqueId
     *           the value to set

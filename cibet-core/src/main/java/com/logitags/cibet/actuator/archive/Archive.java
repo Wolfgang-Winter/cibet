@@ -183,7 +183,7 @@ public class Archive implements Serializable {
    private int version;
 
    @PrePersist
-   protected void prePersist() {
+   public void prePersist() {
       if (resource != null) {
          resource.getUniqueId();
          if (resource.getGroupId() == null) {
