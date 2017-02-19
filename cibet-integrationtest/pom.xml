@@ -23,7 +23,7 @@
 
 		<dependency>
 			<groupId>com.logitags</groupId>
-			<artifactId>cibet-jpa20</artifactId>
+			<artifactId>cibet-jpa</artifactId>
 		</dependency>
 
 		<dependency>

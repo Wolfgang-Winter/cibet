@@ -91,7 +91,7 @@
 
 	<modules>
 		<module>cibet-core</module>
-		<module>cibet-jpa20</module>
+		<module>cibet-jpa</module>
 		<module>cibet-springsecurity30</module>
 		<module>cibet-envers</module>
 		<module>cibet-shiro12</module>
@@ -116,7 +116,7 @@
 
 			<dependency>
 				<groupId>com.logitags</groupId>
-				<artifactId>cibet-jpa20</artifactId>
+				<artifactId>cibet-jpa</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
