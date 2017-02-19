@@ -129,7 +129,8 @@
 			<artifactId>arquillian-tomcat-remote-7</artifactId>
 			<version>1.0.0.CR9</version>
 		</dependency>
- -->		
+ -->
+
 	</dependencies>
 
 	<dependencyManagement>

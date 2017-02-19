@@ -14,6 +14,7 @@ package com.cibethelper.ejb;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -33,6 +34,7 @@ import org.apache.log4j.Logger;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
+import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
 import com.logitags.cibet.actuator.common.PostponedEjbException;
 import com.logitags.cibet.actuator.dc.DcControllable;
@@ -42,6 +44,8 @@ import com.logitags.cibet.actuator.lock.AlreadyLockedException;
 import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.actuator.lock.Locker;
 import com.logitags.cibet.actuator.scheduler.SchedulerLoader;
+import com.logitags.cibet.config.Configuration;
+import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
@@ -154,9 +158,7 @@ public class CibetTestEJB {
       entity1 = (TEntity) persist(entity1);
       res[0] = entity1.getId();
 
-      // registerSetpoint2(TEntity.class.getName(), ArchiveActuator.DEFAULTNAME, ControlEvent.INSERT,
-      // ControlEvent.UPDATE,
-      // ControlEvent.DELETE);
+      Setpoint sp = registerSetpoint(TEntity.class.getName(), ArchiveActuator.DEFAULTNAME, ControlEvent.INSERT);
 
       TEntity entity = new TEntity();
       entity.setCounter(5);
@@ -164,6 +166,9 @@ public class CibetTestEJB {
       entity.setOwner(owner);
       entity = (TEntity) persist(entity);
       res[1] = entity.getId();
+
+      Configuration.instance().unregisterControl(sp.getId());
+
       return res;
    }
 
@@ -232,7 +237,7 @@ public class CibetTestEJB {
          throw new RuntimeException("list size is not 1: " + l.size());
       }
       DcControllable co = l.get(0);
-      return co.release(Context.internalRequestScope().getApplicationEntityManager(), null);
+      return co.release(applEman, null);
    }
 
    public void release(DcControllable co) throws ResourceApplyException {
@@ -413,6 +418,20 @@ public class CibetTestEJB {
       Query qa = applEman.createQuery(query);
       List<?> list = qa.getResultList();
       return list;
+   }
+
+   protected Setpoint registerSetpoint(String clazz, String act, ControlEvent... events) {
+      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()), null);
+      sp.setTarget(clazz);
+      List<String> evl = new ArrayList<String>();
+      for (ControlEvent ce : events) {
+         evl.add(ce.name());
+      }
+      sp.setEvent(evl.toArray(new String[0]));
+      Configuration cman = Configuration.instance();
+      sp.addActuator(cman.getActuator(act));
+      cman.registerSetpoint(sp);
+      return sp;
    }
 
 }

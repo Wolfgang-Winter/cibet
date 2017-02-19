@@ -1,0 +1,11 @@
+<aspectj>
+	<aspects>
+	  <concrete-aspect name="com.xyz.tracing.AspectTest" extends="com.logitags.cibet.sensor.pojo.CustomAspect">
+	  		<pointcut name="cibetIntercept" expression="target(com.cibethelper.base.SubArchiveController) &amp;&amp; execution(public String getName())"/>
+	  </concrete-aspect>
+
+	</aspects>
+
+	<weaver options="-verbose">
+	</weaver>
+</aspectj>

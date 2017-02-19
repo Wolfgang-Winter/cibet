@@ -797,7 +797,6 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
 
       try {
          authenticate("Heinz");
-         // authenticateSecond("Wooo");
 
          Context.sessionScope().setSecondUser("secondUser");
          TEntity entity = persistTEntity();

@@ -26,6 +26,7 @@ package com.logitags.cibet.sensor.ejb;
 
 import java.lang.reflect.Proxy;
 import java.util.Hashtable;
+import java.util.Map.Entry;
 
 import javax.naming.Binding;
 import javax.naming.Context;
@@ -56,7 +57,7 @@ public class CibetRemoteContext implements Context {
       }
       environment = env;
 
-      Hashtable nativeEnv = (Hashtable) env.clone();
+      Hashtable<String, String> nativeEnv = (Hashtable<String, String>) env.clone();
       String nativeContextClassname = (String) nativeEnv.get(NATIVE_INITIAL_CONTEXT_FACTORY);
       if (nativeContextClassname == null) {
          String err = "Failed to find property " + NATIVE_INITIAL_CONTEXT_FACTORY
@@ -66,6 +67,13 @@ public class CibetRemoteContext implements Context {
       }
       log.info("create native initial context with " + nativeContextClassname);
       nativeEnv.put(Context.INITIAL_CONTEXT_FACTORY, nativeContextClassname);
+
+      if (log.isDebugEnabled()) {
+         for (Entry<?, ?> e : nativeEnv.entrySet()) {
+            log.debug(e);
+         }
+      }
+
       nativeContext = NamingManager.getInitialContext(nativeEnv);
    }
 

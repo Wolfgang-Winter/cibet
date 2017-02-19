@@ -61,9 +61,10 @@ public abstract class CoreTestBase {
       return res;
    }
 
-   protected void registerSetpoint(Class<?> clazz, String act, String methodName, ControlEvent... events) {
+   protected Setpoint registerSetpoint(Class<?> clazz, String act, String methodName, ControlEvent... events) {
       Setpoint sp = registerSetpoint(clazz, act, events);
       sp.setMethod(methodName);
+      return sp;
    }
 
    protected Setpoint registerSetpoint(Class<?> clazz, String act, ControlEvent... events) {
@@ -102,9 +103,10 @@ public abstract class CoreTestBase {
       return sp;
    }
 
-   protected void registerSetpoint(Class<?> clazz, List<String> acts, String methodName, ControlEvent... events) {
+   protected Setpoint registerSetpoint(Class<?> clazz, List<String> acts, String methodName, ControlEvent... events) {
       Setpoint sp = registerSetpoint(clazz.getName(), acts, events);
       sp.setMethod(methodName);
+      return sp;
    }
 
    protected Setpoint registerSetpoint(String target, String method, List<String> acts, ControlEvent... events) {

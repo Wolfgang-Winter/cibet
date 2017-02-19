@@ -119,12 +119,6 @@ public class RemoteEjbIT extends AbstractArquillian {
    }
 
    @Test
-   public void dlo() {
-      log.warn("Hallllooo");
-   }
-
-   // @Ignore
-   @Test
    public void executeLocalRemoteEJBInvoker() throws Exception {
       log.debug("start executeLocalRemoteEJBInvoker()");
       List<ResourceParameter> params = new ArrayList<>();
@@ -135,7 +129,7 @@ public class RemoteEjbIT extends AbstractArquillian {
       properties.load(url.openStream());
 
       ResourceParameter rp = new ResourceParameter(RemoteEjbInvocationHandler.JNDI_NAME, String.class.getName(),
-            "java:module/RemoteEJBImpl", ParameterType.INTERNAL_PARAMETER, 1);
+            "RemoteEjbIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB", ParameterType.INTERNAL_PARAMETER, 1);
       params.add(rp);
       ResourceParameter rp1 = new ResourceParameter("param1", String.class.getName(), "myParam1",
             ParameterType.METHOD_PARAMETER, 2);
@@ -166,7 +160,7 @@ public class RemoteEjbIT extends AbstractArquillian {
       assertEquals(6, result.size());
    }
 
-   // @Test
+   @Test
    public void executeRemoteEJBInvokerNoContext() throws Exception {
       log.debug("start executeRemoteEJBInvokerNoContext()");
       List<ResourceParameter> params = new ArrayList<>();
@@ -179,7 +173,7 @@ public class RemoteEjbIT extends AbstractArquillian {
       }
    }
 
-   // @Test
+   @Test
    public void executeRemoteEJBInvokerNoJndiname() throws Exception {
       log.debug("start executeRemoteEJBInvokerNoJndiname()");
       List<ResourceParameter> params = new ArrayList<>();
@@ -196,21 +190,21 @@ public class RemoteEjbIT extends AbstractArquillian {
       }
    }
 
-   // @Test
+   @Test
    public void invokeRemoteEJBHandler() throws Throwable {
       log.debug("start invokeRemoteEJBHandler()");
       TEntity entity = new TEntity("ja", 88, "mys");
       Object[] params = new Object[] { "kll", 15, 34, "wossel".getBytes(), entity, new Long(900L) };
 
-      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi.properties");
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
       log.debug("url=" + url);
       Properties properties = new Properties();
       properties.load(url.openStream());
 
       Method m = RemoteEJBImpl.class.getMethod("testInvoke", String.class, int.class, int.class, byte[].class,
             TEntity.class, Long.class);
-      Constructor<RemoteEjbInvocationHandler> constr = RemoteEjbInvocationHandler.class.getConstructor(Object.class,
-            Hashtable.class, String.class);
+      Constructor<RemoteEjbInvocationHandler> constr = RemoteEjbInvocationHandler.class
+            .getDeclaredConstructor(Object.class, Hashtable.class, String.class);
       constr.setAccessible(true);
 
       RemoteEjbInvocationHandler handler = constr.newInstance(new RemoteEJBImpl(), properties, "x");
@@ -219,13 +213,13 @@ public class RemoteEjbIT extends AbstractArquillian {
       assertEquals(6, result.size());
    }
 
-   // @Test
+   @Test
    public void invokeRemoteEJBHandlerName() throws Throwable {
       log.debug("start invokeRemoteEJBHandlerName()");
       TEntity entity = new TEntity("ja", 88, "mys");
       Object[] params = new Object[] { "kll", 15, 34, "wossel".getBytes(), entity, new Long(900L) };
 
-      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi.properties");
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
       log.debug("url=" + url);
       Properties properties = new Properties();
       properties.load(url.openStream());
@@ -234,8 +228,8 @@ public class RemoteEjbIT extends AbstractArquillian {
             TEntity.class, Long.class);
       Name name = new LdapName("CN=Steve Kille,O=Isode Limited,C=GB");
 
-      Constructor<RemoteEjbInvocationHandler> constr = RemoteEjbInvocationHandler.class.getConstructor(Object.class,
-            Hashtable.class, Name.class);
+      Constructor<RemoteEjbInvocationHandler> constr = RemoteEjbInvocationHandler.class
+            .getDeclaredConstructor(Object.class, Hashtable.class, Name.class);
       constr.setAccessible(true);
       RemoteEjbInvocationHandler handler = constr.newInstance(new RemoteEJBImpl(), properties, name);
 
@@ -244,13 +238,13 @@ public class RemoteEjbIT extends AbstractArquillian {
       assertEquals(6, result.size());
    }
 
-   // @Test
+   @Test
    public void invokeRemoteEJBHandlerNoName() throws Throwable {
       log.debug("start invokeRemoteEJBHandlerNoName()");
       TEntity entity = new TEntity("ja", 88, "mys");
       Object[] params = new Object[] { "kll", 15, 34, "wossel".getBytes(), entity, new Long(900L) };
 
-      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi.properties");
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
       log.debug("url=" + url);
       Properties properties = new Properties();
       properties.load(url.openStream());
@@ -258,8 +252,8 @@ public class RemoteEjbIT extends AbstractArquillian {
       Method m = RemoteEJBImpl.class.getMethod("testInvoke", String.class, int.class, int.class, byte[].class,
             TEntity.class, Long.class);
 
-      Constructor<RemoteEjbInvocationHandler> constr = RemoteEjbInvocationHandler.class.getConstructor(Object.class,
-            Hashtable.class, String.class);
+      Constructor<RemoteEjbInvocationHandler> constr = RemoteEjbInvocationHandler.class
+            .getDeclaredConstructor(Object.class, Hashtable.class, String.class);
       constr.setAccessible(true);
       RemoteEjbInvocationHandler handler = constr.newInstance(new RemoteEJBImpl(), properties, (String) null);
 
@@ -270,10 +264,10 @@ public class RemoteEjbIT extends AbstractArquillian {
       }
    }
 
-   // @Test
+   @Test
    public void getInitialContextNoNative() throws Throwable {
       log.debug("start getInitialContextNoNative()");
-      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi.properties");
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
       Properties properties = new Properties();
       properties.load(url.openStream());
 
@@ -287,10 +281,10 @@ public class RemoteEjbIT extends AbstractArquillian {
       }
    }
 
-   // @Test
+   @Test
    public void getInitialContext() throws Throwable {
       log.debug("start getInitialContext()");
-      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi.properties");
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
       Properties properties = new Properties();
       properties.load(url.openStream());
       String cl = (String) properties.get(Context.INITIAL_CONTEXT_FACTORY);
@@ -301,17 +295,17 @@ public class RemoteEjbIT extends AbstractArquillian {
       assertNotNull(ctx);
    }
 
-   // @Test(expected = IllegalArgumentException.class)
+   @Test(expected = IllegalArgumentException.class)
    public void getInitialContextNull() throws Throwable {
       log.debug("start getInitialContextNull()");
       CibetRemoteContextFactory fac = new CibetRemoteContextFactory();
       fac.getInitialContext(null);
    }
 
-   // @Test
+   @Test
    public void lookup() throws Throwable {
       log.debug("start lookup()");
-      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi.properties");
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
       Properties properties = new Properties();
       properties.load(url.openStream());
       String cl = (String) properties.get(Context.INITIAL_CONTEXT_FACTORY);
@@ -321,7 +315,8 @@ public class RemoteEjbIT extends AbstractArquillian {
       CibetRemoteContextFactory fac = new CibetRemoteContextFactory();
       CibetRemoteContext ctx = (CibetRemoteContext) fac.getInitialContext(properties);
       assertNotNull(ctx);
-      RemoteEJB ejb = (RemoteEJB) ctx.lookup("jav:module/RemoteEJBImpl");
+      // RemoteEJB ejb = (RemoteEJB) ctx.lookup("jav:module/RemoteEJBImpl");
+      RemoteEJB ejb = (RemoteEJB) ctx.lookup("RemoteEjbIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
       assertNotNull(ejb);
    }
 

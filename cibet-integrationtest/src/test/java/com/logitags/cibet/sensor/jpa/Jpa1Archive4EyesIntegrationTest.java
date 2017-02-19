@@ -152,11 +152,12 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
    }
 
    @Test
-   public void persistWithArchivePersistEvent() {
+   public void persistWithArchivePersistEvent() throws InterruptedException {
       log.info("start persistWithArchivePersistEvent()");
       sp = registerSetpoint(TEntity.class.getName(), ArchiveActuator.DEFAULTNAME, ControlEvent.PERSIST);
 
       TEntity entity = persistTEntity();
+      Thread.sleep(20);
       TEntity selEnt = applEman.find(TEntity.class, entity.getId());
       Assert.assertNotNull(selEnt);
       Assert.assertEquals(5, selEnt.getCounter());
@@ -502,14 +503,17 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
    /**
     * update after persist on same object in archive mode leads to direct update in database and create of 2 archive
     * records.
+    * 
+    * @throws InterruptedException
     */
    @Test
-   public void persistUpdateArchive() {
+   public void persistUpdateArchive() throws InterruptedException {
       log.info("start persistUpdateArchive()");
       sp = registerSetpoint(TEntity.class.getName(), ArchiveActuator.DEFAULTNAME, ControlEvent.INSERT,
             ControlEvent.UPDATE, ControlEvent.DELETE);
 
       TEntity entity = persistTEntity();
+      Thread.sleep(20);
       entity.setCounter(13);
       applEman.merge(entity);
       applEman.flush();
@@ -675,16 +679,18 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
    /**
     * removal after persist on same object in archive mode leads to direct removal in database and create of archive
     * record.
+    * 
+    * @throws InterruptedException
     */
    @Test
-   public void persistRemoveArchive() {
+   public void persistRemoveArchive() throws InterruptedException {
       log.info("start persistRemoveArchive()");
 
       sp = registerSetpoint(TEntity.class.getName(), ArchiveActuator.DEFAULTNAME, ControlEvent.INSERT,
             ControlEvent.UPDATE, ControlEvent.DELETE);
 
       TEntity entity = persistTEntity();
-
+      Thread.sleep(20);
       applEman.remove(entity);
 
       TEntity selEnt = applEman.find(TEntity.class, entity.getId());

@@ -53,6 +53,7 @@ import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InitializationService;
+import com.logitags.cibet.context.InternalSessionScope;
 
 public class DBHelper extends CoreTestBase {
 
@@ -173,6 +174,27 @@ public class DBHelper extends CoreTestBase {
       Authentication request = new UsernamePasswordAuthenticationToken("test", "test");
       Authentication result = authManager.authenticate(request);
       SecurityContextHolder.getContext().setAuthentication(result);
+   }
+
+   protected void authenticateSecond(String... roles) {
+      log.debug("authenticate second");
+      SpringTestAuthenticationManager authManager = new SpringTestAuthenticationManager();
+      for (String role : roles) {
+         if ("NULL".equals(role)) {
+            log.debug("set secondRole = null");
+            Context.internalSessionScope().setProperty(InternalSessionScope.SECOND_PRINCIPAL, null);
+         } else {
+            authManager.addAuthority(role);
+         }
+      }
+
+      try {
+         Authentication request = new UsernamePasswordAuthenticationToken("test", "test");
+         Authentication result = authManager.authenticate(request);
+         Context.internalSessionScope().setProperty(InternalSessionScope.SECOND_PRINCIPAL, result);
+      } catch (AuthenticationException e) {
+         log.error("Authentication failed: " + e.getMessage());
+      }
    }
 
 }
