@@ -93,7 +93,7 @@
 		<module>cibet-core</module>
 		<module>cibet-jpa20</module>
 		<module>cibet-springsecurity30</module>
-		<module>cibet-envers42</module>
+		<module>cibet-envers</module>
 		<module>cibet-shiro12</module>
 		<module>cibet-integrationtest</module>
 	</modules>
@@ -136,13 +136,13 @@
 
 			<dependency>
 				<groupId>com.logitags</groupId>
-				<artifactId>cibet-envers42</artifactId>
+				<artifactId>cibet-envers</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
          <dependency>
             <groupId>com.logitags</groupId>
-            <artifactId>cibet-envers42</artifactId>
+            <artifactId>cibet-envers</artifactId>
             <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>

@@ -28,12 +28,12 @@
 
 		<dependency>
 			<groupId>com.logitags</groupId>
-			<artifactId>cibet-envers42</artifactId>
+			<artifactId>cibet-envers</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>com.logitags</groupId>
-			<artifactId>cibet-envers42</artifactId>
+			<artifactId>cibet-envers</artifactId>
 			<classifier>tests</classifier>
 		</dependency>
 
