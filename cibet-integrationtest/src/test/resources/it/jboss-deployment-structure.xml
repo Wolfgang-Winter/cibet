@@ -1,0 +1,10 @@
+<jboss-deployment-structure>
+   <deployment>
+
+      <dependencies>
+         <module name="org.hibernate" export="TRUE" />
+         <module name="com.derby.driver" export="TRUE" />
+      </dependencies>
+
+   </deployment>
+</jboss-deployment-structure>

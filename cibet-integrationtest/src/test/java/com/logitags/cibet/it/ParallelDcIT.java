@@ -97,7 +97,7 @@ public class ParallelDcIT extends AbstractArquillian {
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class, RemoteEJB.class,
             RemoteEJBImpl.class, SimpleEjb.class);
 
-      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa20").withTransitivity()
+      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withTransitivity()
             .asFile();
       archive.addAsLibraries(cibet);
 

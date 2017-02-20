@@ -111,13 +111,10 @@ public class Provider implements PersistenceProvider {
          Class<?> persistenceProviderClass = null;
          try {
             if (persistenceUnitInfo.getClassLoader() != null) {
-               log.info("classLoader: " + persistenceUnitInfo.getClassLoader());
-               log.info("classLoader class: " + persistenceUnitInfo.getClassLoader().getClass());
                persistenceProviderClass = persistenceUnitInfo.getClassLoader().loadClass(className);
             }
          } catch (ClassNotFoundException e) {
-            log.info(e.getMessage(), e);
-            log.info("not found");
+            log.info(className + " class not found with " + persistenceUnitInfo.getClassLoader());
             persistenceProviderClass = Thread.currentThread().getContextClassLoader().loadClass(className);
          }
 

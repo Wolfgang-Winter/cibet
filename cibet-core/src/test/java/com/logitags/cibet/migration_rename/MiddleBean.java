@@ -22,7 +22,7 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.migration;
+package com.logitags.cibet.migration_rename;
 
 import java.io.Serializable;
 import java.util.ArrayList;

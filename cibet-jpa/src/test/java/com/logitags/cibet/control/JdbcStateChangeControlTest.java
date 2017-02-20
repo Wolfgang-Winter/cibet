@@ -34,9 +34,9 @@ import com.logitags.cibet.sensor.jdbc.driver.JdbcResourceHandler;
 import com.logitags.cibet.sensor.jdbc.driver.SqlParser;
 
 @RunWith(MockitoJUnitRunner.class)
-public class StateChangeControlTest extends CoreTestBase {
+public class JdbcStateChangeControlTest extends CoreTestBase {
 
-   private static Logger log = Logger.getLogger(StateChangeControlTest.class);
+   private static Logger log = Logger.getLogger(JdbcStateChangeControlTest.class);
 
    @Mock
    private EntityManager em;

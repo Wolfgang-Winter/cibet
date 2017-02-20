@@ -39,12 +39,15 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.context.Context;
+import com.logitags.cibet.context.EntityManagerType;
+import com.logitags.cibet.context.InternalRequestScope;
+
 /**
- * Implementation for creating JdbcBridgeEntityManager instances. DataSource
- * must be in JNDI context under name'java:comp/env/jdbc/CibetJDBC'
+ * Implementation for creating JdbcBridgeEntityManager instances. DataSource must be in JNDI context under
+ * name'java:comp/env/jdbc/CibetJDBC'
  * <p>
- * The IDGenerator implementation must be in JNDI context under name
- * 'java:comp/env/bean/CibetIdGenerator'.
+ * The IDGenerator implementation must be in JNDI context under name 'java:comp/env/bean/CibetIdGenerator'.
  * 
  * @author Wolfgang
  * 
@@ -67,6 +70,7 @@ public class JdbcBridgeEntityManagerFactory implements EntityManagerFactory {
          con.setAutoCommit(false);
          em = new JdbcBridgeEntityManager(con);
          em.setEntityManagerFactory(this);
+         Context.requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.RESOURCE_LOCAL);
          return em;
       } catch (SQLException e) {
          log.error(e.getMessage(), e);

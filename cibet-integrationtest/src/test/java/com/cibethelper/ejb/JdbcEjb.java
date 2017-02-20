@@ -27,25 +27,44 @@ package com.cibethelper.ejb;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
+import javax.ejb.Remote;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 
 import com.cibethelper.base.CibetTestDataSource;
+import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.config.Configuration;
+import com.logitags.cibet.config.Setpoint;
+import com.logitags.cibet.context.CibetContext;
+import com.logitags.cibet.context.Context;
+import com.logitags.cibet.core.ControlEvent;
+import com.logitags.cibet.sensor.jdbc.bridge.JdbcBridgeEntityManager;
 
 @Stateless
-public class JdbcEjb {
+@Remote
+@TransactionManagement(value = TransactionManagementType.BEAN)
+public class JdbcEjb implements JdbcEjbInterface {
 
    private static Logger log = Logger.getLogger(JdbcEjb.class);
 
    @Resource
    private SessionContext ejbCtx;
 
+   @CibetContext
    public int executeJdbc(String sql, boolean rollback) {
+      Context.sessionScope().setUser("Klabautermann");
+      Context.sessionScope().setTenant("testTenant");
+
       DataSource dataSource = new CibetTestDataSource();
       Connection con = null;
       int count;
@@ -57,17 +76,67 @@ public class JdbcEjb {
          log.error(e.getMessage(), e);
          throw new RuntimeException(e);
       } finally {
-         if (con != null)
+         try {
+            if (rollback) {
+               Context.requestScope().setRollbackOnly(true);
+               // ejbCtx.setRollbackOnly();
+            } else {
+               con.commit();
+            }
+            if (con != null) {
+               con.close();
+            }
+         } catch (SQLException e) {
+            log.error(e.getMessage(), e);
+         }
+      }
+
+      return count;
+   }
+
+   public String registerSetpoint(String clazz, List<String> acts, ControlEvent... events) {
+      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()), null);
+      if (clazz != null) {
+         sp.setTarget(clazz);
+      }
+      List<String> evl = new ArrayList<String>();
+      for (ControlEvent ce : events) {
+         evl.add(ce.name());
+      }
+      sp.setEvent(evl.toArray(new String[0]));
+      Configuration cman = Configuration.instance();
+      for (String scheme : acts) {
+         sp.addActuator(cman.getActuator(scheme));
+      }
+      cman.registerSetpoint(sp);
+      return sp.getId();
+   }
+
+   public void unregisterSetpoint(String id) {
+      Configuration.instance().unregisterSetpoint(id);
+   }
+
+   @CibetContext
+   public void release(DcControllable dc) throws Exception {
+      log.debug("now release");
+
+      Connection con = null;
+      try {
+         Context.sessionScope().setUser("test2");
+         Context.sessionScope().setTenant("testTenant");
+         DataSource dataSource = new CibetTestDataSource();
+         con = dataSource.getConnection();
+         dc.release(new JdbcBridgeEntityManager(con), null);
+      } finally {
+         if (con != null) {
             try {
+               con.commit();
                con.close();
             } catch (SQLException e) {
                log.error(e.getMessage(), e);
             }
+         }
       }
-
-      if (rollback)
-         ejbCtx.setRollbackOnly();
-      return count;
    }
 
 }

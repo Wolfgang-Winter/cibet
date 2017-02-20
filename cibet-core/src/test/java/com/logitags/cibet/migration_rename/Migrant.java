@@ -22,67 +22,61 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.migration;
-
-import java.io.Serializable;
+package com.logitags.cibet.migration_rename;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Entity
-public class DependentBean implements Serializable {
+public class Migrant extends MiddleBean {
 
    /**
     * 
     */
    private static final long serialVersionUID = 1L;
 
-   @Id
-   @GeneratedValue(strategy = GenerationType.AUTO)
-   private long theId;
+   private String longer;
 
-   private String depString;
+   public String hang;
 
    /**
-    * @return the theId
+    * @return the longer
     */
-   public long getTheId() {
-      return theId;
+   public String getLonger() {
+      return longer;
    }
 
    /**
-    * @param theId
-    *           the theId to set
+    * @param longer
+    *           the longer to set
     */
-   public void setTheId(long theId) {
-      this.theId = theId;
+   public void setLonger(String longer) {
+      this.longer = longer;
    }
 
    /**
-    * @return the depString
+    * @return the hang
     */
-   public String getDepString() {
-      return depString;
+   public String getHang() {
+      return hang;
    }
 
    /**
-    * @param depString
-    *           the depString to set
+    * @param hang
+    *           the hang to set
     */
-   public void setDepString(String depString) {
-      this.depString = depString;
+   public void setHang(String hang) {
+      this.hang = hang;
    }
 
    public String toString() {
       StringBuffer b = new StringBuffer();
+      b.append(super.toString());
       b.append(" || ");
       b.append(this.getClass().getName());
-      b.append("depString:");
-      b.append(depString);
-      b.append(", theId:");
-      b.append(theId);
+      b.append(", non-static hang:");
+      b.append(hang);
+      b.append(", longer:");
+      b.append(longer);
       return b.toString();
    }
 

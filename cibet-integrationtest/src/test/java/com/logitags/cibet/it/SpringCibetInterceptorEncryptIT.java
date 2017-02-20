@@ -78,10 +78,10 @@ public class SpringCibetInterceptorEncryptIT extends AbstractArquillian {
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class,
             CibetTestEJB.class, SpringTestAuthenticationManager.class);
 
-      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa20")
-            .withoutTransitivity().asFile();
+      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withoutTransitivity()
+            .asFile();
       archive.addAsLibraries(cibet);
-      File[] spring = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-springsecurity30")
+      File[] spring = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-springsecurity")
             .withTransitivity().asFile();
       archive.addAsLibraries(spring);
 

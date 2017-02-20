@@ -114,7 +114,9 @@ public class InitializationService {
             InitialContext context = new InitialContext();
             EntityManagerFactory containerEmf = (EntityManagerFactory) context.lookup(EMF_JNDINAME);
             entityManager = containerEmf.createEntityManager();
-            Context.requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.JTA);
+            if (Context.requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == null) {
+               Context.requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.JTA);
+            }
             Context.internalRequestScope().setEntityManager(entityManager);
             log.debug("EE EntityManager created from JNDI EntityManagerFactory");
             return entityManager;

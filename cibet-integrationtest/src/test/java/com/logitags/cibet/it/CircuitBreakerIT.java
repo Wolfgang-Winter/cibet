@@ -69,7 +69,7 @@ public class CircuitBreakerIT extends CoreTestBase {
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class,
             CibetTest2EJB.class, CibetTest2MappedNameEJBImpl.class);
 
-      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa20").withTransitivity()
+      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withTransitivity()
             .asFile();
       archive.addAsLibraries(cibet);
 

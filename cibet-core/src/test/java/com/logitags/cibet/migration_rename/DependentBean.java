@@ -22,61 +22,67 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.migration;
+package com.logitags.cibet.migration_rename;
+
+import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
-public class Migrant extends MiddleBean {
+public class DependentBean implements Serializable {
 
    /**
     * 
     */
    private static final long serialVersionUID = 1L;
 
-   private String longer;
+   @Id
+   @GeneratedValue(strategy = GenerationType.AUTO)
+   private long theId;
 
-   public String hang;
+   private String depString;
 
    /**
-    * @return the longer
+    * @return the theId
     */
-   public String getLonger() {
-      return longer;
+   public long getTheId() {
+      return theId;
    }
 
    /**
-    * @param longer
-    *           the longer to set
+    * @param theId
+    *           the theId to set
     */
-   public void setLonger(String longer) {
-      this.longer = longer;
+   public void setTheId(long theId) {
+      this.theId = theId;
    }
 
    /**
-    * @return the hang
+    * @return the depString
     */
-   public String getHang() {
-      return hang;
+   public String getDepString() {
+      return depString;
    }
 
    /**
-    * @param hang
-    *           the hang to set
+    * @param depString
+    *           the depString to set
     */
-   public void setHang(String hang) {
-      this.hang = hang;
+   public void setDepString(String depString) {
+      this.depString = depString;
    }
 
    public String toString() {
       StringBuffer b = new StringBuffer();
-      b.append(super.toString());
       b.append(" || ");
       b.append(this.getClass().getName());
-      b.append(", non-static hang:");
-      b.append(hang);
-      b.append(", longer:");
-      b.append(longer);
+      b.append("depString:");
+      b.append(depString);
+      b.append(", theId:");
+      b.append(theId);
       return b.toString();
    }
 

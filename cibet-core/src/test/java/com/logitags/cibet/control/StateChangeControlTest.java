@@ -33,6 +33,7 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.resource.Resource;
@@ -183,6 +184,8 @@ public class StateChangeControlTest extends CoreTestBase {
    public void evaluateExclude4() throws Exception {
       log.info("start evaluateExclude4()");
       initConfiguration("config_stateChange1_invoker.xml");
+      InitializationService.instance().startContext();
+
       Context.internalRequestScope().setApplicationEntityManager(em);
       Context.internalRequestScope().setApplicationEntityManager2(em2);
 
@@ -208,12 +211,15 @@ public class StateChangeControlTest extends CoreTestBase {
 
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
+      InitializationService.instance().endContext();
    }
 
    @Test
    public void evaluateExclude5() throws Exception {
       log.info("start evaluateExclude5()");
       initConfiguration("config_condition_stateChange1_invoker.xml");
+      InitializationService.instance().startContext();
+
       Context.internalRequestScope().setApplicationEntityManager2(em);
 
       TEntity te = createTEntity(5, "Hase");
@@ -244,12 +250,14 @@ public class StateChangeControlTest extends CoreTestBase {
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("C", list.get(0).getId());
+      InitializationService.instance().endContext();
    }
 
    @Test
    public void evaluateExclude6() throws Exception {
       log.info("start evaluateExclude6()");
       initConfiguration("config_condition_stateChange1_invoker.xml");
+      InitializationService.instance().startContext();
       Context.internalRequestScope().setApplicationEntityManager2(em);
 
       TEntity te = createTEntity(5, "Hase");
@@ -273,6 +281,7 @@ public class StateChangeControlTest extends CoreTestBase {
       Assert.assertEquals(2, list.size());
       Assert.assertEquals("A", list.get(0).getId());
       Assert.assertEquals("C", list.get(1).getId());
+      InitializationService.instance().endContext();
    }
 
    @Test
@@ -306,6 +315,8 @@ public class StateChangeControlTest extends CoreTestBase {
    public void evaluateInclude2() throws Exception {
       log.info("start evaluateInclude2()");
       initConfiguration("config_condition_stateChange2_invoker_method.xml");
+      InitializationService.instance().startContext();
+
       Context.internalRequestScope().setApplicationEntityManager2(em);
 
       TEntity te = createTEntity(12, "Hase");
@@ -328,12 +339,15 @@ public class StateChangeControlTest extends CoreTestBase {
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("C", list.get(0).getId());
+      InitializationService.instance().endContext();
    }
 
    @Test
    public void evaluateInclude3() throws Exception {
       log.info("start evaluateInclude3()");
       initConfiguration("config_stateChange2_method.xml");
+      InitializationService.instance().startContext();
+
       Context.internalRequestScope().setApplicationEntityManager2(em);
 
       TEntity te = createTEntity(5, "Hase");
@@ -364,12 +378,15 @@ public class StateChangeControlTest extends CoreTestBase {
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
+      InitializationService.instance().endContext();
    }
 
    @Test
    public void evaluateInclude4() throws Exception {
       log.info("start evaluateInclude4()");
       initConfiguration("config_stateChange2_method.xml");
+      InitializationService.instance().startContext();
+
       Context.internalRequestScope().setApplicationEntityManager2(em);
 
       TEntity te = createTEntity(5, "Hase");
@@ -390,6 +407,7 @@ public class StateChangeControlTest extends CoreTestBase {
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(0, list.size());
+      InitializationService.instance().endContext();
    }
 
    @Test

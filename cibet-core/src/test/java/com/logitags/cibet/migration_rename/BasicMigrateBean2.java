@@ -22,10 +22,10 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.migration;
+package com.logitags.cibet.migration_rename;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.Date;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,7 +36,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @MappedSuperclass
-public abstract class BasicMigrateBean implements Serializable {
+public abstract class BasicMigrateBean2 implements Serializable {
 
    /**
     * 
@@ -50,12 +50,10 @@ public abstract class BasicMigrateBean implements Serializable {
    private int intParam;
 
    @Temporal(TemporalType.DATE)
-   private Calendar date;
+   private Date date;
 
    @OneToOne
    private DependentBean dependendBean;
-
-   private short newProp;
 
    /**
     * @return the theId
@@ -90,7 +88,7 @@ public abstract class BasicMigrateBean implements Serializable {
    /**
     * @return the date
     */
-   public Calendar getDate() {
+   public Date getDate() {
       return date;
    }
 
@@ -98,7 +96,7 @@ public abstract class BasicMigrateBean implements Serializable {
     * @param date
     *           the date to set
     */
-   public void setDate(Calendar date) {
+   public void setDate(Date date) {
       this.date = date;
    }
 
@@ -117,31 +115,14 @@ public abstract class BasicMigrateBean implements Serializable {
       this.dependendBean = dependendBean;
    }
 
-   /**
-    * @return the newProp
-    */
-   public short getNewProp() {
-      return newProp;
-   }
-
-   /**
-    * @param newProp
-    *           the newProp to set
-    */
-   public void setNewProp(short newProp) {
-      this.newProp = newProp;
-   }
-
    public String toString() {
       StringBuffer b = new StringBuffer();
-      b.append("BasicMigrateBean, date:");
+      b.append("BasicMigrateBean2, date:");
       b.append(date);
       b.append(", intParam:");
       b.append(intParam);
       b.append(", theId:");
       b.append(theId);
-      b.append(", newProp:");
-      b.append(newProp);
       b.append(", dependendBean:");
       b.append(dependendBean);
       return b.toString();
