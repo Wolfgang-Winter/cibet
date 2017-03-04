@@ -28,21 +28,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Use portable JNDI lookup in the java:module namespace to look up local
- * enterprise beans within the same module. JavaEE6
+ * Use portable JNDI lookup in the java:module namespace to look up local enterprise beans within the same module.
+ * JavaEE6
  * 
  * @author Wolfgang
  * 
  */
-public class ModuleNamespaceStrategy implements JndiNameStrategy {
+public class ModuleNamespaceStrategy extends AbstractLookupStrategy implements JndiNameStrategy {
 
    @Override
    public List<String> getJNDINames(Class<?> clazz) {
       List<String> names = new ArrayList<String>();
+
+      String ejbName = findEJBName(clazz);
+
       names.add("java:module/" + clazz.getSimpleName());
+      if (ejbName != null) {
+         names.add("java:module/" + ejbName);
+      }
       Class<?>[] supers = clazz.getInterfaces();
       for (Class<?> c : supers) {
          names.add("java:module/" + c.getSimpleName());
+         if (ejbName != null) {
+            names.add("java:module/" + ejbName + "/" + c.getSimpleName());
+         }
       }
       return names;
    }

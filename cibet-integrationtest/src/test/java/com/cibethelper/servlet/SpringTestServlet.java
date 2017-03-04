@@ -275,6 +275,7 @@ public class SpringTestServlet extends HttpServlet {
          if (user == null) {
             // SecurityContextHolder.getContext().setAuthentication(null);
          } else {
+            Context.sessionScope().setUser(null);
             Collection<GrantedAuthority> authList = new ArrayList<>();
             authList.add(new GrantedAuthorityImpl(req.getParameter("ROLE")));
             Authentication request = new UsernamePasswordAuthenticationToken(user, "FIXED-PW", authList);
@@ -305,6 +306,7 @@ public class SpringTestServlet extends HttpServlet {
 
       String msg = "Spring logged in user " + Context.sessionScope().getUser();
       log.debug(msg);
+
       return msg;
    }
 

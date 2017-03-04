@@ -94,7 +94,7 @@ public class ArquillianTestServlet1 extends HttpServlet {
    @Resource
    protected UserTransaction ut;
 
-   @EJB
+   @EJB(beanName = "RemoteEJBImpl")
    private RemoteEJB ejb;
 
    /*
@@ -217,7 +217,8 @@ public class ArquillianTestServlet1 extends HttpServlet {
    private String proxy(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
       ProxyConfig config = new ProxyConfig();
       config.setMode(ProxyMode.MITM);
-      config.setPort(10112);
+      config.setPort(10113);
+      config.setName("proxyTest");
       Configuration.instance().startProxy(config);
 
       try {
@@ -234,11 +235,12 @@ public class ArquillianTestServlet1 extends HttpServlet {
          SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslContext,
                SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
-         HttpHost proxy = new HttpHost("localhost", 10112);
+         HttpHost proxy = new HttpHost("localhost", 10113);
          CloseableHttpClient client = HttpClients.custom().setSSLSocketFactory(sslsf).setProxy(proxy)
                .disableAutomaticRetries().build();
 
-         HttpPost method = createHttpPost("https://localhost:8743/LittleProxyTest");
+         String url = req.getParameter("url");
+         HttpPost method = createHttpPost(url);
          HttpResponse response = client.execute(method);
          log.debug("STATUS: " + response.getStatusLine().getStatusCode());
          log.debug("Response Headers:");
@@ -251,6 +253,8 @@ public class ArquillianTestServlet1 extends HttpServlet {
       } catch (Exception e) {
          log.error(e.getMessage(), e);
          throw new ServletException(e);
+      } finally {
+         Configuration.instance().stopProxies();
       }
       return null;
    }
@@ -438,6 +442,7 @@ public class ArquillianTestServlet1 extends HttpServlet {
       }
 
       log.debug(b);
+      resp.setCharacterEncoding("UTF-8");
       PrintWriter writer = resp.getWriter();
       writer.print("TestInvoke done: " + b);
       writer.close();

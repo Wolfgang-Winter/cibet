@@ -98,6 +98,7 @@ public class CibetProxy extends HttpFiltersAdapter {
    private Map<String, Object> sessionContext = new HashMap<>();
 
    private boolean skip = false;
+   private boolean newEM = false;
 
    public CibetProxy(HttpRequest originalRequest, ChannelHandlerContext ctx, ProxyConfig config) {
       super(originalRequest, ctx);
@@ -425,8 +426,10 @@ public class CibetProxy extends HttpFiltersAdapter {
          skip = true;
       }
 
+      boolean startManaging = true;
       try {
-         InitializationService.instance().startContext(null);
+         log.debug("++ " + Context.requestScope());
+         startManaging = InitializationService.instance().startContext(null);
          Context.internalRequestScope().getProperties().putAll(requestContext);
          Context.internalSessionScope().getProperties().putAll(sessionContext);
 
@@ -458,7 +461,10 @@ public class CibetProxy extends HttpFiltersAdapter {
                addEventResultHeader(defaultResponse);
             }
          }
-         InitializationService.instance().endContext();
+
+         if (startManaging || newEM) {
+            InitializationService.instance().endContext();
+         }
       }
 
       return httpObject;
@@ -467,9 +473,7 @@ public class CibetProxy extends HttpFiltersAdapter {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.littleshoot.proxy.HttpFiltersAdapter#clientToProxyRequest(io.netty
-    * .handler.codec.http.HttpObject)
+    * @see org.littleshoot.proxy.HttpFiltersAdapter#clientToProxyRequest(io.netty .handler.codec.http.HttpObject)
     */
    @Override
    public HttpResponse clientToProxyRequest(HttpObject httpObject) {
@@ -495,10 +499,15 @@ public class CibetProxy extends HttpFiltersAdapter {
       }
 
       List<SecurityContext> secCtxs = new ArrayList<>();
+      boolean startManaging = true;
 
       try {
          secCtxs = parseHeaders(request.headers());
-         InitializationService.instance().startContext(null);
+         if (Context.internalRequestScope().getNullableEntityManager() == null
+               && Context.internalRequestScope().isManaged()) {
+            newEM = true;
+         }
+         startManaging = InitializationService.instance().startContext();
 
          if (Context.requestScope().getCaseId() == null) {
             String caseid = UUID.randomUUID().toString();
@@ -535,15 +544,18 @@ public class CibetProxy extends HttpFiltersAdapter {
          for (SecurityContext secCtx : secCtxs) {
             Context.internalRequestScope().getAuthenticationProvider().stopSecurityContext(secCtx);
          }
-         InitializationService.instance().endContext();
+         if (startManaging || newEM) {
+            InitializationService.instance().endContext();
+         } else if (newEM) {
+
+         }
       }
    }
 
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.littleshoot.proxy.HttpFiltersAdapter#serverToProxyResponseTimedOut()
+    * @see org.littleshoot.proxy.HttpFiltersAdapter#serverToProxyResponseTimedOut()
     */
    @Override
    public void serverToProxyResponseTimedOut() {
@@ -555,9 +567,7 @@ public class CibetProxy extends HttpFiltersAdapter {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.littleshoot.proxy.HttpFiltersAdapter#proxyToClientResponse(io.netty
-    * .handler.codec.http.HttpObject)
+    * @see org.littleshoot.proxy.HttpFiltersAdapter#proxyToClientResponse(io.netty .handler.codec.http.HttpObject)
     */
    @Override
    public HttpObject proxyToClientResponse(HttpObject httpObject) {
@@ -568,9 +578,7 @@ public class CibetProxy extends HttpFiltersAdapter {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.littleshoot.proxy.HttpFiltersAdapter#proxyToServerResolutionFailed
-    * (java.lang.String)
+    * @see org.littleshoot.proxy.HttpFiltersAdapter#proxyToServerResolutionFailed (java.lang.String)
     */
    @Override
    public void proxyToServerResolutionFailed(String hostAndPort) {
@@ -582,8 +590,7 @@ public class CibetProxy extends HttpFiltersAdapter {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.littleshoot.proxy.HttpFiltersAdapter#proxyToServerConnectionFailed()
+    * @see org.littleshoot.proxy.HttpFiltersAdapter#proxyToServerConnectionFailed()
     */
    @Override
    public void proxyToServerConnectionFailed() {
@@ -595,8 +602,7 @@ public class CibetProxy extends HttpFiltersAdapter {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.littleshoot.proxy.HttpFiltersAdapter#proxyToServerConnectionSucceeded
+    * @see org.littleshoot.proxy.HttpFiltersAdapter#proxyToServerConnectionSucceeded
     * (io.netty.channel.ChannelHandlerContext)
     */
    @Override

@@ -76,7 +76,7 @@ public class LockerIT extends AbstractArquillian {
             .asFile();
       archive.addAsLibraries(cibet);
 
-      archive.addAsWebInfResource("META-INF/persistence-it-derby.xml", "classes/META-INF/persistence.xml");
+      archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
       log.debug(archive.toString(true));

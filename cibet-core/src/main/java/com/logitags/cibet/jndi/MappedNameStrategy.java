@@ -33,7 +33,7 @@ import java.util.List;
  * @author Wolfgang
  * 
  */
-public class MappedNameStrategy extends MappedNameInterfaceStrategy implements JndiNameStrategy {
+public class MappedNameStrategy extends AbstractLookupStrategy implements JndiNameStrategy {
 
    @Override
    public List<String> getJNDINames(Class<?> clazz) {

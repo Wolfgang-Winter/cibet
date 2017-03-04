@@ -74,6 +74,10 @@ public abstract class JdbcHelper extends CoreTestBase {
       Field f = InitializationService.class.getDeclaredField("LOCAL_PERSISTENCEUNIT");
       f.setAccessible(true);
       f.set(null, "jdbc-CibetLocal");
+
+      f = InitializationService.class.getDeclaredField("instance");
+      f.setAccessible(true);
+      f.set(null, null);
    }
 
    @AfterClass
@@ -82,6 +86,10 @@ public abstract class JdbcHelper extends CoreTestBase {
       Field f = InitializationService.class.getDeclaredField("LOCAL_PERSISTENCEUNIT");
       f.setAccessible(true);
       f.set(null, "CibetLocal");
+
+      f = InitializationService.class.getDeclaredField("instance");
+      f.setAccessible(true);
+      f.set(null, null);
    }
 
    @Before

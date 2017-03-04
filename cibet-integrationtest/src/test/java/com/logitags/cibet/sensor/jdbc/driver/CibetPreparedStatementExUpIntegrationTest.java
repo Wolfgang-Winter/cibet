@@ -215,6 +215,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
             ControlEvent.UPDATE, ControlEvent.DELETE);
 
       insert(1);
+      Thread.sleep(2);
       update(1);
 
       InitializationService.instance().endContext();
@@ -250,6 +251,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
             ControlEvent.UPDATE, ControlEvent.DELETE);
 
       insert(1);
+      Thread.sleep(2);
       delete(1);
 
       InitializationService.instance().endContext();
@@ -472,7 +474,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId("cib_testentity", "5");
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.INSERT == ar.getControlEvent() || ControlEvent.RELEASE_INSERT == ar.getControlEvent());
 
       List<DcControllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
@@ -588,7 +591,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId("cib_testentity", "5");
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.DELETE, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.DELETE == ar.getControlEvent() || ControlEvent.RELEASE_DELETE == ar.getControlEvent());
 
       List<DcControllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
@@ -636,7 +640,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId("cib_testentity", "5");
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.DELETE, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.DELETE == ar.getControlEvent() || ControlEvent.RELEASE_DELETE == ar.getControlEvent());
 
       list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
@@ -704,7 +709,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId("cib_testentity", "5");
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.UPDATE, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.UPDATE == ar.getControlEvent() || ControlEvent.RELEASE_UPDATE == ar.getControlEvent());
 
       List<DcControllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
@@ -1112,6 +1118,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       ps.setString(4, "Lalla");
       int count = ps.executeUpdate();
       Assert.assertEquals(1, count);
+      Thread.sleep(2);
 
       ps.setShort(1, (short) 7);
       ps.setString(2, "rosen");
@@ -1119,6 +1126,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       ps.setString(4, "Kuller");
       count = ps.executeUpdate();
       Assert.assertEquals(1, count);
+      Thread.sleep(2);
 
       PreparedStatement sel = connection.prepareStatement(SELECT);
       sel.setShort(1, (short) 6);

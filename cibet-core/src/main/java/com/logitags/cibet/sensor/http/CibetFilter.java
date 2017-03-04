@@ -59,8 +59,7 @@ public class CibetFilter extends CibetContextFilter implements Filter {
    public static final String SENSOR_NAME = "HTTP-FILTER";
 
    /**
-    * Allows controlling of anonymous http requests. User is remote IP/port in
-    * this case.
+    * Allows controlling of anonymous http requests. User is remote IP/port in this case.
     */
    @Override
    public void init(FilterConfig config) throws ServletException {

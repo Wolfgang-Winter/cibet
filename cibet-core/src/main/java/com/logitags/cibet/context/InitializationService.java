@@ -212,6 +212,7 @@ public class InitializationService {
       } finally {
          Context.internalSessionScope().clear();
          Context.internalRequestScope().clear();
+         log.debug("isManaged: " + Context.internalRequestScope().isManaged());
          isEMInitialized = false;
          log.info("Cibet Context ended");
       }

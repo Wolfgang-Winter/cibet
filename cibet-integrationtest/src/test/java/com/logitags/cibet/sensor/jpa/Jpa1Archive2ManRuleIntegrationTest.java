@@ -379,7 +379,8 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.DELETE, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.DELETE == ar.getControlEvent() || ControlEvent.RELEASE_DELETE == ar.getControlEvent());
 
       List<DcControllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
@@ -884,7 +885,8 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.SELECT, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.SELECT == ar.getControlEvent() || ControlEvent.RELEASE_SELECT == ar.getControlEvent());
 
       List<DcControllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());

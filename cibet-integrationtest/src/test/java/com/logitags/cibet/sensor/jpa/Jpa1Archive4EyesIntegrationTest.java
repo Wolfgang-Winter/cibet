@@ -173,11 +173,12 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
    }
 
    @Test
-   public void persistWithArchiveAllEvent() {
+   public void persistWithArchiveAllEvent() throws InterruptedException {
       log.info("start persistWithArchiveAllEvent()");
       sp = registerSetpoint(TEntity.class.getName(), ArchiveActuator.DEFAULTNAME, ControlEvent.ALL);
 
       TEntity entity = persistTEntity();
+      Thread.sleep(2);
       TEntity selEnt = applEman.find(TEntity.class, entity.getId());
       Assert.assertNotNull(selEnt);
       Assert.assertEquals(5, selEnt.getCounter());

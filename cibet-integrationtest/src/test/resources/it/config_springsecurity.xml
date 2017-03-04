@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.2.xsd">
+
+
+	<actuator name="schedEE">
+		<class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class>
+		<properties>
+			<timerStart>2040.12.01 12:00:00</timerStart>
+			<timerPeriod>4000</timerPeriod>
+			<persistenceContextReference>java:comp/env/persistence/Cibet2pp</persistenceContextReference>
+		</properties>
+	</actuator>
+
+	<actuator name="SEC">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<properties>
+			<denyAll></denyAll>
+			<throwDeniedException>true</throwDeniedException>
+		</properties>
+	</actuator>
+
+	<actuator name="SEC2">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<properties>
+			<preAuthorize>hasRole( 'MANAGER')</preAuthorize>
+			<throwDeniedException>false</throwDeniedException>
+		</properties>
+	</actuator>
+
+	<actuator name="SEC3">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<properties>
+			<preAuthorize>isAuthenticated()</preAuthorize>
+		</properties>
+	</actuator>
+
+	<actuator name="SEC-URLpermit">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<properties>
+			<urlAccess>permitAll()</urlAccess>
+		</properties>
+	</actuator>
+	
+	<actuator name="SEC-URLdeny">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<properties>
+			<urlAccess>denyAll()</urlAccess>
+			<throwDeniedException>true</throwDeniedException>
+		</properties>
+	</actuator>
+
+	<setpoint id="SD23">
+		<controls>
+			<event>INVOKE</event>
+			<target>com.cibethelper.ejb.OutService</target>
+			<method>logThis</method>
+		</controls>
+		<actuator name="SEC2"/>
+	</setpoint>
+
+	<setpoint id="SD24">
+		<controls>
+			<event>PERSIST</event>
+			<target>com.cibethelper.entities.TEntity</target>
+			<condition>$SESSIONSCOPE.getProperty('Freds')!=null &amp;&amp; $SESSIONSCOPE.getProperty('Freds').getCounter()==8</condition>
+		</controls>
+		<actuator name="SEC3"/>
+		<actuator name="FOUR_EYES"/>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="SD25">
+		<controls>
+			<event>PERSIST</event>
+			<target>com.cibethelper.entities.TEntity</target>
+			<condition>$SESSIONSCOPE.getProperty('Freds')==null</condition>
+		</controls>
+		<actuator name="SEC"/>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="SD26">
+		<controls>
+			<event>RELEASE</event>
+			<target>com.cibethelper.entities.TEntity</target>
+		</controls>
+		<actuator name="SEC2"/>
+		<actuator name="FOUR_EYES"/>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="SD27-deny">
+		<controls>
+			<event>INVOKE</event>
+			<target>http://localhost:8788/HttpGeneralIT/logThis.url</target>
+			<tenant>XYCompany</tenant>
+		</controls>
+		<actuator name="SEC-URLdeny"/>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="SD28-permit" extends="SD27-deny">
+		<controls>
+			<condition>"red".equals($HTTPPARAMETERS.get('color'))</condition>
+			<tenant></tenant>
+		</controls>
+		<actuator name="SEC-URLpermit"/>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="SD29-4eyes" extends="SD28-permit">
+		<controls>
+			<condition>"blue".equals($HTTPPARAMETERS.get('color'))</condition>
+		</controls>
+		<actuator name="TWO_MAN_RULE"/>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+	
+	<setpoint id="aspectSP">
+		<controls>
+			<target>com.cibethelper.base.SubArchiveController</target>
+		</controls>
+		<actuator name="TRACKER"/>
+	</setpoint>
+
+	<setpoint id="EJBaspectSP">
+		<controls>
+			<target>com.cibethelper.ejb.EjbService</target>
+			<method>logThisForAspect</method>
+		</controls>
+		<actuator name="TRACKER"/>
+	</setpoint>
+
+	<setpoint id="SpringaspectSP">
+		<controls>
+			<target>com.cibethelper.base.NoControlActuator</target>
+			<method>getNameForSpringTest</method>
+		</controls>
+		<actuator name="TRACKER"/>
+	</setpoint>
+	
+	<setpoint id="sched1">
+		<controls>
+			<target>com.cibethelper.entities.TComplexEntity</target>
+			<event>UPDATE</event>
+			<stateChange exclude="true">compValue</stateChange>
+		</controls>
+		<actuator name="schedEE"/>
+	</setpoint>
+
+	<setpoint id="merge1">
+		<controls>
+			<target>com.cibethelper.entities.TComplexEntity2</target>
+			<event>INSERT</event>
+			<condition>$TARGET.getCompValue()==12</condition>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+	<setpoint id="merge2">
+		<controls>
+			<target>com.cibethelper.entities.TComplexEntity2</target>
+			<event>UPDATE</event>
+			<!-- stateChange>compValue</stateChange-->
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+	<setpoint id="merge3">
+		<controls>
+			<tenant>NEXT</tenant>
+			<target>com.cibethelper.entities.TComplexEntity2</target>
+			<event>UPDATE</event>
+		</controls>
+		<actuator name="FOUR_EYES"/>
+	</setpoint>
+	
+	<setpoint id="aspectInEJB">
+		<controls>
+			<target>com.cibethelper.ejb.Ejb2Service</target>
+			<method>logThis</method>
+			<event>INVOKE</event>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+	<setpoint id="proxy-SP">
+		<controls>
+			<target>http://httpbin.org/ip</target>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+</cibet>   

@@ -66,14 +66,14 @@ public class HttpCibetFilter4IT extends AbstractArquillian {
             RemoteEJBImpl.class, SimpleEjb.class, ArquillianTestServlet1.class, ContextSetFilter.class,
             SpringTestAuthenticationManager.class);
 
-      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa20")
-            .withoutTransitivity().asFile();
+      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withoutTransitivity()
+            .asFile();
       archive.addAsLibraries(cibet);
-      File[] spring = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-springsecurity30")
+      File[] spring = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-springsecurity")
             .withTransitivity().asFile();
       archive.addAsLibraries(spring);
 
-      archive.addAsWebInfResource("META-INF/persistence-it-derby.xml", "classes/META-INF/persistence.xml");
+      archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
       archive.addAsWebInfResource("it/config_web2.xml", "classes/cibet-config.xml");
       archive.addAsWebInfResource("spring-context_1.xml", "classes/spring-context.xml");

@@ -22,21 +22,20 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.sensor.jdbc.bridge;
+package com.cibethelper.ejb;
 
 import org.apache.log4j.Logger;
-import org.junit.Test;
 
-public class TimeBasedIdGeneratorTest {
+import com.logitags.cibet.sensor.pojo.CibetIntercept;
 
-   private static Logger log = Logger.getLogger(TimeBasedIdGeneratorTest.class);
+@CibetIntercept
+public class OutService {
 
-   @Test
-   public void nextId() {
-      IdGenerator gen = TimeBasedIdGenerator.getInstance();
-      for (int i = 0; i < 100; i++) {
-         log.debug(gen.nextId(null));
-      }
+   private static Logger log = Logger.getLogger(OutService.class);
+
+   public String logThis(String message) {
+      log.info(message);
+      return message;
    }
 
 }

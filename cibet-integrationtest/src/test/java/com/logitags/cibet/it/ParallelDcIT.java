@@ -101,7 +101,7 @@ public class ParallelDcIT extends AbstractArquillian {
             .asFile();
       archive.addAsLibraries(cibet);
 
-      archive.addAsWebInfResource("META-INF/persistence-it-derby.xml", "classes/META-INF/persistence.xml");
+      archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource("config_2.xml", "classes/cibet-config.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 

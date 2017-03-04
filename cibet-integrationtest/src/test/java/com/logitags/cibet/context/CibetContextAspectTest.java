@@ -24,8 +24,6 @@
  */
 package com.logitags.cibet.context;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -51,7 +49,6 @@ import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.jndi.EjbLookup;
-import com.logitags.cibet.sensor.jdbc.bridge.TableIdGenerator;
 
 public class CibetContextAspectTest extends CoreTestBase {
 
@@ -97,13 +94,6 @@ public class CibetContextAspectTest extends CoreTestBase {
    public void doAfter() throws Exception {
       log.debug("do after");
       if (applEman.getTransaction().isActive()) {
-         Field f = TableIdGenerator.class.getDeclaredField("currentHiMap");
-         f.setAccessible(true);
-         f.set(null, new HashMap<String, Long>());
-         f = TableIdGenerator.class.getDeclaredField("currentLoMap");
-         f.setAccessible(true);
-         f.set(null, new HashMap<String, Long>());
-
          applEman.getTransaction().rollback();
       }
    }

@@ -82,8 +82,8 @@ public class HttpNotificationProviderIT extends AbstractArquillian {
       archive.addClasses(AbstractTEntity.class, TEntity.class, TComplexEntity.class, TComplexEntity2.class,
             ITComplexEntity.class, TCompareEntity.class, ShiroServlet.class);
 
-      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-shiro12")
-            .withTransitivity().asFile();
+      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-shiro").withTransitivity()
+            .asFile();
       archive.addAsLibraries(cibet);
 
       File[] shiro1 = Maven.resolver()

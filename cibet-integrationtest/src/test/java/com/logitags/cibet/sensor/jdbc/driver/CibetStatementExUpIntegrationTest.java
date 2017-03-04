@@ -150,7 +150,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
 
       execute("insert into cib_testentity (id, nameValue, counter, userid, owner) "
             + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", 1);
-
+      Thread.sleep(2);
       execute("update cib_testentity set nameValue='R�schen', counter=99 " + "WHERE id=5 and owner='Lalla'", 1);
 
       InitializationService.instance().endContext();
@@ -187,7 +187,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
 
       execute("insert into cib_testentity (id, nameValue, counter, userid, owner) "
             + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", 1);
-
+      Thread.sleep(2);
       execute("delete from cib_testentity WHERE id=5 ", 1);
 
       InitializationService.instance().endContext();
@@ -404,7 +404,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId("cib_testentity", "5");
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.INSERT == ar.getControlEvent() || ControlEvent.RELEASE_INSERT == ar.getControlEvent());
 
       List<DcControllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
@@ -447,7 +448,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId("cib_testentity", "5");
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.INSERT == ar.getControlEvent() || ControlEvent.RELEASE_INSERT == ar.getControlEvent());
       Assert.assertTrue(!ar.getResource().getPrimaryKeyId().equals("0"));
 
       list1 = DcLoader.findUnreleased();
@@ -516,7 +518,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId("cib_testentity", "5");
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.DELETE, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.DELETE == ar.getControlEvent() || ControlEvent.RELEASE_DELETE == ar.getControlEvent());
 
       List<DcControllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
@@ -564,7 +567,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId("cib_testentity", "5");
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.DELETE, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.DELETE == ar.getControlEvent() || ControlEvent.RELEASE_DELETE == ar.getControlEvent());
 
       list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
@@ -633,7 +637,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId("cib_testentity", "5");
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.UPDATE, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.UPDATE == ar.getControlEvent() || ControlEvent.RELEASE_UPDATE == ar.getControlEvent());
 
       List<DcControllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
@@ -683,7 +688,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId("cib_testentity", "5");
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(ControlEvent.UPDATE, ar.getControlEvent());
+      Assert.assertTrue(
+            ControlEvent.UPDATE == ar.getControlEvent() || ControlEvent.RELEASE_UPDATE == ar.getControlEvent());
 
       list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());

@@ -79,7 +79,7 @@ public class SchedulerActuatorIT extends DBHelper {
             .asFile();
       archive.addAsLibraries(cibet);
 
-      archive.addAsWebInfResource("META-INF/persistence-it-derby.xml", "classes/META-INF/persistence.xml");
+      archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource("it/config_scheduler.xml", "classes/cibet-config.xml");
       archive.addAsWebInfResource("it/ejb-jar.xml", "ejb-jar.xml");
 
@@ -103,6 +103,8 @@ public class SchedulerActuatorIT extends DBHelper {
    @Test
    public void testInvoke() throws Exception {
       log.debug("start testInvoke()");
+      Context.sessionScope().setTenant(null);
+
       TEntity te = new TEntity("myName", 45, "winter");
 
       RemoteEJB remoteEjb = (RemoteEJB) getInitialContext()
@@ -111,7 +113,7 @@ public class SchedulerActuatorIT extends DBHelper {
       log.debug(te2);
       Assert.assertTrue(te2.getId() == 0);
 
-      List<DcControllable> list = SchedulerLoader.findScheduled();
+      List<DcControllable> list = SchedulerLoader.findAllScheduled();
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("ANONYMOUS", list.get(0).getCreateUser());
       Query q = applEman.createQuery("SELECT e FROM TEntity e");
@@ -163,7 +165,7 @@ public class SchedulerActuatorIT extends DBHelper {
       Assert.assertEquals(5, te.getCounter());
       Assert.assertEquals("theTenant", te.getOwner());
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<DcControllable> l = SchedulerLoader.findAllScheduled();
       Assert.assertEquals(1, l.size());
       DcControllable co = l.get(0);
       Assert.assertEquals(2, co.getResource().getParameters().size());
@@ -199,6 +201,7 @@ public class SchedulerActuatorIT extends DBHelper {
    @Test
    public void executeEjbTimerInvoke() throws Exception {
       log.info("start executeEjbTimerInvoke()");
+      Context.sessionScope().setTenant(null);
 
       RemoteEJB ejb = (RemoteEJB) getInitialContext()
             .lookup("SchedulerActuatorIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
@@ -212,7 +215,7 @@ public class SchedulerActuatorIT extends DBHelper {
       log.debug(ev1);
       log.debug("Eventresult: " + Context.requestScope().getExecutedEventResult());
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<DcControllable> l = SchedulerLoader.findAllScheduled();
       Assert.assertEquals(1, l.size());
       DcControllable co = l.get(0);
       log.debug(co.getScheduledDate());
@@ -236,6 +239,7 @@ public class SchedulerActuatorIT extends DBHelper {
    @Test
    public void executeEjbTimerJPAQuery() throws Exception {
       log.info("start executeEjbTimerJPAQuery()");
+      Context.sessionScope().setTenant(null);
 
       RemoteEJB ejb = (RemoteEJB) getInitialContext()
             .lookup("SchedulerActuatorIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
@@ -244,7 +248,7 @@ public class SchedulerActuatorIT extends DBHelper {
       EventResult ev = ejb.executeUpdateQuery(qn, 456, "Felix", 1222);
       log.debug(ev);
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<DcControllable> l = SchedulerLoader.findAllScheduled();
       Assert.assertEquals(1, l.size());
       DcControllable co = l.get(0);
       log.debug(co.getScheduledDate());

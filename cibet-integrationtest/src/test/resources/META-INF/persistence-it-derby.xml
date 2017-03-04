@@ -17,8 +17,8 @@
 		<properties>
 			<property name="hibernate.format_sql" value="true" />
 			<!-- property name="hibernate.hbm2ddl.auto" value="update"/ -->
-			<!-- <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" 
-				/> <property name="hibernate.transaction.factory_class" value="org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory" 
+			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" /> 
+			<!-- <property name="hibernate.transaction.factory_class" value="org.hibernate.engine.transaction.internal.jta.CMTTransactionFactory" 
 				/> -->
 		</properties>
 	</persistence-unit>
@@ -38,5 +38,22 @@
 			<property name="hibernate.format_sql" value="true" />
 		</properties>
 	</persistence-unit>
+
+   <persistence-unit name="APPL-UNIT-EAGER" transaction-type="JTA">
+      <provider>com.logitags.cibet.sensor.jpa.Provider</provider>
+      <jta-data-source>java:/CibetDS</jta-data-source>
+      <class>com.cibethelper.entities.TEntity</class>
+      <class>com.cibethelper.entities.TComplexEntity</class>
+      <class>com.cibethelper.entities.TComplexEntity2</class>
+      <properties>
+         <property name="com.logitags.cibet.persistence.provider" value="org.hibernate.ejb.HibernatePersistence" />
+         <property name="com.logitags.cibet.persistence.loadEager" value="true"/>
+         <property name="hibernate.transaction.jta.platform"
+            value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
+         <property name="hibernate.listeners.envers.autoRegister" value="false" />
+         <property name="hibernate.show_sql" value="false" />
+         <property name="hibernate.format_sql" value="true" />
+      </properties>
+   </persistence-unit>
 
 </persistence>

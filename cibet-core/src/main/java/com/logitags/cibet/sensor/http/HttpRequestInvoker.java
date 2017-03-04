@@ -111,7 +111,7 @@ public class HttpRequestInvoker implements Invoker {
                continue;
             }
             if (param.getName().toLowerCase().equals("content-type")) {
-               continue;
+               // continue;
             }
             if (param.getName().toLowerCase().equals("content-md5")) {
                continue;

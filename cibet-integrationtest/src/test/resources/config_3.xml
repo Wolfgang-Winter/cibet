@@ -22,16 +22,6 @@
 		<controls>
 			<event>INSERT,UPDATE,DELETE</event>
 			<target>com.cibethelper.entities.TEntity</target>
-			<tenant>testTenant</tenant>
-		</controls>
-		<actuator name="ARCHIVE"/>
-	</setpoint>
-
-	<setpoint id="SD25b">
-		<controls>
-			<event>INSERT</event>
-			<target>com.cibethelper.entities.TEntity</target>
-			<invoker>RemoteEJBImpl.persist</invoker>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>

@@ -331,6 +331,7 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          JdbcBridgeEntityManager jdbcEM = new JdbcBridgeEntityManager(connection);
 
          jdbcEM.persist(sa);
+         Thread.sleep(2);
          jdbcEM.persist(sa2);
          connection.commit();
          Assert.assertTrue(sa.getArchiveId() != null);
@@ -384,12 +385,13 @@ public class ArchiveDefinitionTest extends JdbcHelper {
       try {
          Archive sa = createStateArchive();
          sa.setControlEvent(ControlEvent.INSERT);
-         Thread.sleep(100);
+         Thread.sleep(10);
          Archive sa2 = createStateArchive();
          sa2.setControlEvent(ControlEvent.INSERT);
          JdbcBridgeEntityManager jdbcEM = new JdbcBridgeEntityManager(connection);
 
          jdbcEM.persist(sa);
+         Thread.sleep(2);
          jdbcEM.persist(sa2);
          connection.commit();
          Assert.assertTrue(sa.getArchiveId() != null);

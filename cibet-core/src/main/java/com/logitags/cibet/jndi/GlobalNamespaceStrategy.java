@@ -41,34 +41,56 @@ import org.apache.commons.logging.LogFactory;
  * @author Wolfgang
  * 
  */
-public class GlobalNamespaceStrategy implements JndiNameStrategy {
+public class GlobalNamespaceStrategy extends AbstractLookupStrategy implements JndiNameStrategy {
 
    private static Log log = LogFactory.getLog(GlobalNamespaceStrategy.class);
 
    @Override
    public List<String> getJNDINames(Class<?> clazz) {
       List<String> names = new ArrayList<String>();
+
       try {
          Context ctx = new InitialContext();
-         String module = (String) ctx.lookup("java:app/AppName");
-         log.debug("appName=" + module);
-         try {
-            module = (String) ctx.lookup("java:module/ModuleName");
-            log.debug("module=" + module);
-         } catch (NamingException e) {
-            log.warn(e.getMessage());
-         }
-
-         names.add("java:global/" + module + "/" + clazz.getSimpleName());
-         Class<?>[] supers = clazz.getInterfaces();
-         for (Class<?> c : supers) {
-            names.add("java:global/" + module + "/" + clazz.getSimpleName() + "/" + c.getSimpleName());
+         String module = resolveAppName(ctx);
+         if (module != null && module.length() > 0) {
+            String ejbName = findEJBName(clazz);
+            if (ejbName != null) {
+               names.add("java:global/" + module + "/" + ejbName);
+            }
+            names.add("java:global/" + module + "/" + clazz.getSimpleName());
+            Class<?>[] supers = clazz.getInterfaces();
+            for (Class<?> c : supers) {
+               names.add("java:global/" + module + "/" + clazz.getSimpleName() + "/" + c.getSimpleName());
+            }
          }
 
       } catch (NamingException e) {
          log.warn(e.getMessage());
       }
       return names;
+   }
+
+   private String resolveAppName(Context ctx) {
+      try {
+         String module = (String) ctx.lookup("java:app/AppName");
+         log.debug("appName=" + module);
+         if (module != null && module.length() > 0) {
+            return module;
+         }
+
+      } catch (NamingException e) {
+         log.warn("NamingException: " + e.getMessage());
+      }
+
+      try {
+         String module = (String) ctx.lookup("java:module/ModuleName");
+         log.debug("appName=" + module);
+         return module;
+
+      } catch (NamingException e) {
+         log.warn("NamingException: " + e.getMessage());
+         return null;
+      }
    }
 
 }

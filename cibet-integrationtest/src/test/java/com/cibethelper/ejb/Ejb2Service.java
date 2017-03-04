@@ -22,33 +22,29 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.jndi;
+package com.cibethelper.ejb;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.ejb.Stateless;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
-/**
- * JBoss: [StatefulAnnotation.name, StatelessAnnotation.name]/[remote,local]
- * 
- * @author Wolfgang
- * 
- */
-public class JBossAnnotationNameStrategy extends AbstractLookupStrategy implements JndiNameStrategy {
+import com.logitags.cibet.sensor.pojo.CibetIntercept;
 
-   private static Log log = LogFactory.getLog(JBossAnnotationNameStrategy.class);
+@Stateless
+public class Ejb2Service {
 
-   @Override
-   public List<String> getJNDINames(Class<?> clazz) {
-      List<String> names = new ArrayList<String>();
-      String ejbName = findEJBName(clazz);
-      if (ejbName != null && ejbName.length() > 0) {
-         names.add(ejbName + "/remote");
-         names.add(ejbName + "/local");
-      }
-      return names;
+   private static Logger log = Logger.getLogger(Ejb2Service.class);
+
+   public void doIt(String msg) {
+      log.info("doIt called");
+      logThis(msg);
+   }
+
+   @CibetIntercept
+   public String logThis(String msg) {
+      String m = "Ejb2Service.logThis called with: " + msg;
+      log.info(m);
+      return m;
    }
 
 }

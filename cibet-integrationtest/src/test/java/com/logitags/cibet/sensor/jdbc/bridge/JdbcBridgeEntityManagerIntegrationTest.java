@@ -34,6 +34,7 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.cibethelper.base.CibetTestDataSource;
@@ -49,6 +50,11 @@ import com.logitags.cibet.sensor.jdbc.driver.CibetJdbcException;
 public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
 
    private static Logger log = Logger.getLogger(JdbcBridgeEntityManagerIntegrationTest.class);
+
+   @BeforeClass
+   public static void beforeClassJdbcBridgeEntityManagerIntegrationTest() {
+      log.info("before class beforeClassJdbcBridgeEntityManagerIntegrationTest()");
+   }
 
    @Before
    public void beforeJdbcBridgeEntityManagerIntegrationTest() throws Exception {

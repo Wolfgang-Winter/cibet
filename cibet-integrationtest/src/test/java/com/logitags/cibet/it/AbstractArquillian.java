@@ -34,12 +34,14 @@ import java.util.List;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.transaction.UserTransaction;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -163,10 +165,76 @@ public abstract class AbstractArquillian extends CoreTestBase {
       }
    }
 
+   protected void cleanAUD() throws Exception {
+      ut.begin();
+
+      Query q = applEman.createNativeQuery("SELECT count(*) FROM CIB_COMPLEXTESTENTITY_AUD");
+      try {
+         Object rows = q.getSingleResult();
+         log.debug(rows + " rows in CIB_COMPLEXTESTENTITY_AUD");
+      } catch (NoResultException e) {
+         log.debug("no rows in CIB_COMPLEXTESTENTITY_AUD");
+      }
+      q = applEman.createNativeQuery("DELETE FROM CIB_COMPLEXTESTENTITY_AUD");
+      int count = q.executeUpdate();
+      log.debug(count + " rows deleted in CIB_COMPLEXTESTENTITY_AUD");
+      q = applEman.createNativeQuery("DELETE FROM CIB_TCOMPLEXENTITY_EAGER_AUD");
+      count = q.executeUpdate();
+      log.debug(count + " rows deleted in CIB_TCOMPLEXENTITY_EAGER_AUD");
+      q = applEman.createNativeQuery("DELETE FROM CIB_TCOMPLEXENTITY_LAZY_AUD");
+      count = q.executeUpdate();
+      log.debug(count + " rows deleted in CIB_TCOMPLEXENTITY_LAZY_AUD");
+      q = applEman.createNativeQuery("DELETE FROM CIB_TESTENTITY_AUD");
+      count = q.executeUpdate();
+      log.debug(count + " rows deleted in CIB_TESTENTITY_AUD");
+      q = applEman.createNativeQuery("DELETE FROM REVINFO");
+      count = q.executeUpdate();
+      log.debug(count + " rows deleted in REVINFO");
+      ut.commit();
+   }
+
+   protected void remove(Object ent) throws Exception {
+      ut.begin();
+      applEman.remove(ent);
+      ut.commit();
+      applEman.clear();
+   }
+
+   protected <T> T merge(T entity) throws Exception {
+      ut.begin();
+      try {
+         entity = applEman.merge(entity);
+         ut.commit();
+         applEman.clear();
+         return entity;
+      } catch (Exception e) {
+         log.error(e.getMessage(), e);
+         ut.rollback();
+         throw e;
+      }
+   }
+
+   public <T> void persist(T entity) throws Exception {
+      // applEman.getTransaction().begin();
+      ut.begin();
+      applEman.persist(entity);
+      ut.commit();
+      // applEman.getTransaction().commit();
+      applEman.clear();
+   }
+
    protected String executeGET(String url, int expected) throws Exception {
       HttpGet get = new HttpGet(url);
       HttpResponse response = client.execute(get);
       Assert.assertEquals(expected, response.getStatusLine().getStatusCode());
+      return readResponseBody(response);
+   }
+
+   protected String executeGET(String url) throws Exception {
+      log.info("request: " + url);
+      HttpGet get = new HttpGet(url);
+      HttpResponse response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       return readResponseBody(response);
    }
 
@@ -178,7 +246,7 @@ public abstract class AbstractArquillian extends CoreTestBase {
          if (entity != null) {
             instream = entity.getContent();
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
             String body = reader.readLine();
             log.info("body=" + body);
             return body;

@@ -54,6 +54,7 @@ import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.context.InternalSessionScope;
+import com.logitags.cibet.core.EventResult;
 
 public class DBHelper extends CoreTestBase {
 
@@ -121,6 +122,12 @@ public class DBHelper extends CoreTestBase {
          Context.internalRequestScope().getEntityManager().remove(itLO.next());
       }
 
+      Query q6 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
+      Iterator<EventResult> itEV = q6.getResultList().iterator();
+      while (itEV.hasNext()) {
+         Context.internalRequestScope().getEntityManager().remove(itEV.next());
+      }
+
       applEman.getTransaction().commit();
       InitializationService.instance().endContext();
    }
@@ -136,6 +143,13 @@ public class DBHelper extends CoreTestBase {
       return te;
    }
 
+   public <T> void persist(T entity) {
+      applEman.getTransaction().begin();
+      applEman.persist(entity);
+      applEman.getTransaction().commit();
+      applEman.clear();
+   }
+
    protected TEntity persistTEntityWithoutClear() {
       TEntity te = createTEntity(5, "valuexx");
       try {
@@ -146,7 +160,7 @@ public class DBHelper extends CoreTestBase {
       return te;
    }
 
-   protected TEntity persistTEntity(int counter, Date now, Calendar cal) {
+   public TEntity persistTEntity(int counter, Date now, Calendar cal) {
       TEntity entity = new TEntity();
       entity.setCounter(counter);
       entity.setNameValue("valuexx");
@@ -163,6 +177,12 @@ public class DBHelper extends CoreTestBase {
       applEman.flush();
       applEman.clear();
       return entity;
+   }
+
+   public List<?> select(String query) {
+      applEman.clear();
+      Query q = applEman.createQuery(query);
+      return q.getResultList();
    }
 
    protected void authenticate(String... roles) throws AuthenticationException {

@@ -33,7 +33,7 @@ import java.util.List;
  * @author Wolfgang
  * 
  */
-public class EjbNameInterfaceTypeStrategy extends JBossAnnotationNameStrategy implements JndiNameStrategy {
+public class EjbNameInterfaceTypeStrategy extends AbstractLookupStrategy implements JndiNameStrategy {
 
    @Override
    public List<String> getJNDINames(Class<?> clazz) {

@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.cibethelper.base.CoreTestBase;
+import com.cibethelper.ejb.CibetTest2EJB;
 import com.cibethelper.ejb.CibetTestEJB;
 import com.cibethelper.ejb.CibetTestStatefulEJB;
 import com.cibethelper.entities.AbstractTEntity;
@@ -82,7 +83,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
    private CibetTestEJB ejb;
 
    @EJB
-   private CibetTestStatefulEJB ejbS;
+   private CibetTest2EJB ejbS;
 
    @Deployment
    public static WebArchive createDeployment() {
@@ -92,13 +93,13 @@ public class CibetInterceptorIT extends AbstractArquillian {
 
       archive.addClasses(AbstractArquillian.class, CoreTestBase.class, AbstractTEntity.class, TEntity.class,
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class,
-            CibetTestEJB.class, CibetTestStatefulEJB.class);
+            CibetTestEJB.class, CibetTestStatefulEJB.class, CibetTest2EJB.class);
 
       File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withTransitivity()
             .asFile();
       archive.addAsLibraries(cibet);
 
-      archive.addAsWebInfResource("META-INF/persistence-it-derby.xml", "classes/META-INF/persistence.xml");
+      archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
       log.debug(archive.toString(true));

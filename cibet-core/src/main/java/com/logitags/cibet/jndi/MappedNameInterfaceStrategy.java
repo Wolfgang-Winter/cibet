@@ -24,8 +24,6 @@
  */
 package com.logitags.cibet.jndi;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Wolfgang
  * 
  */
-public class MappedNameInterfaceStrategy implements JndiNameStrategy {
+public class MappedNameInterfaceStrategy extends AbstractLookupStrategy implements JndiNameStrategy {
 
    private static Log log = LogFactory.getLog(MappedNameInterfaceStrategy.class);
 
@@ -54,37 +52,6 @@ public class MappedNameInterfaceStrategy implements JndiNameStrategy {
          }
       }
       return names;
-   }
-
-   protected String findEJBMappedName(Class<?> clazz) {
-      try {
-         Class<Annotation> cl = (Class<Annotation>) Class.forName("javax.ejb.Stateless");
-         Annotation less = clazz.getAnnotation(cl);
-         if (less != null) {
-            return (String) cl.getMethod("mappedName").invoke(less);
-         }
-
-         cl = (Class<Annotation>) Class.forName("javax.ejb.Stateful");
-         Annotation ful = clazz.getAnnotation(cl);
-         if (ful != null) {
-            return (String) cl.getMethod("mappedName").invoke(ful);
-         }
-
-         cl = (Class<Annotation>) Class.forName("javax.ejb.Singleton");
-         Annotation sin = clazz.getAnnotation(cl);
-         if (sin != null) {
-            return (String) cl.getMethod("mappedName").invoke(sin);
-         }
-
-         String msg = "Failed to lookup EJB instance of class " + clazz.getName()
-               + " No annotation @Stateful, @Stateless or @Singleton found";
-         log.error(msg);
-         throw new RuntimeException(msg);
-      } catch (ClassNotFoundException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-            | NoSuchMethodException | SecurityException e) {
-         log.warn(e.getMessage());
-         return null;
-      }
    }
 
 }

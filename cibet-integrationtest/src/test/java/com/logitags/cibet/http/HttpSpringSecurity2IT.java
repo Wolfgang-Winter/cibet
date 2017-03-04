@@ -34,6 +34,7 @@ import org.junit.runner.RunWith;
 
 import com.cibethelper.SpringTestAuthenticationManager;
 import com.cibethelper.base.CoreTestBase;
+import com.cibethelper.base.NoControlActuator;
 import com.cibethelper.ejb.RemoteEJB;
 import com.cibethelper.ejb.RemoteEJBImpl;
 import com.cibethelper.ejb.SimpleEjb;
@@ -70,16 +71,17 @@ public class HttpSpringSecurity2IT extends AbstractArquillian {
 
       archive.addClasses(AbstractArquillian.class, CoreTestBase.class, AbstractTEntity.class, TEntity.class,
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class, RemoteEJB.class,
-            RemoteEJBImpl.class, SimpleEjb.class, SpringTestServlet.class, SpringTestAuthenticationManager.class);
+            RemoteEJBImpl.class, SimpleEjb.class, SpringTestServlet.class, SpringTestAuthenticationManager.class,
+            NoControlActuator.class);
 
-      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa20")
-            .withoutTransitivity().asFile();
+      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withoutTransitivity()
+            .asFile();
       archive.addAsLibraries(cibet);
-      File[] spring = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-springsecurity30")
+      File[] spring = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-springsecurity")
             .withTransitivity().asFile();
       archive.addAsLibraries(spring);
 
-      archive.addAsWebInfResource("META-INF/persistence-it-derby.xml", "classes/META-INF/persistence.xml");
+      archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource("spring-context_2.xml", "classes/spring-context.xml");
       archive.addAsWebInfResource("it/config_web2man.xml", "classes/cibet-config.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
@@ -88,6 +90,15 @@ public class HttpSpringSecurity2IT extends AbstractArquillian {
       archive.as(ZipExporter.class).exportTo(new File("target/" + warName), true);
 
       return archive;
+   }
+
+   @After
+   public void afterHttpSpringSecurity2IT() throws Exception {
+      log.info("execute sub-afterAbstractArquillian(");
+      HttpGet method = new HttpGet(getBaseURL() + "/test/spring/logoffSpring");
+      client.execute(method);
+      method.abort();
+      InitializationService.instance().endContext();
    }
 
    @Before
@@ -99,14 +110,6 @@ public class HttpSpringSecurity2IT extends AbstractArquillian {
       log.debug("end execute before()");
    }
 
-   @After
-   public void afterHttpSpringSecurity2IT() throws Exception {
-      HttpGet method = new HttpGet(getBaseURL() + "/test/spring/logoffSpring");
-      HttpResponse response = client.execute(method);
-      method.abort();
-      InitializationService.instance().endContext();
-   }
-
    @Test
    public void testDeny2Man() throws Exception {
       log.info("start testDeny2Man()");
@@ -115,6 +118,7 @@ public class HttpSpringSecurity2IT extends AbstractArquillian {
             getBaseURL() + "/test/spring/loginSpring?USER=Fred&ROLE=adminXXX" + "&TENANT=" + TENANT);
       HttpResponse response = client.execute(method);
       method.abort();
+      Thread.sleep(20);
 
       log.debug("now the test");
       HttpOptions g = new HttpOptions(URL_TS + "?role=" + URLEncoder.encode("adminXXXX", "UTF-8"));
@@ -132,6 +136,7 @@ public class HttpSpringSecurity2IT extends AbstractArquillian {
       HttpResponse response = client.execute(method);
       method.abort();
 
+      Thread.sleep(20);
       log.debug("now the test");
       HttpOptions g = new HttpOptions(URL_TS + "?role=" + URLEncoder.encode("admin", "UTF-8") + "&secondUser="
             + URLEncoder.encode("NULL", "UTF-8"));
@@ -148,6 +153,7 @@ public class HttpSpringSecurity2IT extends AbstractArquillian {
             + "/test/spring/loginSpring?secondUser=hall&USER=Fred&secondRole=NULL&ROLE=admin" + "&TENANT=" + TENANT);
       HttpResponse response = client.execute(method);
       method.abort();
+      Thread.sleep(20);
 
       log.debug("now the test");
       HttpOptions g = new HttpOptions(URL_TS + "?role=" + URLEncoder.encode("admin", "UTF-8") + "&secondUser="
@@ -170,6 +176,7 @@ public class HttpSpringSecurity2IT extends AbstractArquillian {
             + "/test/spring/loginSpring?secondUser=hil&secondRole=sssss&USER=Fred&ROLE=admin" + "&TENANT=" + TENANT);
       HttpResponse response = client.execute(method);
       method.abort();
+      Thread.sleep(20);
 
       log.debug("now the test");
       HttpOptions g = new HttpOptions(URL_TS + "?role=" + URLEncoder.encode("admin", "UTF-8") + "&secondUser="
@@ -192,6 +199,7 @@ public class HttpSpringSecurity2IT extends AbstractArquillian {
             + "/test/spring/loginSpring?USER=Fred&secondUser=hil&secondRole=second&ROLE=admin" + "&TENANT=" + TENANT);
       HttpResponse response = client.execute(method);
       method.abort();
+      Thread.sleep(20);
 
       log.debug("now the test");
       HttpOptions g = new HttpOptions(URL_TS + "?role=" + URLEncoder.encode("admin", "UTF-8") + "&secondUser="

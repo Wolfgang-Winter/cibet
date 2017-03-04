@@ -85,7 +85,7 @@ public class SpringCibetInterceptorEncryptIT extends AbstractArquillian {
             .withTransitivity().asFile();
       archive.addAsLibraries(spring);
 
-      archive.addAsWebInfResource("META-INF/persistence-it-derby.xml", "classes/META-INF/persistence.xml");
+      archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
       archive.addAsWebInfResource("spring-context_1.xml", "classes/spring-context.xml");
 

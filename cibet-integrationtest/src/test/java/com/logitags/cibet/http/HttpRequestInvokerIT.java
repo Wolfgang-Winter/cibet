@@ -70,11 +70,14 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class, RemoteEJB.class,
             RemoteEJBImpl.class, SimpleEjb.class, ArquillianTestServlet1.class);
 
-      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa20").withTransitivity()
+      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withoutTransitivity()
             .asFile();
       archive.addAsLibraries(cibet);
+      File[] spring = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-springsecurity")
+            .withTransitivity().asFile();
+      archive.addAsLibraries(spring);
 
-      archive.addAsWebInfResource("META-INF/persistence-it-derby.xml", "classes/META-INF/persistence.xml");
+      archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
 
       log.debug(archive.toString(true));
@@ -143,6 +146,7 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       List<ResourceParameter> params = new LinkedList<ResourceParameter>();
       params.add(createParameter("Ente1", "Erpel"));
       params.add(createParameter("PferdÖ1", "?Rüpel"));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -175,6 +179,7 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       List<ResourceParameter> params = new LinkedList<ResourceParameter>();
       params.add(createParameter("Ente1", "Erpel"));
       params.add(createParameter("PferdÖ1", "?Rüpel"));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -184,7 +189,10 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       log.debug("'" + body + "'");
       Assert.assertNotNull(body);
       Assert.assertTrue(body.toLowerCase().startsWith(
-            "testinvoke done: ente1=erpel ; pferdÖ1=?rüpel ; headers: cibet_controlevent = invoke ; content-length = 0 "));
+            "testinvoke done: ente1=erpel ; pferdö1=?rüpel ; headers: content-type = text/html; charset=utf-8 ; cibet_controlevent = invoke ; content-length = 0 "));
+      // TestInvoke done: Ente1=Erpel ; PferdÖ1=?Rüpel ; HEADERS: content-type = text/html; charset=utf-8 ;
+      // cibet_controlevent = INVOKE ; content-length = 0 ; host = localhost:8788 ; connection = Keep-Alive ; user-agent
+      // = Apache-HttpClient/4.5.2 (Java/1.8.0_66) ; accept-encoding = gzip,deflate ;
    }
 
    @Test
@@ -221,11 +229,8 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       log.debug("reason: " + resp.getStatusLine().getReasonPhrase());
       String body = readResponseBody(resp);
       Assert.assertNull(body);
-      // if ("EmbeddedTomcat7".equals(container.getName())) {
-      // Assert.assertEquals(HttpStatus.SC_METHOD_NOT_ALLOWED, resp.getStatusLine().getStatusCode());
-      // } else {
-      Assert.assertEquals(HttpStatus.SC_FORBIDDEN, resp.getStatusLine().getStatusCode());
-      // }
+      Assert.assertTrue(HttpStatus.SC_FORBIDDEN == resp.getStatusLine().getStatusCode()
+            || HttpStatus.SC_METHOD_NOT_ALLOWED == resp.getStatusLine().getStatusCode());
    }
 
    @Test
@@ -237,6 +242,7 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       List<ResourceParameter> params = new LinkedList<ResourceParameter>();
       params.add(createParameter("Ente1", "Erpel"));
       params.add(createDoubleParameter("PferdÖ1", "?Rüpel", "Schnaps"));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -260,6 +266,7 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       params.add(createParameter("Ente1", "Erpel"));
       params.add(createDoubleParameter("PferdÖ1", "?Rüpel", "Schnaps"));
       params.add(createHeader("Warzenschwein", "Übelkeit"));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -288,6 +295,7 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       params.add(createParameter("PferdÖ1", "?Rüpel"));
       params.add(createParameter("PferdÖ1", "Schnaps"));
       params.add(createHeader("Warzenschwein", "Übelkeit"));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -300,7 +308,7 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       // if ("EmbeddedTomcat7".equals(container.getName())) {
       // index = body.indexOf("warzenschwein = �belkeit ; ");
       // } else {
-      index = body.indexOf("Warzenschwein = Übelkeit ; ");
+      index = body.toLowerCase().indexOf("warzenschwein = übelkeit ; ");
       // }
       Assert.assertTrue(index > 0);
       for (Header h : resp.getAllHeaders()) {
@@ -318,6 +326,7 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       params.add(createParameter("PferdÖ1", "?Rüpel"));
       params.add(createParameter("PferdÖ1", "Schnaps"));
       params.add(createDoubleHeader("Warzenschwein", "Übelkeit", "Fahrenheit"));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -330,7 +339,7 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       // if ("EmbeddedTomcat7".equals(container.getName())) {
       // index = body.indexOf("warzenschwein = Fahrenheit ; ");
       // } else {
-      index = body.indexOf("Warzenschwein = Fahrenheit ; ");
+      index = body.toLowerCase().indexOf("warzenschwein = fahrenheit ; ");
       // }
       Assert.assertTrue(index > 0);
       for (Header h : resp.getAllHeaders()) {
