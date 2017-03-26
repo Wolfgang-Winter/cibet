@@ -38,6 +38,7 @@ import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -45,9 +46,9 @@ import com.logitags.cibet.core.ExecutionStatus;
 /**
  * add -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9. jar to java command
  */
-public class DB_SpringSecurityTest extends SpringTestBase {
+public class SpringSecurityTest extends SpringTestBase {
 
-   private static Logger log = Logger.getLogger(DB_SpringSecurityTest.class);
+   private static Logger log = Logger.getLogger(SpringSecurityTest.class);
 
    private static EntityManager cibetEman;
 
@@ -350,13 +351,22 @@ public class DB_SpringSecurityTest extends SpringTestBase {
 
       ent1.setCompValue(1045);
       cibetEman.merge(ent1);
-      cibetEman.flush();
-      cibetEman.clear();
+
+      // cibetEman.getTransaction().commit();
+      // cibetEman.getTransaction().begin();
+      //
+      // cibetEman.flush();
+      // cibetEman.clear();
       // Context.requestScope().getEntityManager().getTransaction().commit();
       // Context.requestScope().getEntityManager().getTransaction().begin();
 
       Assert.assertEquals(ExecutionStatus.EXECUTED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
+
+      InitializationService.instance().endContext();
+      InitializationService.instance().startContext();
+      Context.sessionScope().setTenant(TENANT);
+
       TComplexEntity ent2 = cibetEman.find(TComplexEntity.class, ent1.getId());
       Assert.assertNotNull(ent2);
       Assert.assertEquals(1045, ent2.getCompValue());
@@ -391,6 +401,12 @@ public class DB_SpringSecurityTest extends SpringTestBase {
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(1).getExecutionStatus());
       Assert.assertEquals(ControlEvent.RESTORE_UPDATE, list.get(2).getControlEvent());
       Assert.assertEquals(ExecutionStatus.EXECUTED, list.get(2).getExecutionStatus());
+
+      for (Archive a : list) {
+         Context.requestScope().getEntityManager().remove(a);
+      }
+      Context.requestScope().getEntityManager().getTransaction().commit();
+      Context.requestScope().getEntityManager().getTransaction().begin();
    }
 
    @Test

@@ -26,21 +26,22 @@
 
     <container qualifier="tomee" >
         <configuration>
-        		<property name="httpPort">8680</property>
-        		<property name="ajpPort">-1</property>
-        		<property name="stopPort">-1</property>
-        		<property name="dir">target/tomee-remote</property>
+<!--             <property name="serverXml">src/test/tomee/conf/server.xml</property> -->
+        		<property name="httpPort">8788</property>
+<!--         		<property name="ajpPort">-1</property> -->
+<!--         		<property name="stopPort">-1</property> -->
+<!--         		<property name="dir">tomee-remote</property> -->
         		<property name="appWorkingDir">target/arquillian-test-working-dir</property>
-        		<property name="catalina_opts">-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -noverify</property>
-        		<property name="lib">src/test/tomee/lib</property>
-        		<property name="properties">
-        			CibetDS = new://Resource?type=DataSource
-				   CibetDS.JdbcDriver org.apache.derby.jdbc.ClientDriver
-					CibetDS.JdbcUrl jdbc:derby://localhost:1527/cibettest
-					CibetDS.UserName APP
-					CibetDS.Password x
-					CibetDS.JtaManaged true
-        		</property>
+<!--         		<property name="catalina_opts">-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -noverify</property> -->
+<!--         		<property name="lib">src/test/tomee/lib</property> -->
+<!--         		<property name="properties"> -->
+<!--         			CibetDS = new://Resource?type=DataSource -->
+<!-- 				   CibetDS.JdbcDriver org.apache.derby.jdbc.ClientDriver -->
+<!-- 					CibetDS.JdbcUrl jdbc:derby://localhost:1527/cibettest -->
+<!-- 					CibetDS.UserName APP -->
+<!-- 					CibetDS.Password x -->
+<!-- 					CibetDS.JtaManaged true -->
+<!--         		</property> -->
         </configuration>
         <!-- 
 Supported property names: [

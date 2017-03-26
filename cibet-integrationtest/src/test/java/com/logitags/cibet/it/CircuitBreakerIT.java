@@ -57,23 +57,29 @@ public class CircuitBreakerIT extends CoreTestBase {
    private static Logger log = Logger.getLogger(CircuitBreakerIT.class);
 
    @EJB(mappedName = "CibetTest2EJBImpl_w_m")
+   private CibetTest2EJB ejb1;
+
+   @EJB(name = "xx")
+   private CibetTest2EJB ejb2;
+
    private CibetTest2EJB ejb;
 
-   @Deployment
+   @Deployment(testable = true)
    public static WebArchive createDeployment() {
       String warName = CircuitBreakerIT.class.getSimpleName() + ".war";
       WebArchive archive = ShrinkWrap.create(WebArchive.class, warName);
       archive.setWebXML("it/web-noDB.xml");
 
-      archive.addClasses(AbstractArquillian.class, CoreTestBase.class, AbstractTEntity.class, TEntity.class,
-            TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class,
-            CibetTest2EJB.class, CibetTest2MappedNameEJBImpl.class);
+      archive.addClasses(CoreTestBase.class, AbstractTEntity.class, TEntity.class, TComplexEntity.class,
+            TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class, CibetTest2EJB.class,
+            CibetTest2MappedNameEJBImpl.class);
 
       File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withTransitivity()
             .asFile();
       archive.addAsLibraries(cibet);
 
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+      archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
 
       log.debug(archive.toString(true));
       archive.as(ZipExporter.class).exportTo(new File("target/" + warName), true);
@@ -85,6 +91,13 @@ public class CircuitBreakerIT extends CoreTestBase {
    public void beforeCircuitBreakerIT() {
       new ConfigurationService().initialise();
       InitializationService.instance().startContext();
+
+      if (ejb1 != null) {
+         ejb = ejb1;
+      } else {
+         ejb = ejb2;
+      }
+
       log.debug("end execute before()");
    }
 

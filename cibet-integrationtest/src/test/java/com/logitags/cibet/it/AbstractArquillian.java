@@ -29,8 +29,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -49,6 +51,7 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import com.cibethelper.base.CoreTestBase;
 import com.cibethelper.entities.TComplexEntity;
@@ -75,6 +78,18 @@ public abstract class AbstractArquillian extends CoreTestBase {
    protected Configuration cman;
 
    protected Date today = new Date();
+
+   @BeforeClass
+   public static void beforeClassAbstractArquillian() throws IOException {
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
+      Properties properties = new Properties();
+      properties.load(url.openStream());
+      if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("openejb")) {
+         APPSERVER = TOMEE;
+      } else if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("jboss")) {
+         APPSERVER = JBOSS;
+      }
+   }
 
    @Before
    public void beforeAbstractArquillian() {

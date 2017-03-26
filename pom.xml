@@ -279,6 +279,12 @@
       
       <!-- end dependencies necessary for testing with hibernate -->
 
+      <dependency>
+         <groupId>org.apache.openjpa</groupId>
+         <artifactId>openjpa</artifactId>
+         <version>2.4.0</version>
+         <scope>provided</scope>
+      </dependency>
 
 	</dependencies>
 

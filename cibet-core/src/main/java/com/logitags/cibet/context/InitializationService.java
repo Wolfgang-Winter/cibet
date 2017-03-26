@@ -69,6 +69,8 @@ public class InitializationService {
       try {
          EMF = Persistence.createEntityManagerFactory(LOCAL_PERSISTENCEUNIT);
          if (EMF != null) {
+            // OpenJPA instantiates an EMF even if there is no persistence.xml, therefore check:
+            EMF.getProperties();
             log.info("EntityManagerFactory for resource-local persistence unit " + LOCAL_PERSISTENCEUNIT + " created: "
                   + EMF);
          } else {
@@ -76,6 +78,7 @@ public class InitializationService {
                   "no EntityManagerFactory for resource-local persistence unit " + LOCAL_PERSISTENCEUNIT + " created!");
          }
       } catch (Exception e) {
+         EMF = null;
          log.info("\n-----------------------------\n" + "EntityManagerFactory for resource-local persistence unit "
                + LOCAL_PERSISTENCEUNIT + " could not be created. If this is a Java EE application this is NOT an error."
                + "\nWill try to create EntityManagerFactory for JTA persistence unit Cibet later\n[Original error message: "
@@ -212,7 +215,6 @@ public class InitializationService {
       } finally {
          Context.internalSessionScope().clear();
          Context.internalRequestScope().clear();
-         log.debug("isManaged: " + Context.internalRequestScope().isManaged());
          isEMInitialized = false;
          log.info("Cibet Context ended");
       }

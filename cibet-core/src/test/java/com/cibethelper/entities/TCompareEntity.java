@@ -20,7 +20,7 @@ import com.logitags.cibet.sensor.pojo.PojoInvoker;
 /**
  *
  */
-@CibetIntercept(factoryClass = PojoInvoker.class, param = "Hasenfu�")
+@CibetIntercept(factoryClass = PojoInvoker.class, param = "Hasenfuss")
 public class TCompareEntity extends AbstractTEntity {
 
    /**

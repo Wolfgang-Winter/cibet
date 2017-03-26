@@ -43,7 +43,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -59,13 +58,12 @@ import com.cibethelper.servlet.ShiroServlet;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.it.AbstractArquillian;
 import com.logitags.cibet.notification.HttpNotificationProvider;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
 
 @RunWith(Arquillian.class)
-public class HttpNotificationProviderIT extends AbstractArquillian {
+public class HttpNotificationProviderIT {
 
    private static Logger log = Logger.getLogger(HttpNotificationProviderIT.class);
 
@@ -101,12 +99,6 @@ public class HttpNotificationProviderIT extends AbstractArquillian {
       return archive;
    }
 
-   @Override
-   @After
-   public void afterAbstractArquillian() throws Exception {
-      log.info("execute sub-afterAbstractArquillian(");
-   }
-
    @BeforeClass
    public static void setup() {
       NOW.set(Calendar.YEAR, 2013);
@@ -122,6 +114,10 @@ public class HttpNotificationProviderIT extends AbstractArquillian {
 
       NOW_5.setTime(NOW.getTime());
       NOW_5.add(Calendar.DATE, -5);
+   }
+
+   protected String getBaseURL() {
+      return "http://localhost:8788/" + this.getClass().getSimpleName();
    }
 
    protected DcControllable createDcControllable(ExecutionStatus status) {
@@ -151,55 +147,63 @@ public class HttpNotificationProviderIT extends AbstractArquillian {
    @Test
    public void notifyAssign() throws Exception {
       log.debug("start notifyAssign()");
-      DcControllable c = createDcControllable(ExecutionStatus.POSTPONED);
-      HttpNotificationProvider prov = new HttpNotificationProvider();
+      File file = null;
+      try {
+         DcControllable c = createDcControllable(ExecutionStatus.POSTPONED);
+         HttpNotificationProvider prov = new HttpNotificationProvider();
 
-      prov.notify(ExecutionStatus.POSTPONED, c);
-      Thread.sleep(200);
+         prov.notify(ExecutionStatus.POSTPONED, c);
+         Thread.sleep(200);
 
-      // C:\Users\Wolfgang\AppData\Local\Temp\
-      log.debug("java.io.tmpdir: " + System.getProperty("java.io.tmpdir"));
+         // JBoss: C:\Users\Wolfgang\AppData\Local\Temp\
+         // Tomee: %CATALINA_BASE%\temp
+         log.debug("java.io.tmpdir: " + System.getProperty("java.io.tmpdir"));
 
-      File file = new File(System.getProperty("java.io.tmpdir") + "httpNotification.tmp");
-      Assert.assertTrue(file.exists());
-      FileReader in = new FileReader(file);
-      String result = IOUtils.toString(in);
-      in.close();
-      file.delete();
-      log.debug(result);
+         file = new File(System.getProperty("java.io.tmpdir") + "httpNotification.tmp");
+         Assert.assertTrue(file.exists());
+         FileReader in = new FileReader(file);
+         String result = IOUtils.toString(in);
+         in.close();
+         file.delete();
+         log.debug(result);
 
-      Set<String> list = new TreeSet<String>();
-      StringTokenizer tok = new StringTokenizer(result, ";");
-      while (tok.hasMoreTokens()) {
-         list.add(tok.nextToken());
+         Set<String> list = new TreeSet<String>();
+         StringTokenizer tok = new StringTokenizer(result, ";");
+         while (tok.hasMoreTokens()) {
+            list.add(tok.nextToken());
+         }
+
+         Assert.assertEquals(22, list.size());
+         Iterator<String> iter = list.iterator();
+         Assert.assertEquals("actuator=FOUR_EYES", iter.next());
+         Assert.assertEquals("approvalAddress=" + getBaseURL() + "/notif?nottype=approv", iter.next());
+         Assert.assertEquals("approvalDate=2013-09-25 16:13:22.000", iter.next());
+         Assert.assertEquals("approvalRemark=", iter.next());
+         Assert.assertEquals("approvalUser=approvalUser", iter.next());
+         Assert.assertEquals("caseId=test-caseid", iter.next());
+         Assert.assertEquals("controlEvent=DELETE", iter.next());
+         Assert.assertEquals("createAddress=" + getBaseURL() + "/notif?nottype=create", iter.next());
+         Assert.assertEquals("createDate=2013-09-20 16:13:22.000", iter.next());
+         Assert.assertEquals("createRemark=", iter.next());
+         Assert.assertEquals("createUser=userId", iter.next());
+         Assert.assertEquals("dcControllableId=123", iter.next());
+         Assert.assertEquals("firstApprovalAddress=" + getBaseURL() + "/notif?nottype=firstApp", iter.next());
+         Assert.assertEquals("firstApprovalDate=2013-09-22 16:13:22.000", iter.next());
+         Assert.assertEquals("firstApprovalRemark=", iter.next());
+         Assert.assertEquals("firstApprovalUser=firstApprovalUserId", iter.next());
+         Assert.assertEquals("notificationType=POSTPONED", iter.next());
+         Assert.assertEquals("nottype=approv", iter.next());
+         Assert.assertEquals("primaryKeyId=0", iter.next());
+         String s = iter.next();
+         log.debug("sss:" + s);
+         Assert.assertEquals("target=TEntity id: 0, counter: 0, owner: null, xCaltimestamp: null", s);
+         Assert.assertEquals("targetType=com.cibethelper.entities.TEntity", iter.next());
+         Assert.assertEquals("tenant=tenant", iter.next());
+      } finally {
+         if (file != null && file.exists()) {
+            file.delete();
+         }
       }
-
-      Assert.assertEquals(22, list.size());
-      Iterator<String> iter = list.iterator();
-      Assert.assertEquals("actuator=FOUR_EYES", iter.next());
-      Assert.assertEquals("approvalAddress=" + getBaseURL() + "/notif?nottype=approv", iter.next());
-      Assert.assertEquals("approvalDate=2013-09-25 16:13:22.000", iter.next());
-      Assert.assertEquals("approvalRemark=", iter.next());
-      Assert.assertEquals("approvalUser=approvalUser", iter.next());
-      Assert.assertEquals("caseId=test-caseid", iter.next());
-      Assert.assertEquals("controlEvent=DELETE", iter.next());
-      Assert.assertEquals("createAddress=" + getBaseURL() + "/notif?nottype=create", iter.next());
-      Assert.assertEquals("createDate=2013-09-20 16:13:22.000", iter.next());
-      Assert.assertEquals("createRemark=", iter.next());
-      Assert.assertEquals("createUser=userId", iter.next());
-      Assert.assertEquals("dcControllableId=123", iter.next());
-      Assert.assertEquals("firstApprovalAddress=" + getBaseURL() + "/notif?nottype=firstApp", iter.next());
-      Assert.assertEquals("firstApprovalDate=2013-09-22 16:13:22.000", iter.next());
-      Assert.assertEquals("firstApprovalRemark=", iter.next());
-      Assert.assertEquals("firstApprovalUser=firstApprovalUserId", iter.next());
-      Assert.assertEquals("notificationType=POSTPONED", iter.next());
-      Assert.assertEquals("nottype=approv", iter.next());
-      Assert.assertEquals("primaryKeyId=0", iter.next());
-      String s = iter.next();
-      log.debug("sss:" + s);
-      Assert.assertEquals("target=TEntity id: 0, counter: 0, owner: null, xCaltimestamp: null", s);
-      Assert.assertEquals("targetType=com.cibethelper.entities.TEntity", iter.next());
-      Assert.assertEquals("tenant=tenant", iter.next());
    }
 
 }

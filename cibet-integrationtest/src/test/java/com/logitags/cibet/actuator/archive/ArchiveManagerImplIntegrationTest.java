@@ -268,7 +268,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
    }
 
    @Test
-   public void releaseRemove6Eyes() throws ResourceApplyException {
+   public void releaseRemove6Eyes() throws ResourceApplyException, InterruptedException {
       log.info("start releaseRemove6Eyes()");
 
       List<String> schemes = new ArrayList<String>();
@@ -287,6 +287,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertNotNull(tce);
       Assert.assertEquals(3, tce.getLazyList().size());
 
+      Thread.sleep(100);
       applEman.remove(tce);
       applEman.flush();
 
@@ -377,7 +378,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
    }
 
    @Test
-   public void rejectPersist6Eyes() throws ResourceApplyException {
+   public void rejectPersist6Eyes() throws ResourceApplyException, InterruptedException {
       log.info("start rejectPersist6Eyes()");
 
       List<String> schemes = new ArrayList<String>();
@@ -399,6 +400,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertNull(er.getParentResult());
       Assert.assertEquals("SIX_EYES, ARCHIVE", er.getActuators());
 
+      Thread.sleep(100);
       List<DcControllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
       DcControllable co = l1.get(0);
@@ -782,7 +784,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
    }
 
    @Test
-   public void checkIntegrityWith2KeyReferences() {
+   public void checkIntegrityWith2KeyReferences() throws InterruptedException {
       log.info("start checkIntegrityWith2KeyReferences()");
       registerSetpoint(TEntity.class.getName(), ArchiveActuator.DEFAULTNAME, ControlEvent.INSERT, ControlEvent.UPDATE,
             ControlEvent.DELETE);
@@ -799,6 +801,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       secp.setCurrentSecretKey("ll");
 
       try {
+         Thread.sleep(10);
          persistTEntity();
 
          Query q = applEman.createNamedQuery(TEntity.SEL_BY_OWNER);
@@ -844,7 +847,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
    }
 
    @Test
-   public void encryptArchive() {
+   public void encryptArchive() throws InterruptedException {
       log.info("start encryptArchive()");
 
       registerSetpoint(TEntity.class.getName(), ArchiveActuator.DEFAULTNAME, ControlEvent.INSERT, ControlEvent.UPDATE,
@@ -862,6 +865,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       secp.setCurrentSecretKey("l3");
 
       try {
+         Thread.sleep(10);
          persistTEntity();
 
          Query q = applEman.createNamedQuery(TEntity.SEL_BY_OWNER);

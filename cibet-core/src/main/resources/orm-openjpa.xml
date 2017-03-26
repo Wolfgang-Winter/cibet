@@ -36,7 +36,8 @@
     	</named-query>    
 		<named-query name="ARCHIVE_SEL_ALL_BY_CLASS_NO_TENANT">
       	<query>SELECT a FROM Archive a WHERE a.resource.targetType = :targetType ORDER BY a.createDate</query>
-    	</named-query>    
+    	</named-query>  
+    	<pre-persist method-name="prePersist"></pre-persist>  
 		<attributes>
 			<id name="archiveId">
 			</id>
@@ -116,6 +117,7 @@
 		<named-query name="com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED_BY_DATE">
       	<query>SELECT a FROM DcControllable a WHERE a.actuator = :actuator AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED AND a.scheduledDate &lt;= :currentDate</query>
     	</named-query>    
+      <pre-persist method-name="prePersist"></pre-persist>  
 		<attributes>
 			<id name="dcControllableId">
 			</id>
@@ -194,13 +196,13 @@
 					<cascade-all/>
 				</cascade>
 			</one-to-many>
+         <transient name="isEagerLoadedAndDetached"/>
 			<transient name="resultObject"/>
 			<transient name="methodObject"/>
 			<transient name="object"/>
-			<transient name="setColumns"/>
 			<transient name="primaryKeyObject"/>
 			<transient name="invoker"/>
-			<transient name="httpRequest"/>
+			<transient name="httpRequestData"/>
 			<transient name="resourceHandler"/>
 		</attributes>
 	</embeddable>

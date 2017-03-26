@@ -32,7 +32,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.cibethelper.base.CoreTestBase;
 import com.cibethelper.entities.AbstractTEntity;
 import com.cibethelper.entities.ITComplexEntity;
 import com.cibethelper.entities.TCompareEntity;
@@ -55,9 +54,8 @@ public class HttpShiroIT extends AbstractArquillian {
       WebArchive archive = ShrinkWrap.create(WebArchive.class, warName);
       archive.setWebXML("it/web-shiro.xml");
 
-      archive.addClasses(AbstractArquillian.class, CoreTestBase.class, AbstractTEntity.class, TEntity.class,
-            TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class,
-            ShiroServlet.class);
+      archive.addClasses(AbstractTEntity.class, TEntity.class, TComplexEntity.class, TComplexEntity2.class,
+            ITComplexEntity.class, TCompareEntity.class, ShiroServlet.class);
 
       File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-shiro").withTransitivity()
             .asFile();

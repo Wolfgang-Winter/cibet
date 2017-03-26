@@ -95,7 +95,6 @@ public class LittleProxyTest {
          log.info("PROXY stopped");
       }
       Configuration.instance().close();
-
    }
 
    @After

@@ -19,6 +19,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -60,12 +61,14 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
+import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.actuator.scheduler.SchedulerActuator;
 import com.logitags.cibet.actuator.scheduler.SchedulerLoader;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.CibetUtil;
+import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.sensor.http.Headers;
@@ -210,6 +213,10 @@ public class GeneralServlet extends HttpServlet {
             proxy(req, resp);
          } else if (req.getRequestURI().endsWith("checkConfig.cibet")) {
             checkConfig(req, resp);
+         } else if (req.getRequestURI().endsWith("clean.cibet")) {
+            clean();
+         } else if (req.getRequestURI().endsWith("execute.cibet")) {
+            executeApplEmanQuery(req, resp);
          } else {
             String msg = "ERROR: no functionality found!!";
             PrintWriter writer = resp.getWriter();
@@ -731,6 +738,64 @@ public class GeneralServlet extends HttpServlet {
       ce.addLazyList(createTEntity(6, "Hase6"));
 
       return ce;
+   }
+
+   protected void clean() throws Exception {
+      log.debug("GeneralServlet:clean()");
+
+      ut.begin();
+
+      Query q = cibet2.createNamedQuery(TComplexEntity.SEL_ALL);
+      List<TComplexEntity> l = q.getResultList();
+      for (TComplexEntity tComplexEntity : l) {
+         cibet2.remove(tComplexEntity);
+      }
+
+      Query q1 = cibet2.createNamedQuery(TComplexEntity2.SEL_ALL);
+      List<TComplexEntity2> l1 = q1.getResultList();
+      for (TComplexEntity2 tComplexEntity : l1) {
+         cibet2.remove(tComplexEntity);
+      }
+
+      Query q2 = cibet2.createNamedQuery(TEntity.DEL_ALL);
+      q2.executeUpdate();
+
+      Query q3 = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL);
+      List<Archive> alist = q3.getResultList();
+      for (Archive ar : alist) {
+         Context.internalRequestScope().getEntityManager().remove(ar);
+      }
+
+      Query q4 = Context.internalRequestScope().getEntityManager().createQuery("select d from DcControllable d");
+      List<DcControllable> dclist = q4.getResultList();
+      for (DcControllable dc : dclist) {
+         Context.internalRequestScope().getEntityManager().remove(dc);
+      }
+
+      Query q5 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
+      Iterator<LockedObject> itLO = q5.getResultList().iterator();
+      while (itLO.hasNext()) {
+         Context.internalRequestScope().getEntityManager().remove(itLO.next());
+      }
+
+      Query q6 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
+      Iterator<EventResult> itEV = q6.getResultList().iterator();
+      while (itEV.hasNext()) {
+         Context.internalRequestScope().getEntityManager().remove(itEV.next());
+      }
+
+      ut.commit();
+   }
+
+   protected void executeApplEmanQuery(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+      String query = req.getParameter("query");
+
+      Query q = cibet2.createQuery(query);
+      TEntity t = (TEntity) q.getSingleResult();
+      log.debug(t);
+      PrintWriter writer = resp.getWriter();
+      writer.print(t);
+      writer.close();
    }
 
 }

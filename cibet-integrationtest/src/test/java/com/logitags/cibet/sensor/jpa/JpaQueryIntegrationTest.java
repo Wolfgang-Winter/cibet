@@ -527,13 +527,13 @@ public class JpaQueryIntegrationTest extends DBHelper {
    @Test
    public void nativeTypedQuery() throws ResourceApplyException {
       log.info("start nativeTypedQuery()");
-      String qq = "select * from CIB_TESTENTITY WHERE OWNER = :owner";
+      String qq = "select * from CIB_TESTENTITY WHERE OWNER = ?1";
       sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.REDO);
 
       persistTEntity();
 
       Query q = applEman.createNativeQuery(qq, TEntity.class);
-      q.setParameter("owner", TENANT);
+      q.setParameter(1, TENANT);
       List<TEntity> tlist = q.getResultList();
       Assert.assertEquals(1, tlist.size());
       Assert.assertTrue(tlist.get(0) instanceof TEntity);
@@ -563,13 +563,13 @@ public class JpaQueryIntegrationTest extends DBHelper {
    @Test
    public void nativeMappedQuery() throws ResourceApplyException {
       log.info("start nativeMappedQuery()");
-      String qq = "select COUNTER AS mapped_counter, OWNER AS mapped_owner from CIB_TESTENTITY WHERE OWNER = :owner";
+      String qq = "select COUNTER AS mapped_counter, OWNER AS mapped_owner from CIB_TESTENTITY WHERE OWNER = ?1";
       sp = registerSetpoint("\"" + qq + "\"", ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.REDO);
 
       persistTEntity();
 
       Query q = applEman.createNativeQuery(qq, "TEntityRSMapping");
-      q.setParameter("owner", TENANT);
+      q.setParameter(1, TENANT);
       List<Object[]> tlist = q.getResultList();
       Assert.assertEquals(1, tlist.size());
       Object[] objArray = tlist.get(0);

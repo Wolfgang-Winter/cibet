@@ -392,7 +392,11 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       Assert.assertEquals("OK message: ;mixi=hasenfiss", expected);
       Archive ar = check("POST", URL_TS);
       Resource res = ar.getResource();
-      Assert.assertEquals(11, res.getParameters().size());
+      if (TOMEE.equals(APPSERVER)) {
+         Assert.assertEquals(8, res.getParameters().size());
+      } else if (JBOSS.equals(APPSERVER)) {
+         Assert.assertEquals(11, res.getParameters().size());
+      }
    }
 
    @Test
@@ -414,7 +418,11 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       Archive ar = check("POST", getBaseURL() + "/test/context");
       Resource res = ar.getResource();
-      Assert.assertEquals(12, res.getParameters().size());
+      if (TOMEE.equals(APPSERVER)) {
+         Assert.assertEquals(9, res.getParameters().size());
+      } else if (JBOSS.equals(APPSERVER)) {
+         Assert.assertEquals(12, res.getParameters().size());
+      }
       postMethod.abort();
    }
 
@@ -441,7 +449,11 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       readResponseBody(response);
       Archive ar = check("POST", URL_TS);
       Resource res = ar.getResource();
-      Assert.assertEquals(13, res.getParameters().size());
+      if (TOMEE.equals(APPSERVER)) {
+         Assert.assertEquals(10, res.getParameters().size());
+      } else if (JBOSS.equals(APPSERVER)) {
+         Assert.assertEquals(13, res.getParameters().size());
+      }
       for (ResourceParameter p : res.getParameters()) {
          if ("[Ljava.lang.String;".equals(p.getClassname())) {
             for (String s : (String[]) p.getUnencodedValue()) {
@@ -472,12 +484,11 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       Archive ar = check("POST", URL_TS);
       Resource res = ar.getResource();
-      // if ("EmbeddedTomcat7".equals(container.getName())) {
-      // // Tomcat7 adds an ATTRIBUTE 'org.apache.catalina.ASYNC_SUPPORTED'
-      // Assert.assertEquals(10, res.getParameters().size());
-      // } else {
-      Assert.assertEquals(11, res.getParameters().size());
-      // }
+      if (TOMEE.equals(APPSERVER)) {
+         Assert.assertEquals(8, res.getParameters().size());
+      } else if (JBOSS.equals(APPSERVER)) {
+         Assert.assertEquals(11, res.getParameters().size());
+      }
       postMethod.abort();
 
       boolean found = false;

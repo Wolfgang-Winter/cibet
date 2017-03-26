@@ -24,6 +24,8 @@
  */
 package com.logitags.cibet.sensor.jdbc.bridge;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
@@ -34,6 +36,7 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.sensor.jdbc.driver.CibetDriver;
 import com.logitags.cibet.sensor.jpa.EmptyProviderUtil;
 import com.logitags.cibet.sensor.jpa.Provider;
 
@@ -50,6 +53,8 @@ public class JdbcBridgeProvider extends Provider {
 
    @Override
    public EntityManagerFactory createEntityManagerFactory(String unitName, Map map) {
+      registerCibetDriver();
+
       PersistenceUnitInfo info = createPersistenceUnitInfo(unitName);
       if (info == null) {
          log.info("no persistence unit found with name " + unitName);
@@ -72,6 +77,8 @@ public class JdbcBridgeProvider extends Provider {
    @Override
    public EntityManagerFactory createContainerEntityManagerFactory(PersistenceUnitInfo info, Map map) {
       log.info("create container JdbcBridgeEntityManagerFactory");
+      registerCibetDriver();
+
       logInfo(info, map);
 
       return new JdbcBridgeEntityManagerFactory(info.getJtaDataSource());
@@ -106,6 +113,23 @@ public class JdbcBridgeProvider extends Provider {
       }
 
       return info.getNonJtaDataSource();
+   }
+
+   /**
+    * checks if CibetDriver is registered with the DriverManager and regiisters it if not. This is necessary for
+    * Tomcat/Tomee: Thus, the web applications that have database drivers in their WEB-INF/lib directory cannot rely on
+    * the service provider mechanism and should register the drivers explicitly.
+    * 
+    * @see http://tomcat.apache.org/tomcat-7.0-doc/jndi-datasource-examples-howto.html
+    */
+   private void registerCibetDriver() {
+      log.info("check CibetDriver registration");
+      try {
+         DriverManager.getDriver(CibetDriver.CIBET_PREFIX);
+      } catch (SQLException e) {
+         log.error(e.getMessage());
+         CibetDriver.register();
+      }
    }
 
 }

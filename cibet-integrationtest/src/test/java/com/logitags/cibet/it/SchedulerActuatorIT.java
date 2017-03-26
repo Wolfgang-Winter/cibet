@@ -25,11 +25,11 @@
 package com.logitags.cibet.it;
 
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
@@ -46,6 +46,7 @@ import org.junit.runner.RunWith;
 import com.cibethelper.base.DBHelper;
 import com.cibethelper.ejb.RemoteEJB;
 import com.cibethelper.ejb.RemoteEJBImpl;
+import com.cibethelper.ejb.SecuredRemoteEJBImpl;
 import com.cibethelper.ejb.SimpleEjb;
 import com.cibethelper.entities.AbstractTEntity;
 import com.cibethelper.entities.ITComplexEntity;
@@ -53,6 +54,7 @@ import com.cibethelper.entities.TCompareEntity;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
+import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.scheduler.SchedulerActuator;
 import com.logitags.cibet.actuator.scheduler.SchedulerLoader;
@@ -73,7 +75,9 @@ public class SchedulerActuatorIT extends DBHelper {
       archive.setWebXML("it/web2.xml");
 
       archive.addClasses(AbstractTEntity.class, TEntity.class, TComplexEntity.class, TComplexEntity2.class,
-            ITComplexEntity.class, TCompareEntity.class, RemoteEJB.class, RemoteEJBImpl.class, SimpleEjb.class);
+            ITComplexEntity.class, TCompareEntity.class, RemoteEJB.class, RemoteEJBImpl.class, SimpleEjb.class,
+            ArquillianTestServlet1.class, RemoteEJB.class, RemoteEJBImpl.class, SecuredRemoteEJBImpl.class,
+            SimpleEjb.class);
 
       File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withTransitivity()
             .asFile();
@@ -89,15 +93,25 @@ public class SchedulerActuatorIT extends DBHelper {
       return archive;
    }
 
-   private InitialContext getInitialContext() throws NamingException {
-      Properties props = new Properties();
-      props.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, "org.jboss.naming.remote.client.InitialContextFactory");
-      props.put(javax.naming.Context.PROVIDER_URL, "remote://localhost:4447");
-      props.put("jboss.naming.client.ejb.context", true);
+   private RemoteEJB lookup() throws Exception {
+      String lookupName = this.getClass().getSimpleName() + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      if (APPSERVER.equals(TOMEE)) {
+         lookupName = "global/" + lookupName;
+      }
 
-      props.put(javax.naming.Context.SECURITY_PRINCIPAL, "Mutzi1");
-      props.put(javax.naming.Context.SECURITY_CREDENTIALS, "passss1234!");
-      return new InitialContext(props);
+      RemoteEJB remoteEjb = (RemoteEJB) getInitialContext().lookup(lookupName);
+      return remoteEjb;
+   }
+
+   private InitialContext getInitialContext() throws Exception {
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
+      log.debug("url=" + url);
+      Properties properties = new Properties();
+      properties.load(url.openStream());
+
+      properties.put(javax.naming.Context.SECURITY_PRINCIPAL, "Mutzi1");
+      properties.put(javax.naming.Context.SECURITY_CREDENTIALS, "passss1234!");
+      return new InitialContext(properties);
    }
 
    @Test
@@ -107,15 +121,18 @@ public class SchedulerActuatorIT extends DBHelper {
 
       TEntity te = new TEntity("myName", 45, "winter");
 
-      RemoteEJB remoteEjb = (RemoteEJB) getInitialContext()
-            .lookup("SchedulerActuatorIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
+      String userName = "ANONYMOUS";
+      if (APPSERVER.equals(TOMEE)) {
+         userName = "Mutzi1";
+      }
+      RemoteEJB remoteEjb = lookup();
       TEntity te2 = remoteEjb.persist(te);
       log.debug(te2);
       Assert.assertTrue(te2.getId() == 0);
 
       List<DcControllable> list = SchedulerLoader.findAllScheduled();
       Assert.assertEquals(1, list.size());
-      Assert.assertEquals("ANONYMOUS", list.get(0).getCreateUser());
+      Assert.assertEquals(userName, list.get(0).getCreateUser());
       Query q = applEman.createQuery("SELECT e FROM TEntity e");
       List<TEntity> tlist = q.getResultList();
       Assert.assertEquals(0, tlist.size());
@@ -129,7 +146,7 @@ public class SchedulerActuatorIT extends DBHelper {
       list = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, list.size());
 
-      list = SchedulerLoader.loadByUser("ANONYMOUS");
+      list = SchedulerLoader.loadByUser(userName);
       Assert.assertEquals(1, list.size());
       DcControllable co = list.get(0);
       Assert.assertEquals("SCHEDULER-1", co.getActuator());
@@ -153,8 +170,7 @@ public class SchedulerActuatorIT extends DBHelper {
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
 
-      RemoteEJB ejb = (RemoteEJB) getInitialContext()
-            .lookup("SchedulerActuatorIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
+      RemoteEJB ejb = lookup();
 
       entity.setCounter(45);
       entity.setOwner("Newman");
@@ -203,8 +219,11 @@ public class SchedulerActuatorIT extends DBHelper {
       log.info("start executeEjbTimerInvoke()");
       Context.sessionScope().setTenant(null);
 
-      RemoteEJB ejb = (RemoteEJB) getInitialContext()
-            .lookup("SchedulerActuatorIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
+      RemoteEJB ejb = lookup();
+      String userName = "ANONYMOUS";
+      if (APPSERVER.equals(TOMEE)) {
+         userName = "Mutzi1";
+      }
 
       TEntity entity = new TEntity();
       entity.setCounter(5);
@@ -225,7 +244,7 @@ public class SchedulerActuatorIT extends DBHelper {
       Thread.sleep(8000);
       log.debug("--------------- after TimerTask");
 
-      l = SchedulerLoader.loadByUser("ANONYMOUS");
+      l = SchedulerLoader.loadByUser(userName);
       Assert.assertEquals(1, l.size());
       co = l.get(0);
       Assert.assertEquals("SCHEDULER-2", co.getActuator());
@@ -241,8 +260,11 @@ public class SchedulerActuatorIT extends DBHelper {
       log.info("start executeEjbTimerJPAQuery()");
       Context.sessionScope().setTenant(null);
 
-      RemoteEJB ejb = (RemoteEJB) getInitialContext()
-            .lookup("SchedulerActuatorIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
+      String userName = "ANONYMOUS";
+      if (APPSERVER.equals(TOMEE)) {
+         userName = "Mutzi1";
+      }
+      RemoteEJB ejb = lookup();
 
       String qn = "INSERT INTO CIB_TESTENTITY(ID, NAMEVALUE, COUNTER) VALUES (?,?,?)";
       EventResult ev = ejb.executeUpdateQuery(qn, 456, "Felix", 1222);
@@ -257,7 +279,7 @@ public class SchedulerActuatorIT extends DBHelper {
       Thread.sleep(8000);
       log.debug("--------------- after TimerTask");
 
-      l = SchedulerLoader.loadByUser("ANONYMOUS");
+      l = SchedulerLoader.loadByUser(userName);
       Assert.assertEquals(1, l.size());
       co = l.get(0);
       Assert.assertEquals("SCHEDULER-2", co.getActuator());

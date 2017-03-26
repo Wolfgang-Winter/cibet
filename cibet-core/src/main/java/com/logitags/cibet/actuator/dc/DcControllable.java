@@ -295,6 +295,8 @@ public class DcControllable implements Serializable {
    public void decrypt() {
       if (getResource().isEncrypted()) {
          log.debug("decrypt DcControllable");
+         // OpenJPA workaround:
+         getResource().getParameters().size();
          Context.internalRequestScope().getEntityManager().detach(this);
          getResource().decrypt();
       }

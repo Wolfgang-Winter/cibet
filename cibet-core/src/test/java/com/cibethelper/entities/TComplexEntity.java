@@ -198,6 +198,9 @@ public class TComplexEntity implements Serializable, ITComplexEntity {
     * @return the compareEntity
     */
    public TCompareEntity getCompareEntity() {
+      if (compareEntity == null) {
+         compareEntity = new TCompareEntity();
+      }
       return compareEntity;
    }
 

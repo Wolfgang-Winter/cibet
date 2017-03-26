@@ -94,6 +94,9 @@ public class HttpNotificationProvider implements NotificationProvider, Serializa
          HttpPost postMethod = new HttpPost(address);
          postMethod.setEntity(entity);
          response = client.execute(postMethod);
+         if (log.isDebugEnabled()) {
+            log.debug(response);
+         }
       } catch (IOException e) {
          log.error("Failed to send " + c.getExecutionStatus() + " notification to " + address + ": " + e.getMessage(),
                e);

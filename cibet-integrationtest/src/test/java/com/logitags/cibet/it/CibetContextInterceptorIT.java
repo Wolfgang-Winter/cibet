@@ -26,6 +26,7 @@ package com.logitags.cibet.it;
 
 import java.io.File;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,12 +59,10 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.cibethelper.base.CoreTestBase;
-import com.cibethelper.base.DBHelper;
 import com.cibethelper.base.NoControlActuator;
 import com.cibethelper.base.SubArchiveController;
 import com.cibethelper.ejb.Ejb2Service;
@@ -103,10 +102,6 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
 
    private static Logger log = Logger.getLogger(CibetContextInterceptorIT.class);
 
-   private static final String ARCHIVENAME = "JBossCibetContextInterceptorAIT";
-
-   private DBHelper dbHelper = new DBHelper();
-
    @Deployment(testable = false)
    public static WebArchive createDeployment() {
       String warName = CibetContextInterceptorIT.class.getSimpleName() + ".war";
@@ -132,14 +127,9 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       archive.addAsWebInfResource("it/jboss-ejb3.xml", "jboss-ejb3.xml");
 
       log.debug(archive.toString(true));
-      archive.as(ZipExporter.class).exportTo(new File("target/" + ARCHIVENAME + ".war"), true);
+      archive.as(ZipExporter.class).exportTo(new File("target/" + warName), true);
 
       return archive;
-   }
-
-   @BeforeClass
-   public static void beforeClassCibetContextInterceptorIT() throws Exception {
-      DBHelper.beforeClass();
    }
 
    @Before
@@ -155,9 +145,11 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       client.execute(method);
       method.abort();
 
-      InitializationService.instance().endContext();
+      method = new HttpGet(getBaseURL() + "/clean.cibet");
+      client.execute(method);
+      method.abort();
 
-      dbHelper.doAfter();
+      InitializationService.instance().endContext();
    }
 
    private InitialContext getInitialContext() throws Exception {
@@ -192,15 +184,22 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       log.debug("start testInvokeRemote()");
       TEntity te = new TEntity("myName", 45, "winter");
 
-      RemoteEJB remoteEjb = (RemoteEJB) getInitialContext()
-            .lookup(CibetContextInterceptorIT.class.getSimpleName() + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
+      String userName = "ANONYMOUS";
+      String lookupName = CibetContextInterceptorIT.class.getSimpleName()
+            + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      if (APPSERVER.equals(TOMEE)) {
+         lookupName = "global/" + lookupName;
+         userName = "Mutzi1";
+      }
+      RemoteEJB remoteEjb = (RemoteEJB) getInitialContext().lookup(lookupName);
       TEntity te2 = remoteEjb.persist(te);
       log.debug(te2);
       Assert.assertTrue(te2.getId() != 0);
 
       List<Archive> list = ArchiveLoader.loadArchives(TEntity.class.getName());
       Assert.assertEquals(1, list.size());
-      Assert.assertEquals("ANONYMOUS", list.get(0).getCreateUser());
+
+      Assert.assertEquals(userName, list.get(0).getCreateUser());
       InitializationService.instance().endContext();
    }
 
@@ -210,8 +209,13 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       log.debug("start testInvokeSecured()");
       TEntity te = new TEntity("myName", 45, "winter");
 
-      RemoteEJB remoteEjb = (RemoteEJB) getInitialContext().lookup(
-            CibetContextInterceptorIT.class.getSimpleName() + "/SecuredRemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
+      String lookupName = CibetContextInterceptorIT.class.getSimpleName()
+            + "/SecuredRemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      if (APPSERVER.equals(TOMEE)) {
+         lookupName = "global/" + lookupName;
+      }
+      RemoteEJB remoteEjb = (RemoteEJB) getInitialContext().lookup(lookupName);
+
       TEntity te2 = remoteEjb.persist(te);
       log.debug(te2);
       Assert.assertTrue(te2.getId() != 0);
@@ -231,6 +235,9 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
    @InSequence(3)
    public void testInvokeWithUser() throws Exception {
       log.debug("start testInvokeWithUser()");
+      if (!APPSERVER.equals(JBOSS)) {
+         return;
+      }
 
       TEntity te = new TEntity("myName", 46, "winter");
 
@@ -280,8 +287,13 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       Context.sessionScope().setTenant("cccomp");
       Context.sessionScope().setUser("Knacki");
 
-      RemoteEJB remoteEjb = (RemoteEJB) getProxyInitialContext()
-            .lookup(CibetContextInterceptorIT.class.getSimpleName() + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
+      String lookupName = CibetContextInterceptorIT.class.getSimpleName()
+            + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      if (APPSERVER.equals(TOMEE)) {
+         lookupName = "global/" + lookupName;
+      }
+      RemoteEJB remoteEjb = (RemoteEJB) getProxyInitialContext().lookup(lookupName);
+
       TEntity te2 = remoteEjb.persist(te);
       log.debug(te2);
       Assert.assertTrue(te2.getId() != 0);
@@ -292,6 +304,7 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals("Knacki", list.get(0).getCreateUser());
       Assert.assertEquals("cccomp", list.get(0).getTenant());
       Context.sessionScope().setTenant(AbstractAuthenticationProvider.DEFAULT_TENANT);
+      InitializationService.instance().endContext();
    }
 
    @Test
@@ -308,8 +321,13 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
 
       Context.sessionScope().setUser("klaus");
 
-      RemoteEJB remoteEjb = (RemoteEJB) getProxyInitialContext()
-            .lookup(CibetContextInterceptorIT.class.getSimpleName() + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
+      String lookupName = CibetContextInterceptorIT.class.getSimpleName()
+            + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      if (APPSERVER.equals(TOMEE)) {
+         lookupName = "global/" + lookupName;
+      }
+      RemoteEJB remoteEjb = (RemoteEJB) getProxyInitialContext().lookup(lookupName);
+
       remoteEjb.persist(te);
       EventResult er = Context.requestScope().getExecutedEventResult();
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
@@ -327,6 +345,10 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       log.info("now release");
       Context.sessionScope().setUser("Rele");
       TEntity te2 = (TEntity) dlist.get(0).release("Kala");
+
+      InitializationService.instance().endContext();
+      InitializationService.instance().startContext();
+
       Assert.assertNotNull(te2);
       Assert.assertTrue(te2.getId() != 0);
 
@@ -340,8 +362,15 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(ExecutionStatus.EXECUTED, dlist.get(0).getExecutionStatus());
       Assert.assertEquals("Rele", dlist.get(0).getApprovalUser());
 
-      List<TEntity> tlist = (List<TEntity>) dbHelper.select("SELECT a FROM TEntity a WHERE a.owner = 'winter'");
-      Assert.assertEquals(1, tlist.size());
+      HttpGet method = new HttpGet(getBaseURL() + "/execute.cibet?query="
+            + URLEncoder.encode("SELECT a FROM TEntity a WHERE a.owner = 'winter'", "UTF-8"));
+      HttpResponse response = client.execute(method);
+      String res = readResponseBody(response);
+      // TEntity id: 22701, counter: 45, owner: winter, xCaltimestamp: null
+      Assert.assertTrue(res.contains(", counter: 45, owner: winter, xCaltimestamp: null"));
+
+      // List<TEntity> tlist = (List<TEntity>) dbHelper.select("SELECT a FROM TEntity a WHERE a.owner = 'winter'");
+      // Assert.assertEquals(1, tlist.size());
    }
 
    @Test

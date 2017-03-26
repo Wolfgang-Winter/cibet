@@ -434,7 +434,11 @@ public class CibetProxy extends HttpFiltersAdapter {
          Context.internalSessionScope().getProperties().putAll(sessionContext);
 
          if (httpObject != null) {
-            metadata.getResource().setResultObject(((HttpResponse) httpObject).getStatus().code());
+            HttpResponse fhr = (HttpResponse) httpObject;
+            if (fhr.getStatus().code() >= 500) {
+               metadata.setExecutionStatus(ExecutionStatus.ERROR);
+            }
+            metadata.getResource().setResultObject(fhr.getStatus().code());
          } else {
             metadata.getResource().setResultObject(HttpResponseStatus.OK.code());
          }

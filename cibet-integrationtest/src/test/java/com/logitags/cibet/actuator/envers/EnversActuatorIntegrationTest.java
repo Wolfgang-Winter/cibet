@@ -24,8 +24,10 @@
  */
 package com.logitags.cibet.actuator.envers;
 
+import java.net.URL;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.persistence.Query;
@@ -36,6 +38,8 @@ import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -54,7 +58,21 @@ public class EnversActuatorIntegrationTest extends DBHelper {
    @BeforeClass
    public static void subBeforeClass() throws Exception {
       log.debug("subBeforeClass");
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
+      Properties properties = new Properties();
+      properties.load(url.openStream());
+      if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("openejb")) {
+         APPSERVER = TOMEE;
+      } else if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("jboss")) {
+         APPSERVER = JBOSS;
+      }
+
       initConfiguration("config_envers1.xml");
+   }
+
+   @Before
+   public void before() {
+      Assume.assumeTrue(JBOSS.equals(APPSERVER));
    }
 
    @After

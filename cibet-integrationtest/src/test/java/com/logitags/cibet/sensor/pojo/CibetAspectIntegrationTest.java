@@ -195,7 +195,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Resource res = ar.getResource();
       Assert.assertEquals("setStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
-      Assert.assertEquals("Hasenfu�", res.getInvokerParam());
+      Assert.assertEquals("Hasenfuss", res.getInvokerParam());
 
       q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
@@ -208,7 +208,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("garnix", ent1.getStatValue());
       release();
       Assert.assertEquals("GOGO-Girl", ent1.getStatValue());
-      Assert.assertEquals("Hasenfu�", ent1.getConstrValue());
+      Assert.assertEquals("Hasenfuss", ent1.getConstrValue());
    }
 
    @Test

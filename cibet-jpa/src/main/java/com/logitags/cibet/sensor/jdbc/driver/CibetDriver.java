@@ -44,9 +44,13 @@ public class CibetDriver implements Driver {
 
    private static Log log = LogFactory.getLog(CibetDriver.class);
 
-   private static final String CIBET_PREFIX = "jdbc:cibet:";
+   public static final String CIBET_PREFIX = "jdbc:cibet:";
 
    static {
+      register();
+   }
+
+   public static void register() {
       try {
          CibetDriver driverInst = new CibetDriver();
          DriverManager.registerDriver(driverInst);

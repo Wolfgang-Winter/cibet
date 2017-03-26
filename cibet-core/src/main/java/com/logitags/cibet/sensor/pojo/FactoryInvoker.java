@@ -94,7 +94,8 @@ public class FactoryInvoker extends PojoInvoker {
          // 3. Singleton or constructor, no method given
          for (Method method : methods) {
             if (method.getReturnType().isAssignableFrom(clazz) && method.getParameterTypes().length == 0) {
-               return (T) method.invoke(factory, (Object[]) null);
+               T t = (T) method.invoke(factory, (Object[]) null);
+               return t;
             }
          }
 

@@ -28,8 +28,8 @@
       <property name="permissionEvaluator" ref="permissionEvaluator"/>
   </bean>
 
-  <bean id="MyBean1" class="com.cibethelper.NoControlActuator"/>
-  <bean id="MyBean2" class="com.cibethelper.NoControlActuator"/>
+  <bean id="MyBean1" class="com.cibethelper.base.NoControlActuator"/>
+  <bean id="MyBean2" class="com.cibethelper.base.NoControlActuator"/>
 
   <bean id="permissionEvaluator" class="com.cibethelper.DummyPermissionEvaluator">
   </bean>

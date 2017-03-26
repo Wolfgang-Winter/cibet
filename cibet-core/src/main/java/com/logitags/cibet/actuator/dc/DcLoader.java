@@ -94,6 +94,7 @@ public abstract class DcLoader {
       Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
       q.setParameter("tenant", Context.internalSessionScope().getTenant());
       List<DcControllable> list = q.getResultList();
+
       decrypt(list);
       return list;
    }

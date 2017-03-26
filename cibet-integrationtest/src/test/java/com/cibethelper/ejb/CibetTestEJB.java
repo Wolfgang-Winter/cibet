@@ -211,6 +211,9 @@ public class CibetTestEJB {
    }
 
    public List<DcControllable> findUnreleased() {
+      EntityManager em = Context.requestScope().getEntityManager();
+      em.clear();
+
       List<DcControllable> l = DcLoader.findUnreleased();
       for (DcControllable co : l) {
          co.getResource().getParameters().size();
@@ -399,7 +402,7 @@ public class CibetTestEJB {
       c.setStatValue(88);
       list.add(Context.requestScope().getExecutedEventResult());
 
-      log.debug("persist in CibetTestEJB: " + c);
+      // log.debug("persist in CibetTestEJB: " + c);
       applEman.persist(c);
       list.add(Context.requestScope().getExecutedEventResult());
       long id = c.getId();

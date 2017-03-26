@@ -58,6 +58,7 @@ import org.junit.runner.RunWith;
 import com.cibethelper.base.CoreTestBase;
 import com.cibethelper.ejb.RemoteEJB;
 import com.cibethelper.ejb.RemoteEJBImpl;
+import com.cibethelper.ejb.SecuredRemoteEJBImpl;
 import com.cibethelper.ejb.SimpleEjb;
 import com.cibethelper.entities.AbstractTEntity;
 import com.cibethelper.entities.ITComplexEntity;
@@ -65,6 +66,7 @@ import com.cibethelper.entities.TCompareEntity;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
+import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.resource.ParameterType;
@@ -88,7 +90,8 @@ public class RemoteEjbIT extends AbstractArquillian {
 
       archive.addClasses(AbstractArquillian.class, CoreTestBase.class, AbstractTEntity.class, TEntity.class,
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class, RemoteEJB.class,
-            RemoteEJBImpl.class, SimpleEjb.class);
+            RemoteEJBImpl.class, SimpleEjb.class, ArquillianTestServlet1.class, RemoteEJB.class, RemoteEJBImpl.class,
+            SecuredRemoteEJBImpl.class, SimpleEjb.class);
 
       File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withTransitivity()
             .asFile();
@@ -128,8 +131,13 @@ public class RemoteEjbIT extends AbstractArquillian {
       Properties properties = new Properties();
       properties.load(url.openStream());
 
+      String lookupName = this.getClass().getSimpleName() + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      if (APPSERVER.equals(TOMEE)) {
+         lookupName = "global/" + lookupName;
+      }
+
       ResourceParameter rp = new ResourceParameter(RemoteEjbInvocationHandler.JNDI_NAME, String.class.getName(),
-            "RemoteEjbIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB", ParameterType.INTERNAL_PARAMETER, 1);
+            lookupName, ParameterType.INTERNAL_PARAMETER, 1);
       params.add(rp);
       ResourceParameter rp1 = new ResourceParameter("param1", String.class.getName(), "myParam1",
             ParameterType.METHOD_PARAMETER, 2);
@@ -315,8 +323,13 @@ public class RemoteEjbIT extends AbstractArquillian {
       CibetRemoteContextFactory fac = new CibetRemoteContextFactory();
       CibetRemoteContext ctx = (CibetRemoteContext) fac.getInitialContext(properties);
       assertNotNull(ctx);
-      // RemoteEJB ejb = (RemoteEJB) ctx.lookup("jav:module/RemoteEJBImpl");
-      RemoteEJB ejb = (RemoteEJB) ctx.lookup("RemoteEjbIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB");
+
+      String lookupName = this.getClass().getSimpleName() + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      if (APPSERVER.equals(TOMEE)) {
+         lookupName = "global/" + lookupName;
+      }
+
+      RemoteEJB ejb = (RemoteEJB) ctx.lookup(lookupName);
       assertNotNull(ejb);
    }
 

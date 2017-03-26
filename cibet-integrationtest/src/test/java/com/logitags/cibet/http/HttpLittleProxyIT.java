@@ -63,6 +63,7 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -164,6 +165,11 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       SecurityManager securityManager = new DefaultSecurityManager(realm);
       // Make the SecurityManager instance available to the entire application via static memory:
       SecurityUtils.setSecurityManager(securityManager);
+   }
+
+   @AfterClass
+   public static void afterClassHttpLittleProxyIT() {
+      Configuration.instance().close();
    }
 
    @Override
@@ -1074,7 +1080,9 @@ public class HttpLittleProxyIT extends AbstractArquillian {
 
       HttpResponse response = client.execute(method);
       log.debug("STATUS: " + response.getStatusLine().getStatusCode());
-      Assert.assertEquals(HttpStatus.SC_GATEWAY_TIMEOUT, response.getStatusLine().getStatusCode());
+      Assert.assertTrue(HttpStatus.SC_BAD_GATEWAY == response.getStatusLine().getStatusCode()
+            || HttpStatus.SC_GATEWAY_TIMEOUT == response.getStatusLine().getStatusCode());
+
       readResponseBody(response);
       String ev = response.getFirstHeader("CIBET_EVENTRESULT").getValue();
       EventResult eventResult = CibetUtil.decodeEventResult(ev);
@@ -1084,9 +1092,15 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       List<Archive> archives = checkArchive("CONNECT", "httpbin.org:8081", 1);
       Archive a = archives.get(0);
       log.debug(a);
-      Assert.assertEquals(504, a.getResource().getResultObject());
+      Assert.assertTrue(HttpStatus.SC_BAD_GATEWAY == (int) a.getResource().getResultObject()
+            || HttpStatus.SC_GATEWAY_TIMEOUT == (int) a.getResource().getResultObject());
+      // if (TOMEE.equals(APPSERVER)) {
+      // Assert.assertEquals(HttpStatus.SC_BAD_GATEWAY, a.getResource().getResultObject());
+      // } else {
+      // Assert.assertEquals(HttpStatus.SC_GATEWAY_TIMEOUT, a.getResource().getResultObject());
+      // }
+
       Assert.assertEquals(ExecutionStatus.ERROR, a.getExecutionStatus());
-      Assert.assertEquals(HttpStatus.SC_GATEWAY_TIMEOUT, a.getResource().getResultObject());
    }
 
    @Test

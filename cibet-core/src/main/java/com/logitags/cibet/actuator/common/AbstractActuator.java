@@ -235,7 +235,7 @@ public abstract class AbstractActuator implements Actuator, Serializable {
                   resource.getParameters().add(propertyResParam);
                } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
                      | InvocationTargetException e) {
-                  log.error("Ignore storing of entity attribute " + prop + ": " + e.getMessage(), e);
+                  log.error("Ignore storing of entity attribute " + prop + ": " + e.getMessage());
                }
             }
          }

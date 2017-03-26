@@ -370,7 +370,9 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
                if (metadata.getExecutionStatus() == ExecutionStatus.EXECUTING) {
                   metadata.setExecutionStatus(ExecutionStatus.EXECUTED);
                   T ret = nativeEntityManager.merge(obj);
+
                   // refresh the object into the resource:
+                  nativeEntityManager.flush();
                   res.setObject(ret);
                } else {
                   if (nativeEntityManager.isOpen()) {

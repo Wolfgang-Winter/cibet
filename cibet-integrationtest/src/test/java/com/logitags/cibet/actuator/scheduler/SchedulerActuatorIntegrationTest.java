@@ -35,6 +35,7 @@ import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -70,6 +71,11 @@ import com.logitags.cibet.sensor.pojo.PojoInvoker;
 public class SchedulerActuatorIntegrationTest extends DBHelper {
 
    private static Logger log = Logger.getLogger(SchedulerActuatorIntegrationTest.class);
+
+   @AfterClass
+   public static void afterClassSchedulerActuatorIntegrationTest() {
+      Configuration.instance().close();
+   }
 
    @After
    public void subDoAfter() {
@@ -1199,6 +1205,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       TComplexEntity base2 = applEman.find(TComplexEntity.class, base.getId());
       Assert.assertNotNull(base2);
 
+      Thread.sleep(100);
       Context.requestScope().setScheduledDate(Calendar.SECOND, 4);
       base2.setOwner("base2owner");
       try {

@@ -33,6 +33,7 @@ import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -44,6 +45,7 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -73,12 +75,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cibethelper.SpringTestAuthenticationManager;
 import com.cibethelper.ejb.RemoteEJB;
+import com.cibethelper.entities.TComplexEntity;
+import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
+import com.logitags.cibet.actuator.archive.Archive;
+import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ProxyConfig;
 import com.logitags.cibet.config.ProxyConfig.ProxyMode;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalSessionScope;
+import com.logitags.cibet.core.EventResult;
 
 public class ArquillianTestServlet1 extends HttpServlet {
 
@@ -176,27 +184,35 @@ public class ArquillianTestServlet1 extends HttpServlet {
 
       String msg = "OK message: " + concatParameters(req);
 
-      if (req.getServletPath().equals("/test/setuser")) {
-         msg = setUser(req, resp);
-      } else if (req.getServletPath().equals("/test/spring/loginSpring")) {
-         msg = loginSpring(req, resp);
-      } else if (req.getServletPath().equals("/test/spring/loginSpringSecond")) {
-         msg = loginSpringSecond(req, resp);
-      } else if (req.getServletPath().equals("/test/parallel")) {
-         msg = parallel(req, resp);
-      } else if (req.getServletPath().equals("/test/parallel2")) {
-         msg = parallel(req, resp);
-      } else if (req.getServletPath().equals("/test/callEjb")) {
-         msg = callRemoteEjb(req, resp);
-      } else if (req.getServletPath().equals("/test/proxy")) {
-         msg = proxy(req, resp);
-      } else if (req.getServletPath().equals("/test/timeout")) {
-         msg = timeout(req, resp);
-      } else if (req.getServletPath().equals("/test/testInvoke")) {
-         doTestInvoke(req, resp);
-      } else if (req.getServletPath().equals("/test/exception")) {
-         log.debug("throw Exception");
-         throw new ServletException("deliberately thrown exception!");
+      try {
+         if (req.getServletPath().equals("/test/setuser")) {
+            msg = setUser(req, resp);
+         } else if (req.getServletPath().equals("/test/spring/loginSpring")) {
+            msg = loginSpring(req, resp);
+         } else if (req.getServletPath().equals("/test/spring/loginSpringSecond")) {
+            msg = loginSpringSecond(req, resp);
+         } else if (req.getServletPath().equals("/test/parallel")) {
+            msg = parallel(req, resp);
+         } else if (req.getServletPath().equals("/test/parallel2")) {
+            msg = parallel(req, resp);
+         } else if (req.getServletPath().equals("/test/callEjb")) {
+            msg = callRemoteEjb(req, resp);
+         } else if (req.getServletPath().equals("/test/proxy")) {
+            msg = proxy(req, resp);
+         } else if (req.getServletPath().equals("/test/timeout")) {
+            msg = timeout(req, resp);
+         } else if (req.getServletPath().equals("/test/testInvoke")) {
+            doTestInvoke(req, resp);
+         } else if (req.getServletPath().equals("/test/exception")) {
+            log.debug("throw Exception");
+            throw new ServletException("deliberately thrown exception!");
+         } else if (req.getRequestURI().endsWith("/test/clean")) {
+            clean();
+         }
+
+      } catch (Exception e) {
+         log.error(e.getMessage(), e);
+         throw new ServletException(e);
       }
 
       PrintWriter writer = resp.getWriter();
@@ -507,6 +523,53 @@ public class ArquillianTestServlet1 extends HttpServlet {
             instream.close();
          Thread.sleep(100);
       }
+   }
+
+   protected void clean() throws Exception {
+      log.debug("GeneralServlet:clean()");
+
+      ut.begin();
+
+      Query q = appEM.createNamedQuery(TComplexEntity.SEL_ALL);
+      List<TComplexEntity> l = q.getResultList();
+      for (TComplexEntity tComplexEntity : l) {
+         appEM.remove(tComplexEntity);
+      }
+
+      Query q1 = appEM.createNamedQuery(TComplexEntity2.SEL_ALL);
+      List<TComplexEntity2> l1 = q1.getResultList();
+      for (TComplexEntity2 tComplexEntity : l1) {
+         appEM.remove(tComplexEntity);
+      }
+
+      Query q2 = appEM.createNamedQuery(TEntity.DEL_ALL);
+      q2.executeUpdate();
+
+      Query q3 = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL);
+      List<Archive> alist = q3.getResultList();
+      for (Archive ar : alist) {
+         Context.internalRequestScope().getEntityManager().remove(ar);
+      }
+
+      Query q4 = Context.internalRequestScope().getEntityManager().createQuery("select d from DcControllable d");
+      List<DcControllable> dclist = q4.getResultList();
+      for (DcControllable dc : dclist) {
+         Context.internalRequestScope().getEntityManager().remove(dc);
+      }
+
+      Query q5 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
+      Iterator<LockedObject> itLO = q5.getResultList().iterator();
+      while (itLO.hasNext()) {
+         Context.internalRequestScope().getEntityManager().remove(itLO.next());
+      }
+
+      Query q6 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
+      Iterator<EventResult> itEV = q6.getResultList().iterator();
+      while (itEV.hasNext()) {
+         Context.internalRequestScope().getEntityManager().remove(itEV.next());
+      }
+
+      ut.commit();
    }
 
 }

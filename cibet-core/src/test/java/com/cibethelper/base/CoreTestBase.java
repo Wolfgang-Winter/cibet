@@ -40,6 +40,11 @@ public abstract class CoreTestBase {
 
    protected static final String USER = "USER";
 
+   protected static final String JBOSS = "JBoss";
+   protected static final String TOMEE = "Tomee";
+
+   protected static String APPSERVER;
+
    @AfterClass
    public static void afterClass() throws Exception {
       initConfiguration("cibet-config.xml");

@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import javax.ejb.EJB;
 import javax.persistence.Query;
@@ -82,8 +81,6 @@ import com.logitags.cibet.diff.Difference;
 import com.logitags.cibet.diff.DifferenceType;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.security.DefaultSecurityProvider;
-import com.logitags.cibet.security.SecurityProvider;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
 
 /**
  * ArchiveManagerImplIntegrationTest
@@ -137,11 +134,9 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
    @After
    public void afterArchiveContextInterceptorIT() {
       InitializationService.instance().endContext();
-      // new ConfigurationService().initialise();
       if (sp != null) {
          cman.unregisterSetpoint(sp.getId());
       }
-
    }
 
    private void testDifference(List<Difference> comps) {
@@ -153,33 +148,6 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Assert.assertTrue(cou.getOldValue() == null);
       Assert.assertTrue(cou.getNewValue() instanceof TEntity);
       Assert.assertEquals("Karl", ((TEntity) cou.getNewValue()).getNameValue());
-   }
-
-   private Archive createArchive(int archiveId, int lastArchiveId) {
-      SecurityProvider secProvider = cman.getSecurityProvider();
-      Archive a = new Archive();
-      a.setArchiveId(UUID.randomUUID().toString());
-      a.setCaseId(UUID.randomUUID().toString());
-      a.setControlEvent(ControlEvent.INSERT);
-      a.setExecutionStatus(ExecutionStatus.EXECUTED);
-      a.setCreateDate(today);
-      a.setCreateUser("user1");
-      a.setTenant(Context.sessionScope().getTenant());
-      a.setRemark("remark");
-
-      Resource res = new Resource();
-      res.setPrimaryKeyId(String.valueOf(archiveId + 10));
-      res.setTargetType(TEntity.class.getName());
-      res.setResourceHandlerClass(JpaResourceHandler.class.getName());
-      res.setEncrypted(true);
-      res.setKeyReference(secProvider.getCurrentSecretKey());
-      a.setResource(res);
-
-      a.createChecksum();
-      log.debug(a.getArchiveId() + ": checkSumString = '" + a.getChecksum() + "'");
-      String cs = secProvider.createMessageDigest(a.getChecksum(), secProvider.getCurrentSecretKey());
-      a.setChecksum(cs);
-      return a;
    }
 
    private void doReleaseUpdate(List<String> schemes) throws Exception {
@@ -236,11 +204,17 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(ControlEvent.RELEASE_UPDATE, archList.get(1).getControlEvent());
    }
 
-   private void release6Eyes(ControlEvent event1, ControlEvent event2, ControlEvent event3) throws Exception {
+   private void release6Eyes(ControlEvent event1, ControlEvent event2, ControlEvent event3, int childs)
+         throws Exception {
       EventResult er = Context.internalRequestScope().getExecutedEventResult();
       Assert.assertNotNull(er);
+      log.debug(er);
       Assert.assertEquals(ExecutionStatus.FIRST_POSTPONED, er.getExecutionStatus());
-      Assert.assertEquals(0, er.getChildResults().size());
+      if (TOMEE.equals(APPSERVER)) {
+         Assert.assertEquals(childs, er.getChildResults().size());
+      } else {
+         Assert.assertEquals(0, er.getChildResults().size());
+      }
       Assert.assertNull(er.getParentResult());
       Assert.assertEquals("SIX_EYES, ARCHIVE", er.getActuators());
 
@@ -518,7 +492,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       TComplexEntity ce = createTComplexEntity();
       persist(ce);
 
-      release6Eyes(ControlEvent.INSERT, ControlEvent.FIRST_RELEASE_INSERT, ControlEvent.REJECT_INSERT);
+      release6Eyes(ControlEvent.INSERT, ControlEvent.FIRST_RELEASE_INSERT, ControlEvent.REJECT_INSERT, 0);
    }
 
    @Test
@@ -537,7 +511,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       ce.setOwner("changedOwner");
       ce = merge(ce);
 
-      release6Eyes(ControlEvent.UPDATE, ControlEvent.FIRST_RELEASE_UPDATE, ControlEvent.REJECT_UPDATE);
+      release6Eyes(ControlEvent.UPDATE, ControlEvent.FIRST_RELEASE_UPDATE, ControlEvent.REJECT_UPDATE, 5);
    }
 
    @Test
@@ -554,7 +528,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       persist(ce);
       remove(ce);
 
-      release6Eyes(ControlEvent.DELETE, ControlEvent.FIRST_RELEASE_DELETE, ControlEvent.REJECT_DELETE);
+      release6Eyes(ControlEvent.DELETE, ControlEvent.FIRST_RELEASE_DELETE, ControlEvent.REJECT_DELETE, 0);
    }
 
    @Test
@@ -868,10 +842,15 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       selEnt.setCompValue(14);
       selEnt = applEman.merge(selEnt);
       applEman.flush();
+      applEman.clear();
 
       selEnt.setCompValue(18);
       selEnt = applEman.merge(selEnt);
       ut.commit();
+
+      applEman.clear();
+      selEnt = applEman.find(TComplexEntity.class, ce.getId());
+      log.debug("selEnt.getCompValue() " + selEnt.getCompValue());
 
       schemes = new ArrayList<String>();
       schemes.add(ArchiveActuator.DEFAULTNAME);
@@ -894,6 +873,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals("Soll: 14", list2.get(1).getRemark());
       Assert.assertEquals(ControlEvent.RESTORE_UPDATE, list2.get(1).getControlEvent());
 
+      applEman.clear();
       selEnt = applEman.find(TComplexEntity.class, selEnt.getId());
       Assert.assertEquals(18, selEnt.getCompValue());
 

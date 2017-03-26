@@ -202,7 +202,9 @@ public class CibetUtil {
       Class<?> clazz = entity.getClass();
       log.debug("detach all properties of instance of " + clazz);
       EntityManager em = Context.internalRequestScope().getApplicationEntityManager();
-      em.detach(entity);
+      if (em.contains(entity)) {
+         em.detach(entity);
+      }
       while (clazz != null) {
          Field[] f = clazz.getDeclaredFields();
          for (Field field : f) {
@@ -221,7 +223,9 @@ public class CibetUtil {
                         Object colChild = it.next();
                         if (colChild != null && (colChild.getClass().isAnnotationPresent(Entity.class)
                               || colChild.getClass().isAnnotationPresent(Embeddable.class))) {
-                           em.detach(colChild);
+                           if (em.contains(colChild)) {
+                              em.detach(colChild);
+                           }
                            upReferences.add(colChild);
                            deepDetach(colChild, upReferences);
                         }
@@ -239,7 +243,9 @@ public class CibetUtil {
                   Method method = clazz.getDeclaredMethod(methodName, new Class<?>[] {});
                   Object o = method.invoke(entity, new Object[] {});
                   if (o != null) {
-                     em.detach(o);
+                     if (em.contains(o)) {
+                        em.detach(o);
+                     }
 
                      boolean hasUpReference = false;
                      for (Object ref : upReferences) {

@@ -24,10 +24,12 @@
  */
 package com.cibethelper.base;
 
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -77,11 +79,24 @@ public class DBHelper extends CoreTestBase {
       applEman.getTransaction().begin();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
+
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
+      Properties properties = new Properties();
+      properties.load(url.openStream());
+      if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("openejb")) {
+         APPSERVER = TOMEE;
+      } else if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("jboss")) {
+         APPSERVER = JBOSS;
+      }
    }
 
    @After
-   public void doAfter() {
+   public void doAfter() throws Exception {
       log.debug("DBHelper:doAfter()");
+      if (fac == null) {
+         beforeClass();
+      }
+
       if (applEman.getTransaction().isActive()) {
          applEman.getTransaction().rollback();
       }

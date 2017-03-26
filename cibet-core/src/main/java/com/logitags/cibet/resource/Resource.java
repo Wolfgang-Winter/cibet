@@ -228,7 +228,7 @@ public class Resource implements Serializable {
       setEncrypted(copy.encrypted);
       setKeyReference(copy.getKeyReference());
       List<ResourceParameter> clonedList = new LinkedList<ResourceParameter>();
-      for (ResourceParameter rp : copy.parameters) {
+      for (ResourceParameter rp : copy.getParameters()) {
          ResourceParameter p = new ResourceParameter(rp);
          clonedList.add(p);
       }
@@ -391,8 +391,8 @@ public class Resource implements Serializable {
       b.append(keyReference == null ? "" : keyReference);
       b.append(getUniqueId());
 
-      Collections.sort(parameters, comparator);
-      for (ResourceParameter param : parameters) {
+      Collections.sort(getParameters(), comparator);
+      for (ResourceParameter param : getParameters()) {
          b.append(param.getClassname());
          b.append(b64.encodeToString(param.getEncodedValue()));
       }
@@ -576,10 +576,11 @@ public class Resource implements Serializable {
       if (key == null) {
          throw new IllegalArgumentException("Failed to add parameter: key is null");
       }
+      List<ResourceParameter> params = getParameters();
       if (value == null) {
-         parameters.add(new ResourceParameter(key, String.class.getName(), null, type, parameters.size() + 1));
+         params.add(new ResourceParameter(key, String.class.getName(), null, type, params.size() + 1));
       } else {
-         parameters.add(new ResourceParameter(key, value.getClass().getName(), value, type, parameters.size() + 1));
+         params.add(new ResourceParameter(key, value.getClass().getName(), value, type, params.size() + 1));
       }
    }
 
@@ -747,9 +748,11 @@ public class Resource implements Serializable {
       SecurityProvider secProvider = Configuration.instance().getSecurityProvider();
       setTarget(secProvider.decrypt(getTarget(), getKeyReference()));
       setResult(secProvider.decrypt(getResult(), getKeyReference()));
-      for (ResourceParameter param : getParameters()) {
-         Context.internalRequestScope().getEntityManager().detach(param);
-         param.setEncodedValue(secProvider.decrypt(param.getEncodedValue(), getKeyReference()));
+      if (getParameters() != null) {
+         for (ResourceParameter param : getParameters()) {
+            Context.internalRequestScope().getEntityManager().detach(param);
+            param.setEncodedValue(secProvider.decrypt(param.getEncodedValue(), getKeyReference()));
+         }
       }
       log.debug("decrypted resource " + getTargetType());
       return true;

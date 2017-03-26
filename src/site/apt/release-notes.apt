@@ -23,7 +23,9 @@ Version 2.0
   * remove interfaces of ArchiveService, DcService, SchedulerService, ShiroService, SpringSecurityService and Locker
     and make implementations static.
     
-  * DcControllable release/submit/reject/passback methods moved into DcControllable  
+  * DcControllable release/submit/reject/passback methods moved into DcControllable
+  
+  * Bugfix for OpenJPA: reset @Version when restoring an Archive  
   
 
 Version 1.9 (9.10.2016)

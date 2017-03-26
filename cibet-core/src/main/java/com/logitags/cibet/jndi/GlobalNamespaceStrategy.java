@@ -54,7 +54,7 @@ public class GlobalNamespaceStrategy extends AbstractLookupStrategy implements J
          String module = resolveAppName(ctx);
          if (module != null && module.length() > 0) {
             String ejbName = findEJBName(clazz);
-            if (ejbName != null) {
+            if (ejbName != null && ejbName.length() > 0) {
                names.add("java:global/" + module + "/" + ejbName);
             }
             names.add("java:global/" + module + "/" + clazz.getSimpleName());

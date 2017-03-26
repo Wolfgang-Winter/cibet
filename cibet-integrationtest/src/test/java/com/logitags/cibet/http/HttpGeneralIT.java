@@ -494,7 +494,7 @@ public class HttpGeneralIT extends AbstractArquillian {
       body = executeGET(getBaseURL() + "/merge.cibet");
       Assert.assertEquals("merge chain done", body);
 
-      Query q = localcibet.createQuery("select a from Archive a where a.tenant ='XYCompany' order by createDate");
+      Query q = localcibet.createQuery("select a from Archive a where a.tenant ='XYCompany' order by a.createDate");
       List<Archive> list = q.getResultList();
       log.info(list.size() + " Archives loaded");
       // JBoss makes LazyInitializationException: only 1 archive
@@ -526,7 +526,7 @@ public class HttpGeneralIT extends AbstractArquillian {
       body = executeGET(getBaseURL() + "/merge.cibet?lazy=loadLazy");
       Assert.assertEquals("merge chain done", body);
 
-      Query q = localcibet.createQuery("select a from Archive a where a.tenant ='XYCompany' order by createDate");
+      Query q = localcibet.createQuery("select a from Archive a where a.tenant ='XYCompany' order by a.createDate");
       List<Archive> list = q.getResultList();
       Assert.assertEquals(2, list.size());
       // Resource res = list.get(1).getResource();

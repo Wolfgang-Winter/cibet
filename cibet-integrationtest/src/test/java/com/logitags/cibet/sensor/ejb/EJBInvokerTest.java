@@ -38,7 +38,7 @@ public class EJBInvokerTest {
 
    @Test
    public void findEJBNameStateless() throws Exception {
-      Method m = JBossAnnotationNameStrategy.class.getDeclaredMethod("findEJBName", Class.class);
+      Method m = JBossAnnotationNameStrategy.class.getSuperclass().getDeclaredMethod("findEJBName", Class.class);
       m.setAccessible(true);
       JBossAnnotationNameStrategy inv = new JBossAnnotationNameStrategy();
       String result = (String) m.invoke(inv, CibetTestEJB.class);
@@ -47,7 +47,7 @@ public class EJBInvokerTest {
 
    @Test
    public void findEJBNameStatefull() throws Exception {
-      Method m = JBossAnnotationNameStrategy.class.getDeclaredMethod("findEJBName", Class.class);
+      Method m = JBossAnnotationNameStrategy.class.getSuperclass().getDeclaredMethod("findEJBName", Class.class);
       m.setAccessible(true);
       JBossAnnotationNameStrategy inv = new JBossAnnotationNameStrategy();
       String result = (String) m.invoke(inv, CibetTestStatefulEJB.class);
@@ -56,7 +56,7 @@ public class EJBInvokerTest {
 
    @Test
    public void findEJBNameNoEJB() throws Exception {
-      Method m = JBossAnnotationNameStrategy.class.getDeclaredMethod("findEJBName", Class.class);
+      Method m = JBossAnnotationNameStrategy.class.getSuperclass().getDeclaredMethod("findEJBName", Class.class);
       m.setAccessible(true);
       JBossAnnotationNameStrategy inv = new JBossAnnotationNameStrategy();
       try {
@@ -78,11 +78,11 @@ public class EJBInvokerTest {
          log.debug(s);
       }
 
-      int expectedSize = 14;
+      int expectedSize = 16;
       try {
          Context ctx = new InitialContext();
          ctx.lookup("java:app/AppName");
-         expectedSize = 16;
+         expectedSize = 18;
       } catch (NamingException e) {
       }
       Assert.assertEquals(expectedSize, l.size());
@@ -97,11 +97,11 @@ public class EJBInvokerTest {
          log.debug(s);
       }
 
-      int expectedSize = 17;
+      int expectedSize = 19;
       try {
          Context ctx = new InitialContext();
          ctx.lookup("java:app/AppName");
-         expectedSize = 19;
+         expectedSize = 21;
       } catch (NamingException e) {
       }
 
@@ -110,7 +110,7 @@ public class EJBInvokerTest {
 
    @Test
    public void findEJBMappedNameStatefull() throws Exception {
-      Method m = MappedNameInterfaceStrategy.class.getDeclaredMethod("findEJBMappedName", Class.class);
+      Method m = MappedNameInterfaceStrategy.class.getSuperclass().getDeclaredMethod("findEJBMappedName", Class.class);
       m.setAccessible(true);
       MappedNameInterfaceStrategy inv = new MappedNameInterfaceStrategy();
       String result = (String) m.invoke(inv, CibetTestStatefuMappedNamelEJBImpl.class);
@@ -119,7 +119,7 @@ public class EJBInvokerTest {
 
    @Test
    public void findEJBMappedNameStateless() throws Exception {
-      Method m = MappedNameInterfaceStrategy.class.getDeclaredMethod("findEJBMappedName", Class.class);
+      Method m = MappedNameInterfaceStrategy.class.getSuperclass().getDeclaredMethod("findEJBMappedName", Class.class);
       m.setAccessible(true);
       MappedNameInterfaceStrategy inv = new MappedNameInterfaceStrategy();
       String result = (String) m.invoke(inv, CibetTest2MappedNameEJBImpl.class);
@@ -128,7 +128,7 @@ public class EJBInvokerTest {
 
    @Test
    public void findEJBMappedNameNoEJB() throws Exception {
-      Method m = MappedNameInterfaceStrategy.class.getDeclaredMethod("findEJBMappedName", Class.class);
+      Method m = MappedNameInterfaceStrategy.class.getSuperclass().getDeclaredMethod("findEJBMappedName", Class.class);
       m.setAccessible(true);
       MappedNameInterfaceStrategy inv = new MappedNameInterfaceStrategy();
       try {

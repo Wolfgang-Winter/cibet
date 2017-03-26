@@ -49,6 +49,7 @@ import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;
+import com.logitags.cibet.core.AnnotationNotFoundException;
 import com.logitags.cibet.core.AnnotationUtil;
 import com.logitags.cibet.core.CEntityManager;
 import com.logitags.cibet.core.CibetUtil;
@@ -225,6 +226,8 @@ public class Archive implements Serializable {
    public void decrypt() {
       if (getResource().isEncrypted()) {
          log.debug("decrypt Archive");
+         // OpenJPA workaround:
+         getResource().getParameters().size();
          Context.internalRequestScope().getEntityManager().detach(this);
          getResource().decrypt();
       }
@@ -350,14 +353,18 @@ public class Archive implements Serializable {
          }
          if (objFromDb == null) {
             // object has been removed, must be persisted again
-            initializeAllIdValues(obj);
+            resetAllIdAndVersion(obj);
             Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.RESTORE_INSERT);
             entityManager.persist(obj);
          } else {
             // object exists, must be merged
             // set version to avoid optimistic locking
-            Object version = AnnotationUtil.valueFromAnnotation(objFromDb, Version.class);
-            AnnotationUtil.setValueFromAnnotation(obj, Version.class, version);
+            try {
+               Object version = AnnotationUtil.valueFromAnnotation(objFromDb, Version.class);
+               AnnotationUtil.setValueFromAnnotation(obj, Version.class, version);
+            } catch (AnnotationNotFoundException e) {
+               // ignore if entity has no @Version annotation
+            }
             Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.RESTORE_UPDATE);
             obj = entityManager.merge(obj);
          }
@@ -374,10 +381,10 @@ public class Archive implements Serializable {
       }
    }
 
-   private void initializeAllIdValues(Object obj) {
+   private void resetAllIdAndVersion(Object obj) {
       if (obj == null)
          return;
-      initializeIdValue(obj);
+      resetIdAndVersion(obj);
 
       Class<?> intClass = obj.getClass();
       while (intClass != null) {
@@ -392,7 +399,7 @@ public class Archive implements Serializable {
                      continue;
                   Iterator<Object> it = colField.iterator();
                   while (it.hasNext()) {
-                     initializeAllIdValues(it.next());
+                     resetAllIdAndVersion(it.next());
                   }
 
                } else if (Map.class.isAssignableFrom(type)) {
@@ -400,11 +407,11 @@ public class Archive implements Serializable {
                   Map<Object, Object> map = (Map<Object, Object>) field.get(obj);
                   Iterator<Object> it = map.keySet().iterator();
                   while (it.hasNext()) {
-                     initializeAllIdValues(it.next());
+                     resetAllIdAndVersion(it.next());
                   }
                   it = map.values().iterator();
                   while (it.hasNext()) {
-                     initializeAllIdValues(it.next());
+                     resetAllIdAndVersion(it.next());
                   }
 
                } else if (type.isArray()) {
@@ -413,14 +420,14 @@ public class Archive implements Serializable {
                         || fieldClass.isAnnotationPresent(Embeddable.class))) {
                      field.setAccessible(true);
                      for (int i = 0; i < Array.getLength(field.get(obj)); i++) {
-                        initializeAllIdValues(Array.get(field.get(obj), i));
+                        resetAllIdAndVersion(Array.get(field.get(obj), i));
                      }
                   }
 
                } else if (!type.isPrimitive()
                      && (type.isAnnotationPresent(Entity.class) || type.isAnnotationPresent(Embeddable.class))) {
                   field.setAccessible(true);
-                  initializeAllIdValues(field.get(obj));
+                  resetAllIdAndVersion(field.get(obj));
                }
             } catch (IllegalAccessException e) {
                String msg = "Failed to re-initialise ID attribute: " + e.getMessage();
@@ -433,7 +440,7 @@ public class Archive implements Serializable {
 
    }
 
-   private void initializeIdValue(Object obj) {
+   private void resetIdAndVersion(Object obj) {
       boolean generatedId = AnnotationUtil.isAnnotationPresent(obj.getClass(), GeneratedValue.class);
       if (generatedId) {
          // set id == null or 0
@@ -442,6 +449,16 @@ public class Archive implements Serializable {
          } catch (IllegalArgumentException e) {
             AnnotationUtil.setValueFromAnnotation(obj, Id.class, 0);
          }
+      }
+
+      try {
+         try {
+            AnnotationUtil.setValueFromAnnotation(obj, Version.class, null);
+         } catch (IllegalArgumentException e) {
+            AnnotationUtil.setValueFromAnnotation(obj, Version.class, 0);
+         }
+      } catch (AnnotationNotFoundException e) {
+         // ignore if entity has no @Version annotation
       }
    }
 

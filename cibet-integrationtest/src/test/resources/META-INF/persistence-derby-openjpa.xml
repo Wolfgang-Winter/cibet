@@ -5,7 +5,8 @@
         version="2.0">
   
    <persistence-unit name="CibetLocal" transaction-type="RESOURCE_LOCAL">
-      <provider>org.hibernate.ejb.HibernatePersistence</provider>
+      <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+      <mapping-file>orm-openjpa.xml</mapping-file>
       <class>com.logitags.cibet.actuator.lock.LockedObject</class>
       <class>com.logitags.cibet.core.EventResult</class>
       <class>com.logitags.cibet.resource.Resource</class>
@@ -14,7 +15,7 @@
       <class>com.logitags.cibet.actuator.dc.DcControllable</class>
       
       <properties>
-         <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+<!--          <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/> -->
          <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
          <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
          <property name="javax.persistence.jdbc.user" value="APP"/>
@@ -35,7 +36,7 @@
       <class>com.logitags.cibet.actuator.dc.DcControllable</class>
       
       <properties>
-         <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+<!--          <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/> -->
          <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
          <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
          <property name="javax.persistence.jdbc.user" value="APP"/>
@@ -51,11 +52,13 @@
       <class>com.cibethelper.loadcontrol.JMEntity</class>
       <class>com.cibethelper.AuditedTEntity</class>
       <class>com.cibethelper.AuditedTComplexEntity</class>
+      <class>com.cibethelper.entities.Te1</class>
+      <class>com.cibethelper.entities.Te2</class>
       
       <properties>
-         <property name="com.logitags.cibet.persistence.provider" value="org.hibernate.ejb.HibernatePersistence"/>
+         <property name="com.logitags.cibet.persistence.provider" value="org.apache.openjpa.persistence.PersistenceProviderImpl"/>
          
-         <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/>
+<!--          <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/> -->
          <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
          <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
          <property name="javax.persistence.jdbc.user" value="APP"/>
@@ -65,6 +68,9 @@
          <property name="hibernate.format_sql" value="true" />
 <!--          <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
          <property name="hibernate.listeners.envers.autoRegister" value="false"/>
+         <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
+         <property name="openjpa.Log" value="log4j"/>
+         <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
       </properties>
    </persistence-unit>
 

@@ -43,12 +43,17 @@ import com.cibethelper.base.CoreTestBase;
 import com.cibethelper.base.DBHelper;
 import com.cibethelper.ejb.JdbcEjb;
 import com.cibethelper.ejb.JdbcEjbInterface;
+import com.cibethelper.ejb.RemoteEJB;
+import com.cibethelper.ejb.RemoteEJBImpl;
+import com.cibethelper.ejb.SecuredRemoteEJBImpl;
+import com.cibethelper.ejb.SimpleEjb;
 import com.cibethelper.entities.AbstractTEntity;
 import com.cibethelper.entities.ITComplexEntity;
 import com.cibethelper.entities.TCompareEntity;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
+import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
@@ -68,8 +73,6 @@ public class JdbcStatementIT extends DBHelper {
 
    private static Logger log = Logger.getLogger(JdbcStatementIT.class);
 
-   private JdbcEjbInterface ejb;
-
    private Connection conn = null;
 
    private Setpoint sp;
@@ -84,7 +87,8 @@ public class JdbcStatementIT extends DBHelper {
 
       archive.addClasses(AbstractArquillian.class, CoreTestBase.class, AbstractTEntity.class, TEntity.class,
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class, JdbcEjb.class,
-            JdbcEjbInterface.class, CibetTestDataSource.class, DBHelper.class);
+            JdbcEjbInterface.class, CibetTestDataSource.class, DBHelper.class, ArquillianTestServlet1.class,
+            RemoteEJB.class, RemoteEJBImpl.class, SecuredRemoteEJBImpl.class, SimpleEjb.class);
 
       File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withTransitivity()
             .asFile();
@@ -106,13 +110,6 @@ public class JdbcStatementIT extends DBHelper {
       CibetTestDataSource ds = new CibetTestDataSource();
       conn = ds.getConnection();
       conn.setAutoCommit(false);
-
-      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
-      Properties properties = new Properties();
-      properties.load(url.openStream());
-      ctx = new InitialContext(properties);
-
-      ejb = (JdbcEjbInterface) ctx.lookup("JdbcStatementIT/JdbcEjb!com.cibethelper.ejb.JdbcEjbInterface");
    }
 
    @After
@@ -125,6 +122,20 @@ public class JdbcStatementIT extends DBHelper {
          conn.commit();
          conn.close();
       }
+   }
+
+   private JdbcEjbInterface lookup() throws Exception {
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
+      Properties properties = new Properties();
+      properties.load(url.openStream());
+      ctx = new InitialContext(properties);
+
+      String lookupName = this.getClass().getSimpleName() + "/JdbcEjb!com.cibethelper.ejb.JdbcEjbInterface";
+      if (APPSERVER.equals(TOMEE)) {
+         lookupName = "global/" + lookupName;
+      }
+
+      return (JdbcEjbInterface) ctx.lookup(lookupName);
    }
 
    private class TEntityComparator implements Comparator<TEntity> {
@@ -142,7 +153,7 @@ public class JdbcStatementIT extends DBHelper {
    }
 
    private void persistAndCheck() throws Exception {
-      int count = ejb.executeJdbc("insert into cib_testentity (id, nameValue, counter, userid, owner) "
+      int count = lookup().executeJdbc("insert into cib_testentity (id, nameValue, counter, userid, owner) "
             + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", false);
       Assert.assertEquals(1, count);
       ResultSet rs = query("select * from cib_testentity");
@@ -167,11 +178,11 @@ public class JdbcStatementIT extends DBHelper {
       List<String> schemes = new ArrayList<String>();
       schemes.add(ArchiveActuator.DEFAULTNAME);
       schemes.add(InfoLogActuator.DEFAULTNAME);
-      String id = ejb.registerSetpoint("cib_testentity", schemes, ControlEvent.INSERT, ControlEvent.UPDATE,
+      String id = lookup().registerSetpoint("cib_testentity", schemes, ControlEvent.INSERT, ControlEvent.UPDATE,
             ControlEvent.DELETE);
 
       persistAndCheck();
-      ejb.unregisterSetpoint(id);
+      lookup().unregisterSetpoint(id);
    }
 
    @Test
@@ -180,6 +191,7 @@ public class JdbcStatementIT extends DBHelper {
       List<String> schemes = new ArrayList<String>();
       schemes.add(ArchiveActuator.DEFAULTNAME);
       schemes.add(FourEyesActuator.DEFAULTNAME);
+      JdbcEjbInterface ejb = lookup();
       String id = ejb.registerSetpoint("cib_testentity", schemes, ControlEvent.INSERT, ControlEvent.UPDATE,
             ControlEvent.DELETE);
 
@@ -203,6 +215,7 @@ public class JdbcStatementIT extends DBHelper {
    @Test
    public void persistRollbackJdbc() throws Exception {
       log.info("start persistRollbackJdbc()");
+      JdbcEjbInterface ejb = lookup();
 
       List<String> schemes = new ArrayList<String>();
       schemes.add(ArchiveActuator.DEFAULTNAME);
@@ -226,6 +239,7 @@ public class JdbcStatementIT extends DBHelper {
    @Test
    public void releasePersistJdbc() throws Exception {
       log.info("start releasePersistJdbc()");
+      JdbcEjbInterface ejb = lookup();
 
       List<String> schemes = new ArrayList<String>();
       schemes.add(FourEyesActuator.DEFAULTNAME);
@@ -257,13 +271,13 @@ public class JdbcStatementIT extends DBHelper {
 
       TEntity te = applEman.find(TEntity.class, Long.parseLong(list.get(0).getResource().getPrimaryKeyId()));
       Assert.assertNotNull(te);
-      ejb = (JdbcEjbInterface) ctx.lookup("JdbcStatementIT/JdbcEjb!com.cibethelper.ejb.JdbcEjbInterface");
       ejb.unregisterSetpoint(id);
    }
 
    @Test
    public void releaseUpdateJdbc() throws Exception {
       log.info("start releaseUpdateJdbc()");
+      JdbcEjbInterface ejb = lookup();
 
       List<String> schemes = new ArrayList<String>();
       schemes.add(FourEyesActuator.DEFAULTNAME);
@@ -301,7 +315,6 @@ public class JdbcStatementIT extends DBHelper {
       Assert.assertTrue(rs.next());
       Assert.assertEquals("L�b", rs.getString(2));
       Assert.assertEquals(612, rs.getInt(3));
-      ejb = (JdbcEjbInterface) ctx.lookup("JdbcStatementIT/JdbcEjb!com.cibethelper.ejb.JdbcEjbInterface");
       ejb.unregisterSetpoint(id);
    }
 

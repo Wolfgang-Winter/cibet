@@ -226,12 +226,18 @@ public class ShiroServlet extends HttpServlet {
          b.append(req.getParameter(name));
          b.append(";");
       }
-      log.debug(b.toString());
-      // File file = File.createTempFile("httpNotification", ".tmp");
-      File file = new File(System.getProperty("java.io.tmpdir") + "httpNotification.tmp");
+      log.info(b.toString());
+
+      String tempDir = System.getProperty("java.io.tmpdir");
+      if (!tempDir.endsWith(File.separator)) {
+         tempDir = tempDir + File.separator;
+      }
+
+      File file = new File(tempDir + "httpNotification.tmp");
       FileWriter out = new FileWriter(file);
       out.write(b.toString());
       out.close();
+      log.info("write file to " + tempDir + "httpNotification.tmp");
 
       PrintWriter writer = resp.getWriter();
       writer.print("Thanks for notification: " + b.toString());

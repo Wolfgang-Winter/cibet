@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+        version="2.0">
+  
+   <persistence-unit name="CibetLocal" transaction-type="RESOURCE_LOCAL">
+      <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+      <mapping-file>orm-openjpa.xml</mapping-file>
+      <class>com.logitags.cibet.actuator.lock.LockedObject</class>
+      <class>com.logitags.cibet.core.EventResult</class>
+      <class>com.logitags.cibet.resource.Resource</class>
+      <class>com.logitags.cibet.resource.ResourceParameter</class>
+      <class>com.logitags.cibet.actuator.archive.Archive</class>
+      <class>com.logitags.cibet.actuator.dc.DcControllable</class>
+      <exclude-unlisted-classes>true</exclude-unlisted-classes>
+      
+      <properties>
+         <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
+         <property name="javax.persistence.jdbc.user" value="APP"/>
+         <property name="javax.persistence.jdbc.password" value="x"/>
+      </properties>
+   </persistence-unit>
+
+   <persistence-unit name="localTest" transaction-type="RESOURCE_LOCAL">
+      <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
+      <class>com.cibethelper.entities.TEntity</class>
+      <class>com.cibethelper.entities.TComplexEntity</class>
+      <class>com.cibethelper.entities.TComplexEntity2</class>
+      <class>com.cibethelper.entities.Syntetic1Entity</class>
+      <class>com.cibethelper.entities.Syntetic2Entity</class>
+      <class>com.cibethelper.loadcontrol.JMEntity</class>
+      <exclude-unlisted-classes>true</exclude-unlisted-classes>
+      
+      <properties>
+         <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
+         <property name="javax.persistence.jdbc.user" value="APP"/>
+         <property name="javax.persistence.jdbc.password" value="x"/>
+         <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
+         <property name="openjpa.Log" value="log4j"/>
+         <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+      </properties>
+   </persistence-unit>
+
+</persistence>

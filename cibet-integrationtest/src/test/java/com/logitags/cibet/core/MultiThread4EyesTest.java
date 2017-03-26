@@ -113,7 +113,7 @@ public class MultiThread4EyesTest extends DBHelper {
          }
          Assert.assertNull(selEnt);
 
-         Query q = cem.createQuery("SELECT a FROM Archive a WHERE tenant = :tenant");
+         Query q = cem.createQuery("SELECT a FROM Archive a WHERE a.tenant = :tenant");
          q.setParameter("tenant", Context.sessionScope().getTenant());
          List<Archive> list = q.getResultList();
 
@@ -135,7 +135,7 @@ public class MultiThread4EyesTest extends DBHelper {
          }
          Assert.assertEquals("0", resource.getPrimaryKeyId());
 
-         q = cem.createQuery("SELECT a FROM DcControllable a WHERE tenant = :tenant");
+         q = cem.createQuery("SELECT a FROM DcControllable a WHERE a.tenant = :tenant");
          q.setParameter("tenant", Context.sessionScope().getTenant());
          List<DcControllable> list1 = q.getResultList();
 

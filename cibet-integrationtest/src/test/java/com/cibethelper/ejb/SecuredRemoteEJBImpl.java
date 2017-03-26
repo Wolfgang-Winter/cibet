@@ -44,6 +44,12 @@ import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.context.CibetContextInterceptor;
 import com.logitags.cibet.core.EventResult;
 
+/**
+ * secured in jboss-ejb3.xml
+ * 
+ * @author Wolfgang
+ *
+ */
 @Stateless
 @Remote
 public class SecuredRemoteEJBImpl implements RemoteEJB {

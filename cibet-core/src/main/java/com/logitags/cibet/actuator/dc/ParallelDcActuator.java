@@ -24,6 +24,7 @@
  */
 package com.logitags.cibet.actuator.dc;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -251,7 +252,10 @@ public class ParallelDcActuator extends FourEyesActuator {
             throw new ResourceApplyException(err);
          }
 
-         Iterator<DcControllable> iter = dcList.iterator();
+         // copy list because OpenJPA: Result lists are read-only
+         List<DcControllable> copyList = new ArrayList<>(dcList);
+
+         Iterator<DcControllable> iter = copyList.iterator();
          while (iter.hasNext()) {
             DcControllable dcElement = iter.next();
             if (dcElement.getExecutionStatus() != ExecutionStatus.POSTPONED) {
@@ -296,7 +300,7 @@ public class ParallelDcActuator extends FourEyesActuator {
                   notifyApproval(co);
                }
 
-               for (DcControllable dcElement : dcList) {
+               for (DcControllable dcElement : copyList) {
                   if (dcElement.getDcControllableId() != co.getDcControllableId()) {
                      dcElement.setExecutionStatus(ExecutionStatus.REJECTED);
                      dcElement.setApprovalDate(co.getApprovalDate());

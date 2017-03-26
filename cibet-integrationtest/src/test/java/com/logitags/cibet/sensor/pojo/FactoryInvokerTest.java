@@ -14,6 +14,7 @@ package com.logitags.cibet.sensor.pojo;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -29,10 +30,13 @@ import com.logitags.cibet.sensor.common.Invoker;
 
 public class FactoryInvokerTest {
 
+   private static Logger log = Logger.getLogger(FactoryInvokerTest.class);
+
    Invoker fac = FactoryInvoker.createInstance();
 
    @Test
    public void createObjectConstructor() throws Exception {
+      log.debug("start createObjectConstructor()");
       Method m = fac.getClass().getDeclaredMethod("createObject", String.class, Class.class);
       m.setAccessible(true);
       TCompareEntity o = (TCompareEntity) m.invoke(fac, TComplexEntity.class.getName(), TCompareEntity.class);

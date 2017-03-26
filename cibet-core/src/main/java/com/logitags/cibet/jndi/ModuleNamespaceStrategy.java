@@ -43,13 +43,13 @@ public class ModuleNamespaceStrategy extends AbstractLookupStrategy implements J
       String ejbName = findEJBName(clazz);
 
       names.add("java:module/" + clazz.getSimpleName());
-      if (ejbName != null) {
+      if (ejbName != null && ejbName.length() > 0) {
          names.add("java:module/" + ejbName);
       }
       Class<?>[] supers = clazz.getInterfaces();
       for (Class<?> c : supers) {
          names.add("java:module/" + c.getSimpleName());
-         if (ejbName != null) {
+         if (ejbName != null && ejbName.length() > 0) {
             names.add("java:module/" + ejbName + "/" + c.getSimpleName());
          }
       }

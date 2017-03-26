@@ -82,8 +82,8 @@ public class EjbLookup {
          try {
             ejb = (T) getInitialContext().lookup(jndiName);
          } catch (NamingException e) {
-            log.warn("Failed to lookup " + clazz.getName() + " EJB. NamingException with jndi name '" + jndiName
-                  + "': " + e.getMessage());
+            log.warn("Failed to lookup " + clazz.getName() + " EJB. NamingException with jndi name '" + jndiName + "': "
+                  + e.getMessage());
          }
       }
 
@@ -132,8 +132,8 @@ public class EjbLookup {
 
                if (thisIsIt != null) {
                   if (log.isDebugEnabled()) {
-                     log.debug(strat.getClass().getName() + " found EJB with jndi name '" + name + "' for class "
-                           + clazz.getName());
+                     log.debug(strat.getClass().getName() + " found EJB " + thisIsIt + " with jndi name '" + name
+                           + "' for class " + clazz.getName());
                   }
                   jndiNameMap.put(clazz, name);
                   return thisIsIt;

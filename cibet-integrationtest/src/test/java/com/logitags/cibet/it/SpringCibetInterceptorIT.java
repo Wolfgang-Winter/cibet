@@ -39,12 +39,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.cibethelper.SpringTestAuthenticationManager;
 import com.cibethelper.base.CoreTestBase;
 import com.cibethelper.ejb.CibetTestEJB;
+import com.cibethelper.ejb.RemoteEJB;
+import com.cibethelper.ejb.RemoteEJBImpl;
+import com.cibethelper.ejb.SecuredRemoteEJBImpl;
+import com.cibethelper.ejb.SimpleEjb;
 import com.cibethelper.entities.AbstractTEntity;
 import com.cibethelper.entities.ITComplexEntity;
 import com.cibethelper.entities.TCompareEntity;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
+import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.common.DeniedException;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
@@ -74,7 +79,8 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
 
       archive.addClasses(AbstractArquillian.class, CoreTestBase.class, AbstractTEntity.class, TEntity.class,
             TComplexEntity.class, TComplexEntity2.class, ITComplexEntity.class, TCompareEntity.class,
-            CibetTestEJB.class, SpringTestAuthenticationManager.class);
+            CibetTestEJB.class, SpringTestAuthenticationManager.class, ArquillianTestServlet1.class, RemoteEJB.class,
+            RemoteEJBImpl.class, SecuredRemoteEJBImpl.class, SimpleEjb.class);
 
       File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withoutTransitivity()
             .asFile();
