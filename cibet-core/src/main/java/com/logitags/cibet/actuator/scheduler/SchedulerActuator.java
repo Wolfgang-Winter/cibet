@@ -373,6 +373,7 @@ public class SchedulerActuator extends FourEyesActuator {
    private void storeCleanResource(Resource resource) {
       Object cleanResource = PersistenceUtil.getCleanResource(resource);
       if (cleanResource != null) {
+         log.debug("store clean object");
          ResourceParameter propertyResParam = new ResourceParameter(CLEANOBJECT, cleanResource.getClass().getName(),
                cleanResource, ParameterType.INTERNAL_PARAMETER, resource.getParameters().size() + 1);
          resource.getParameters().add(propertyResParam);

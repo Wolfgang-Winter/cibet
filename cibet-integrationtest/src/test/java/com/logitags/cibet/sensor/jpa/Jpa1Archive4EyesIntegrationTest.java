@@ -24,6 +24,7 @@ import javax.persistence.Query;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 
 import com.cibethelper.base.DBHelper;
@@ -1053,11 +1054,11 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
 
       List<Archive> listx = ArchiveLoader.loadArchivesByProperties(TEntity.class, params);
       // persist and find
-      if (TOMEE.equals(APPSERVER)) {
-         Assert.assertEquals(2, listx.size());
-      } else {
+      if (JBOSS.equals(APPSERVER)) {
          // different xtimestamp format : 2017-03-25 19:01:24.666 and Sat Mar 25 19:01:24 CET 2017
          Assert.assertEquals(1, listx.size());
+      } else {
+         Assert.assertEquals(2, listx.size());
       }
    }
 
@@ -1169,8 +1170,15 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(ExecutionStatus.ERROR, ar.getExecutionStatus());
    }
 
+   /**
+    * EclipseLink dosnt check optimisticLock on remove like Hibernate: javax.persistence.OptimisticLockException: Row
+    * was updated or deleted by another transaction (or unsaved-value mapping was incorrect):
+    * [com.cibethelper.entities.TComplexEntity#165]
+    * 
+    */
    @Test
    public void removeWithException() {
+      Assume.assumeFalse(GLASSFISH.equals(APPSERVER));
       log.info("start removeWithException()");
       TComplexEntity entity = new TComplexEntity();
       entity.setOwner("oike");

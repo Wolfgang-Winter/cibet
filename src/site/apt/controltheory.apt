@@ -37,7 +37,7 @@ Concepts of Control Theory
   
   \ 
   
-[control_theory-closed_loop.jpg] Closed loop control system
+[images/control_theory-closed_loop.jpg] Closed loop control system
 
   \ 
   
@@ -62,7 +62,7 @@ Concepts of Control Theory
   
   \ 
 
-[control_theory-open_loop.jpg] Open loop control system
+[images/control_theory-open_loop.jpg] Open loop control system
 
   \   
 
@@ -81,7 +81,7 @@ Concepts of Control Theory
   Another characteristic of controllers is how many variables of the 
   system they control:
   
-[control_theory-MIMO-SISO.jpg] controller types  
+[images/control_theory-MIMO-SISO.jpg] controller types  
   
   Single-Input-Single-Output controllers (SISO) measure one system 
   variable like air temperature in the above example of the house 
@@ -96,7 +96,7 @@ Concepts of Control Theory
   
   \ 
   
-[cibet-control1.jpg] Cibet control system  
+[images/cibet-control1.jpg] Cibet control system  
 
   \ 
    

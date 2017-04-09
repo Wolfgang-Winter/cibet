@@ -52,7 +52,13 @@
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-core</artifactId>
 			<version>1.2.2</version>
-		</dependency>
+         <exclusions>
+            <exclusion>
+               <artifactId>slf4j-api</artifactId>
+               <groupId>org.slf4j</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
 
 		<dependency>
 			<groupId>org.jboss.spec.javax.servlet</groupId>
@@ -67,12 +73,12 @@
 			<type>jar</type>
 		</dependency>
 
-      <dependency>
-         <groupId>org.jboss.spec</groupId>
-         <artifactId>jboss-javaee-all-6.0</artifactId>
-         <version>3.0.3.Final</version>
-         <scope>provided</scope>
-      </dependency>
+		<dependency>
+			<groupId>org.jboss.spec</groupId>
+			<artifactId>jboss-javaee-all-6.0</artifactId>
+			<version>3.0.3.Final</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- TEST DEPENDENCIES -->
 
@@ -89,12 +95,12 @@
 			</exclusions>
 		</dependency>
 
-      <dependency>
-         <groupId>org.apache.shiro</groupId>
-         <artifactId>shiro-web</artifactId>
-         <version>1.2.2</version>
-         <scope>test</scope>
-      </dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>1.2.2</version>
+			<scope>test</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.activation</groupId>
@@ -125,14 +131,11 @@
 			<scope>test</scope>
 		</dependency>
 
-<!-- 
 		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-tomcat-remote-7</artifactId>
-			<version>1.0.0.CR9</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.21</version>
 		</dependency>
- -->
-
 	</dependencies>
 
 	<dependencyManagement>
@@ -191,7 +194,8 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -227,30 +231,53 @@
 		</pluginManagement>
 	</build>
 
+   <reporting>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.10.1</version>
+            <configuration>
+               <maxmemory>512m</maxmemory>
+               <failOnError>false</failOnError>
+            </configuration>
+            <reportSets>
+               <reportSet>
+                  <id>test</id>
+                  <reports>
+                     <report>test-javadoc-no-fork</report>
+                  </reports>
+               </reportSet>
+            </reportSets>
+         </plugin>
+
+      </plugins>
+   </reporting>
+
 	<profiles>
 		<profile>
 			<id>jboss</id>
-			
-			<dependencies>
-            <dependency>
-               <groupId>log4j</groupId>
-               <artifactId>log4j</artifactId>
-               <version>1.2.15</version>
-               <scope>test</scope>
-            </dependency>
-			
-            <dependency>
-               <groupId>org.jboss.as</groupId>
-               <artifactId>jboss-as-arquillian-container-remote</artifactId>
-               <version>7.2.0.Final</version>
-               <scope>test</scope>
-            </dependency>
 
-            <dependency>
-               <groupId>org.jboss.arquillian.protocol</groupId>
-               <artifactId>arquillian-protocol-servlet</artifactId>
-               <scope>test</scope>
-            </dependency>
+			<dependencies>
+				<dependency>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+					<version>1.2.15</version>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.jboss.as</groupId>
+					<artifactId>jboss-as-arquillian-container-remote</artifactId>
+					<version>7.2.0.Final</version>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.jboss.arquillian.protocol</groupId>
+					<artifactId>arquillian-protocol-servlet</artifactId>
+					<scope>test</scope>
+				</dependency>
 
 			</dependencies>
 
@@ -262,150 +289,266 @@
 						<configuration>
 							<includes>
 								<include>**/*IT.java</include>
-                        <include>**/*Test.java</include>
-<!--                         <include>**/ArchiveContextInterceptorIT.java</include> -->
-<!--                         <include>**/CibetContextAspectTest.java</include> -->
-<!--                         <include>**/HttpParallelDcIT.java</include> -->
+								<include>**/*Test.java</include>
 							</includes>
 							<enableAssertions>false</enableAssertions>
 							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx1024m -Xms1024m</argLine>
 						</configuration>
 					</plugin>
 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<id>jndi</id>
-						<phase>process-test-resources</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-						<configuration>
-							<target>
-								<echo message="set jndi.properties" />
-								<move failonerror="true"
-									file="${project.build.testOutputDirectory}/jndi-for-jboss.properties"
-									tofile="${project.build.testOutputDirectory}/jndi_.properties" />
-							</target>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
- 
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<id>jndi</id>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<echo message="set jndi.properties" />
+										<move failonerror="true"
+											file="${project.build.testOutputDirectory}/jndi-for-jboss.properties"
+											tofile="${project.build.testOutputDirectory}/jndi_.properties" />
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
 				</plugins>
- 			</build>
+			</build>
 		</profile>
 
-	<profile>
-		<id>tomee</id>
-		<!-- must be started in Eclipse with Run Configuration VM argument: -javaagent:D:\Java\maven-repository\org\apache\openjpa\openjpa-all\2.4.2\openjpa-all-2.4.2.jar -->
+		<profile>
+			<id>tomee</id>
+			<!-- must be started in Eclipse with Run Configuration VM argument: -javaagent:D:\Java\maven-repository\org\apache\openjpa\openjpa-all\2.4.2\openjpa-all-2.4.2.jar -->
 
-		<dependencies>
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.15</version>
-				<scope>test</scope>
-			</dependency>
+			<dependencies>
+				<dependency>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+					<version>1.2.15</version>
+					<scope>test</scope>
+				</dependency>
 
-			<dependency>
-				<groupId>org.apache.openejb</groupId>
-				<artifactId>arquillian-tomee-remote</artifactId>
-				<version>1.7.4</version>
-				<scope>test</scope>
-			</dependency>
+				<dependency>
+					<groupId>org.apache.openejb</groupId>
+					<artifactId>arquillian-tomee-remote</artifactId>
+					<version>1.7.4</version>
+					<scope>test</scope>
+				</dependency>
 
-			<dependency>
-				<groupId>org.apache.openejb</groupId>
-				<artifactId>apache-tomee</artifactId>
-				<version>1.7.4</version>
-				<classifier>webprofile</classifier>
-				<type>zip</type>
-				<scope>test</scope>
-			</dependency>
+				<dependency>
+					<groupId>org.apache.openejb</groupId>
+					<artifactId>apache-tomee</artifactId>
+					<version>1.7.4</version>
+					<classifier>webprofile</classifier>
+					<type>zip</type>
+					<scope>test</scope>
+				</dependency>
 
-		</dependencies>
+			</dependencies>
 
-		<build>
-			<plugins>
-				<plugin>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.16</version>
-					<configuration>
-						<includes>
-							<include>**/http/*IT.java</include>
-							<include>**/it/*IT.java</include>
-							<include>**/*Test.java</include>
-						</includes>
-						<enableAssertions>false</enableAssertions>
-						<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar
-							-Xmx1024m -Xms1024m</argLine>
-						<systemPropertyVariables>
-							<arquillian.launch>tomee</arquillian.launch>
-						</systemPropertyVariables>
-					</configuration>
-				</plugin>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.16</version>
+						<configuration>
+							<includes>
+								<include>**/http/*IT.java</include>
+								<include>**/it/*IT.java</include>
+								<include>**/*Test.java</include>
+							</includes>
+							<enableAssertions>false</enableAssertions>
+							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx1024m -Xms1024m</argLine>
+							<systemPropertyVariables>
+								<arquillian.launch>tomee</arquillian.launch>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
 
-				<plugin>
-					<groupId>org.apache.openjpa</groupId>
-					<artifactId>openjpa-maven-plugin</artifactId>
-					<version>2.4.0</version>
-					<configuration>
-						<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
-						<persistenceXmlFile>${project.basedir}/src/test/resources/META-INF/openjpa-enhancer-persistence.xml</persistenceXmlFile>
-					</configuration>
-					<executions>
-						<execution>
-							<id>test-enhancer</id>
-							<phase>process-test-classes</phase>
-							<goals>
-								<goal>test-enhance</goal>
-							</goals>
-							<configuration>
-								<includes>**/Te1.class , **/Te2.class</includes>
-							</configuration>
-						</execution>
-					</executions>
-					<dependencies>
-						<dependency>
-							<groupId>org.apache.openjpa</groupId>
-							<artifactId>openjpa</artifactId>
-							<!-- set the version to be the same as the level in your runtime -->
-							<version>2.4.0</version>
-						</dependency>
-					</dependencies>
-				</plugin>
+					<plugin>
+						<groupId>org.apache.openjpa</groupId>
+						<artifactId>openjpa-maven-plugin</artifactId>
+						<version>2.4.0</version>
+						<configuration>
+							<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+							<persistenceXmlFile>${project.basedir}/src/test/resources/META-INF/openjpa-enhancer-persistence.xml</persistenceXmlFile>
+						</configuration>
+						<executions>
+							<execution>
+								<id>test-enhancer</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>test-enhance</goal>
+								</goals>
+								<configuration>
+									<includes>**/Te1.class , **/Te2.class</includes>
+								</configuration>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>org.apache.openjpa</groupId>
+								<artifactId>openjpa</artifactId>
+								<!-- set the version to be the same as the level in your runtime -->
+								<version>2.4.0</version>
+							</dependency>
+						</dependencies>
+					</plugin>
 
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<version>1.8</version>
-					<executions>
-						<execution>
-							<id>jndi</id>
-							<phase>process-test-resources</phase>
-							<goals>
-								<goal>run</goal>
-							</goals>
-							<configuration>
-								<target>
-									<echo message="set jndi.properties" />
-									<move failonerror="true"
-										file="${project.build.testOutputDirectory}/jndi-for-tomee.properties"
-										tofile="${project.build.testOutputDirectory}/jndi_.properties" />
-								</target>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<id>jndi</id>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<echo message="set jndi.properties" />
+										<move failonerror="true"
+											file="${project.build.testOutputDirectory}/jndi-for-tomee.properties"
+											tofile="${project.build.testOutputDirectory}/jndi_.properties" />
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 
-			</plugins>
-		</build>
+				</plugins>
+			</build>
+		</profile>
 
-	</profile>
+		<profile>
+			<id>glassfish3</id>
+
+			<dependencies>
+
+				<dependency>
+					<groupId>org.eclipse.persistence</groupId>
+					<artifactId>eclipselink</artifactId>
+					<version>2.4.2</version>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.jboss.arquillian.container</groupId>
+					<artifactId>arquillian-glassfish-remote-3.1</artifactId>
+					<version>1.0.0.Final</version>
+					<scope>test</scope>
+				</dependency>
+
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.16</version>
+						<configuration>
+							<includes>
+								<include>**/ActuatorIT.java</include>
+								<!-- <include>**/http/*IT.java</include> -->
+								<!-- <include>**/it/*IT.java</include> -->
+								<!-- <include>**/*Test.java</include> -->
+							</includes>
+							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Djavax.net.ssl.trustStore=${project.basedir}/src/test/resources/it/glassfish-truststore.jks -Djavax.net.ssl.trustStorePassword=changeit</argLine>
+							<systemPropertyVariables>
+								<arquillian.launch>glassfish3</arquillian.launch>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<id>jndi</id>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<echo message="set jndi.properties" />
+										<move failonerror="true"
+											file="${project.build.testOutputDirectory}/jndi-for-glassfish3.properties"
+											tofile="${project.build.testOutputDirectory}/jndi_.properties" />
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>tomcat</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.jboss.arquillian.container</groupId>
+					<artifactId>arquillian-tomcat-remote-7</artifactId>
+					<version>1.0.0.CR9</version>
+					<scope>test</scope>
+				</dependency>
+
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.16</version>
+						<configuration>
+							<includes>
+								<include>**/TomcatTestJpa.java</include>
+							</includes>
+							<systemPropertyVariables>
+								<arquillian.launch>tomcat</arquillian.launch>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <version>1.8</version>
+                  <executions>
+                     <execution>
+                        <id>jndi</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                        <configuration>
+                           <target>
+                              <echo message="set jndi.properties" />
+                              <move failonerror="true"
+                                 file="${project.build.testOutputDirectory}/jndi-for-tomcat.properties"
+                                 tofile="${project.build.testOutputDirectory}/jndi_.properties" />
+                           </target>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+
+				</plugins>
+			</build>
+		</profile>
 
 	</profiles>
 </project>

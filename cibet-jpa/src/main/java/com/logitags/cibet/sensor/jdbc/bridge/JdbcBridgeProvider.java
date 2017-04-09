@@ -83,7 +83,7 @@ public class JdbcBridgeProvider extends Provider {
 
       return new JdbcBridgeEntityManagerFactory(info.getJtaDataSource());
 
-      // String err = this.getClass().getName() + " cannot be applied/injected in a container managed envronment.";
+      // String err = this.getClass().getName() + " cannot be applied/injected in a container managed environment.";
       // log.error(err);
       // throw new IllegalStateException(err);
    }

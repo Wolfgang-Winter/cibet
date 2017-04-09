@@ -31,6 +31,7 @@ import javax.persistence.PersistenceException;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 
 import com.cibethelper.base.DBHelper;
@@ -86,8 +87,14 @@ public class ProviderIntegrationTest extends DBHelper {
       Assert.assertTrue("expected: " + entity.getId() + ", actual: " + en.getId(), en.getId() == entity.getId());
    }
 
+   /**
+    * javax.persistence.PersistenceException: org.hibernate.PersistentObjectException: detached entity passed to
+    * persist: com.cibethelper.entities.TEntity
+    */
    @Test(expected = PersistenceException.class)
    public void createEntityManagerFactoryException() {
+      // Eclipselink is tolerant here
+      Assume.assumeFalse(GLASSFISH.equals(APPSERVER));
       log.debug("start createEntityManagerFactoryException()");
 
       TEntity entity = createTEntity(33, "unter");

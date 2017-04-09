@@ -287,7 +287,6 @@ public class Resource implements Serializable {
     * @param rh
     * @param sql
     * @param targetType
-    * @param insUpdColumns
     * @param pk
     * @param params
     */
@@ -331,7 +330,6 @@ public class Resource implements Serializable {
     * @param targ
     * @param meth
     * @param r
-    * @param response
     */
    public Resource(Class<? extends ResourceHandler> rh, String targ, String meth, HttpRequestData r) {
       resourceHandlerClass = rh.getName();
@@ -410,6 +408,10 @@ public class Resource implements Serializable {
       }
       b.append(" ; ");
       b.append(getResourceHandler().getClass().getSimpleName());
+      for (ResourceParameter p : getParameters()) {
+         b.append("\n");
+         b.append(p);
+      }
       return b.toString();
    }
 

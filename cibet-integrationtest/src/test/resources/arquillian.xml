@@ -56,10 +56,10 @@ http://tomee.apache.org/refcard/refcard.html
         
     </container>
     
-    <container qualifier="glassfish" >
+    <container qualifier="glassfish3" >
         <configuration>
-				<property name="adminHost">lenny</property>
-<!-- 				<property name="adminHost">bugarach-pc</property>  -->
+<!-- 				<property name="adminHost">lenny</property> -->
+				<property name="adminHost">bugarach-pc</property> 
 				<property name="adminUser">admin</property>
 				<property name="adminPassword">x</property>
 				<property name="adminHttps">true</property>
@@ -68,11 +68,11 @@ http://tomee.apache.org/refcard/refcard.html
 
     <container qualifier="tomcat" >
         <configuration>
-				<property name="bindHttpPort">8681</property>
-				<property name="catalinaHome">D:/appserver/apache-tomcat-7.0.34</property>
-				<property name="javaVmArguments">-Xmx512m -XX:MaxPermSize=128m -javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -noverify -Duser.language=en</property>
+<!-- 				<property name="bindHttpPort">8788</property> -->
+            <property name="httpPort">8788</property>
 				<property name="user">tomcat</property>
 				<property name="pass">tomcat</property>
+				<property name="jmxPort">8089</property>
         </configuration>
     </container>
     

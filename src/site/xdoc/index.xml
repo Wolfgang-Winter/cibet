@@ -4,7 +4,7 @@
 
   <body>
     <section name="">
-    	<img src="firstPage.jpg" alt="" usemap="#karte"/>
+    	<img src="images/firstPage.jpg" alt="" usemap="#karte"/>
     	<map id="map1" name="karte">
     	   <area shape="poly" coords="77,763,215,693,352,763,215,832"
           href="videos.html#dc" alt="Dual Control Video" title="See a video of Dual Control fuctionality" />

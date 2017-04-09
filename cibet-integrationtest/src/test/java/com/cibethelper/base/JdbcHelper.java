@@ -53,7 +53,7 @@ public abstract class JdbcHelper extends CoreTestBase {
    private static final String DBUSER = "db.user";
    private static final String PASSWORD = "db.password";
 
-   private static final String DEL_STMT = "delete from CIB_SEQUENCE";
+   // private static final String DEL_STMT = "delete from CIB_SEQUENCE";
    private static final String DEL_TESTENTITY = "delete from cib_testentity";
    private static final String DEL_TPSENTITY = "delete from tpsentity";
    private static final String DEL_ARCHIVE = "delete from cib_archive";
@@ -101,12 +101,13 @@ public abstract class JdbcHelper extends CoreTestBase {
    public void doAfter() {
       log.info("cleaning database ...");
       try {
-         PreparedStatement stmt = connection.prepareStatement(DEL_STMT);
-         int count = stmt.executeUpdate();
-         log.info(count + " records cleaned from table CIB_SEQUENCE");
+         PreparedStatement stmt;
+         // = connection.prepareStatement(DEL_STMT);
+         // int count = stmt.executeUpdate();
+         // log.info(count + " records cleaned from table CIB_SEQUENCE");
 
          stmt = connection.prepareStatement(DEL_TESTENTITY);
-         count = stmt.executeUpdate();
+         int count = stmt.executeUpdate();
          log.info(count + " records cleaned from table CIB_TESTENTITY");
 
          stmt = connection.prepareStatement(DEL_TPSENTITY);

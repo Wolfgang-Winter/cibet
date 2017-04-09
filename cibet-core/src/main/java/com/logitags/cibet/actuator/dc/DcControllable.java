@@ -311,7 +311,6 @@ public class DcControllable implements Serializable {
     * returns the list of differences for the modified attributes of the entity backed by this DcControllable. Only
     * applicable if the event is UPDATE
     * 
-    * @param dc
     * @return
     */
    public List<Difference> getUpdateDifferences() {
@@ -455,8 +454,8 @@ public class DcControllable implements Serializable {
 
    /**
     * submits a DcControllable for release. Used by the user who created the DcControllable and to whom it is passed
-    * back (see {@link #passBack(DcControllable, String)}). The ExecutionStatus will be set to POSTPONED or
-    * FIRST_POSTPONED. Notifications will be sent if configured.
+    * back (see passBack(DcControllable, String)). The ExecutionStatus will be set to POSTPONED or FIRST_POSTPONED.
+    * Notifications will be sent if configured.
     * 
     * @param remark
     *           comment
@@ -476,8 +475,8 @@ public class DcControllable implements Serializable {
 
    /**
     * submits a DcControllable for release. Used by the user who created the DcControllable and to whom it is passed
-    * back (see {@link #passBack(DcControllable, String)}). The ExecutionStatus will be set to POSTPONED or
-    * FIRST_POSTPONED. Notifications will be sent if configured.
+    * back (see passBack(DcControllable, String)). The ExecutionStatus will be set to POSTPONED or FIRST_POSTPONED.
+    * Notifications will be sent if configured.
     * 
     * @param entityManager
     *           the EntityManager used to persist the controlled entity

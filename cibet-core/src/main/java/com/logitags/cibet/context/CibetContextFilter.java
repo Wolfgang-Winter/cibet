@@ -75,7 +75,11 @@ public class CibetContextFilter implements Filter {
       }
 
       // init EMF
-      InitializationService.instance();
+      try {
+         this.getClass().getClassLoader().loadClass(Context.class.getName());
+      } catch (ClassNotFoundException e) {
+         log.error(e.getMessage(), e);
+      }
 
       // initialize Configuration
       Map<String, ProxyConfig> proxyConfigs = loadProxyFilterConfig(config);
@@ -84,7 +88,7 @@ public class CibetContextFilter implements Filter {
 
    @Override
    public void destroy() {
-      InitializationService.instance().close();
+      Context.close();
 
       try {
          MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -118,7 +122,7 @@ public class CibetContextFilter implements Filter {
       }
 
       try {
-         startManaging = InitializationService.instance().startContext(EJB_JNDINAME, auth);
+         startManaging = Context.start(EJB_JNDINAME, auth);
          fillCibetContext((HttpServletRequest) request);
          chain.doFilter(request, response);
 
@@ -137,7 +141,7 @@ public class CibetContextFilter implements Filter {
          }
       } finally {
          if (startManaging) {
-            InitializationService.instance().endContext();
+            Context.end();
          } else {
             Context.internalRequestScope().getAuthenticationProvider().getProviderChain().remove(auth);
          }

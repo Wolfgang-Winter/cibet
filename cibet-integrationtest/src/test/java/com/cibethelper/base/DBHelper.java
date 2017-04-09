@@ -83,10 +83,14 @@ public class DBHelper extends CoreTestBase {
       URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
       Properties properties = new Properties();
       properties.load(url.openStream());
+      HTTPURL = properties.getProperty("http.url");
+      HTTPSURL = properties.getProperty("https.url");
       if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("openejb")) {
          APPSERVER = TOMEE;
       } else if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("jboss")) {
          APPSERVER = JBOSS;
+      } else if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("sun.enterprise")) {
+         APPSERVER = GLASSFISH;
       }
    }
 

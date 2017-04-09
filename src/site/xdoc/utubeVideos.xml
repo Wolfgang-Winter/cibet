@@ -5,16 +5,10 @@
   <body>
     <section name="Dual Control Functionality" id="dc">
 	   VIDEO1
-	   <p>
-         <a href="utubeVideos.html">View on YouTube</a>
-      </p>
     </section>
     
     <section name="Extended Permission and Historisation Control Functionality" id="pc">
 	   VIDEO2
-      <p>
-         <a href="utubeVideos.html">View on YouTube</a>
-      </p>
     </section>
   </body>
 </document>

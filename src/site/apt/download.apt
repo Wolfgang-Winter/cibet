@@ -1,21 +1,20 @@
-Download Page
+Downloads
 
-* <<Current version>>
+   All versions can be downloaded from {{{http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.logitags%22%20AND%20a%3A%22cibet%22}Maven Central}}.
+   The sub-projects support the following versions of integrated libraries:
 
-*-------------------------+-------------------------------------------------+  
-| Binaries v1.9           | {{{./cibet-1.9.jar}cibet-1.9.jar}}              |
-*-------------------------+-------------------------------------------------+  
-| Reference Guide         | {{{./Cibet_Reference_Guide.pdf}Cibet_Reference_Guide.pdf}} |
-*-------------------------+-------------------------------------------------+  
-| Reference Guide with differences | {{{./Cibet_Reference_Guide_diff.pdf}Cibet_Reference_Guide_diff.pdf}} |
-*-------------------------+-------------------------------------------------+  
-| Perfumery example application 1.0 | {{{./perfumery-1.0.zip}perfumery-1.0.zip}} |
-*-------------------------+-------------------------------------------------+  
-| Sources v1.9            | {{{./cibet-1.9-sources.jar}cibet-1.9-sources.jar}} |
-*-------------------------+-------------------------------------------------+  
+*-------------------------+-------------------+---------------------------------+--------------------------+  
+| <<Cibet Module>>        | <<Cibet Version>> | <<Library>>                     | <<Library Version>>      |
+*-------------------------+-------------------+---------------------------------+--------------------------+  
+| cibet-envers            | all               | org.hibernate:hibernate-envers  | 4.2.15.Final             |
+*-------------------------+-------------------+---------------------------------+--------------------------+  
+| cibet-jpa               | all               | JPA                             | 2.0                      |
+*-------------------------+-------------------+---------------------------------+--------------------------+  
+| cibet-jpa               | all               | JDBC                            | \>4.0 (\>Java 1.6)       |
+*-------------------------+-------------------+---------------------------------+--------------------------+  
+| cibet-shiro             | all               | org.apache.shiro:shiro-core     | 1.2.2                    |
+*-------------------------+-------------------+---------------------------------+--------------------------+  
+| cibet-springsecurity    | all               | org.springframework.security:spring-security-core | 3.0.3.RELEASE |
+*-------------------------+-------------------+---------------------------------+--------------------------+  
   
-* <<Older versions>>
-
-  Older versions can be downloaded from {{{http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.logitags%22%20AND%20a%3A%22cibet%22}Maven Central}}
-
-
+  Reference Guide with differences:  {{{./Cibet_Reference_Guide_diff.pdf}Cibet_Reference_Guide_diff.pdf}}

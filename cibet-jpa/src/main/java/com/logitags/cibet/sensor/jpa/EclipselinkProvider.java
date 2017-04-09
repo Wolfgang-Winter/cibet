@@ -40,6 +40,10 @@ import org.eclipse.persistence.jpa.PersistenceProvider;
  */
 public class EclipselinkProvider extends PersistenceProvider {
 
+   public boolean checkForProviderProperty(Map properties) {
+      return true;
+   }
+
    public JPAInitializer getInitializer(String emName, @SuppressWarnings("rawtypes") Map m) {
       ClassLoader classLoader = getClassLoader(emName, m);
       return SecureJPAInitializer.getJavaSECMPInitializer(classLoader);

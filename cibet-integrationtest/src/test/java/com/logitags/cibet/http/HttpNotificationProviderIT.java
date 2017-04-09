@@ -26,8 +26,11 @@ package com.logitags.cibet.http;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
@@ -116,11 +119,15 @@ public class HttpNotificationProviderIT {
       NOW_5.add(Calendar.DATE, -5);
    }
 
-   protected String getBaseURL() {
-      return "http://localhost:8788/" + this.getClass().getSimpleName();
+   protected String getBaseURL() throws IOException {
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
+      Properties properties = new Properties();
+      properties.load(url.openStream());
+      String httpUrl = properties.getProperty("http.url");
+      return httpUrl + this.getClass().getSimpleName();
    }
 
-   protected DcControllable createDcControllable(ExecutionStatus status) {
+   protected DcControllable createDcControllable(ExecutionStatus status) throws IOException {
       DcControllable c = new DcControllable();
       c.setActuator("FOUR_EYES");
       c.setApprovalAddress(getBaseURL() + "/notif?nottype=approv");

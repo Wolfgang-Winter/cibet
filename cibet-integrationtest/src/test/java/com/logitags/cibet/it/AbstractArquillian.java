@@ -84,10 +84,14 @@ public abstract class AbstractArquillian extends CoreTestBase {
       URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
       Properties properties = new Properties();
       properties.load(url.openStream());
+      HTTPURL = properties.getProperty("http.url");
+      HTTPSURL = properties.getProperty("https.url");
       if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("openejb")) {
          APPSERVER = TOMEE;
       } else if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("jboss")) {
          APPSERVER = JBOSS;
+      } else if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("sun.enterprise")) {
+         APPSERVER = GLASSFISH;
       }
    }
 
@@ -295,11 +299,11 @@ public abstract class AbstractArquillian extends CoreTestBase {
    }
 
    protected String getBaseURL() {
-      return "http://localhost:8788/" + this.getClass().getSimpleName();
+      return HTTPURL + this.getClass().getSimpleName();
    }
 
    protected String getBaseSSLURL() {
-      return "https://localhost:8743/" + this.getClass().getSimpleName();
+      return HTTPSURL + this.getClass().getSimpleName();
    }
 
 }

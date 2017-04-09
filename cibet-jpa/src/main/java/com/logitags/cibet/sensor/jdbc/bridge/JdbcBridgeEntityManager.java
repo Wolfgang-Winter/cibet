@@ -54,8 +54,8 @@ import com.logitags.cibet.sensor.jdbc.driver.CibetConnection;
 import com.logitags.cibet.sensor.jdbc.driver.CibetJdbcException;
 
 /**
- * An EntityManager that translates from JPA API to JDBC API. It is not for
- * general use. It can only be used for internal Cibet database operations.
+ * An EntityManager that translates from JPA API to JDBC API. It is not for general use. It can only be used for
+ * internal Cibet database operations.
  * 
  */
 public class JdbcBridgeEntityManager implements EntityManager {
@@ -79,8 +79,8 @@ public class JdbcBridgeEntityManager implements EntityManager {
    private Connection jdbcConnection;
 
    /**
-    * Connections from this datasource are not committed within Cibet classes
-    * but closed. It is assumed that commit is done by a container.
+    * Connections from this datasource are not committed within Cibet classes but closed. It is assumed that commit is
+    * done by a container.
     */
    private DataSource datasource;
 
@@ -112,8 +112,8 @@ public class JdbcBridgeEntityManager implements EntityManager {
    /**
     * 
     * @param conn
-    *           the database connection that is used in the current transaction.
-    *           The connection will not be closed by this class.
+    *           the database connection that is used in the current transaction. The connection will not be closed by
+    *           this class.
     */
    public JdbcBridgeEntityManager(Connection conn) {
       checkConnection(conn);
@@ -160,10 +160,8 @@ public class JdbcBridgeEntityManager implements EntityManager {
    }
 
    /**
-    * initializes and configures the definitions of the internal entities and
-    * named queries.
+    * initializes and configures the definitions of the internal entities and named queries.
     * 
-    * @param idGenerator
     */
    protected void init() {
       if (isRegistered)
@@ -248,8 +246,7 @@ public class JdbcBridgeEntityManager implements EntityManager {
    }
 
    /**
-    * Not used when JDBC sensor is not used. for JDBC EntityManager no
-    * update/delete/insert possible.
+    * Not used when JDBC sensor is not used. for JDBC EntityManager no update/delete/insert possible.
     */
    @Override
    public <T> T find(Class<T> clazz, Object primaryKey) {

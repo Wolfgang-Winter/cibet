@@ -123,7 +123,8 @@ public class Provider implements PersistenceProvider {
          }
 
          // Class<?> persistenceProviderClass = getClassLoader(persistenceUnitInfo).loadClass(className);
-         return (PersistenceProvider) persistenceProviderClass.newInstance();
+         PersistenceProvider provider = (PersistenceProvider) persistenceProviderClass.newInstance();
+         return provider;
       } catch (InstantiationException e) {
          throw new PersistenceException(e);
       } catch (IllegalAccessException e) {

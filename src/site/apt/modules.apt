@@ -1,0 +1,84 @@
+Cibet Modules
+
+   Cibet integrates with several other frameworks like Spring, Hibernate and JPA. It implements interfaces or inherits and overrides classes
+   and is therefore highly dependent on the version of these frameworks. In order to better support different versions of integrated frameworks,
+   the Cibet project has been split into a core project and framework-dependent sub-projects.   
+     
+   
+* cibet-core
+   
+   This is the main module of cibet which is mandatory for any Cibet functionality. All other sub-projects depend on this one. If only basic 
+   functionality is required the following dependency must be applied:
+   
+-------------------
+         <dependency>
+            <groupId>com.logitags</groupId>
+            <artifactId>cibet-core</artifactId>
+            <version>$project.version</version>
+         </dependency>
+-------------------
+   
+* cibet-envers
+
+   This module integrates with {{{http://hibernate.org/orm/envers/}Hibernate Envers}} and must be included if the ENVERS actuator shall be applied. 
+   
+-------------------
+         <dependency>
+            <groupId>com.logitags</groupId>
+            <artifactId>cibet-envers</artifactId>
+            <version>$project.version</version>
+         </dependency>
+-------------------
+
+   The relation between Hibernate Envers version and $project.version is listed on the {{{./download.html}Download page}}. It is not 
+   necessary to include the dependency to cibet-core. 
+   
+* cibet-jpa
+
+   This module integrates with {{{http://download.oracle.com/otndocs/jcp/persistence-2.0-fr-oth-JSpec/}JPA}} and {{{http://www.oracle.com/technetwork/java/javase/jdbc/index.html}JDBC APIs}} and must be included if the JPA or JDBC sensors shall be applied. 
+   
+-------------------
+         <dependency>
+            <groupId>com.logitags</groupId>
+            <artifactId>cibet-jpa</artifactId>
+            <version>$project.version</version>
+         </dependency>
+-------------------
+
+   The relation between JPA API version, JDBC API version and $project.version is listed on the {{{./download.html}Download page}}. It is not 
+   necessary to include the dependency to cibet-core. 
+
+* cibet-shiro   
+
+   This module integrates with {{{https://shiro.apache.org/}Apache Shiro}} and must be included if the SHIRO actuator shall be applied. 
+   
+-------------------
+         <dependency>
+            <groupId>com.logitags</groupId>
+            <artifactId>cibet-shiro</artifactId>
+            <version>$project.version</version>
+         </dependency>
+-------------------
+
+   The relation between Apache Shiro version and $project.version is listed on the {{{./download.html}Download page}}. It is not 
+   necessary to include the dependency to cibet-core. 
+
+* cibet-springsecurity
+
+   This module integrates with {{{https://projects.spring.io/spring-security/}Spring Security}} and must be included if the SPRINGSECURITY 
+   actuator shall be applied. 
+   
+-------------------
+         <dependency>
+            <groupId>com.logitags</groupId>
+            <artifactId>cibet-springsecurity</artifactId>
+            <version>$project.version</version>
+         </dependency>
+-------------------
+
+   The relation between Spring Security version and $project.version is listed on the {{{./download.html}Download page}}. It is not 
+   necessary to include the dependency to cibet-core. 
+
+* cibet-integrationtest
+
+   This is a test project and contains all integration tests.

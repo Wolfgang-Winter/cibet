@@ -595,12 +595,12 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
 
       PreparedStatement ps = connection.prepareStatement(INSERT);
       ps.setShort(1, (short) 5);
-      InputStream bais = new ByteArrayInputStream("l�sen".getBytes("UTF-8"));
+      InputStream bais = new ByteArrayInputStream("osen".getBytes("UTF-8"));
       try {
-         ps.setUnicodeStream(2, bais, 6);
+         ps.setUnicodeStream(2, bais, 4);
       } catch (SQLFeatureNotSupportedException e) {
          log.error("SQLFeature setUnicodeStream not supported: " + e.getMessage(), e);
-         ps.setObject(2, "l�sen", Types.VARCHAR, 3);
+         ps.setObject(2, "osen", Types.VARCHAR, 3);
       }
       ps.setObject(3, "Klaus\nKaspar".getBytes(), Types.BINARY);
       ps.setObject(4, new Date(2001, 5, 8), Types.DATE);
@@ -620,7 +620,7 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
       Assert.assertTrue(rs.next());
       Assert.assertEquals(5, rs.getShort(1));
       try {
-         Assert.assertEquals("l�sen", IOUtils.toString(rs.getUnicodeStream(2), "UTF-8"));
+         Assert.assertEquals("osen", IOUtils.toString(rs.getUnicodeStream(2), "UTF-8"));
       } catch (SQLFeatureNotSupportedException e) {
       }
       Assert.assertEquals("Klaus\nKaspar", new String(rs.getBytes(3)));

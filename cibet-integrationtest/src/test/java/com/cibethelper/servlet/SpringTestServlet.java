@@ -226,6 +226,11 @@ public class SpringTestServlet extends HttpServlet {
       config.setPort(10112);
       Configuration.instance().startProxy(config);
 
+      String url = req.getParameter("testURL");
+      if (url == null) {
+         throw new ServletException("parameter testURL must not be null");
+      }
+
       try {
          ClassLoader loader = Thread.currentThread().getContextClassLoader();
          KeyStore truststore = KeyStore.getInstance("JKS");
@@ -244,7 +249,8 @@ public class SpringTestServlet extends HttpServlet {
          CloseableHttpClient client = HttpClients.custom().setSSLSocketFactory(sslsf).setProxy(proxy)
                .disableAutomaticRetries().build();
 
-         HttpPost method = createHttpPost("https://localhost:8743/LittleProxyTest");
+         // HttpPost method = createHttpPost("https://localhost:8743/LittleProxyTest");
+         HttpPost method = createHttpPost(url + "LittleProxyTest");
          HttpResponse response = client.execute(method);
          log.debug("STATUS: " + response.getStatusLine().getStatusCode());
          log.debug("Response Headers:");

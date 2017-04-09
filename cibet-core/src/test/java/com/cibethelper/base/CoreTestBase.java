@@ -42,8 +42,11 @@ public abstract class CoreTestBase {
 
    protected static final String JBOSS = "JBoss";
    protected static final String TOMEE = "Tomee";
+   protected static final String GLASSFISH = "Glassfish";
 
    protected static String APPSERVER;
+   protected static String HTTPURL;
+   protected static String HTTPSURL;
 
    @AfterClass
    public static void afterClass() throws Exception {

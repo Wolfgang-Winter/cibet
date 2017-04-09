@@ -36,6 +36,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -198,6 +199,13 @@ public class Archive implements Serializable {
 
       createDate = new Date();
       archiveId = UUID.randomUUID().toString();
+   }
+
+   @PreUpdate
+   public void preMerge() {
+      if (resource.getGroupId().startsWith(resource.getTargetType() + "-") && resource.getPrimaryKeyId() != null) {
+         resource.setGroupId(resource.getTargetType() + "-" + resource.getPrimaryKeyId());
+      }
    }
 
    public String toString() {

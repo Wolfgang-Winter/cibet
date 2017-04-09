@@ -274,12 +274,12 @@ public class LittleProxyTest {
    }
 
    /**
-    * clientToProxyRequest: POST http://localhost:8788/LittleProxyTest/...?USER=Willi&TENANT=testTenant HTTP/1.1<br>
+    * clientToProxyRequest: POST http://localhost:8788/LittleProxyTest/...?USER=Willi&amp;TENANT=testTenant HTTP/1.1<br>
     * proxyToServerConnectionQueued<br>
     * proxyToServerResolutionStarted<br>
     * proxyToServerResolutionSucceeded<br>
-    * proxyToServerRequest: POST http://localhost:8788/LittleProxyTest/...Willi&TENANT=testTenant HTTP/1.1 Via=1.1 Chef
-    * <br>
+    * proxyToServerRequest: POST http://localhost:8788/LittleProxyTest/...Willi&amp;TENANT=testTenant HTTP/1.1 Via=1.1
+    * Chef <br>
     * proxyToServerConnectionStarted<br>
     * proxyToServerConnectionSucceeded: io.netty.channel.DefaultChannelHandlerContext<br>
     * proxyToServerRequestSending<br>
@@ -330,8 +330,9 @@ public class LittleProxyTest {
     * proxyToServerConnectionStarted<br>
     * proxyToServerConnectionSSLHandshakeStarted<br>
     * proxyToServerConnectionSucceeded: io.netty.channel.DefaultChannelHandlerContext<br>
-    * clientToProxyRequest: POST /LittleProxyTest/test/setuser?USER=Willi&TENANT=testTenant HTTP/1.1<br>
-    * proxyToServerRequest: POST /LittleProxyTest/test/setuser?USER=Willi&TENANT=testTenant HTTP/1.1 Via=1.1 Chef<br>
+    * clientToProxyRequest: POST /LittleProxyTest/test/setuser?USER=Willi&amp;TENANT=testTenant HTTP/1.1<br>
+    * proxyToServerRequest: POST /LittleProxyTest/test/setuser?USER=Willi&amp;TENANT=testTenant HTTP/1.1 Via=1.1 Chef
+    * <br>
     * proxyToServerRequestSending<br>
     * proxyToServerRequestSent<br>
     * serverToProxyResponseReceiving<br>
@@ -482,10 +483,10 @@ public class LittleProxyTest {
    }
 
    /**
-    * clientToProxyRequest: POST http://localhost:8788/LittleProxyTest/...?USER=Willi&TENANT=testTenant HTTP/1.1<br>
+    * clientToProxyRequest: POST http://localhost:8788/LittleProxyTest/...?USER=Willi&amp;TENANT=testTenant HTTP/1.1<br>
     * proxyToServerConnectionQueued<br>
-    * proxyToServerRequest: POST http://localhost:8788/LittleProxyTest/...Willi&TENANT=testTenant HTTP/1.1 Via=1.1 Chef
-    * <br>
+    * proxyToServerRequest: POST http://localhost:8788/LittleProxyTest/...Willi&amp;TENANT=testTenant HTTP/1.1 Via=1.1
+    * Chef <br>
     * proxyToServerConnectionStarted<br>
     * proxyToServerConnectionSucceeded: io.netty.channel.DefaultChannelHandlerContext<br>
     * proxyToServerRequestSending<br>
@@ -564,12 +565,12 @@ public class LittleProxyTest {
    }
 
    /**
-    * clientToProxyRequest: POST http://localhost:8788/LittleProxyTest/...?USER=Willi&TENANT=testTenant HTTP/1.1<br>
+    * clientToProxyRequest: POST http://localhost:8788/LittleProxyTest/...?USER=Willi&amp;TENANT=testTenant HTTP/1.1<br>
     * proxyToServerConnectionQueued<br>
     * proxyToServerResolutionStarted<br>
     * proxyToServerResolutionSucceeded<br>
-    * proxyToServerRequest: POST http://localhost:8788/LittleProxyTest/...Willi&TENANT=testTenant HTTP/1.1 Via=1.1 Chef
-    * <br>
+    * proxyToServerRequest: POST http://localhost:8788/LittleProxyTest/...Willi&amp;TENANT=testTenant HTTP/1.1 Via=1.1
+    * Chef <br>
     * proxyToServerConnectionStarted<br>
     * proxyToClientResponse: DefaultHttpResponse HTTP/1.1 502 Bad Gateway<br>
     * proxyToServerConnectionFailed<br>
@@ -603,12 +604,12 @@ public class LittleProxyTest {
    }
 
    /**
-    * clientToProxyRequest: POST http://localhost:8788/LittleProxyTest/...?USER=Willi&TENANT=testTenant HTTP/1.1<br>
+    * clientToProxyRequest: POST http://localhost:8788/LittleProxyTest/...?USER=Willi&amp;TENANT=testTenant HTTP/1.1<br>
     * proxyToServerConnectionQueued<br>
     * proxyToServerResolutionStarted<br>
     * proxyToServerResolutionSucceeded<br>
-    * proxyToServerRequest: POST http://localhost:8788/LittleProxyTest/...Willi&TENANT=testTenant HTTP/1.1 Via=1.1 Chef
-    * <br>
+    * proxyToServerRequest: POST http://localhost:8788/LittleProxyTest/...Willi&amp;TENANT=testTenant HTTP/1.1 Via=1.1
+    * Chef <br>
     * proxyToServerConnectionStarted<br>
     * proxyToServerConnectionSucceeded: io.netty.channel.DefaultChannelHandlerContext<br>
     * proxyToServerRequestSending<br>
@@ -709,8 +710,9 @@ public class LittleProxyTest {
     * proxyToServerConnectionStarted<br>
     * proxyToServerConnectionSSLHandshakeStarted<br>
     * proxyToServerConnectionSucceeded: io.netty.channel.DefaultChannelHandlerContext<br>
-    * clientToProxyRequest: POST /LittleProxyTest/test/setuser?USER=Willi&TENANT=testTenant HTTP/1.1<br>
-    * proxyToServerRequest: POST /LittleProxyTest/test/setuser?USER=Willi&TENANT=testTenant HTTP/1.1 Via=1.1 Chef<br>
+    * clientToProxyRequest: POST /LittleProxyTest/test/setuser?USER=Willi&amp;TENANT=testTenant HTTP/1.1<br>
+    * proxyToServerRequest: POST /LittleProxyTest/test/setuser?USER=Willi&amp;TENANT=testTenant HTTP/1.1 Via=1.1 Chef
+    * <br>
     * proxyToServerRequestSending<br>
     * proxyToServerRequestSent<br>
     * serverToProxyResponseReceiving<br>
@@ -803,7 +805,7 @@ public class LittleProxyTest {
    }
 
    /**
-    * clientToProxyRequest: POST http://www.notexistingurl/...test/setuser?USER=Willi&TENANT=testTenant HTTP/1.1<br>
+    * clientToProxyRequest: POST http://www.notexistingurl/...test/setuser?USER=Willi&amp;TENANT=testTenant HTTP/1.1<br>
     * proxyToServerConnectionQueued<br>
     * proxyToServerResolutionStarted<br>
     * proxyToServerResolutionFailed<br>
@@ -838,12 +840,13 @@ public class LittleProxyTest {
    }
 
    /**
-    * clientToProxyRequest: POST http://10.255.255.1/LittleProxyTest/test/setuser?USER=Willi&TENANT=testTenant HTTP/1.1
-    * <br>
+    * clientToProxyRequest: POST http://10.255.255.1/LittleProxyTest/test/setuser?USER=Willi&amp;TENANT=testTenant
+    * HTTP/1.1 <br>
     * proxyToServerConnectionQueued<br>
     * proxyToServerResolutionStarted<br>
     * proxyToServerResolutionSucceeded<br>
-    * proxyToServerRequest: POST /LittleProxyTest/test/setuser?USER=Willi&TENANT=testTenant HTTP/1.1 Via=1.1 Chef<br>
+    * proxyToServerRequest: POST /LittleProxyTest/test/setuser?USER=Willi&amp;TENANT=testTenant HTTP/1.1 Via=1.1 Chef
+    * <br>
     * proxyToServerConnectionStarted<br>
     * serverToProxyResponseTimedOut<br>
     * proxyToClientResponse: DefaultFullHttpResponse HTTP/1.1 504 Gateway Timeout<br>
