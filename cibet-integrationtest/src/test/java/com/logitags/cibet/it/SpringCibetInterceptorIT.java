@@ -57,7 +57,6 @@ import com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -101,7 +100,7 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
 
    @Before
    public void beforeCibetInterceptorIT() {
-      InitializationService.instance().startContext();
+      Context.start();
       DefaultSecurityProvider sprov = new DefaultSecurityProvider();
       sprov.getSecrets().put("checkIntegrityMethodArchive", "2366Au37nBB.0ya?");
       sprov.setCurrentSecretKey("checkIntegrityMethodArchive");
@@ -113,7 +112,7 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
    @After
    public void afterCibetInterceptorIT() {
       log.info("AFTER CibetInterceptorIT");
-      InitializationService.instance().endContext();
+      Context.end();
       SecurityContextHolder.getContext().setAuthentication(null);
       new ConfigurationService().initialise();
    }

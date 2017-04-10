@@ -49,7 +49,6 @@ import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.resource.Resource;
 
@@ -121,7 +120,7 @@ public class MultiThreadIT extends AbstractArquillian {
       }
 
       public void run() {
-         InitializationService.instance().startContext();
+         Context.start();
          Context.sessionScope().setTenant(getName());
          Context.sessionScope().setUser(user);
          try {
@@ -138,7 +137,7 @@ public class MultiThreadIT extends AbstractArquillian {
             resultList.add(new TResult(getName(), 161, null));
             throw new RuntimeException(e);
          }
-         InitializationService.instance().endContext();
+         Context.end();
       }
 
       private void run1() throws Exception {

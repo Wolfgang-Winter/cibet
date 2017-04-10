@@ -77,7 +77,6 @@ import com.logitags.cibet.actuator.lock.Locker;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.CibetException;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
@@ -136,7 +135,7 @@ public class ActuatorIT extends AbstractArquillian {
 
    @Before
    public void beforeActuatorIT() {
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       cman = Configuration.instance();
@@ -144,7 +143,7 @@ public class ActuatorIT extends AbstractArquillian {
 
    @After
    public void afterActuatorIT() {
-      InitializationService.instance().endContext();
+      Context.end();
       new ConfigurationService().initialise();
    }
 

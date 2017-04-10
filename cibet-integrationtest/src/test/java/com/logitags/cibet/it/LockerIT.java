@@ -54,7 +54,6 @@ import com.logitags.cibet.actuator.lock.Locker;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -95,7 +94,7 @@ public class LockerIT extends AbstractArquillian {
    public void beforeLockerIT() {
       log.debug("execute before()");
       new ConfigurationService().initialise();
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       log.debug("end execute before()");
@@ -103,7 +102,7 @@ public class LockerIT extends AbstractArquillian {
 
    @After
    public void afterLockerIT() {
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    @Test

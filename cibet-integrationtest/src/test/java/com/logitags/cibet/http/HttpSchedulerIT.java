@@ -52,7 +52,6 @@ import com.logitags.cibet.actuator.scheduler.SchedulerActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.it.AbstractArquillian;
@@ -83,6 +82,7 @@ public class HttpSchedulerIT extends AbstractArquillian {
 
       archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+      archive.addAsWebInfResource("jndi_.properties", "classes/jndi_.properties");
 
       log.debug(archive.toString(true));
       archive.as(ZipExporter.class).exportTo(new File("target/" + warName), true);
@@ -93,7 +93,7 @@ public class HttpSchedulerIT extends AbstractArquillian {
    @Before
    public void beforeHttpSchedulerIT() {
       log.debug("execute before()");
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       cman = Configuration.instance();
@@ -102,7 +102,7 @@ public class HttpSchedulerIT extends AbstractArquillian {
 
    @After
    public void afterHttpSchedulerIT() {
-      InitializationService.instance().endContext();
+      Context.end();
       new ConfigurationService().reinitSetpoints();
    }
 

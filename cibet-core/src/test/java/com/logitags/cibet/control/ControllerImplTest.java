@@ -41,7 +41,6 @@ import com.logitags.cibet.actuator.dc.SixEyesActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.resource.ParameterType;
@@ -63,12 +62,12 @@ public class ControllerImplTest extends CoreTestBase {
 
    @Before
    public void before() {
-      InitializationService.instance().startContext();
+      Context.start();
    }
 
    @After
    public void after() {
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    private TComplexEntity createEntity() {

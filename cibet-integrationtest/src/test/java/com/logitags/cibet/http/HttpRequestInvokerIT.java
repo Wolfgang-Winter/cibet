@@ -45,7 +45,6 @@ import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.it.AbstractArquillian;
@@ -79,6 +78,7 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
 
       archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+      archive.addAsWebInfResource("jndi_.properties", "classes/jndi_.properties");
 
       log.debug(archive.toString(true));
       archive.as(ZipExporter.class).exportTo(new File("target/" + warName), true);
@@ -89,7 +89,7 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
    @Before
    public void beforeHttpRequestInvokerIT() {
       log.debug("execute before()");
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       log.debug("end execute before()");
@@ -97,7 +97,7 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
 
    @After
    public void afterHttpRequestInvokerIT() {
-      InitializationService.instance().endContext();
+      Context.end();
       // new ConfigurationService().reinitSetpoints();
    }
 

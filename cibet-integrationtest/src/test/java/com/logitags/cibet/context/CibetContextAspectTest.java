@@ -121,7 +121,7 @@ public class CibetContextAspectTest extends CoreTestBase {
       registerSetpoint(TEntity.class.getName(), FourEyesActuator.DEFAULTNAME, ControlEvent.INSERT,
             ControlEvent.RELEASE);
       releasePersistAspect();
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    @Test
@@ -141,7 +141,7 @@ public class CibetContextAspectTest extends CoreTestBase {
       Context.internalRequestScope().setManaged(true);
       CibetContextAspectTestHelper helper = new CibetContextAspectTestHelper(this);
       helper.releasePersistAspect();
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    @CibetContext(allowAnonymous = true)

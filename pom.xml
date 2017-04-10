@@ -484,7 +484,6 @@
                   <id>src</id>
                   <inherited>false</inherited>
                   <reports>
-<!--                      <report>javadoc-no-fork</report> -->
                      <report>aggregate</report>
                   </reports>
                </reportSet>
@@ -493,7 +492,6 @@
                   <id>test</id>
                   <inherited>false</inherited>
                   <reports>
-<!--                      <report>javadoc-no-fork</report> -->
                      <report>test-aggregate</report>
                   </reports>
                </reportSet>

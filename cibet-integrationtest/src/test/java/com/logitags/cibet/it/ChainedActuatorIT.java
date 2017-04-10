@@ -53,7 +53,6 @@ import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -99,7 +98,7 @@ public class ChainedActuatorIT extends AbstractArquillian {
    public void beforeChainedActuatorIT() {
       log.debug("execute before()");
       new ConfigurationService().initialise();
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       log.debug("end execute before()");
@@ -107,7 +106,7 @@ public class ChainedActuatorIT extends AbstractArquillian {
 
    @After
    public void afterChainedActuatorIT() {
-      InitializationService.instance().endContext();
+      Context.end();
       if (sp != null) {
          Configuration.instance().unregisterSetpoint(sp.getId());
       }

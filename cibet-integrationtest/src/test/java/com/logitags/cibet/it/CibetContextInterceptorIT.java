@@ -89,7 +89,6 @@ import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.authentication.AbstractAuthenticationProvider;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -134,7 +133,7 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
 
    @Before
    public void beforeCibetContextInterceptorIT() {
-      InitializationService.instance().startContext();
+      Context.start();
    }
 
    @Override
@@ -149,7 +148,7 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       client.execute(method);
       method.abort();
 
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    private InitialContext getInitialContext() throws Exception {
@@ -200,7 +199,7 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(1, list.size());
 
       Assert.assertEquals(userName, list.get(0).getCreateUser());
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    @Test
@@ -223,7 +222,7 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       List<Archive> list = ArchiveLoader.loadArchives(TEntity.class.getName());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("Mutzi1", list.get(0).getCreateUser());
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    /**
@@ -270,7 +269,7 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("Ernst", list.get(0).getCreateUser());
       Assert.assertEquals(46, ((TEntity) list.get(0).getResource().getObject()).getCounter());
-      InitializationService.instance().endContext();
+      Context.end();
       interc.setActive(false);
    }
 
@@ -304,7 +303,7 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals("Knacki", list.get(0).getCreateUser());
       Assert.assertEquals("cccomp", list.get(0).getTenant());
       Context.sessionScope().setTenant(AbstractAuthenticationProvider.DEFAULT_TENANT);
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    @Test
@@ -346,8 +345,8 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       Context.sessionScope().setUser("Rele");
       TEntity te2 = (TEntity) dlist.get(0).release("Kala");
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       Assert.assertNotNull(te2);
       Assert.assertTrue(te2.getId() != 0);

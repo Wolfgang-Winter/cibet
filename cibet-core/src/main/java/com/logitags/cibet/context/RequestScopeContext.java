@@ -117,7 +117,7 @@ public class RequestScopeContext implements InternalRequestScope {
    public EntityManager getEntityManager() {
       EntityManager manager = (EntityManager) getProperty(CIBET_ENTITYMANAGER);
       if (manager == null) {
-         manager = InitializationService.instance().getOrCreateEntityManagers();
+         manager = Context.getOrCreateEntityManagers();
          if (manager == null) {
             throw new CibetException("No Cibet EntityManager set in CibetContext");
          }

@@ -58,7 +58,6 @@ import com.logitags.cibet.context.CibetEEContext;
 import com.logitags.cibet.context.CibetEEContextEJB;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.EntityManagerType;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
@@ -429,7 +428,7 @@ public class CibetProxy extends HttpFiltersAdapter {
       boolean startManaging = true;
       try {
          log.debug("++ " + Context.requestScope());
-         startManaging = InitializationService.instance().startContext(null);
+         startManaging = Context.start();
          Context.internalRequestScope().getProperties().putAll(requestContext);
          Context.internalSessionScope().getProperties().putAll(sessionContext);
 
@@ -467,7 +466,7 @@ public class CibetProxy extends HttpFiltersAdapter {
          }
 
          if (startManaging || newEM) {
-            InitializationService.instance().endContext();
+            Context.end();
          }
       }
 
@@ -511,7 +510,7 @@ public class CibetProxy extends HttpFiltersAdapter {
                && Context.internalRequestScope().isManaged()) {
             newEM = true;
          }
-         startManaging = InitializationService.instance().startContext();
+         startManaging = Context.start();
 
          if (Context.requestScope().getCaseId() == null) {
             String caseid = UUID.randomUUID().toString();
@@ -549,7 +548,7 @@ public class CibetProxy extends HttpFiltersAdapter {
             Context.internalRequestScope().getAuthenticationProvider().stopSecurityContext(secCtx);
          }
          if (startManaging || newEM) {
-            InitializationService.instance().endContext();
+            Context.end();
          } else if (newEM) {
 
          }

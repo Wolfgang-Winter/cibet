@@ -48,7 +48,6 @@ import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.lock.LockActuator;
 import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.it.AbstractArquillian;
 
@@ -83,6 +82,7 @@ public class HttpLockerIT extends AbstractArquillian {
 
       archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+      archive.addAsWebInfResource("jndi_.properties", "classes/jndi_.properties");
 
       log.debug(archive.toString(true));
       archive.as(ZipExporter.class).exportTo(new File("target/" + warName), true);
@@ -93,7 +93,7 @@ public class HttpLockerIT extends AbstractArquillian {
    @Before
    public void beforeHttpParallelDcIT() {
       log.debug("execute before()");
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       register();
@@ -102,7 +102,7 @@ public class HttpLockerIT extends AbstractArquillian {
 
    @After
    public void afterHttpParallelDcIT() {
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    private void register() {

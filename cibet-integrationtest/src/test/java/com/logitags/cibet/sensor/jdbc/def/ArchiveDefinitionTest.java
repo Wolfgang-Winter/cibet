@@ -28,7 +28,7 @@ import org.junit.Test;
 
 import com.cibethelper.base.JdbcHelper;
 import com.logitags.cibet.actuator.archive.Archive;
-import com.logitags.cibet.context.InitializationService;
+import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -51,12 +51,12 @@ public class ArchiveDefinitionTest extends JdbcHelper {
 
    @Before
    public void beforeJdbcBridgeEntityManagerIntegrationTest() throws Exception {
-      InitializationService.instance().startContext();
+      Context.start();
    }
 
    @After
    public void afterJdbcBridgeEntityManagerIntegrationTest() throws Exception {
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    private Archive createStateArchive() throws IOException {

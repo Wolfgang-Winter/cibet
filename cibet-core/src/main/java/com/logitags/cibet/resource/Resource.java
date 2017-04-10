@@ -408,10 +408,11 @@ public class Resource implements Serializable {
       }
       b.append(" ; ");
       b.append(getResourceHandler().getClass().getSimpleName());
-      for (ResourceParameter p : getParameters()) {
-         b.append("\n");
-         b.append(p);
-      }
+      // do not log ResourceParameter, if they are encrypted, they cannot be displayed.
+      // for (ResourceParameter p : getParameters()) {
+      // b.append("\n");
+      // b.append(p);
+      // }
       return b.toString();
    }
 

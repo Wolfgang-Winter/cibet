@@ -32,7 +32,6 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.common.DeniedException;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
@@ -60,7 +59,7 @@ public class ShiroActuatorTest extends CoreTestBase {
    @Before
    public void before() {
       log.info("BEFORE TEST");
-      InitializationService.instance().startContext();
+      Context.start();
       initConfiguration("x");
    }
 

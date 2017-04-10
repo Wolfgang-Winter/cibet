@@ -26,7 +26,6 @@ import com.logitags.cibet.actuator.circuitbreaker.CircuitBreakerActuator;
 import com.logitags.cibet.actuator.common.Actuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
@@ -71,7 +70,7 @@ public class CibetInterceptor implements Serializable {
       EventResult thisResult = null;
 
       try {
-         startManaging = InitializationService.instance().startContext(null);
+         startManaging = Context.start();
          ControlEvent controlEvent = controlEvent();
 
          if (log.isDebugEnabled()) {
@@ -145,7 +144,7 @@ public class CibetInterceptor implements Serializable {
       }
 
       if (startManaging) {
-         InitializationService.instance().endContext();
+         Context.end();
       } else {
          if (metadata != null && metadata.getExecutionStatus() == ExecutionStatus.ERROR) {
             Context.requestScope().setRemark(null);

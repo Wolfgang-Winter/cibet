@@ -67,12 +67,12 @@ public class CibetContextAspect {
          auth = new AnonymousAuthenticationProvider();
       }
       try {
-         isNewlyManaged = InitializationService.instance().startContext(null, auth);
+         isNewlyManaged = Context.start(null, auth);
          return thisJoinPoint.proceed();
 
       } finally {
          if (isNewlyManaged) {
-            InitializationService.instance().endContext();
+            Context.end();
          } else {
             Context.internalRequestScope().getAuthenticationProvider().getProviderChain().remove(auth);
          }

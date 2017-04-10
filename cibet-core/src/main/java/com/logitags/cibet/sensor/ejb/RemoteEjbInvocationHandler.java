@@ -38,7 +38,6 @@ import org.apache.commons.logging.LogFactory;
 import com.logitags.cibet.actuator.common.Actuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
@@ -82,7 +81,7 @@ public class RemoteEjbInvocationHandler extends CibetInterceptor implements Invo
       EventMetadata metadata = null;
       EventResult thisResult = null;
       try {
-         startManaging = InitializationService.instance().startContext(null);
+         startManaging = Context.start();
          ControlEvent controlEvent = controlEvent();
 
          Class<?> interf = originalProxy.getClass().getInterfaces()[0];

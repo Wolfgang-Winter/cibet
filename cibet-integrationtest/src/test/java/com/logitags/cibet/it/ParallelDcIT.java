@@ -68,7 +68,6 @@ import com.logitags.cibet.authentication.AnonymousAuthenticationProvider;
 import com.logitags.cibet.authentication.InvocationContextAuthenticationProvider;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.CibetException;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
@@ -125,8 +124,7 @@ public class ParallelDcIT extends AbstractArquillian {
       Map<String, Object> map = new HashMap<String, Object>();
       map.put("USER_NAME", USER);
       map.put("TENANT_NAME", TENANT);
-      InitializationService.instance().startContext(null, new InvocationContextAuthenticationProvider(map),
-            new AnonymousAuthenticationProvider());
+      Context.start(null, new InvocationContextAuthenticationProvider(map), new AnonymousAuthenticationProvider());
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       log.debug("end execute before()");
@@ -134,7 +132,7 @@ public class ParallelDcIT extends AbstractArquillian {
 
    @After
    public void afterParallelDcIT() {
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    @Test

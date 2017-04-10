@@ -59,7 +59,7 @@ public class ArchiveLoaderTest {
       syn1.addMap("index1", t3);
       syn1.addMap("index2", t4);
 
-      Method meth = Archive.class.getDeclaredMethod("initializeAllIdValues", Object.class);
+      Method meth = Archive.class.getDeclaredMethod("resetAllIdAndVersion", Object.class);
       meth.setAccessible(true);
       meth.invoke(new Archive(), syn1);
       Assert.assertEquals(0, syn1.getId());
@@ -77,7 +77,7 @@ public class ArchiveLoaderTest {
       Syntetic2Entity syn1 = new Syntetic2Entity();
       syn1.setId("AAA");
 
-      Method meth = Archive.class.getDeclaredMethod("initializeAllIdValues", Object.class);
+      Method meth = Archive.class.getDeclaredMethod("resetAllIdAndVersion", Object.class);
       meth.setAccessible(true);
       meth.invoke(new Archive(), syn1);
       Assert.assertEquals(null, syn1.getId());

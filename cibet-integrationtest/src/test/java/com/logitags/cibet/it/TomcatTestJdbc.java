@@ -63,7 +63,6 @@ import com.cibethelper.servlet.ArquillianJDBCServlet;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ExecutionStatus;
 
 @RunWith(Arquillian.class)
@@ -113,7 +112,7 @@ public class TomcatTestJdbc extends DBHelper {
    public void beforeTomcatTestJdbc() {
       log.debug("execute before()");
       new ConfigurationService().initialise();
-      InitializationService.instance().startContext();
+      Context.start();
       com.logitags.cibet.context.Context.sessionScope().setUser(USER);
       com.logitags.cibet.context.Context.sessionScope().setTenant(TENANT);
       log.debug("end execute before()");
@@ -121,7 +120,7 @@ public class TomcatTestJdbc extends DBHelper {
 
    @After
    public void afterTest() throws Exception {
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    protected String getBaseURL() {

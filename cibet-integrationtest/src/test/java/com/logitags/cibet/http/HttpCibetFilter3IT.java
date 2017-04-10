@@ -50,7 +50,6 @@ import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.it.AbstractArquillian;
 import com.logitags.cibet.resource.Resource;
@@ -93,7 +92,7 @@ public class HttpCibetFilter3IT extends AbstractArquillian {
    @Before
    public void beforeHttpCibetFilterIT() {
       log.debug("execute before()");
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       log.debug("end execute before()");
@@ -101,7 +100,7 @@ public class HttpCibetFilter3IT extends AbstractArquillian {
 
    @After
    public void afterHttpCibetFilterIT() {
-      InitializationService.instance().endContext();
+      Context.end();
       new ConfigurationService().reinitSetpoints();
    }
 

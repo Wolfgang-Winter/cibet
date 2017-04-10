@@ -41,7 +41,6 @@ import com.logitags.cibet.actuator.dc.UnapprovedResourceException;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.Resource;
@@ -532,8 +531,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertNotNull("entity with id " + entity.getId() + " not found", selEnt);
       Assert.assertEquals(13, selEnt.getCounter());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
       q.setParameter("targetType", TEntity.class.getName());
@@ -794,8 +793,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       applEman.flush();
       // applEman.clear();
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
       q.setParameter("targetType", TComplexEntity.class.getName());
@@ -947,8 +946,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       applEman.getTransaction().begin();
       applEman.clear();
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       Query q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
@@ -1048,8 +1047,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       params.put("counter", 12);
       params.put("xtimestamp", now);
 
-      // InitializationService.instance().endContext();
-      // InitializationService.instance().startContext();
+      // Context.end();
+      // Context.start();
       // Context.sessionScope().setTenant(TENANT);
 
       List<Archive> listx = ArchiveLoader.loadArchivesByProperties(TEntity.class, params);

@@ -81,11 +81,13 @@ public abstract class AbstractArquillian extends CoreTestBase {
 
    @BeforeClass
    public static void beforeClassAbstractArquillian() throws IOException {
+      log.debug("beforeClassAbstractArquillian()");
       URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
       Properties properties = new Properties();
       properties.load(url.openStream());
       HTTPURL = properties.getProperty("http.url");
       HTTPSURL = properties.getProperty("https.url");
+      log.debug("HTTPURL: " + HTTPURL);
       if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("openejb")) {
          APPSERVER = TOMEE;
       } else if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("jboss")) {
@@ -182,6 +184,19 @@ public abstract class AbstractArquillian extends CoreTestBase {
       } catch (Exception e) {
          log.error("while trying to dump jacoco data", e);
       }
+   }
+
+   private static void loadHTTPURL() {
+      URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
+      Properties properties = new Properties();
+      try {
+         properties.load(url.openStream());
+      } catch (IOException e) {
+         log.error(e.getMessage(), e);
+         throw new RuntimeException(e);
+      }
+      HTTPURL = properties.getProperty("http.url");
+      HTTPSURL = properties.getProperty("https.url");
    }
 
    protected void cleanAUD() throws Exception {
@@ -299,10 +314,16 @@ public abstract class AbstractArquillian extends CoreTestBase {
    }
 
    protected String getBaseURL() {
+      if (HTTPURL == null) {
+         loadHTTPURL();
+      }
       return HTTPURL + this.getClass().getSimpleName();
    }
 
    protected String getBaseSSLURL() {
+      if (HTTPSURL == null) {
+         loadHTTPURL();
+      }
       return HTTPSURL + this.getClass().getSimpleName();
    }
 

@@ -26,6 +26,7 @@ package com.cibethelper.base;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -42,7 +43,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import com.cibethelper.entities.TEntity;
-import com.logitags.cibet.context.InitializationService;
+import com.logitags.cibet.context.Context;
 
 public abstract class JdbcHelper extends CoreTestBase {
 
@@ -71,25 +72,25 @@ public abstract class JdbcHelper extends CoreTestBase {
    @BeforeClass
    public static void beforeClassJdbcHelper() throws Exception {
       log.info("call beforeClassJdbcHelper(");
-      Field f = InitializationService.class.getDeclaredField("LOCAL_PERSISTENCEUNIT");
+      Field f = Context.class.getDeclaredField("LOCAL_PERSISTENCEUNIT");
       f.setAccessible(true);
       f.set(null, "jdbc-CibetLocal");
 
-      f = InitializationService.class.getDeclaredField("instance");
-      f.setAccessible(true);
-      f.set(null, null);
+      Method m = Context.class.getDeclaredMethod("initialize");
+      m.setAccessible(true);
+      m.invoke(null);
    }
 
    @AfterClass
    public static void afterClassJdbcHelper() throws Exception {
       log.info("call afterClassJdbcHelper(");
-      Field f = InitializationService.class.getDeclaredField("LOCAL_PERSISTENCEUNIT");
+      Field f = Context.class.getDeclaredField("LOCAL_PERSISTENCEUNIT");
       f.setAccessible(true);
       f.set(null, "CibetLocal");
 
-      f = InitializationService.class.getDeclaredField("instance");
-      f.setAccessible(true);
-      f.set(null, null);
+      Method m = Context.class.getDeclaredMethod("initialize");
+      m.setAccessible(true);
+      m.invoke(null);
    }
 
    @Before

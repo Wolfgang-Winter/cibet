@@ -38,7 +38,6 @@ import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -363,8 +362,8 @@ public class SpringSecurityTest extends SpringTestBase {
       Assert.assertEquals(ExecutionStatus.EXECUTED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
       Context.sessionScope().setTenant(TENANT);
 
       TComplexEntity ent2 = cibetEman.find(TComplexEntity.class, ent1.getId());

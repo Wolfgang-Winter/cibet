@@ -22,7 +22,6 @@ import com.logitags.cibet.actuator.circuitbreaker.CircuitBreakerActuator;
 import com.logitags.cibet.actuator.common.Actuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.core.AnnotationUtil;
 import com.logitags.cibet.core.CEntityManager;
@@ -194,7 +193,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
       EventResult thisResult = null;
 
       try {
-         startManaging = InitializationService.instance().startContext(null);
+         startManaging = Context.start();
 
          entityManagerIntoContext();
          ControlEvent controlEvent = controlEvent(ControlEvent.SELECT);
@@ -348,7 +347,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
       EventResult thisResult = null;
 
       try {
-         startManaging = InitializationService.instance().startContext(null);
+         startManaging = Context.start();
          entityManagerIntoContext();
          ControlEvent controlEvent = controlEvent(ControlEvent.UPDATE);
          Resource res = new Resource(JpaResourceHandler.class, obj);
@@ -411,7 +410,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
       EventResult thisResult = null;
 
       try {
-         startManaging = InitializationService.instance().startContext(null);
+         startManaging = Context.start();
          entityManagerIntoContext();
          ControlEvent controlEvent = controlEvent(ControlEvent.INSERT);
          Resource res = new Resource(JpaResourceHandler.class, obj);
@@ -488,7 +487,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
       EventResult thisResult = null;
 
       try {
-         startManaging = InitializationService.instance().startContext(null);
+         startManaging = Context.start();
          entityManagerIntoContext();
          ControlEvent controlEvent = controlEvent(ControlEvent.DELETE);
          Resource res = new Resource(JpaResourceHandler.class, obj);
@@ -604,7 +603,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
          }
 
          if (startManaging) {
-            InitializationService.instance().endContext();
+            Context.end();
          }
       }
    }

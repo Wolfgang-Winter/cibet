@@ -43,7 +43,6 @@ import com.cibethelper.entities.TPSEntity;
 import com.cibethelper.entities.TPSEntityDefinition;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.sensor.jdbc.def.PseudoEntityDefinition;
 import com.logitags.cibet.sensor.jdbc.driver.CibetJdbcException;
 
@@ -58,12 +57,12 @@ public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
 
    @Before
    public void beforeJdbcBridgeEntityManagerIntegrationTest() throws Exception {
-      InitializationService.instance().startContext();
+      Context.start();
    }
 
    @After
    public void afterJdbcBridgeEntityManagerIntegrationTest() throws Exception {
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    @Test(expected = IllegalArgumentException.class)

@@ -37,7 +37,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import com.logitags.cibet.actuator.common.Actuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
@@ -81,7 +80,7 @@ public abstract class AbstractAspect extends CibetInterceptor {
       EventMetadata metadata = null;
       EventResult thisResult = null;
       try {
-         startManaging = InitializationService.instance().startContext(null);
+         startManaging = Context.start();
 
          ControlEvent controlEvent = controlEvent();
          log.debug("controlEvent: " + controlEvent + " on method " + methodName);

@@ -68,7 +68,6 @@ import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.config.ConfigurationService;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.common.Invoker;
@@ -110,7 +109,7 @@ public class RemoteEjbIT extends AbstractArquillian {
    public void beforeRemoteEjbIT() {
       log.debug("execute before()");
       new ConfigurationService().initialise();
-      InitializationService.instance().startContext();
+      com.logitags.cibet.context.Context.start();
       com.logitags.cibet.context.Context.sessionScope().setUser(USER);
       com.logitags.cibet.context.Context.sessionScope().setTenant(TENANT);
       log.debug("end execute before()");
@@ -118,7 +117,7 @@ public class RemoteEjbIT extends AbstractArquillian {
 
    @After
    public void afterAbstractArquillian() throws Exception {
-      InitializationService.instance().endContext();
+      com.logitags.cibet.context.Context.end();
    }
 
    @Test

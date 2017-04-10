@@ -60,7 +60,6 @@ import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
@@ -100,6 +99,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
 
       archive.addAsWebInfResource("META-INF/persistence-it.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+      archive.addAsWebInfResource("jndi_.properties", "classes/jndi_.properties");
 
       log.debug(archive.toString(true));
       archive.as(ZipExporter.class).exportTo(new File("target/" + warName), true);
@@ -110,7 +110,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
    @Before
    public void beforeHttpCibetFilter2IT() {
       log.debug("execute before()");
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       log.debug("end execute before()");
@@ -118,7 +118,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
 
    @After
    public void afterHttpCibetFilter2IT() {
-      InitializationService.instance().endContext();
+      Context.end();
       new ConfigurationService().reinitSetpoints();
    }
 
@@ -501,7 +501,9 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       schemes.add(FourEyesActuator.DEFAULTNAME);
       registerSetpoint(URL_TS + "*", schemes, ControlEvent.INVOKE, ControlEvent.RELEASE_INVOKE, ControlEvent.REJECT);
 
-      HttpGet method = new HttpGet(getBaseURL() + "/test/setuser?USER=" + USER + "&TENANT=" + TENANT);
+      String url = getBaseURL() + "/test/setuser?USER=" + USER + "&TENANT=" + TENANT;
+      log.debug("execute URL: " + url);
+      HttpGet method = new HttpGet(url);
       HttpResponse response = client.execute(method);
       method.abort();
 

@@ -48,7 +48,6 @@ import org.apache.commons.logging.LogFactory;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.CibetException;
 
 @Singleton
@@ -90,7 +89,7 @@ public class EESchedulerTask extends SESchedulerTask implements SchedulerTask {
 
       try {
          Context.internalRequestScope().setManaged(false);
-         InitializationService.instance().startContext(null);
+         Context.start(null);
          if (config.getPersistenceReference() != null) {
             setApplicationEntityManager(config.getPersistenceReference());
          }
@@ -111,7 +110,7 @@ public class EESchedulerTask extends SESchedulerTask implements SchedulerTask {
       } catch (Exception e) {
          log.error("Failed to execute EEScheduledTask Timer " + config.getSchedulerName() + ": " + e.getMessage(), e);
       } finally {
-         InitializationService.instance().endContext();
+         Context.end();
       }
    }
 

@@ -48,7 +48,6 @@ import com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
@@ -64,14 +63,14 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
    @Before
    @Override
    public void before() throws IOException, SQLException {
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       connection = dataSource.getConnection();
    }
 
    @After
    public void afterJdbcBridgeEntityManagerIntegrationTest() throws Exception {
-      InitializationService.instance().endContext();
+      Context.end();
       if (sp != null) {
          Configuration.instance().unregisterSetpoint(sp.getId());
       }
@@ -127,8 +126,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       execute("insert into cib_testentity (id, nameValue, counter, userid, owner) "
             + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", 1);
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select * from cib_testentity");
       Assert.assertTrue(rs.next());
@@ -153,8 +152,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Thread.sleep(2);
       execute("update cib_testentity set nameValue='R�schen', counter=99 " + "WHERE id=5 and owner='Lalla'", 1);
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select * from cib_testentity");
       Assert.assertTrue(rs.next());
@@ -190,8 +189,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Thread.sleep(2);
       execute("delete from cib_testentity WHERE id=5 ", 1);
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select * from cib_testentity");
       Assert.assertTrue(!rs.next());
@@ -221,8 +220,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       execute("insert into cib_testentity (id, nameValue, counter, userid, owner) "
             + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", 0);
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select * from cib_testentity");
       Assert.assertTrue(!rs.next());
@@ -242,8 +241,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Object res = co.release(Context.requestScope().getEntityManager(), null);
       checkResult(res);
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       Context.sessionScope().setUser(USER);
       l = DcLoader.findUnreleased();
@@ -269,8 +268,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
 
       execute("update cib_testentity set nameValue='R�schen', counter=99 " + "WHERE id=5 and owner='Lalla'", 0);
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select * from cib_testentity");
       Assert.assertTrue(rs.next());
@@ -316,8 +315,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
 
       execute("delete from cib_testentity WHERE id=5 ", 0);
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select * from cib_testentity");
       Assert.assertTrue(rs.next());
@@ -361,8 +360,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ExecutionStatus.POSTPONED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select * from cib_testentity");
       Assert.assertTrue(!rs.next());
@@ -395,8 +394,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ExecutionStatus.POSTPONED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select * from cib_testentity");
       Assert.assertTrue(rs.next());
@@ -426,8 +425,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ExecutionStatus.POSTPONED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
       Context.sessionScope().setUser(USER);
 
       log.info("now release");
@@ -471,8 +470,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ExecutionStatus.EXECUTED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select namevalue, counter from cib_testentity where id = 5");
       Assert.assertTrue(rs.next());
@@ -509,8 +508,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ExecutionStatus.POSTPONED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select namevalue, counter from cib_testentity where id = 5");
       Assert.assertTrue(!rs.next());
@@ -542,8 +541,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ExecutionStatus.POSTPONED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
       Context.sessionScope().setUser(USER);
 
       ResultSet rs = query("select namevalue, counter from cib_testentity where id = 5");
@@ -591,8 +590,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ExecutionStatus.POSTPONED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select namevalue, counter from cib_testentity where id = 5");
       Assert.assertTrue(rs.next());
@@ -627,8 +626,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ExecutionStatus.POSTPONED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select namevalue, counter from cib_testentity where id = 5");
       Assert.assertTrue(rs.next());
@@ -662,8 +661,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ExecutionStatus.POSTPONED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
       Context.sessionScope().setUser(USER);
 
       ResultSet rs = query("select namevalue, counter from cib_testentity where id = 5");
@@ -797,8 +796,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
 
       execute("delete from cib_testentity WHERE id=5 ", 0);
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       // first release
       List<DcControllable> l1 = DcLoader.findUnreleased();
@@ -807,8 +806,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Context.sessionScope().setUser("tester2");
       co.release(new JdbcBridgeEntityManager(connection), "blabla1");
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
       Context.sessionScope().setUser(USER);
 
       l1 = DcLoader.findUnreleased();
@@ -917,8 +916,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertTrue(rs.next());
       Assert.assertEquals(99, rs.getLong(2));
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       List<Archive> list = ArchiveLoader.loadArchives("cib_testentity");
       Assert.assertEquals(1, list.size());
@@ -952,8 +951,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       execute("update cib_testentity set nameValue='R�schen', counter=99 " + "WHERE id=5 and owner='Lalla'", 0);
       Assert.assertEquals(ExecutionStatus.DENIED, Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       List<Archive> list = ArchiveLoader.loadArchives("cib_testentity");
       Assert.assertEquals(1, list.size());
@@ -1002,8 +1001,8 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       } catch (SQLException e) {
       }
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       ResultSet rs = query("select * from cib_archive");
       Assert.assertTrue(rs.next());

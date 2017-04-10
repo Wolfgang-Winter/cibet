@@ -42,7 +42,6 @@ import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 
 public class JdbcSchedulerTask extends SESchedulerTask implements SchedulerTask {
 
@@ -68,7 +67,7 @@ public class JdbcSchedulerTask extends SESchedulerTask implements SchedulerTask 
 
       try {
          Context.internalRequestScope().setManaged(false);
-         InitializationService.instance().startContext(null);
+         Context.start();
 
          if (dataSource != null) {
             try {
@@ -113,7 +112,7 @@ public class JdbcSchedulerTask extends SESchedulerTask implements SchedulerTask 
          }
          Context.requestScope().setRollbackOnly(true);
       } finally {
-         InitializationService.instance().endContext();
+         Context.end();
          if (conn != null) {
             try {
                conn.close();

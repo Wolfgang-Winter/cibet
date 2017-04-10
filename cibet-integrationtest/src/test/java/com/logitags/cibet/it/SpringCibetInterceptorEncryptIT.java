@@ -59,7 +59,6 @@ import com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -103,7 +102,7 @@ public class SpringCibetInterceptorEncryptIT extends AbstractArquillian {
 
    @Before
    public void beforeSpringCibetInterceptorEncryptIT() {
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       cman = Configuration.instance();
@@ -123,7 +122,7 @@ public class SpringCibetInterceptorEncryptIT extends AbstractArquillian {
 
    @After
    public void afterSpringCibetInterceptorEncryptIT() {
-      InitializationService.instance().endContext();
+      Context.end();
       SecurityContextHolder.getContext().setAuthentication(null);
       new ConfigurationService().initialise();
 

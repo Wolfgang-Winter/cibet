@@ -61,7 +61,6 @@ import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
@@ -103,6 +102,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
       archive.addAsWebInfResource("spring-context_1.xml", "classes/spring-context.xml");
       archive.addAsWebInfResource("config_parallel.xml", "classes/cibet-config.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+      archive.addAsWebInfResource("jndi_.properties", "classes/jndi_.properties");
 
       log.debug(archive.toString(true));
       archive.as(ZipExporter.class).exportTo(new File("target/" + warName), true);
@@ -113,7 +113,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
    @Before
    public void beforeHttpParallelDcIT() {
       log.debug("execute before()");
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       log.debug("end execute before()");
@@ -121,7 +121,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
 
    @After
    public void afterHttpParallelDcIT() {
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    private DcControllable checkDc(String target, String method, int count) throws Exception {

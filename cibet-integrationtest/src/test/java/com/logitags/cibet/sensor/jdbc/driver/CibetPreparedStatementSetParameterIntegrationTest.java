@@ -51,7 +51,6 @@ import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -72,14 +71,14 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
    @Before
    @Override
    public void before() throws IOException, SQLException {
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       connection = dataSource.getConnection();
    }
 
    @After
    public void afterJdbcBridgeEntityManagerIntegrationTest() throws Exception {
-      InitializationService.instance().endContext();
+      Context.end();
       if (sp != null) {
          Configuration.instance().unregisterSetpoint(sp.getId());
       }
@@ -99,8 +98,8 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
       ResultSet rs = query("select * from tpsEntity");
       Assert.assertTrue(!rs.next());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       rs = query("select * from cib_dccontrollable");
       Assert.assertTrue(rs.next());
@@ -130,8 +129,8 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
       ResultSet rs = query("select * from tpsEntity");
       Assert.assertTrue(!rs.next());
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       rs = query("select * from cib_dccontrollable");
       Assert.assertTrue(rs.next());

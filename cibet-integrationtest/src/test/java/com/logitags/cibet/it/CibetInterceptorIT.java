@@ -64,7 +64,6 @@ import com.logitags.cibet.actuator.info.InfoLogActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
@@ -116,7 +115,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
 
    @Before
    public void beforeCibetInterceptorIT() {
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       cman = Configuration.instance();
@@ -129,7 +128,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
 
    @After
    public void afterCibetInterceptorIT() {
-      InitializationService.instance().endContext();
+      Context.end();
       new ConfigurationService().initialise();
    }
 

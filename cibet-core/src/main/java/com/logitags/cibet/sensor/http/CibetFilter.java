@@ -40,7 +40,6 @@ import com.logitags.cibet.context.CibetContextFilter;
 import com.logitags.cibet.context.CibetEEContext;
 import com.logitags.cibet.context.CibetEEContextEJB;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
@@ -94,7 +93,7 @@ public class CibetFilter extends CibetContextFilter implements Filter {
       }
 
       try {
-         startManaging = InitializationService.instance().startContext(EJB_JNDINAME, auth);
+         startManaging = Context.start(EJB_JNDINAME, auth);
          fillCibetContext(request);
 
          // set header remark and caseid
@@ -168,7 +167,7 @@ public class CibetFilter extends CibetContextFilter implements Filter {
          addEventResultHeader(response);
 
          if (startManaging) {
-            InitializationService.instance().endContext();
+            Context.end();
          } else {
             Context.internalRequestScope().getAuthenticationProvider().getProviderChain().remove(auth);
             if (metadata != null && metadata.getExecutionStatus() == ExecutionStatus.ERROR) {

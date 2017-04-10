@@ -100,7 +100,6 @@ import com.logitags.cibet.config.ProxyConfig;
 import com.logitags.cibet.config.ProxyConfig.ProxyMode;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
@@ -295,7 +294,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
    @Test
    public void littleProxy1() throws Exception {
       log.info("start littleProxy1()");
-      InitializationService.instance().endContext();
+      Context.end();
 
       List<String> schemes = new ArrayList<String>();
       schemes.add(ArchiveActuator.DEFAULTNAME);
@@ -323,7 +322,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Assert.assertEquals("HTTP-PROXY", eventResult.getSensor());
       Assert.assertEquals(1, eventResult.getChildResults().size());
 
-      InitializationService.instance().startContext();
+      Context.start();
       localEM = Context.requestScope().getEntityManager();
 
       List<Archive> archives = checkArchive("POST", getBaseURL() + "/test/setuser", 2);
@@ -381,7 +380,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       HttpHost proxy = new HttpHost("localhost", 10112);
       client = HttpClients.custom().setProxy(proxy).build();
 
-      InitializationService.instance().startContext(null);
+      Context.start(null);
       Context.requestScope().startPlay();
       Context.sessionScope().setUser("Wolfgang");
       HttpPost method = createHttpPost(getBaseURL());
@@ -630,7 +629,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
 
       HttpPost method = createHttpPost(getBaseURL());
 
-      InitializationService.instance().startContext(null);
+      Context.start(null);
       Context.sessionScope().setUser("Olbert");
 
       String h = Context.encodeContext();
@@ -677,13 +676,13 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Assert.assertEquals("releasOL", eventResult.getUser());
       Assert.assertEquals("HTTP-FILTER", eventResult.getChildResults().get(0).getSensor());
       Assert.assertNull(eventResult.getChildResults().get(0).getUser());
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    @Test
    public void littleProxy4Scheduled() throws Exception {
       log.info("start littleProxyScheduled()");
-      InitializationService.instance().endContext();
+      Context.end();
 
       ProxyConfig config = new ProxyConfig();
       config.setMode(ProxyMode.MITM);
@@ -709,7 +708,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
 
       HttpPost method = createHttpPost(getBaseURL());
 
-      InitializationService.instance().startContext();
+      Context.start();
       localEM = Context.requestScope().getEntityManager();
 
       Context.sessionScope().setUser("Olbert");
@@ -734,8 +733,8 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Assert.assertEquals(0, eventResult.getChildResults().size());
       Assert.assertEquals("Olbert", eventResult.getUser());
 
-      // InitializationService.instance().endContext();
-      // InitializationService.instance().startContext();
+      // Context.end();
+      // Context.start();
       // localEM = Context.requestScope().getEntityManager();
 
       checkArchive("POST", getBaseURL() + "/test/setuser", 1);
@@ -746,7 +745,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Assert.assertEquals("Olbert", dc.getCreateUser());
       Assert.assertEquals(getBaseURL() + "/test/setuser", dc.getResource().getTargetType());
 
-      InitializationService.instance().endContext();
+      Context.end();
 
       log.debug("-------------------- sleep");
       Thread.sleep(10000);
@@ -756,7 +755,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       // log.debug("-------------------- wait...");
       // Thread.sleep(150000);
 
-      InitializationService.instance().startContext();
+      Context.start();
       localEM = Context.requestScope().getEntityManager();
 
       dc = loadDcControllable(1);

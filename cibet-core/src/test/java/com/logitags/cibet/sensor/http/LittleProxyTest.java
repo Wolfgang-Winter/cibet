@@ -689,10 +689,10 @@ public class LittleProxyTest {
       client = HttpClients.custom().setSSLSocketFactory(sslsf).setProxy(proxy).disableAutomaticRetries().build();
 
       HttpGet method = createHttpGetExtern("https://httpbin.org:8081/ip");
-      // HttpPost method = createHttpPost("https://localhost:8943/LittleProxyTest");
       HttpResponse response = client.execute(method);
       log.debug("STATUS: " + response.getStatusLine().getStatusCode());
-      Assert.assertEquals(HttpResponseStatus.GATEWAY_TIMEOUT.code(), response.getStatusLine().getStatusCode());
+      // Assert.assertEquals(HttpResponseStatus.GATEWAY_TIMEOUT.code(), response.getStatusLine().getStatusCode());
+      Assert.assertEquals(HttpResponseStatus.BAD_GATEWAY.code(), response.getStatusLine().getStatusCode());
       readResponseBody(response);
       String ev = response.getFirstHeader("CIBET_EVENTRESULT").getValue();
       EventResult eventResult = CibetUtil.decodeEventResult(ev);

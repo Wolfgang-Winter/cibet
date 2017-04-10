@@ -65,7 +65,6 @@ import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.it.AbstractArquillian;
@@ -119,7 +118,7 @@ public class HttpGeneralIT extends AbstractArquillian {
 
    @Before
    public void beforeHttpGeneralIT() {
-      InitializationService.instance().startContext();
+      Context.start();
       localcibet = Context.requestScope().getEntityManager();
    }
 
@@ -131,7 +130,7 @@ public class HttpGeneralIT extends AbstractArquillian {
       client.execute(method);
       method.abort();
 
-      InitializationService.instance().endContext();
+      Context.end();
 
       dbHelper.doAfter();
    }
@@ -239,8 +238,8 @@ public class HttpGeneralIT extends AbstractArquillian {
 
       localcibet.remove(list.get(0));
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
       localcibet = Context.requestScope().getEntityManager();
 
       List<TEntity> tentList = (List<TEntity>) dbHelper.select("SELECT e FROM TEntity e");

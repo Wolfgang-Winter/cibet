@@ -46,7 +46,6 @@ import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.SpringTestServlet;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.it.AbstractArquillian;
 
 @RunWith(Arquillian.class)
@@ -81,6 +80,7 @@ public class HttpSpringSecurityExpressionsIT extends AbstractArquillian {
       archive.addAsWebInfResource("spring-context_2.xml", "classes/spring-context.xml");
       archive.addAsWebInfResource("it/config_web2.xml", "classes/cibet-config.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
+      archive.addAsWebInfResource("jndi_.properties", "classes/jndi_.properties");
 
       log.debug(archive.toString(true));
       archive.as(ZipExporter.class).exportTo(new File("target/" + warName), true);
@@ -91,7 +91,7 @@ public class HttpSpringSecurityExpressionsIT extends AbstractArquillian {
    @Before
    public void beforeHttpSpringSecurityIT() {
       log.debug("execute before()");
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       log.debug("end execute before()");
@@ -99,7 +99,7 @@ public class HttpSpringSecurityExpressionsIT extends AbstractArquillian {
 
    @After
    public void afterHttpSpringSecurityIT() {
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    @Test

@@ -51,11 +51,11 @@ public class CibetContextInterceptor implements Serializable {
       AuthenticationProvider auth = new InvocationContextAuthenticationProvider(ctx.getContextData());
       AuthenticationProvider anonymousAuth = new AnonymousAuthenticationProvider();
       try {
-         isNewlyManaged = InitializationService.instance().startContext(null, auth, anonymousAuth);
+         isNewlyManaged = Context.start(null, auth, anonymousAuth);
          return ctx.proceed();
       } finally {
          if (isNewlyManaged) {
-            InitializationService.instance().endContext();
+            Context.end();
          } else {
             Context.internalRequestScope().getAuthenticationProvider().getProviderChain().remove(auth);
             Context.internalRequestScope().getAuthenticationProvider().getProviderChain().remove(anonymousAuth);

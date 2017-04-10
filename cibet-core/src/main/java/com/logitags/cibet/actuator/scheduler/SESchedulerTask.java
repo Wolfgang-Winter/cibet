@@ -42,7 +42,6 @@ import org.apache.commons.logging.LogFactory;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
@@ -84,7 +83,7 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
 
       try {
          Context.internalRequestScope().setManaged(false);
-         InitializationService.instance().startContext(null);
+         Context.start();
 
          if (EMF != null) {
             appEm = EMF.createEntityManager();
@@ -119,7 +118,7 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
          }
          Context.requestScope().setRollbackOnly(true);
       } finally {
-         InitializationService.instance().endContext();
+         Context.end();
       }
    }
 

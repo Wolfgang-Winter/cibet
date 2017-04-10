@@ -47,7 +47,6 @@ import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.cibethelper.servlet.ContextSetFilter;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.it.AbstractArquillian;
 
 @RunWith(Arquillian.class)
@@ -87,7 +86,7 @@ public class HttpCibetFilter4IT extends AbstractArquillian {
    @Before
    public void beforeHttpCibetFilterIT() {
       log.debug("execute before()");
-      InitializationService.instance().startContext();
+      Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
       log.debug("end execute before()");
@@ -95,7 +94,7 @@ public class HttpCibetFilter4IT extends AbstractArquillian {
 
    @After
    public void afterHttpCibetFilterIT() {
-      InitializationService.instance().endContext();
+      Context.end();
       new ConfigurationService().reinitSetpoints();
    }
 

@@ -46,7 +46,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cibethelper.base.CoreTestBase;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 
 public abstract class SpringTestBase extends CoreTestBase {
 
@@ -55,7 +54,7 @@ public abstract class SpringTestBase extends CoreTestBase {
    @Before
    public void before() {
       log.info("BEFORE TEST");
-      InitializationService.instance().startContext();
+      Context.start();
       initConfiguration("x");
    }
 
@@ -63,7 +62,7 @@ public abstract class SpringTestBase extends CoreTestBase {
    public void after() {
       log.info("AFTER TEST");
       Context.internalRequestScope().setRollbackOnly(true);
-      InitializationService.instance().endContext();
+      Context.end();
       SecurityContextHolder.getContext().setAuthentication(null);
    }
 

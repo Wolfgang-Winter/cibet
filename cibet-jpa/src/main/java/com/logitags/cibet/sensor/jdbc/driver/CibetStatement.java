@@ -24,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import com.logitags.cibet.actuator.common.Actuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
@@ -311,7 +310,7 @@ public class CibetStatement implements Statement {
          }
 
          if (startManaging) {
-            InitializationService.instance().endContext();
+            Context.end();
          }
       }
    }
@@ -326,7 +325,7 @@ public class CibetStatement implements Statement {
       EventResult thisResult = null;
 
       try {
-         startManaging = InitializationService.instance().startContext(null);
+         startManaging = Context.start();
 
          SqlParser parser = new SqlParser(cibetConnection, sql);
          ControlEvent originalEvent = parser.getControlEvent();
@@ -393,7 +392,7 @@ public class CibetStatement implements Statement {
       EventResult thisResult = null;
 
       try {
-         startManaging = InitializationService.instance().startContext(null);
+         startManaging = Context.start();
 
          SqlParser parser = new SqlParser(cibetConnection, sql);
          ControlEvent originalEvent = parser.getControlEvent();

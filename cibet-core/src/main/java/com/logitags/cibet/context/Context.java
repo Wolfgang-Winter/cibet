@@ -79,25 +79,7 @@ public abstract class Context {
    private static boolean isEMInitialized = false;
 
    static {
-      log.info("start Cibet InitializationService");
-      try {
-         EMF = Persistence.createEntityManagerFactory(LOCAL_PERSISTENCEUNIT);
-         if (EMF != null) {
-            // OpenJPA instantiates an EMF even if there is no persistence.xml, therefore check:
-            EMF.getProperties();
-            log.info("EntityManagerFactory for resource-local persistence unit " + LOCAL_PERSISTENCEUNIT + " created: "
-                  + EMF);
-         } else {
-            log.info(
-                  "no EntityManagerFactory for resource-local persistence unit " + LOCAL_PERSISTENCEUNIT + " created!");
-         }
-      } catch (Exception e) {
-         EMF = null;
-         log.info("\n-----------------------------\n" + "EntityManagerFactory for resource-local persistence unit "
-               + LOCAL_PERSISTENCEUNIT + " could not be created. If this is a Java EE application this is NOT an error."
-               + "\nWill try to create EntityManagerFactory for JTA persistence unit Cibet later\n[Original error message: "
-               + e.getMessage() + "]\n-----------------------------");
-      }
+      initialize();
    }
 
    /**
@@ -148,6 +130,29 @@ public abstract class Context {
          }
       }
       return entityManager;
+   }
+
+   private static void initialize() {
+      log.info("initialize Cibet context");
+      try {
+         EMF = Persistence.createEntityManagerFactory(LOCAL_PERSISTENCEUNIT);
+         if (EMF != null) {
+            // OpenJPA instantiates an EMF even if there is no persistence.xml, therefore check:
+            EMF.getProperties();
+            log.info("EntityManagerFactory for resource-local persistence unit " + LOCAL_PERSISTENCEUNIT + " created: "
+                  + EMF);
+         } else {
+            log.info(
+                  "no EntityManagerFactory for resource-local persistence unit " + LOCAL_PERSISTENCEUNIT + " created!");
+         }
+      } catch (Exception e) {
+         EMF = null;
+         log.info("\n-----------------------------\n" + "EntityManagerFactory for resource-local persistence unit "
+               + LOCAL_PERSISTENCEUNIT + " could not be created. If this is a Java EE application this is NOT an error."
+               + "\nWill try to create EntityManagerFactory for JTA persistence unit Cibet later\n[Original error message: "
+               + e.getMessage() + "]\n-----------------------------");
+      }
+
    }
 
    /**
@@ -235,7 +240,7 @@ public abstract class Context {
    }
 
    public static void close() {
-      log.debug("close InitializationService");
+      log.debug("close Cibet context");
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
       // Loop through all drivers
       Enumeration<Driver> drivers = DriverManager.getDrivers();

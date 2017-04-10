@@ -40,7 +40,6 @@ import com.logitags.cibet.actuator.dc.SixEyesActuator;
 import com.logitags.cibet.actuator.info.InfoLogActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
@@ -1103,8 +1102,8 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       applEman.getTransaction().rollback();
       applEman.getTransaction().begin();
 
-      InitializationService.instance().endContext();
-      InitializationService.instance().startContext();
+      Context.end();
+      Context.start();
 
       List<Archive> alist = ArchiveLoader.loadAllArchives();
       Assert.assertEquals(0, alist.size());

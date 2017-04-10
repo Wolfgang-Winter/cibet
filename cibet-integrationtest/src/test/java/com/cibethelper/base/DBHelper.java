@@ -54,7 +54,6 @@ import com.logitags.cibet.actuator.common.PostponedException;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.EventResult;
 
@@ -75,7 +74,7 @@ public class DBHelper extends CoreTestBase {
    @Before
    public void doBefore() throws Exception {
       log.debug("DBHelper.doBefore");
-      InitializationService.instance().startContext();
+      Context.start();
       applEman.getTransaction().begin();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
@@ -148,7 +147,7 @@ public class DBHelper extends CoreTestBase {
       }
 
       applEman.getTransaction().commit();
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    protected TEntity persistTEntity() {

@@ -46,7 +46,6 @@ import com.logitags.cibet.actuator.info.InfoLogActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InitializationService;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -90,7 +89,7 @@ public class CircuitBreakerIT extends CoreTestBase {
    @Before
    public void beforeCircuitBreakerIT() {
       new ConfigurationService().initialise();
-      InitializationService.instance().startContext();
+      Context.start();
 
       if (ejb1 != null) {
          ejb = ejb1;
@@ -103,7 +102,7 @@ public class CircuitBreakerIT extends CoreTestBase {
 
    @After
    public void afterCircuitBreakerIT() {
-      InitializationService.instance().endContext();
+      Context.end();
    }
 
    @Ignore
