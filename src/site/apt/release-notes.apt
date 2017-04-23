@@ -1,8 +1,11 @@
 Version 2.0 ()
 
+  This is a major release that includes modifications of the database scheme. In cibet-core.jar!WEB-INF/classes/sql 
+  migration scripts exist. If installing a fresh new database, the migration scripts are not required. 
+  Please follow the comments in the migration scripts carefully and test the migration on test data. migration_before[].sql 
+  must be executed before software is updated, script migration_after[].sql after software has been updated.
+   
   * custom actuators can be loaded with ServiceLoader pattern
-  
-  * allocationSize of Archive increased to 50
   
   * Archive integrityCheck MessageDigest only over current record
   
@@ -11,6 +14,8 @@ Version 2.0 ()
   * ArchiveService renamed to ArchiveLoader, made static and some functionality moved to Archive class
   
   * Primary key of entities changed to UUID
+  
+  * DB schema migration
   
   * JDBCBridgePersistenceProvider for providing JDBCBridgeEntityManagerFactory for Cibet EntityManager
   
@@ -28,6 +33,10 @@ Version 2.0 ()
   * Bugfix for OpenJPA: reset @Version when restoring an Archive  
 
   * Context initialization moved from InitializationService to Context
+  
+  * new HttpSessionAuthenticationProvider take tenant, user and user address from http session attributes
+  
+  * Remarks and scheduledDate can be set in http session or in Cibet context. 
     
 
 Version 1.9 (9.10.2016)

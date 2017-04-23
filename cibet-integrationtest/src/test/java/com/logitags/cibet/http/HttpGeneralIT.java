@@ -586,6 +586,7 @@ public class HttpGeneralIT extends AbstractArquillian {
       Assert.assertEquals(1, list.size());
       log.debug(list.get(0));
       Assert.assertEquals(ExecutionStatus.EXECUTED, list.get(0).getExecutionStatus());
+      Assert.assertEquals("Vögelein", list.get(0).getRemark());
    }
 
    @Test

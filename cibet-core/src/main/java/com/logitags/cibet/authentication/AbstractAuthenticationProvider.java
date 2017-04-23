@@ -35,7 +35,7 @@ public abstract class AbstractAuthenticationProvider implements AuthenticationPr
    public static final String DEFAULT_TENANT = "__DEFAULT";
 
    /**
-    * returns always DEFAULT_TENANT.
+    * returns http session attribute 'tenant' if existing, otherwise DEFAULT_TENANT.
     */
    @Override
    public String getTenant() {
@@ -43,7 +43,7 @@ public abstract class AbstractAuthenticationProvider implements AuthenticationPr
    }
 
    /**
-    * returns null.
+    * returns http session attribute 'userAddress' if existing, otherwise null.
     */
    @Override
    public String getUserAddress() {

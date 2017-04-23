@@ -54,6 +54,7 @@ public class LockedObject implements Serializable {
     * unique ID
     */
    @Id
+   @Column(name = "LOCKEDOBJECTID1")
    private String lockedObjectId;
 
    /**

@@ -7,7 +7,7 @@
  *
  * All rights reserved
  *
- * Copyright 2012 Dr. Wolfgang Winter
+ * Copyright 2016 Dr. Wolfgang Winter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,33 +22,26 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.authentication;
+package com.logitags.cibet.tutorial;
 
-/**
- * This implementation allows anonymous access. User name is set to ANONYMOUS.
- * 
- * 
- * @author Wolfgang
- * 
- */
-public class AnonymousAuthenticationProvider extends AbstractAuthenticationProvider {
+import javax.ejb.Remote;
+import javax.interceptor.Interceptors;
 
-   /**
-    * 
-    */
-   private static final long serialVersionUID = -1341868052782009213L;
+import org.apache.log4j.Logger;
 
-   /**
-    * returns always DEFAULT_TENANT.
-    */
-   @Override
-   public String getTenant() {
-      return AbstractAuthenticationProvider.DEFAULT_TENANT;
-   }
+import com.logitags.cibet.context.CibetContextInterceptor;
+import com.logitags.cibet.sensor.ejb.CibetInterceptor;
+
+@Remote
+public class SimpleRemoteEjbImpl implements SimpleRemoteEjb {
+
+   private static Logger log = Logger.getLogger(SimpleRemoteEjbImpl.class);
 
    @Override
-   public String getUsername() {
-      return "ANONYMOUS";
+   @Interceptors({ CibetContextInterceptor.class, SchedulerInterceptor.class, CibetInterceptor.class })
+   public String writeString(String param) {
+      log.info(param);
+      return param;
    }
 
 }

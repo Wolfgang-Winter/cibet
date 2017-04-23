@@ -184,6 +184,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       DcControllable co = checkDc("GET", URL_TS);
       log.debug("user: " + co.getCreateUser());
       log.debug("tenant: " + co.getTenant());
+      Assert.assertEquals("Hausaddresse", co.getCreateAddress());
       Resource res = co.getResource();
       // JBoss: 8
       if (TOMEE.equals(APPSERVER)) {

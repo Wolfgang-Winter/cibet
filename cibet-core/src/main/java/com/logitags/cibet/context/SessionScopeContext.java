@@ -34,6 +34,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.authentication.AbstractAuthenticationProvider;
 import com.logitags.cibet.authentication.AuthenticationProvider;
 
 /**
@@ -121,7 +122,7 @@ public class SessionScopeContext implements InternalSessionScope {
    @Override
    public String getTenant() {
       String owner = (String) getProperty(TENANT);
-      if (owner == null || owner.length() == 0) {
+      if (AbstractAuthenticationProvider.DEFAULT_TENANT.equals(owner) || owner == null || owner.length() == 0) {
          AuthenticationProvider authProv = Context.internalRequestScope().getAuthenticationProvider();
          if (authProv != null) {
             owner = authProv.getTenant();

@@ -43,6 +43,8 @@ public enum Headers {
 
    CIBET_SCHEDULEDDATE,
 
+   CIBET_SCHEDULEDFIELD,
+
    CIBET_USER,
 
    CIBET_USERADDRESS,

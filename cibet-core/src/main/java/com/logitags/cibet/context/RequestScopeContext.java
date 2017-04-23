@@ -31,6 +31,8 @@ import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TransactionRequiredException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,16 +42,18 @@ import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.core.CEntityManager;
 import com.logitags.cibet.core.CibetException;
 import com.logitags.cibet.core.EventResult;
+import com.logitags.cibet.sensor.http.Headers;
 
 public class RequestScopeContext implements InternalRequestScope {
 
    private static Log log = LogFactory.getLog(RequestScopeContext.class);
 
-   private static final String ROLLBACKONLY = "__ROLLBACKONLY";
    private static final String CIBET_ENTITYMANAGER = "__CIBET_ENTITYMANAGER";
    private static final String SECOND_APPLICATION_ENTITYMANAGER = "__SEC_APPLICATION_ENTITYMANAGER";
    private static final String APPLICATION_ENTITYMANAGER = "__APPLICATION_ENTITYMANAGER";
    private static final String SCHEDULED_FIELD = "__SCHEDULED_FIELD";
+
+   public static final String ROLLBACKONLY = "CIBET_ROLLBACKONLY";
 
    private ThreadLocalMap tlm = new ThreadLocalMap();
 
@@ -73,7 +77,21 @@ public class RequestScopeContext implements InternalRequestScope {
    @Override
    public boolean getRollbackOnly() {
       Boolean rbo = (Boolean) getProperty(ROLLBACKONLY);
-      return rbo == null ? false : rbo;
+      if (rbo != null) {
+         return rbo;
+      }
+
+      HttpServletRequest req = Context.internalSessionScope().getHttpRequest();
+      if (req != null) {
+         HttpSession session = req.getSession(false);
+         if (session != null) {
+            String rb = (String) session.getAttribute(ROLLBACKONLY);
+            if (rb != null) {
+               return new Boolean(rb);
+            }
+         }
+      }
+      return false;
    }
 
    /**
@@ -290,7 +308,22 @@ public class RequestScopeContext implements InternalRequestScope {
 
    @Override
    public String getRemark() {
-      return (String) getProperty(REMARK);
+      String remark = (String) getProperty(REMARK);
+      if (remark != null) {
+         return remark;
+      }
+
+      HttpServletRequest req = Context.internalSessionScope().getHttpRequest();
+      if (req != null) {
+         HttpSession session = req.getSession(false);
+         if (session != null) {
+            remark = (String) session.getAttribute(Headers.CIBET_REMARK.name());
+            if (remark != null) {
+               return remark;
+            }
+         }
+      }
+      return null;
    }
 
    @Override
@@ -350,6 +383,7 @@ public class RequestScopeContext implements InternalRequestScope {
          throw new IllegalArgumentException(err);
       }
       setProperty(SCHEDULED_DATE, date);
+      setScheduledDateInHttpSession(date);
    }
 
    @Override
@@ -367,7 +401,7 @@ public class RequestScopeContext implements InternalRequestScope {
    public Date getScheduledDate() {
       Object o = getProperty(SCHEDULED_DATE);
       if (o == null) {
-         return null;
+         return getScheduledDateFromHttpSession();
       } else if (o instanceof Date) {
          return (Date) o;
       } else {
@@ -377,6 +411,57 @@ public class RequestScopeContext implements InternalRequestScope {
          cal.add(field, amount);
          return cal.getTime();
       }
+   }
+
+   private void setScheduledDateInHttpSession(Date date) {
+      HttpServletRequest req = Context.internalSessionScope().getHttpRequest();
+      if (req != null) {
+         HttpSession session = req.getSession(false);
+         if (session != null) {
+            if (date == null) {
+               session.removeAttribute(Headers.CIBET_SCHEDULEDDATE.name());
+               session.removeAttribute(Headers.CIBET_SCHEDULEDFIELD.name());
+            } else {
+               session.setAttribute(Headers.CIBET_SCHEDULEDDATE.name(), date);
+            }
+         }
+      }
+   }
+
+   private Date getScheduledDateFromHttpSession() {
+      HttpServletRequest req = Context.internalSessionScope().getHttpRequest();
+      if (req != null) {
+         HttpSession session = req.getSession(false);
+         if (session != null) {
+            Object date = session.getAttribute(Headers.CIBET_SCHEDULEDDATE.name());
+            if (date != null) {
+               if (date instanceof Date) {
+                  return (Date) date;
+
+               } else if (date instanceof Integer) {
+                  Integer amount = (Integer) date;
+                  Integer field = (Integer) session.getAttribute(Headers.CIBET_SCHEDULEDFIELD.name());
+                  if (field == null) {
+                     throw new IllegalArgumentException("http session attribute " + Headers.CIBET_SCHEDULEDFIELD
+                           + " must not be null when " + Headers.CIBET_SCHEDULEDDATE + " is set");
+                  }
+                  if (!(field instanceof Integer)) {
+                     throw new IllegalArgumentException("http session attribute " + Headers.CIBET_SCHEDULEDFIELD
+                           + " must be of type Integer but is " + field.getClass());
+                  }
+
+                  Calendar cal = Calendar.getInstance();
+                  cal.add(field, amount);
+                  return cal.getTime();
+
+               } else {
+                  throw new IllegalArgumentException("http session attribute " + Headers.CIBET_SCHEDULEDDATE
+                        + " must be of type Date or Integer but is " + date.getClass());
+               }
+            }
+         }
+      }
+      return null;
    }
 
    public ChainedAuthenticationProvider getAuthenticationProvider() {

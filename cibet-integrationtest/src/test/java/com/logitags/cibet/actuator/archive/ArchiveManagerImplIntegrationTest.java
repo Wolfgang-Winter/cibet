@@ -482,15 +482,22 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
    @Test
    public void checkArchiveIntegrityRecordsModified() {
       log.info("start checkArchiveIntegrityRecordsModified()");
-      Archive a = createArchive("A1");
-      a.setControlEvent(ControlEvent.DELETE);
-      Assert.assertFalse(a.checkChecksum());
-      a = createArchive("A2");
-      a.setCreateUser("userNew");
-      Assert.assertFalse(a.checkChecksum());
-      a = createArchive("A3");
-      a.setCaseId("neu");
-      Assert.assertFalse(a.checkChecksum());
+      try {
+         ArchiveActuator arch = (ArchiveActuator) Configuration.instance().getActuator(ArchiveActuator.DEFAULTNAME);
+         arch.setIntegrityCheck(true);
+         Archive a = createArchive("A1");
+         a.setControlEvent(ControlEvent.DELETE);
+         Assert.assertFalse(a.checkChecksum());
+         a = createArchive("A2");
+         a.setCreateUser("userNew");
+         Assert.assertFalse(a.checkChecksum());
+         a = createArchive("A3");
+         a.setCaseId("neu");
+         Assert.assertFalse(a.checkChecksum());
+      } finally {
+         ArchiveActuator arch = (ArchiveActuator) Configuration.instance().getActuator(ArchiveActuator.DEFAULTNAME);
+         arch.setIntegrityCheck(false);
+      }
    }
 
    @Test
@@ -815,6 +822,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
          Archive ar2 = list1.get(1);
          Assert.assertEquals("ll", ar2.getResource().getKeyReference());
 
+         List<Archive> checklist = ArchiveLoader.checkIntegrity();
+         Assert.assertEquals(0, checklist.size());
+
       } finally {
          secp.setCurrentSecretKey("1");
       }
@@ -881,6 +891,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
          Archive ar2 = list1.get(1);
          Assert.assertEquals("l3", ar2.getResource().getKeyReference());
          Assert.assertEquals(5, ((TEntity) ar2.getResource().getObject()).getCounter());
+
+         List<Archive> checklist = ArchiveLoader.checkIntegrity();
+         Assert.assertEquals(0, checklist.size());
 
       } finally {
          secp.setCurrentSecretKey("1");

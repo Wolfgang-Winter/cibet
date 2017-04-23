@@ -346,8 +346,10 @@ public class ArquillianTestServlet1 extends HttpServlet {
       log.info(msg);
       Context.sessionScope().setUser(user);
       if (tenant != null) {
-         Context.sessionScope().setTenant(tenant);
+         req.getSession().setAttribute("CIBET_TENANT", tenant);
+         // Context.sessionScope().setTenant(tenant);
       }
+      req.getSession().setAttribute("CIBET_USERADDRESS", "Hausaddresse");
       return msg;
    }
 

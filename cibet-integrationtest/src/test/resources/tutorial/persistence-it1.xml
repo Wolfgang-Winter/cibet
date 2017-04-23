@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+
+	<persistence-unit name="Cibet" transaction-type="JTA">
+		<jta-data-source>java:/CibetDS</jta-data-source>
+		<class>com.logitags.cibet.actuator.archive.Archive</class>
+		<class>com.logitags.cibet.actuator.dc.DcControllable</class>
+		<class>com.logitags.cibet.actuator.lock.LockedObject</class>
+		<class>com.logitags.cibet.core.EventResult</class>
+		<class>com.logitags.cibet.resource.ResourceParameter</class>
+		<class>com.logitags.cibet.resource.Resource</class>
+
+		<properties>
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" /> 
+		</properties>
+	</persistence-unit>
+
+	<persistence-unit name="APPL-UNIT" transaction-type="JTA">
+		<provider>com.logitags.cibet.sensor.jpa.Provider</provider>
+		<jta-data-source>java:/CibetDS</jta-data-source>
+		<class>com.logitags.cibet.tutorial.Person</class>
+		<class>com.logitags.cibet.tutorial.Address</class>
+		<properties>
+			<property name="com.logitags.cibet.persistence.provider" value="org.hibernate.ejb.HibernatePersistence" />
+			<property name="hibernate.transaction.jta.platform"
+				value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+		</properties>
+	</persistence-unit>
+
+</persistence>

@@ -52,9 +52,8 @@ import com.logitags.cibet.authentication.AbstractAuthenticationProvider;
 import com.logitags.cibet.context.Context;
 
 /**
- * Represents the results of an event execution. If a setpoint matches an
- * instance of EventResult is stored in CibetContext. It contains all the
- * details of the applied setpoint.
+ * Represents the results of an event execution. If a setpoint matches an instance of EventResult is stored in
+ * CibetContext. It contains all the details of the applied setpoint.
  * 
  * @author Wolfgang
  * 
@@ -71,6 +70,7 @@ public class EventResult implements Serializable {
    private static Log log = LogFactory.getLog(EventResult.class);
 
    @Id
+   @Column(name = "EVENTRESULTID1")
    private String eventResultId;
 
    /**
@@ -107,20 +107,18 @@ public class EventResult implements Serializable {
    private ExecutionStatus executionStatus = ExecutionStatus.EXECUTING;
 
    /**
-    * if during execution of this event a second event is controlled by a
-    * setpoint, the result of the second event is added to this list. Empty
-    * list, if there is no child controlled event
+    * if during execution of this event a second event is controlled by a setpoint, the result of the second event is
+    * added to this list. Empty list, if there is no child controlled event
     */
    @OneToMany(mappedBy = "parentResult", cascade = { CascadeType.ALL })
    private List<EventResult> childResults = new ArrayList<EventResult>();
 
    /**
-    * if this event is executed during execution of another parent event
-    * controlled by a setpoint, the result of the parent event is stored in this
-    * property. Null, if there is no parent controlled event
+    * if this event is executed during execution of another parent event controlled by a setpoint, the result of the
+    * parent event is stored in this property. Null, if there is no parent controlled event
     */
    @OneToOne(cascade = { CascadeType.ALL })
-   @JoinColumn(name = "PARENTRESULT_ID")
+   @JoinColumn(name = "PARENTRESULT_ID1")
    private EventResult parentResult;
 
    /**

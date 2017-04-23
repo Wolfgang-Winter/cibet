@@ -1,5 +1,7 @@
 Downloads
 
+* Binaries
+
    All versions can be downloaded from {{{http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.logitags%22%20AND%20a%3A%22cibet%22}Maven Central}}.
    The sub-projects support the following versions of integrated libraries:
 
@@ -16,5 +18,16 @@ Downloads
 *-------------------------+-------------------+---------------------------------+--------------------------+  
 | cibet-springsecurity    | all               | org.springframework.security:spring-security-core | 3.0.3.RELEASE |
 *-------------------------+-------------------+---------------------------------+--------------------------+  
+
+* Other downloads  
   
-  Reference Guide with differences:  {{{./Cibet_Reference_Guide_diff.pdf}Cibet_Reference_Guide_diff.pdf}}
+*-----------------------------------------+-------------------+  
+| Reference Guide                         | REFGUIDE1         |
+*-----------------------------------------+-------------------+  
+| Reference Guide with differences        | REFGUIDE2         |
+*-----------------------------------------+-------------------+  
+| Sources                                 | SOURCES1          |
+*-----------------------------------------+-------------------+  
+| Test sources                            | SOURCES2          |
+*-----------------------------------------+-------------------+  
+  

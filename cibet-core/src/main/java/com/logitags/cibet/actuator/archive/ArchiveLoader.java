@@ -398,4 +398,23 @@ public abstract class ArchiveLoader {
       }
    }
 
+   /**
+    * checks the integrity of all Archive entries in the database
+    * 
+    * @return a list of Archive objects where the checksum is wrong
+    */
+   public static List<Archive> checkIntegrity() {
+      List<Archive> result = new ArrayList<Archive>();
+
+      EntityManager em = Context.internalRequestScope().getEntityManager();
+      TypedQuery<Archive> q = em.createNamedQuery(Archive.SEL_ALL, Archive.class);
+      List<Archive> list = q.getResultList();
+      for (Archive ar : list) {
+         if (ar.checkChecksum() == false) {
+            result.add(ar);
+         }
+      }
+      return result;
+   }
+
 }

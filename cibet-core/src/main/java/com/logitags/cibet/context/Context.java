@@ -158,7 +158,8 @@ public abstract class Context {
    /**
     * starts the Cibet context
     * 
-    * @return
+    * @return true if the Context is freshly started by this method call, false if the Context has already been started
+    *         before
     */
    public static boolean start() {
       return start(null);
@@ -170,7 +171,8 @@ public abstract class Context {
     * 
     * @param ejbJndiname
     * @param authProviders
-    * @return
+    * @return true if the Context is freshly started by this method call, false if the Context has already been started
+    *         before
     */
    public static boolean start(String ejbJndiname, AuthenticationProvider... authProviders) {
       boolean startManaging = false;

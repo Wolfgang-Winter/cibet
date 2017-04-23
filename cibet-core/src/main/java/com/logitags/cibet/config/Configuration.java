@@ -73,6 +73,7 @@ import com.logitags.cibet.authentication.ChainedAuthenticationProvider;
 import com.logitags.cibet.authentication.EEAuthenticationProvider;
 import com.logitags.cibet.authentication.HttpHeaderAuthenticationProvider;
 import com.logitags.cibet.authentication.HttpRequestAuthenticationProvider;
+import com.logitags.cibet.authentication.HttpSessionAuthenticationProvider;
 import com.logitags.cibet.bindings.ActuatorBinding;
 import com.logitags.cibet.bindings.Cibet;
 import com.logitags.cibet.bindings.ClassDefBinding;
@@ -850,23 +851,27 @@ public class Configuration {
 
       AuthenticationProvider hprovider = new HttpHeaderAuthenticationProvider();
       chainedAuthenticationProvider.getProviderChain().add(hprovider);
-      log.info("register HttpHeaderAuthenticationProvider as AuthenticationProvider");
+      log.info("register " + HttpHeaderAuthenticationProvider.class.getSimpleName());
 
       ServiceLoader<AuthenticationProvider> loader = ServiceLoader.load(AuthenticationProvider.class);
       Iterator<AuthenticationProvider> iter = loader.iterator();
       while (iter.hasNext()) {
          AuthenticationProvider provider = iter.next();
-         log.info("register AuthenticationProvider " + provider.getClass());
+         log.info("register " + provider.getClass());
          chainedAuthenticationProvider.getProviderChain().add(provider);
       }
 
       AuthenticationProvider provider = new EEAuthenticationProvider();
       chainedAuthenticationProvider.getProviderChain().add(provider);
-      log.info("register EEAuthenticationProvider as AuthenticationProvider");
+      log.info("register " + EEAuthenticationProvider.class.getSimpleName());
 
       AuthenticationProvider httpProvider = new HttpRequestAuthenticationProvider();
       chainedAuthenticationProvider.getProviderChain().add(httpProvider);
-      log.info("register HttpRequestAuthenticationProvider as AuthenticationProvider");
+      log.info("register " + HttpRequestAuthenticationProvider.class.getSimpleName());
+
+      HttpSessionAuthenticationProvider sessionProvider = new HttpSessionAuthenticationProvider();
+      chainedAuthenticationProvider.getProviderChain().add(sessionProvider);
+      log.info("register " + HttpSessionAuthenticationProvider.class.getSimpleName());
    }
 
    /**

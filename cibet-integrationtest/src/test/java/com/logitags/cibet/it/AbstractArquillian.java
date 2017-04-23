@@ -105,6 +105,11 @@ public abstract class AbstractArquillian extends CoreTestBase {
    @After
    public void afterAbstractArquillian() throws Exception {
       Thread.sleep(500);
+
+      // if (1 == 1) {
+      // return;
+      // }
+
       log.info("Arquillian.afterTest()");
       ut.begin();
 

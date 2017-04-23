@@ -159,10 +159,9 @@ public class SchedulerActuator extends FourEyesActuator {
       case INSERT:
       case SELECT:
       case RESTORE_INSERT:
-         if (Context.requestScope().getScheduledDate() != null
-               && Context.requestScope().getScheduledDate().before(new Date())) {
-            String err = "Invalid scheduled date " + Context.requestScope().getScheduledDate()
-                  + ". Must be in the future";
+         Date scheddate = Context.requestScope().getScheduledDate();
+         if (scheddate != null && scheddate.before(new Date())) {
+            String err = "Invalid scheduled date " + scheddate + ". Must be in the future";
             log.warn(err);
             throw new InvalidDateException(err);
          }

@@ -266,6 +266,7 @@ public class GeneralServlet extends HttpServlet {
 
    private void aspectPojo(HttpServletRequest req, HttpServletResponse resp) {
       log.info("call aspectPojo in Servlet");
+      req.getSession().setAttribute("CIBET_REMARK", "Vögelein");
       ejb2Service.doIt("Josef");
    }
 
@@ -286,7 +287,9 @@ public class GeneralServlet extends HttpServlet {
 
          tc.getEagerList().add(t4);
          tc.setOwner("x");
-         Context.requestScope().setScheduledDate(Calendar.SECOND, 3);
+         // Context.requestScope().setScheduledDate(Calendar.SECOND, 3);
+         req.getSession().setAttribute("CIBET_SCHEDULEDDATE", 3);
+         req.getSession().setAttribute("CIBET_SCHEDULEDFIELD", Calendar.SECOND);
          tc = cibet2.merge(tc);
          ut.commit();
 

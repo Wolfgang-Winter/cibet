@@ -110,6 +110,7 @@ public class DcControllable implements Serializable {
     * unique ID
     */
    @Id
+   @Column(name = "DCCONTROLLABLEID1")
    private String dcControllableId;
 
    /**
@@ -241,7 +242,7 @@ public class DcControllable implements Serializable {
    // referencedColumnName = "dcControllableId"), inverseJoinColumns =
    // @JoinColumn(name = "PARAMETERID", referencedColumnName = "parameterId",
    // unique = true)))
-   @AssociationOverride(name = "parameters", joinColumns = @JoinColumn(name = "dcControllableId", referencedColumnName = "dcControllableId"))
+   @AssociationOverride(name = "parameters", joinColumns = @JoinColumn(name = "DCCONTROLLABLEID1", referencedColumnName = "DCCONTROLLABLEID1"))
    private Resource resource;
 
    @PrePersist

@@ -7,7 +7,7 @@
  *
  * All rights reserved
  *
- * Copyright 2012 Dr. Wolfgang Winter
+ * Copyright 2016 Dr. Wolfgang Winter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,33 +22,32 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.authentication;
+package com.logitags.cibet.tutorial;
 
-/**
- * This implementation allows anonymous access. User name is set to ANONYMOUS.
- * 
- * 
- * @author Wolfgang
- * 
- */
-public class AnonymousAuthenticationProvider extends AbstractAuthenticationProvider {
+import java.io.Serializable;
+import java.util.Calendar;
+
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.InvocationContext;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.logitags.cibet.context.Context;
+
+public class SchedulerInterceptor implements Serializable {
 
    /**
     * 
     */
-   private static final long serialVersionUID = -1341868052782009213L;
+   private static final long serialVersionUID = 1L;
+   private Log log = LogFactory.getLog(SchedulerInterceptor.class);
 
-   /**
-    * returns always DEFAULT_TENANT.
-    */
-   @Override
-   public String getTenant() {
-      return AbstractAuthenticationProvider.DEFAULT_TENANT;
-   }
-
-   @Override
-   public String getUsername() {
-      return "ANONYMOUS";
+   @AroundInvoke
+   public Object controlInvoke(InvocationContext ctx) throws Exception {
+      log.debug("execute SchedulerInterceptor");
+      Context.requestScope().setScheduledDate(Calendar.SECOND, 3);
+      return ctx.proceed();
    }
 
 }

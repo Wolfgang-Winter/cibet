@@ -119,6 +119,7 @@ public class Archive implements Serializable {
     * 
     */
    @Id
+   @Column(name = "ARCHIVEID1")
    private String archiveId;
 
    /**
@@ -149,7 +150,7 @@ public class Archive implements Serializable {
     * Date when the user initiated the control event
     */
    @Temporal(TemporalType.TIMESTAMP)
-   private Date createDate;
+   private Date createDate = new Date();
 
    /**
     * tenant
@@ -178,7 +179,7 @@ public class Archive implements Serializable {
    // "CIB_ARCHIVEPARAMETER", joinColumns = @JoinColumn(name = "ARCHIVEID",
    // referencedColumnName = "archiveId"), inverseJoinColumns = @JoinColumn(name
    // = "PARAMETERID", referencedColumnName = "parameterId", unique = true)))
-   @AssociationOverride(name = "parameters", joinColumns = @JoinColumn(name = "archiveId", referencedColumnName = "archiveId"))
+   @AssociationOverride(name = "parameters", joinColumns = @JoinColumn(name = "ARCHIVEID1", referencedColumnName = "ARCHIVEID1"))
    private Resource resource;
 
    @Version
@@ -197,7 +198,6 @@ public class Archive implements Serializable {
          }
       }
 
-      createDate = new Date();
       archiveId = UUID.randomUUID().toString();
    }
 
@@ -267,6 +267,9 @@ public class Archive implements Serializable {
       if (resource != null) {
          b.append(resource.createCheckSumString());
       }
+
+      log.debug("checkSumString = " + b.toString());
+
       return b.toString();
    }
 
@@ -282,11 +285,15 @@ public class Archive implements Serializable {
    }
 
    public boolean checkChecksum() {
-      SecurityProvider secProvider = Configuration.instance().getSecurityProvider();
-      String checkSumString = createCheckSumString();
-      log.debug(getArchiveId() + ": checkSumString = '" + checkSumString + "'");
-      String checksum = secProvider.createMessageDigest(checkSumString, getResource().getKeyReference());
-      return checksum.equals(getChecksum());
+      ArchiveActuator arch = (ArchiveActuator) Configuration.instance().getActuator(ArchiveActuator.DEFAULTNAME);
+      if (arch.isIntegrityCheck()) {
+         String checkSumString = createCheckSumString();
+         SecurityProvider secProvider = Configuration.instance().getSecurityProvider();
+         String checksum = secProvider.createMessageDigest(checkSumString, getResource().getKeyReference());
+         return checksum.equals(getChecksum());
+      } else {
+         return true;
+      }
    }
 
    /**
