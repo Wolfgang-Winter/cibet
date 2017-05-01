@@ -4,7 +4,15 @@
 
    <actuator name="SCHEDULER">
       <properties>
-         <timerStart>+6</timerStart>
+         <timerStart>+8</timerStart>
+      </properties>
+   </actuator>
+
+   <actuator name="LOCAL-SCHEDULER">
+      <class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class>
+      <properties>
+         <timerStart>+10</timerStart>
+         <persistenceUnit>APPL-UNIT</persistenceUnit>
       </properties>
    </actuator>
 
@@ -12,6 +20,7 @@
       <controls>
          <event>INSERT, DELETE, UPDATE</event>
          <target>com.logitags.cibet.tutorial.Person, com.logitags.cibet.tutorial.Address</target>
+         <invoker>com.logitags.cibet.tutorial.TutorialServlet1.persist</invoker>
       </controls>
       <actuator name="ARCHIVE"/>
    </setpoint>
@@ -54,9 +63,18 @@
       <controls>
          <event>INVOKE</event>
          <target>com.logitags.cibet.tutorial.SimpleRemoteEjbImpl</target>
-         <method>writeString()</method>
+         <method>writeString(String)</method>
       </controls>
       <actuator name="SCHEDULER"/>
+   </setpoint>
+
+   <setpoint id="setpoint-8">
+      <controls>
+         <event>INSERT</event>
+         <target>com.logitags.cibet.tutorial.Person, com.logitags.cibet.tutorial.Address</target>
+         <invoker>com.logitags.cibet.tutorial.TutorialServlet5.persist()</invoker>
+      </controls>
+      <actuator name="LOCAL-SCHEDULER"/>
    </setpoint>
 
 </cibet>   

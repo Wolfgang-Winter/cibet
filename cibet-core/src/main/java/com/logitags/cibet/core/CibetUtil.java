@@ -142,8 +142,10 @@ public class CibetUtil {
     * @return
     */
    public static boolean isLoaded(EntityManager em, Object entity) {
-      if (entity == null)
+      if (entity == null) {
          return true;
+      }
+
       log.debug("check load state!");
       if (!em.contains(entity)) {
          log.debug("Entity is not in persistence context. Cannot check load state");

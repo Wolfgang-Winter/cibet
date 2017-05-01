@@ -39,8 +39,6 @@ import org.apache.commons.logging.LogFactory;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.lock.LockedObject;
-import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.core.AnnotationNotFoundException;
 import com.logitags.cibet.core.AnnotationUtil;
 import com.logitags.cibet.core.EventResult;
@@ -439,19 +437,6 @@ public class JdbcBridgeEntityManager implements EntityManager {
       if (datasource != null) {
          con = datasource.getConnection();
          log.debug("Connection=" + con + ", autocommit =" + con.getAutoCommit() + ", class= " + con.getClass());
-         // if (con.getTypeMap().containsKey(CibetConnection.CIBETDRIVER_TYPE))
-         // {
-         // log.debug("this is a CibetDriver");
-         Context.internalRequestScope().setProperty(InternalRequestScope.USE_NATIVE_DRIVER, true);
-         // }
-
-         // this code works only with java 1.6 and above
-         // if (con.isWrapperFor(CibetConnection.class)) {
-         // CibetConnection cc = con.unwrap(CibetConnection.class);
-         // log.debug("set to native, was " + cc.isUseNative());
-         // cc.setUseNative(true);
-         // }
-
       } else {
          con = jdbcConnection;
       }
@@ -466,12 +451,6 @@ public class JdbcBridgeEntityManager implements EntityManager {
       if (conn != null) {
          if (datasource != null) {
             log.debug("close now connection");
-            Context.internalRequestScope().removeProperty(InternalRequestScope.USE_NATIVE_DRIVER);
-            // this code works only with java 1.6 and above
-            // if (conn.isWrapperFor(CibetConnection.class)) {
-            // CibetConnection cc = conn.unwrap(CibetConnection.class);
-            // cc.setUseNative(false);
-            // }
             conn.close();
          }
       }

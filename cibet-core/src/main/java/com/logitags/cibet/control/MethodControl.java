@@ -106,8 +106,8 @@ public class MethodControl extends AbstractControl {
 
          } else if (spMethodName.endsWith("()")) {
             if (metadata.getResource().getMethod().equals(spMethodName.substring(0, spMethodName.length() - 2))
-                  && (metadata.getResource().getParameters() == null || metadata.getResource().getParameters()
-                        .isEmpty())) {
+                  && (metadata.getResource().getParameters() == null
+                        || metadata.getResource().getParameters().isEmpty())) {
                // concrete method without parameters
                return true;
             }
@@ -121,13 +121,16 @@ public class MethodControl extends AbstractControl {
                log.error(msg);
                throw new RuntimeException(msg);
             }
-            if (!metadata.getResource().getMethod().equals(spMethodName.substring(0, index))) continue;
+            if (!metadata.getResource().getMethod().equals(spMethodName.substring(0, index)))
+               continue;
             // check parameters
-            StringTokenizer tok = new StringTokenizer(spMethodName.substring(index + 1, spMethodName.length() - 1), ",");
+            StringTokenizer tok = new StringTokenizer(spMethodName.substring(index + 1, spMethodName.length() - 1),
+                  ",");
             // if (tok.countTokens() != metadata.getResource().getParameters().size()) continue;
             boolean isEqual = true;
             for (ResourceParameter param : metadata.getResource().getParameters()) {
-               if (param.getParameterType() != ParameterType.METHOD_PARAMETER) continue;
+               if (param.getParameterType() != ParameterType.METHOD_PARAMETER)
+                  continue;
                if (!tok.hasMoreElements()) {
                   isEqual = false;
                   break;
@@ -157,6 +160,10 @@ public class MethodControl extends AbstractControl {
    private String internalClassNameForName(String classname) {
       if (classname == null) {
          return null;
+      } else if (classname.equals("String")) {
+         return "java.lang.String";
+      } else if (classname.equals("Date")) {
+         return "java.util.Date";
       } else if (classname.equals("byte")) {
          return "java.lang.Byte";
       } else if (classname.equals("boolean")) {

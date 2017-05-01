@@ -40,7 +40,6 @@
     	<pre-persist method-name="prePersist"></pre-persist>  
 		<attributes>
 			<id name="archiveId">
-			   <column name="ARCHIVEID1"/>
 			</id>
 			<basic name="remark"/>
 			<basic name="checksum"/>
@@ -60,8 +59,8 @@
 			<embedded name="resource">
 				<association-override name="parameters">
 					<join-table name="CIB_ARCHIVEPARAMETER">
-						<join-column name="ARCHIVEID1" referenced-column-name="ARCHIVEID1" />
-						<inverse-join-column name="PARAMETERID1" referenced-column-name="PARAMETERID1" unique="true" />
+						<join-column name="ARCHIVEID" referenced-column-name="ARCHIVEID" />
+						<inverse-join-column name="PARAMETERID" referenced-column-name="PARAMETERID" unique="true" />
 					</join-table>
 				</association-override>
 			</embedded>
@@ -121,7 +120,6 @@
       <pre-persist method-name="prePersist"></pre-persist>  
 		<attributes>
 			<id name="dcControllableId">
-			   <column name="DCCONTROLLABLEID1"/>
 			</id>
 			<basic name="firstApprovalUser">
 				<column name="FIRSTAPPROVUSER"/>
@@ -166,8 +164,8 @@
 			<embedded name="resource">
 				<association-override name="parameters">
 					<join-table name="CIB_DCPARAMETER">
-						<join-column name="DCCONTROLLABLEID1" referenced-column-name="DCCONTROLLABLEID1" />
-						<inverse-join-column name="PARAMETERID1" referenced-column-name="PARAMETERID1" unique="true" />
+						<join-column name="DCCONTROLLABLEID" referenced-column-name="DCCONTROLLABLEID" />
+						<inverse-join-column name="PARAMETERID" referenced-column-name="PARAMETERID" unique="true" />
 					</join-table>
 				</association-override>
 			</embedded>

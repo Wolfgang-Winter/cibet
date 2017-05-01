@@ -188,7 +188,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
 
       rs = query("select * from cib_archive");
       Assert.assertTrue(rs.next());
-      String archiveId = rs.getString(1);
+      String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
       Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
@@ -1144,7 +1144,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
 
       rs = query("select * from cib_archive order by createdate");
       Assert.assertTrue(rs.next());
-      String archiveId = rs.getString(1);
+      String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("6", rs.getString("PRIMARYKEYID"));
       Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
@@ -1168,7 +1168,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(5, count2);
 
       Assert.assertTrue(rs.next());
-      archiveId = rs.getString(1);
+      archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("7", rs.getString("PRIMARYKEYID"));
       Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
@@ -1347,7 +1347,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
 
       ResultSet rs = query("select * from cib_archive");
       Assert.assertTrue(rs.next());
-      String archiveId = rs.getString(1);
+      String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
       Assert.assertEquals(ExecutionStatus.ERROR.name(), rs.getString("EXECUTIONSTATUS"));
@@ -1389,7 +1389,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
 
       ResultSet rs = query("select * from cib_archive");
       Assert.assertTrue(rs.next());
-      String archiveId = rs.getString(1);
+      String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
       Assert.assertEquals(ExecutionStatus.ERROR.name(), rs.getString("EXECUTIONSTATUS"));

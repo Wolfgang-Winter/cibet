@@ -28,4 +28,6 @@ public interface SimpleRemoteEjb {
 
    String writeString(String param);
 
+   String writeStringNoIntercept(String param);
+
 }

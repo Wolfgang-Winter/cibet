@@ -116,7 +116,7 @@ public class JdbcBridgeProvider extends Provider {
    }
 
    /**
-    * checks if CibetDriver is registered with the DriverManager and regiisters it if not. This is necessary for
+    * checks if CibetDriver is registered with the DriverManager and registers it if not. This is necessary for
     * Tomcat/Tomee: Thus, the web applications that have database drivers in their WEB-INF/lib directory cannot rely on
     * the service provider mechanism and should register the drivers explicitly.
     * 

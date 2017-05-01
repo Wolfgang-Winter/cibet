@@ -89,7 +89,7 @@ public class EESchedulerTask extends SESchedulerTask implements SchedulerTask {
 
       try {
          Context.internalRequestScope().setManaged(false);
-         Context.start(null);
+         Context.start();
          if (config.getPersistenceReference() != null) {
             setApplicationEntityManager(config.getPersistenceReference());
          }

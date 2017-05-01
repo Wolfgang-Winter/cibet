@@ -330,7 +330,11 @@
 							<includes>
 <!-- 								<include>**/*IT.java</include> -->
 <!-- 								<include>**/*Test.java</include> -->
-                        <include>**/HttpCibetFilter2IT.java</include>
+                        <include>com/logitags/cibet/sensor/jdbc/bridge/*.java</include>
+                        <include>com/logitags/cibet/sensor/jdbc/def/*.java</include>
+                        <include>com/logitags/cibet/sensor/jdbc/driver/*.java</include>
+                        <include>**/JdbcStatementIT.java</include>
+<!--                         <include>**/CibetStatementExUpIntegrationTest.java</include> -->
 							</includes>
 							<enableAssertions>false</enableAssertions>
 							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx1024m -Xms1024m</argLine>
@@ -624,7 +628,7 @@
                   <version>2.16</version>
                   <configuration>
                      <includes>
-                        <include>**/Tutorial3.java</include>
+                        <include>**/Tutorial5.java</include>
                      </includes>
                      <enableAssertions>false</enableAssertions>
                   </configuration>

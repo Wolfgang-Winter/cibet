@@ -119,7 +119,6 @@ public class Archive implements Serializable {
     * 
     */
    @Id
-   @Column(name = "ARCHIVEID1")
    private String archiveId;
 
    /**
@@ -179,7 +178,7 @@ public class Archive implements Serializable {
    // "CIB_ARCHIVEPARAMETER", joinColumns = @JoinColumn(name = "ARCHIVEID",
    // referencedColumnName = "archiveId"), inverseJoinColumns = @JoinColumn(name
    // = "PARAMETERID", referencedColumnName = "parameterId", unique = true)))
-   @AssociationOverride(name = "parameters", joinColumns = @JoinColumn(name = "ARCHIVEID1", referencedColumnName = "ARCHIVEID1"))
+   @AssociationOverride(name = "parameters", joinColumns = @JoinColumn(name = "ARCHIVEID", referencedColumnName = "ARCHIVEID"))
    private Resource resource;
 
    @Version

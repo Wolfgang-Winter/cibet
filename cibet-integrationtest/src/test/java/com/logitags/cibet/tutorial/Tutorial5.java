@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URLEncoder;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -51,25 +50,25 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class Tutorial1 {
+public class Tutorial5 {
 
-   private static Logger log = Logger.getLogger(Tutorial1.class);
+   private static Logger log = Logger.getLogger(Tutorial5.class);
 
-   private static final String BASEURL = "http://localhost:8788/" + Tutorial1.class.getSimpleName();
+   private static final String BASEURL = "http://localhost:8788/" + Tutorial5.class.getSimpleName();
 
    @Deployment(testable = false)
    public static WebArchive createDeployment() {
-      String warName = Tutorial1.class.getSimpleName() + ".war";
+      String warName = Tutorial5.class.getSimpleName() + ".war";
       WebArchive archive = ShrinkWrap.create(WebArchive.class, warName);
-      archive.setWebXML("tutorial/tut1.webxml");
+      archive.setWebXML("tutorial/tut5.webxml");
 
-      archive.addClasses(Person.class, Address.class, TutorialServlet1.class);
+      archive.addClasses(Person.class, Address.class, TutorialServlet5.class);
 
       File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withTransitivity()
             .asFile();
       archive.addAsLibraries(cibet);
 
-      archive.addAsWebInfResource("tutorial/persistence-it1.xml", "classes/META-INF/persistence.xml");
+      archive.addAsWebInfResource("tutorial/persistence-it3.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
       archive.addAsWebInfResource("tutorial/config.xml", "classes/cibet-config.xml");
 
@@ -121,21 +120,33 @@ public class Tutorial1 {
    }
 
    @Test
-   public void archive1() throws Exception {
-      log.info("start archive1()");
+   public void schedule3() throws Exception {
+      log.info("start schedule3()");
 
       CloseableHttpClient client = HttpClients.createDefault();
       HttpGet get = new HttpGet(BASEURL + "/persist");
       HttpResponse response = client.execute(get);
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      String id = readResponseBody(response);
-      log.info("Person persisted with id " + id);
+      String answer = readResponseBody(response);
+      log.info("Persistence of Person is scheduled, execution status: " + answer);
+      Assert.assertEquals("SCHEDULED", answer);
 
-      // load the Archive
-      get = new HttpGet(BASEURL + "/loadPersonArchive?id=" + URLEncoder.encode(id, "UTF-8") + "&expected=1");
+      // load the Person
+      get = new HttpGet(BASEURL + "/loadPerson?expected=0");
       response = client.execute(get);
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      readResponseBody(response);
+      answer = readResponseBody(response);
+      Assert.assertEquals("no Person found", answer);
+
+      log.debug("-------------------- sleep");
+      Thread.sleep(16000);
+      log.debug("--------------- after TimerTask");
+
+      // load the Person
+      get = new HttpGet(BASEURL + "/loadPerson?expected=1");
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      answer = readResponseBody(response);
    }
 
 }

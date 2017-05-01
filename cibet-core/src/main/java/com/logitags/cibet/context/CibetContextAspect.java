@@ -39,11 +39,11 @@ public class CibetContextAspect {
 
    private Log log = LogFactory.getLog(CibetContextAspect.class);
 
-   @Pointcut(value = "execution(public * *.*(..)) && @within(interceptor)", argNames = "interceptor")
+   @Pointcut(value = "execution(* *.*(..)) && @within(interceptor)", argNames = "interceptor")
    void typeCibetContextInterceptor(com.logitags.cibet.context.CibetContext interceptor) {
    }
 
-   @Pointcut(value = "execution(public * *.*(..)) && @annotation(interceptor)", argNames = "interceptor")
+   @Pointcut(value = "execution(* *.*(..)) && @annotation(interceptor)", argNames = "interceptor")
    void methodCibetContextInterceptor(com.logitags.cibet.context.CibetContext interceptor) {
    }
 

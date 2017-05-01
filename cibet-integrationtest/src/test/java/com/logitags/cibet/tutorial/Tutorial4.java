@@ -24,16 +24,13 @@
  */
 package com.logitags.cibet.tutorial;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URLEncoder;
+import java.util.Calendar;
+import java.util.Properties;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
+import javax.naming.InitialContext;
+
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -50,6 +47,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.logitags.cibet.context.Context;
+import com.logitags.cibet.sensor.ejb.CibetRemoteContext;
+import com.logitags.cibet.sensor.ejb.CibetRemoteContextFactory;
+
 @RunWith(Arquillian.class)
 public class Tutorial4 {
 
@@ -63,7 +64,8 @@ public class Tutorial4 {
       WebArchive archive = ShrinkWrap.create(WebArchive.class, warName);
       archive.setWebXML("tutorial/tut4.webxml");
 
-      archive.addClasses(SimpleRemoteEjb.class, SimpleRemoteEjbImpl.class);
+      archive.addClasses(SimpleRemoteEjb.class, SimpleRemoteEjbImpl.class, TutorialServlet2.class,
+            SchedulerInterceptor.class);
 
       File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-core").withTransitivity()
             .asFile();
@@ -86,56 +88,63 @@ public class Tutorial4 {
       client.execute(get);
    }
 
-   protected String readResponseBody(HttpResponse response) throws Exception {
-      // Read the response body.
-      HttpEntity entity = response.getEntity();
-      InputStream instream = null;
-      try {
-         if (entity != null) {
-            instream = entity.getContent();
+   @Test
+   public void schedule1() throws Exception {
+      log.info("start schedule1()");
+      SimpleRemoteEjb ejb = lookup();
+      String result = ejb.writeString("Hello Ejb");
+      Assert.assertEquals(null, result);
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(instream, "UTF-8"));
-            String body = reader.readLine();
-            log.info("body=" + body);
-            return body;
-         } else {
-            return null;
-         }
-      } catch (IOException ex) {
-         // In case of an IOException the connection will be released
-         // back to the connection manager automatically
-         throw ex;
-
-      } catch (RuntimeException ex) {
-         // In case of an unexpected exception you may want to abort
-         // the HTTP request in order to shut down the underlying
-         // connection and release it back to the connection manager.
-         throw ex;
-
-      } finally {
-         // Closing the input stream will trigger connection release
-         if (instream != null)
-            instream.close();
-         Thread.sleep(100);
-      }
+      log.debug("-------------------- sleep");
+      Thread.sleep(12000);
+      log.debug("--------------- after TimerTask");
    }
 
    @Test
-   public void archive1() throws Exception {
-      log.info("start archive1()");
+   public void schedule2() throws Exception {
+      log.info("start schedule2()");
+      Context.start();
+      Context.requestScope().setScheduledDate(Calendar.SECOND, 3);
+      log.debug("execute SchedulerInterceptor: set scheduled date to " + Context.requestScope().getScheduledDate());
+      Context.sessionScope().setUser("Pittiplatsch");
 
-      CloseableHttpClient client = HttpClients.createDefault();
-      HttpGet get = new HttpGet(BASEURL + "/persist");
-      HttpResponse response = client.execute(get);
-      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      String id = readResponseBody(response);
-      log.info("Person persisted with id " + id);
+      SimpleRemoteEjb ejb = lookupCibetProxy();
+      String result = ejb.writeStringNoIntercept("Hello Ejb scheduled by client");
+      Assert.assertEquals(null, result);
+      Context.end();
 
-      // load the Archive
-      get = new HttpGet(BASEURL + "/loadPerson?id=" + URLEncoder.encode(id, "UTF-8") + "&expected=1");
-      response = client.execute(get);
-      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      readResponseBody(response);
+      log.debug("-------------------- sleep");
+      Thread.sleep(12000);
+      log.debug("--------------- after TimerTask");
+   }
+
+   private SimpleRemoteEjb lookup() throws Exception {
+      Properties properties = new Properties();
+      properties.setProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY,
+            "org.jboss.naming.remote.client.InitialContextFactory");
+      properties.setProperty(javax.naming.Context.PROVIDER_URL, "remote://localhost:4447");
+      properties.setProperty("jboss.naming.client.ejb.context", "true");
+      javax.naming.Context ctx = new InitialContext(properties);
+
+      String lookupName = this.getClass().getSimpleName()
+            + "/SimpleRemoteEjbImpl!com.logitags.cibet.tutorial.SimpleRemoteEjb";
+      SimpleRemoteEjb remoteEjb = (SimpleRemoteEjb) ctx.lookup(lookupName);
+      return remoteEjb;
+   }
+
+   private SimpleRemoteEjb lookupCibetProxy() throws Exception {
+      Properties properties = new Properties();
+      properties.put(javax.naming.Context.INITIAL_CONTEXT_FACTORY, CibetRemoteContextFactory.class.getName());
+      properties.put(CibetRemoteContext.NATIVE_INITIAL_CONTEXT_FACTORY,
+            "org.jboss.naming.remote.client.InitialContextFactory");
+      properties.setProperty(javax.naming.Context.PROVIDER_URL, "remote://localhost:4447");
+      properties.setProperty("jboss.naming.client.ejb.context", "true");
+      javax.naming.Context ctx = new InitialContext(properties);
+
+      String lookupName = this.getClass().getSimpleName()
+            + "/SimpleRemoteEjbImpl!com.logitags.cibet.tutorial.SimpleRemoteEjb";
+      SimpleRemoteEjb remoteEjb = (SimpleRemoteEjb) ctx.lookup(lookupName);
+      return remoteEjb;
    }
 
 }

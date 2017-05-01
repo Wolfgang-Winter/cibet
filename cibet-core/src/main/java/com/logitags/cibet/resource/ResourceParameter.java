@@ -45,7 +45,6 @@ public class ResourceParameter implements Serializable {
     * unique internal ID
     */
    @Id
-   @Column(name = "PARAMETERID1")
    private String parameterId;
 
    /**

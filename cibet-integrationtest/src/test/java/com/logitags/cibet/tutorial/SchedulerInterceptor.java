@@ -45,8 +45,8 @@ public class SchedulerInterceptor implements Serializable {
 
    @AroundInvoke
    public Object controlInvoke(InvocationContext ctx) throws Exception {
-      log.debug("execute SchedulerInterceptor");
       Context.requestScope().setScheduledDate(Calendar.SECOND, 3);
+      log.debug("execute SchedulerInterceptor: set scheduled date to " + Context.requestScope().getScheduledDate());
       return ctx.proceed();
    }
 

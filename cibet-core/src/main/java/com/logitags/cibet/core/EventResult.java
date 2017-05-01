@@ -70,7 +70,6 @@ public class EventResult implements Serializable {
    private static Log log = LogFactory.getLog(EventResult.class);
 
    @Id
-   @Column(name = "EVENTRESULTID1")
    private String eventResultId;
 
    /**
@@ -118,7 +117,7 @@ public class EventResult implements Serializable {
     * parent event is stored in this property. Null, if there is no parent controlled event
     */
    @OneToOne(cascade = { CascadeType.ALL })
-   @JoinColumn(name = "PARENTRESULT_ID1")
+   @JoinColumn(name = "PARENTRESULT_ID")
    private EventResult parentResult;
 
    /**

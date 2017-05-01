@@ -46,6 +46,8 @@ public class CibetDriver implements Driver {
 
    public static final String CIBET_PREFIX = "jdbc:cibet:";
 
+   private Driver nativeDriver = null;
+
    static {
       register();
    }
@@ -62,9 +64,13 @@ public class CibetDriver implements Driver {
 
    @Override
    public Connection connect(String url, Properties info) throws SQLException {
-      if (!acceptsURL(url))
+      if (!acceptsURL(url)) {
          return null;
-      Driver nativeDriver = parseNativeDriver(url);
+      }
+      if (nativeDriver == null) {
+         nativeDriver = parseNativeDriver(url);
+      }
+
       Connection conn = nativeDriver.connect(parseNativeUrl(url), info);
 
       Connection cibetConnection = new CibetConnection(conn);
@@ -74,7 +80,13 @@ public class CibetDriver implements Driver {
 
    @Override
    public boolean acceptsURL(String url) throws SQLException {
-      return url.startsWith(CIBET_PREFIX);
+      boolean accept = url.startsWith(CIBET_PREFIX);
+      if (accept && url.length() > CIBET_PREFIX.length()) {
+         if (nativeDriver == null) {
+            nativeDriver = parseNativeDriver(url);
+         }
+      }
+      return accept;
    }
 
    @Override
@@ -83,23 +95,35 @@ public class CibetDriver implements Driver {
          log.error("CibetDriver does not accept URLS of type " + url);
          return new DriverPropertyInfo[] {};
       }
-      Driver nativeDriver = parseNativeDriver(url);
+
+      if (nativeDriver == null) {
+         nativeDriver = parseNativeDriver(url);
+      }
       return nativeDriver.getPropertyInfo(parseNativeUrl(url), info);
    }
 
    @Override
    public int getMajorVersion() {
-      return 1;
+      return nativeDriver == null ? 1 : nativeDriver.getMajorVersion();
    }
 
    @Override
    public int getMinorVersion() {
-      return 0;
+      return nativeDriver == null ? 0 : nativeDriver.getMinorVersion();
    }
 
    @Override
    public boolean jdbcCompliant() {
-      return false;
+      return nativeDriver == null ? false : nativeDriver.jdbcCompliant();
+   }
+
+   @Override
+   public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+      if (nativeDriver == null) {
+         return LogManager.getLogManager().getLogger(this.getClass().getName());
+      } else {
+         return nativeDriver.getParentLogger();
+      }
    }
 
    private Driver parseNativeDriver(String url) throws SQLException {
@@ -129,11 +153,6 @@ public class CibetDriver implements Driver {
 
    private String parseNativeUrl(String url) {
       return "jdbc" + url.substring(thirdColon(url));
-   }
-
-   @Override
-   public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-      return LogManager.getLogManager().getLogger(this.getClass().getName());
    }
 
 }

@@ -33,23 +33,15 @@ import java.util.concurrent.Executor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.logitags.cibet.context.Context;
-import com.logitags.cibet.context.InternalRequestScope;
-
 /**
- * Implementation of Connection interface that acts as a Cibet sensor for JDBC
- * requests.
+ * Implementation of Connection interface that acts as a Cibet sensor for JDBC requests.
  * 
  */
 public class CibetConnection implements Connection {
 
    private static transient Log log = LogFactory.getLog(CibetConnection.class);
 
-   public static final String CIBETDRIVER_TYPE = "CIBETDRIVER_TYPE";
-
    private Connection nativeConnection;
-
-   // private boolean useNative = false;
 
    public CibetConnection(Connection conn) {
       nativeConnection = conn;
@@ -68,28 +60,14 @@ public class CibetConnection implements Connection {
    @Override
    public Statement createStatement() throws SQLException {
       Statement st = nativeConnection.createStatement();
-      if (Context.internalRequestScope().getProperty(
-            InternalRequestScope.USE_NATIVE_DRIVER) != null
-            || Context.internalRequestScope().getProperty(
-                  InternalRequestScope.USE_NATIVE_DRIVER_FOR_ID_GENERATION) != null) {
-         return st;
-      } else {
-         return new CibetStatement(this, st);
-      }
+      return new CibetStatement(this, st);
    }
 
    @Override
    public PreparedStatement prepareStatement(String sql) throws SQLException {
       log.debug("enter prepareStatement(String sql)");
       PreparedStatement ps = nativeConnection.prepareStatement(sql);
-      if (Context.internalRequestScope().getProperty(
-            InternalRequestScope.USE_NATIVE_DRIVER) != null
-            || Context.internalRequestScope().getProperty(
-                  InternalRequestScope.USE_NATIVE_DRIVER_FOR_ID_GENERATION) != null) {
-         return ps;
-      } else {
-         return new CibetPreparedStatement(this, ps, sql);
-      }
+      return new CibetPreparedStatement(this, ps, sql);
    }
 
    @Override
@@ -180,40 +158,21 @@ public class CibetConnection implements Connection {
    }
 
    @Override
-   public Statement createStatement(int resultSetType, int resultSetConcurrency)
+   public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
+      Statement st = nativeConnection.createStatement(resultSetType, resultSetConcurrency);
+      return new CibetStatement(this, st);
+   }
+
+   @Override
+   public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
          throws SQLException {
-      Statement st = nativeConnection.createStatement(resultSetType,
-            resultSetConcurrency);
-      if (Context.internalRequestScope().getProperty(
-            InternalRequestScope.USE_NATIVE_DRIVER) != null
-            || Context.internalRequestScope().getProperty(
-                  InternalRequestScope.USE_NATIVE_DRIVER_FOR_ID_GENERATION) != null) {
-         return st;
-      } else {
-         return new CibetStatement(this, st);
-      }
+      PreparedStatement ps = nativeConnection.prepareStatement(sql, resultSetType, resultSetConcurrency);
+      return new CibetPreparedStatement(this, ps, sql);
    }
 
    @Override
-   public PreparedStatement prepareStatement(String sql, int resultSetType,
-         int resultSetConcurrency) throws SQLException {
-      PreparedStatement ps = nativeConnection.prepareStatement(sql,
-            resultSetType, resultSetConcurrency);
-      if (Context.internalRequestScope().getProperty(
-            InternalRequestScope.USE_NATIVE_DRIVER) != null
-            || Context.internalRequestScope().getProperty(
-                  InternalRequestScope.USE_NATIVE_DRIVER_FOR_ID_GENERATION) != null) {
-         return ps;
-      } else {
-         return new CibetPreparedStatement(this, ps, sql);
-      }
-   }
-
-   @Override
-   public CallableStatement prepareCall(String sql, int resultSetType,
-         int resultSetConcurrency) throws SQLException {
-      return nativeConnection.prepareCall(sql, resultSetType,
-            resultSetConcurrency);
+   public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+      return nativeConnection.prepareCall(sql, resultSetType, resultSetConcurrency);
    }
 
    @Override
@@ -260,88 +219,42 @@ public class CibetConnection implements Connection {
    }
 
    @Override
-   public Statement createStatement(int resultSetType,
-         int resultSetConcurrency, int resultSetHoldability)
+   public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
          throws SQLException {
-      Statement st = nativeConnection.createStatement(resultSetType,
-            resultSetConcurrency, resultSetHoldability);
-      if (Context.internalRequestScope().getProperty(
-            InternalRequestScope.USE_NATIVE_DRIVER) != null
-            || Context.internalRequestScope().getProperty(
-                  InternalRequestScope.USE_NATIVE_DRIVER_FOR_ID_GENERATION) != null) {
-         return st;
-      } else {
-         return new CibetStatement(this, st);
-      }
+      Statement st = nativeConnection.createStatement(resultSetType, resultSetConcurrency, resultSetHoldability);
+      return new CibetStatement(this, st);
    }
 
    @Override
-   public PreparedStatement prepareStatement(String sql, int resultSetType,
-         int resultSetConcurrency, int resultSetHoldability)
-         throws SQLException {
-      PreparedStatement ps = nativeConnection.prepareStatement(sql,
-            resultSetType, resultSetConcurrency, resultSetHoldability);
-      if (Context.internalRequestScope().getProperty(
-            InternalRequestScope.USE_NATIVE_DRIVER) != null
-            || Context.internalRequestScope().getProperty(
-                  InternalRequestScope.USE_NATIVE_DRIVER_FOR_ID_GENERATION) != null) {
-         return ps;
-      } else {
-         return new CibetPreparedStatement(this, ps, sql);
-      }
+   public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
+         int resultSetHoldability) throws SQLException {
+      PreparedStatement ps = nativeConnection.prepareStatement(sql, resultSetType, resultSetConcurrency,
+            resultSetHoldability);
+      return new CibetPreparedStatement(this, ps, sql);
    }
 
    @Override
-   public CallableStatement prepareCall(String sql, int resultSetType,
-         int resultSetConcurrency, int resultSetHoldability)
-         throws SQLException {
-      return nativeConnection.prepareCall(sql, resultSetType,
-            resultSetConcurrency, resultSetHoldability);
+   public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
+         int resultSetHoldability) throws SQLException {
+      return nativeConnection.prepareCall(sql, resultSetType, resultSetConcurrency, resultSetHoldability);
    }
 
    @Override
-   public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys)
-         throws SQLException {
-      PreparedStatement ps = nativeConnection.prepareStatement(sql,
-            autoGeneratedKeys);
-      if (Context.internalRequestScope().getProperty(
-            InternalRequestScope.USE_NATIVE_DRIVER) != null
-            || Context.internalRequestScope().getProperty(
-                  InternalRequestScope.USE_NATIVE_DRIVER_FOR_ID_GENERATION) != null) {
-         return ps;
-      } else {
-         return new CibetPreparedStatement(this, ps, sql);
-      }
+   public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
+      PreparedStatement ps = nativeConnection.prepareStatement(sql, autoGeneratedKeys);
+      return new CibetPreparedStatement(this, ps, sql);
    }
 
    @Override
-   public PreparedStatement prepareStatement(String sql, int[] columnIndexes)
-         throws SQLException {
-      PreparedStatement ps = nativeConnection.prepareStatement(sql,
-            columnIndexes);
-      if (Context.internalRequestScope().getProperty(
-            InternalRequestScope.USE_NATIVE_DRIVER) != null
-            || Context.internalRequestScope().getProperty(
-                  InternalRequestScope.USE_NATIVE_DRIVER_FOR_ID_GENERATION) != null) {
-         return ps;
-      } else {
-         return new CibetPreparedStatement(this, ps, sql);
-      }
+   public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
+      PreparedStatement ps = nativeConnection.prepareStatement(sql, columnIndexes);
+      return new CibetPreparedStatement(this, ps, sql);
    }
 
    @Override
-   public PreparedStatement prepareStatement(String sql, String[] columnNames)
-         throws SQLException {
-      PreparedStatement ps = nativeConnection
-            .prepareStatement(sql, columnNames);
-      if (Context.internalRequestScope().getProperty(
-            InternalRequestScope.USE_NATIVE_DRIVER) != null
-            || Context.internalRequestScope().getProperty(
-                  InternalRequestScope.USE_NATIVE_DRIVER_FOR_ID_GENERATION) != null) {
-         return ps;
-      } else {
-         return new CibetPreparedStatement(this, ps, sql);
-      }
+   public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
+      PreparedStatement ps = nativeConnection.prepareStatement(sql, columnNames);
+      return new CibetPreparedStatement(this, ps, sql);
    }
 
    @Override
@@ -370,14 +283,12 @@ public class CibetConnection implements Connection {
    }
 
    @Override
-   public void setClientInfo(String name, String value)
-         throws SQLClientInfoException {
+   public void setClientInfo(String name, String value) throws SQLClientInfoException {
       nativeConnection.setClientInfo(name, value);
    }
 
    @Override
-   public void setClientInfo(Properties properties)
-         throws SQLClientInfoException {
+   public void setClientInfo(Properties properties) throws SQLClientInfoException {
       nativeConnection.setClientInfo(properties);
    }
 
@@ -392,14 +303,12 @@ public class CibetConnection implements Connection {
    }
 
    @Override
-   public Array createArrayOf(String typeName, Object[] elements)
-         throws SQLException {
+   public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
       return nativeConnection.createArrayOf(typeName, elements);
    }
 
    @Override
-   public Struct createStruct(String typeName, Object[] attributes)
-         throws SQLException {
+   public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
       return nativeConnection.createStruct(typeName, attributes);
    }
 
@@ -426,8 +335,7 @@ public class CibetConnection implements Connection {
    }
 
    @Override
-   public void setNetworkTimeout(Executor executor, int milliseconds)
-         throws SQLException {
+   public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
       nativeConnection.setNetworkTimeout(executor, milliseconds);
    }
 

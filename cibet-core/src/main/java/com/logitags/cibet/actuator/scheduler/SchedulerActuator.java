@@ -452,6 +452,22 @@ public class SchedulerActuator extends FourEyesActuator {
 
       close();
 
+      try {
+         // try ejb container
+         Class<SchedulerTask> clazz = (Class<SchedulerTask>) Class
+               .forName("com.logitags.cibet.actuator.scheduler.EESchedulerTask");
+         schedulerTask = EjbLookup.lookupEjb(null, clazz);
+         if (schedulerTask == null) {
+            String msg = "Failed to lookup EESchedulerTask EJB in JNDI. Start SE Timer for SchedulerActuator";
+            log.info(msg);
+            // SE
+            schedulerTask = new SESchedulerTask();
+         }
+      } catch (ClassNotFoundException e) {
+         log.error(e.getMessage(), e);
+         throw new RuntimeException(e);
+      }
+
       SchedulerTimerConfig config = null;
       if (datasource != null) {
          config = new SchedulerTimerConfig(getName(), datasource);
@@ -459,24 +475,11 @@ public class SchedulerActuator extends FourEyesActuator {
 
       } else if (persistenceContextReference != null) {
          config = new SchedulerTimerConfig(getName(), persistenceContextReference);
-         try {
-            Class<SchedulerTask> clazz = (Class<SchedulerTask>) Class
-                  .forName("com.logitags.cibet.actuator.scheduler.EESchedulerTask");
-            schedulerTask = EjbLookup.lookupEjb(null, clazz);
-            if (schedulerTask == null) {
-               String err = "failed to lookup EESchedulerTask EJB in JNDI. Cannot start Timer for SchedulerActuator";
-               log.error(err);
-               return;
-            }
-         } catch (ClassNotFoundException e) {
-            log.error(e.getMessage(), e);
-            throw new RuntimeException(e);
-         }
-
-      } else {
+      } else if (persistenceUnit != null) {
          config = new SchedulerTimerConfig(getName(), persistenceUnit);
          schedulerTask = new SESchedulerTask();
-
+      } else {
+         config = new SchedulerTimerConfig(getName(), null);
       }
 
       schedulerTask.startTimer(config, timerStart, timerPeriod);

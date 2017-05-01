@@ -24,12 +24,10 @@ import org.apache.commons.logging.LogFactory;
 import com.logitags.cibet.core.EventMetadata;
 
 /**
- * evaluates direct and indirect invoker of the current thread against
- * configured setpoints. If one of the invokers listed in excludeInvoker tag is
- * detected, this setpoint is skipped. If one of the invokers listed in
- * includeInvoker tag is detected, this setpoint is executed. Attributes in
- * excludeInvoker and includeInvoker tags are comma separated. Invokers can be
- * defined as follows:
+ * evaluates direct and indirect invoker of the current thread against configured setpoints. If one of the invokers
+ * listed in excludeInvoker tag is detected, this setpoint is skipped. If one of the invokers listed in includeInvoker
+ * tag is detected, this setpoint is executed. Attributes in excludeInvoker and includeInvoker tags are comma separated.
+ * Invokers can be defined as follows:
  * <p>
  * all methods of concrete class: com.logitags.cibet.TEntity
  * <p>
@@ -37,14 +35,11 @@ import com.logitags.cibet.core.EventMetadata;
  * <p>
  * all methods of all classes of a package: com.logitags.cibet.*
  * <p>
- * all methods of all classes of a package including subpackages:
- * com.logitags.cibet.**
+ * all methods of all classes of a package including subpackages: com.logitags.cibet.**
  * <p>
- * concrete method of concrete class (all overloaded methods):
- * com.logitags.cibet.TEntity.doSomething()
+ * concrete method of concrete class (all overloaded methods): com.logitags.cibet.TEntity.doSomething()
  * <p>
- * excludeInvoker and includeInvoker tags in class constraint and method
- * constraint elements are evaluated.
+ * excludeInvoker and includeInvoker tags in class constraint and method constraint elements are evaluated.
  * 
  */
 public class InvokerControl extends AbstractControl {
@@ -64,15 +59,18 @@ public class InvokerControl extends AbstractControl {
       for (String clude : constraints) {
          for (StackTraceElement trace : traces) {
             if (clude.equals(trace.getClassName())) {
+               // all methods of a class
                return true;
 
             } else if (clude.endsWith("*")) {
+               // all methods of all classes of a package
                String pack = clude.substring(0, clude.length() - 1);
                if (trace.getClassName().startsWith(pack)) {
                   return true;
                }
 
-            } else if (clude.endsWith("()")) {
+            } else {
+               // a method of a class
                int index = clude.lastIndexOf(".");
                if (index < 0) {
                   String msg = "failed to execute Invoker evaluation: " + "includeInvoker/excludeInvoker tag value "
@@ -82,6 +80,9 @@ public class InvokerControl extends AbstractControl {
                }
                String classname = clude.substring(0, index);
                String methodname = clude.substring(index + 1, clude.length() - 2);
+               if (methodname.endsWith("()")) {
+                  methodname = methodname.substring(0, methodname.length() - 2);
+               }
                if (classname.equals(trace.getClassName()) && methodname.equals(trace.getMethodName())) {
                   return true;
                }

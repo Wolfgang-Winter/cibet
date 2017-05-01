@@ -104,6 +104,7 @@ public class DBHelper extends CoreTestBase {
          applEman.getTransaction().rollback();
       }
 
+      applEman.clear();
       applEman.getTransaction().begin();
 
       Context.internalRequestScope().getEntityManager().flush();

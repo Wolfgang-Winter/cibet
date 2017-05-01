@@ -51,6 +51,11 @@ import com.logitags.cibet.sensor.ejb.EjbResourceHandler;
 
 public abstract class AbstractAspect extends CibetInterceptor {
 
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
+
    private Log log = LogFactory.getLog(AbstractAspect.class);
 
    private static final String SENSOR_NAME_POJO = "ASPECT";

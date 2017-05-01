@@ -25,6 +25,7 @@
 package com.logitags.cibet.tutorial;
 
 import javax.ejb.Remote;
+import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
 
 import org.apache.log4j.Logger;
@@ -32,6 +33,7 @@ import org.apache.log4j.Logger;
 import com.logitags.cibet.context.CibetContextInterceptor;
 import com.logitags.cibet.sensor.ejb.CibetInterceptor;
 
+@Stateless
 @Remote
 public class SimpleRemoteEjbImpl implements SimpleRemoteEjb {
 
@@ -40,6 +42,12 @@ public class SimpleRemoteEjbImpl implements SimpleRemoteEjb {
    @Override
    @Interceptors({ CibetContextInterceptor.class, SchedulerInterceptor.class, CibetInterceptor.class })
    public String writeString(String param) {
+      log.info(param);
+      return param;
+   }
+
+   @Override
+   public String writeStringNoIntercept(String param) {
       log.info(param);
       return param;
    }
