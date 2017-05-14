@@ -46,7 +46,6 @@ import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.jndi.EjbLookup;
-import com.logitags.cibet.resource.HttpRequestData;
 import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
@@ -262,8 +261,7 @@ public class CibetFilter extends CibetContextFilter implements Filter {
                + Context.internalSessionScope().getTenant() + ". Content-Type=" + request.getContentType());
       }
 
-      HttpRequestData httpData = new HttpRequestData(request);
-      Resource resource = new Resource(HttpRequestResourceHandler.class, targetUrl, methodName, httpData);
+      Resource resource = new Resource(HttpRequestResourceHandler.class, targetUrl, methodName, request, response);
       resource.setInvokerClass(HttpRequestInvoker.class.getName());
       addParameters(request, resource);
       addHeaders(request, resource);

@@ -30,7 +30,7 @@
       <class>com.cibethelper.entities.TComplexEntity2</class>
       <class>com.cibethelper.entities.Syntetic1Entity</class>
       <class>com.cibethelper.entities.Syntetic2Entity</class>
-      <class>com.cibethelper.loadcontrol.JMEntity</class>
+      <class>com.cibethelper.loadcontrol.CoreJMEntity</class>
       <exclude-unlisted-classes>true</exclude-unlisted-classes>
       
       <properties>

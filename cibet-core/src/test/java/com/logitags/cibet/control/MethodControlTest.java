@@ -122,7 +122,7 @@ public class MethodControlTest extends CoreTestBase {
       Resource res = new Resource(MethodResourceHandler.class, "Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
-      Assert.assertEquals(0, list.size());
+      Assert.assertEquals(1, list.size());
    }
 
    @Test

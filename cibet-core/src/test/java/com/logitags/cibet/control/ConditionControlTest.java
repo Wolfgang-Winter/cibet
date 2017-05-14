@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -129,7 +131,7 @@ public class ConditionControlTest extends CoreTestBase {
             + "&& $HTTPPARAMETERS.get('param1') == 67");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", null, null);
+      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       res.getParameters()
             .add(new ResourceParameter("p1", String.class.getName(), "Hase", ParameterType.HTTP_ATTRIBUTE, 1));
@@ -152,7 +154,7 @@ public class ConditionControlTest extends CoreTestBase {
       sp.setCondition("imyInt = 5;");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", null, null);
+      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       res.getParameters()
             .add(new ResourceParameter("p1", String.class.getName(), "Hase", ParameterType.HTTP_ATTRIBUTE, 1));
@@ -180,7 +182,7 @@ public class ConditionControlTest extends CoreTestBase {
       sp.setCondition("imyInt = 5sdd");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", null, null);
+      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
 
       try {
@@ -201,7 +203,7 @@ public class ConditionControlTest extends CoreTestBase {
       sp.setCondition("$APPLICATIONSCOPE.getProperty('p1')=='Hase' ");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", null, null);
+      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
 
       List<Setpoint> list = evaluate(md, spB);
@@ -226,7 +228,7 @@ public class ConditionControlTest extends CoreTestBase {
       sp.setCondition("$REQUESTSCOPE.getProperty('pxp')=='Hase' ");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", null, null);
+      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
 
       List<Setpoint> list = evaluate(md, spB);
@@ -251,7 +253,7 @@ public class ConditionControlTest extends CoreTestBase {
             "$REQUESTSCOPE.getProperty('psx')=='Hase' &amp;&amp; $xyParam =='ann' &amp;&amp; $ZZParam.get('dubi2')!=null;");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", null, null);
+      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
 
       Context.requestScope().setProperty("psx", "Hase");

@@ -55,6 +55,7 @@ public abstract class CoreTestBase {
 
    protected static String initConfiguration(String configName) {
       log.debug("++initConfiguration " + configName);
+      Configuration.instance().close();
       try {
          Field FILENAME = Configuration.class.getDeclaredField("CONFIGURATION_FILENAME");
          FILENAME.setAccessible(true);

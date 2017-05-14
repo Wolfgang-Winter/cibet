@@ -87,16 +87,28 @@ public class DummyServletRequest implements Serializable, HttpServletRequest {
 
    private String servletPath;
 
-   public DummyServletRequest(HttpRequestData data) {
-      serverName = data.getServerName();
-      remoteAddr = data.getRemoteAddr();
-      scheme = data.getScheme();
-      queryString = data.getQueryString();
-      requestURI = data.getRequestURI();
-      contextPath = data.getContextPath();
-      pathInfo = data.getPathInfo();
-      requestURL = data.getRequestURL();
-      servletPath = data.getServletPath();
+   public DummyServletRequest(HttpRequestData data, HttpServletRequest orig) {
+      if (data != null) {
+         serverName = data.getServerName();
+         remoteAddr = data.getRemoteAddr();
+         scheme = data.getScheme();
+         queryString = data.getQueryString();
+         requestURI = data.getRequestURI();
+         contextPath = data.getContextPath();
+         pathInfo = data.getPathInfo();
+         requestURL = data.getRequestURL();
+         servletPath = data.getServletPath();
+      } else {
+         serverName = orig.getServerName();
+         remoteAddr = orig.getRemoteAddr();
+         scheme = orig.getScheme();
+         queryString = orig.getQueryString();
+         requestURI = orig.getRequestURI();
+         contextPath = orig.getContextPath();
+         pathInfo = orig.getPathInfo();
+         requestURL = orig.getRequestURL();
+         servletPath = orig.getServletPath();
+      }
    }
 
    @Override

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.logitags.com  http://www.logitags.com/cibet/cibet-config_1.3.xsd">
+
+   <actuator name="LOADCONTROL">
+      <properties>
+        <!--loadControlCallback>com.logitags.cibet.jmeter.LoggingCallback</loadControlCallback-->
+         <threadCountMonitor.status>ON</threadCountMonitor.status>
+         <threadCountMonitor.shedThreshold>15</threadCountMonitor.shedThreshold>
+         <threadTimeMonitor.status>ON</threadTimeMonitor.status>
+         <responseTimeMonitor.status>ON</responseTimeMonitor.status>    
+         <threadContentionMonitor.status>ON</threadContentionMonitor.status>              
+         <throughputMonitor.status>ON</throughputMonitor.status>              
+      </properties>
+   </actuator>
+
+   <actuator name="LOADCONTROL2">
+      <class>com.logitags.cibet.actuator.loadcontrol.LoadControlActuator</class>
+      <properties>
+         <threadCountMonitor.status>ON</threadCountMonitor.status>
+         <threadTimeMonitor.status>ON</threadTimeMonitor.status>
+         <responseTimeMonitor.status>ON</responseTimeMonitor.status>    
+         <threadContentionMonitor.status>ON</threadContentionMonitor.status>              
+      </properties>
+   </actuator>
+
+   <setpoint id="SP1-servletFilter">
+      <controls>
+         <target>http://localhost:8788/*</target>
+      </controls>
+      <actuator name="LOADCONTROL"/>
+   </setpoint>
+
+   <setpoint id="SP2-javaMethod">
+      <controls>
+         <target>com.logitags.jmeter.MonitorTestClass</target>
+         <method>cibet*</method>
+      </controls>
+      <actuator name="LOADCONTROL"/>
+   </setpoint>
+   
+ 
+   <setpoint id="SP3-ejb">
+      <controls>
+         <target>com.logitags.jmeter.MonitorEjb</target>
+         <method>cibet*</method>
+      </controls>
+      <actuator name="LOADCONTROL2"/>
+   </setpoint>
+
+   <setpoint id="SP4-jpa">
+      <controls>
+         <!--target>SELECT a FROM JMEntity a*</target-->
+         <target>com.logitags.jmeter.JMEntity.SEL</target>
+      </controls>
+      <actuator name="LOADCONTROL2"/>
+   </setpoint>
+ 
+</cibet>

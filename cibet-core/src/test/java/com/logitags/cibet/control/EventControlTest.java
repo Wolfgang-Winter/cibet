@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
@@ -112,7 +114,7 @@ public class EventControlTest extends CoreTestBase {
       Setpoint sp2 = new Setpoint("head", sp);
       spB.add(sp2);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", null, null);
+      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.FIRST_RELEASE, res);
 
       Control eval = new EventControl();

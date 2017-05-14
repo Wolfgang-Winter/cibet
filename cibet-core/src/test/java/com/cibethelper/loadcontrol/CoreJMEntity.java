@@ -26,16 +26,16 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "CIB_JMENTITY")
-@NamedQueries({ @NamedQuery(name = JMEntity.DEL_ALL, query = "DELETE FROM JMEntity"),
-      @NamedQuery(name = JMEntity.SEL, query = "SELECT a FROM JMEntity a WHERE a.nameValue LIKE :nameValue AND a.owner LIKE :owner") })
-public class JMEntity implements Serializable {
+@NamedQueries({ @NamedQuery(name = CoreJMEntity.DEL_ALL, query = "DELETE FROM CoreJMEntity"),
+      @NamedQuery(name = CoreJMEntity.SEL, query = "SELECT a FROM CoreJMEntity a WHERE a.nameValue LIKE :nameValue AND a.owner LIKE :owner") })
+public class CoreJMEntity implements Serializable {
 
    /**
     * 
     */
    private static final long serialVersionUID = 1L;
-   public final static String DEL_ALL = "com.logitags.cibet.jmeter.JMEntity.DEL_ALL";
-   public final static String SEL = "com.logitags.cibet.jmeter.JMEntity.SEL";
+   public final static String DEL_ALL = "com.cibethelper.loadcontrol.CoreJMEntity.DEL_ALL";
+   public final static String SEL = "com.cibethelper.loadcontrol.CoreJMEntity.SEL";
 
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,10 +47,10 @@ public class JMEntity implements Serializable {
 
    private String owner;
 
-   public JMEntity() {
+   public CoreJMEntity() {
    }
 
-   public JMEntity(String nameValue, int counter, String owner) {
+   public CoreJMEntity(String nameValue, int counter, String owner) {
       this.nameValue = nameValue;
       this.counter = counter;
       this.owner = owner;
@@ -133,9 +133,9 @@ public class JMEntity implements Serializable {
     */
    @Override
    public boolean equals(Object obj) {
-      if (!(obj instanceof JMEntity))
+      if (!(obj instanceof CoreJMEntity))
          return false;
-      JMEntity t = (JMEntity) obj;
+      CoreJMEntity t = (CoreJMEntity) obj;
 
       return (id == t.getId() && counter == t.getCounter() && nameValue.equals(t.getNameValue())
             && owner.equals(t.getOwner()));

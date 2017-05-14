@@ -22,10 +22,11 @@
   	secured-annotations="enabled" 
   	pre-post-annotations="enabled" />
 
-	<sec:authentication-manager>
+	<sec:authentication-manager alias="authenticationManager">
     <sec:authentication-provider>
       <sec:user-service>
-        <sec:user name="Wursti" password="Wursti1" authorities="ROLE_USER, ROLE_MANAGER" />
+        <sec:user name="Abel" password="Abel" authorities="ROLE_USER" />
+        <sec:user name="Kain" password="Kain" authorities="ROLE_RELEASER" />
       </sec:user-service>
     </sec:authentication-provider>
   </sec:authentication-manager>

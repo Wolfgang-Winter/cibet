@@ -29,6 +29,13 @@
 			<scope>provided</scope>
 		</dependency>
 
+      <dependency>
+         <groupId>org.jboss.spec</groupId>
+         <artifactId>jboss-javaee-all-6.0</artifactId>
+         <version>3.0.3.Final</version>
+         <scope>provided</scope>
+      </dependency>
+
       <!-- TEST DEPENDENCIES -->
 
       <dependency>

@@ -114,7 +114,7 @@ public class ChainedActuatorIT extends AbstractArquillian {
 
    @Test
    public void chainArchive() throws Exception {
-      log.info("start chainArchive() ");
+      log.info("start chainArchive()");
       log.debug("EVRESZLT: " + Context.requestScope().getExecutedEventResult());
 
       List<String> schemes = new ArrayList<String>();

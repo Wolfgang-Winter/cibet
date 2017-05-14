@@ -166,23 +166,6 @@ public class Configuration {
    }
 
    private Configuration() {
-      try {
-         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-         ObjectName oname = new ObjectName(JMX_OBJECTNAME);
-         if (mbs.isRegistered(oname)) {
-            log.info("MBean " + oname.getCanonicalName() + " already registered");
-         } else {
-            log.info("start MBeanServer ...");
-            ConfigurationService mbean = new ConfigurationService();
-            JMXBeanWrapper wrappedBean = new JMXBeanWrapper(mbean);
-            mbs.registerMBean(wrappedBean, oname);
-            log.info("MBeanServer started and MBean " + oname.getCanonicalName() + " registered");
-         }
-
-      } catch (Exception e) {
-         log.warn("Failed to register ConfigurationService MBean: " + e.getMessage(), e);
-      }
-
       initialise();
    }
 
@@ -219,6 +202,24 @@ public class Configuration {
     */
    public synchronized void initialise() {
       log.info("initialise Configuration " + this);
+
+      try {
+         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+         ObjectName oname = new ObjectName(JMX_OBJECTNAME);
+         if (mbs.isRegistered(oname)) {
+            log.info("MBean " + oname.getCanonicalName() + " already registered");
+         } else {
+            log.info("start MBeanServer ...");
+            ConfigurationService mbean = new ConfigurationService();
+            JMXBeanWrapper wrappedBean = new JMXBeanWrapper(mbean);
+            mbs.registerMBean(wrappedBean, oname);
+            log.info("MBeanServer started and MBean " + oname.getCanonicalName() + " registered");
+         }
+
+      } catch (Exception e) {
+         log.warn("Failed to register ConfigurationService MBean: " + e.getMessage(), e);
+      }
+
       List<Cibet> cibets = readConfigurationFiles();
 
       initActuators(cibets);

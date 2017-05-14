@@ -13,6 +13,7 @@
 		<dependency>
 			<groupId>com.logitags</groupId>
 			<artifactId>cibet-shiro</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -24,11 +25,13 @@
 		<dependency>
 			<groupId>com.logitags</groupId>
 			<artifactId>cibet-jpa</artifactId>
+         <scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.logitags</groupId>
 			<artifactId>cibet-envers</artifactId>
+         <scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -40,6 +43,7 @@
 		<dependency>
 			<groupId>com.logitags</groupId>
 			<artifactId>cibet-springsecurity</artifactId>
+         <scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -52,6 +56,7 @@
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-core</artifactId>
 			<version>1.2.2</version>
+         <scope>test</scope>
          <exclusions>
             <exclusion>
                <artifactId>slf4j-api</artifactId>
@@ -64,6 +69,7 @@
 			<groupId>org.jboss.spec.javax.servlet</groupId>
 			<artifactId>jboss-servlet-api_3.0_spec</artifactId>
 			<version>1.0.0.Final</version>
+         <scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -71,6 +77,7 @@
 			<artifactId>cglib</artifactId>
 			<version>2.2.2</version>
 			<type>jar</type>
+         <scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -79,8 +86,6 @@
 			<version>3.0.3.Final</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- TEST DEPENDENCIES -->
 
 		<dependency>
 			<groupId>dumbster</groupId>
@@ -135,6 +140,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.7.21</version>
+         <scope>test</scope>
 		</dependency>
 		
       <!-- dependencies necessary for testing with hibernate -->
@@ -176,6 +182,101 @@
          <scope>provided</scope>
       </dependency>
 		
+      <dependency>
+         <groupId>org.apache.jmeter</groupId>
+         <artifactId>ApacheJMeter_java</artifactId>
+         <version>2.13</version>
+         <type>jar</type>
+         <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <artifactId>slf4j-nop</artifactId>
+               <groupId>org.slf4j</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>httpcore</artifactId>
+               <groupId>org.apache.httpcomponents</groupId>
+            </exclusion>
+            <exclusion>
+            	<artifactId>commons-math3</artifactId>
+            	<groupId>commons-math3</groupId>
+            </exclusion>
+            <exclusion>
+            	<artifactId>commons-pool2</artifactId>
+            	<groupId>commons-pool2</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.jmeter</groupId>
+         <artifactId>ApacheJMeter_http</artifactId>
+         <version>2.13</version>
+         <type>jar</type>
+         <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <artifactId>slf4j-nop</artifactId>
+               <groupId>org.slf4j</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>httpcore</artifactId>
+               <groupId>org.apache.httpcomponents</groupId>
+            </exclusion>
+            <exclusion>
+            	<artifactId>commons-math3</artifactId>
+            	<groupId>commons-math3</groupId>
+            </exclusion>
+            <exclusion>
+            	<artifactId>commons-pool2</artifactId>
+            	<groupId>commons-pool2</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+         
+      <dependency>
+         <groupId>org.apache.jmeter</groupId>
+         <artifactId>ApacheJMeter_core</artifactId>
+         <version>2.13</version>
+         <scope>test</scope>
+         <exclusions>
+            <exclusion>
+               <artifactId>slf4j-nop</artifactId>
+               <groupId>org.slf4j</groupId>
+            </exclusion>
+            <exclusion>
+               <artifactId>httpcore</artifactId>
+               <groupId>org.apache.httpcomponents</groupId>
+            </exclusion>
+            <exclusion>
+            	<artifactId>log4j-slf4j-impl</artifactId>
+            	<groupId>org.apache.logging.log4j</groupId>
+            </exclusion>
+            <exclusion>
+            	<artifactId>commons-math3</artifactId>
+            	<groupId>commons-math3</groupId>
+            </exclusion>
+            <exclusion>
+            	<artifactId>commons-pool2</artifactId>
+            	<groupId>commons-pool2</groupId>
+            </exclusion>
+         </exclusions>
+      </dependency>
+		
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-math3</artifactId>
+         <version>3.4.1</version>
+         <scope>test</scope>
+      </dependency>
+		
+      <dependency>
+         <groupId>org.apache.commons</groupId>
+         <artifactId>commons-pool2</artifactId>
+         <version>2.3</version>
+         <scope>test</scope>
+      </dependency>
+      		
 	</dependencies>
 
 	<dependencyManagement>
@@ -200,6 +301,7 @@
 
 	<build>
 		<plugins>
+		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -328,12 +430,12 @@
 						<version>2.16</version>
 						<configuration>
 							<includes>
-<!-- 								<include>**/*IT.java</include> -->
-<!-- 								<include>**/*Test.java</include> -->
-                        <include>com/logitags/cibet/sensor/jdbc/bridge/*.java</include>
-                        <include>com/logitags/cibet/sensor/jdbc/def/*.java</include>
-                        <include>com/logitags/cibet/sensor/jdbc/driver/*.java</include>
-                        <include>**/JdbcStatementIT.java</include>
+								<include>**/*IT.java</include>
+								<include>**/*Test.java</include>
+<!--                         <include>com/logitags/cibet/sensor/jdbc/bridge/*.java</include> -->
+<!--                         <include>com/logitags/cibet/sensor/jdbc/def/*.java</include> -->
+<!--                         <include>com/logitags/cibet/sensor/jdbc/driver/*.java</include> -->
+<!--                         <include>**/JdbcStatementIT.java</include> -->
 <!--                         <include>**/CibetStatementExUpIntegrationTest.java</include> -->
 							</includes>
 							<enableAssertions>false</enableAssertions>
@@ -628,7 +730,7 @@
                   <version>2.16</version>
                   <configuration>
                      <includes>
-                        <include>**/Tutorial5.java</include>
+                        <include>**/Tutorial6.java</include>
                      </includes>
                      <enableAssertions>false</enableAssertions>
                   </configuration>
@@ -636,6 +738,140 @@
 
             </plugins>
          </build>
+      </profile>
+
+      <profile>
+         <id>jmeter</id>
+         
+         <dependencies>
+            <dependency>
+               <groupId>com.logitags</groupId>
+               <artifactId>cibet-jpa</artifactId>
+               <version>${project.version}</version>
+            </dependency>
+         </dependencies>
+         
+         <build>
+         
+            <resources>
+               <resource>
+                  <directory>src/main/resources</directory>
+                  <excludes>
+                     <exclude>**/*</exclude>
+                  </excludes>
+               </resource>
+            </resources>
+            
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-compiler-plugin</artifactId>
+                  <version>2.3.2</version>
+                  <configuration>
+                     <source>1.8</source>
+                     <target>1.8</target>
+                     <testIncludes>
+                        <testInclude>**/JMEntity.java</testInclude>
+                        <testInclude>**/JMeterTestServlet.java</testInclude>
+                        <testInclude>**/MonitorTestClass.java</testInclude>
+                        <testInclude>**/MonitorEjb.java</testInclude>
+                        <testInclude>**/FallbackResponseCallback.java</testInclude>
+                        <testInclude>**/LoggingCallback.java</testInclude>
+                     </testIncludes>
+                  </configuration>
+               </plugin>
+
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-jar-plugin</artifactId>
+                  <version>2.4</version>
+                  <executions>
+                     <execution>
+                        <goals>
+                           <goal>test-jar</goal>
+                        </goals>
+                        <configuration>
+                           <finalName>fallback</finalName>
+                           <includes>
+                              <include>**/FallbackResponseCallback.class</include>
+                              <include>**/LoggingCallback.class</include>
+                           </includes>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-war-plugin</artifactId>
+                  <version>3.1.0</version>
+                  <executions>
+                     <execution>
+                        <id>build</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                           <goal>war</goal>
+                        </goals>
+                     </execution>
+                  </executions>
+                  <configuration>
+                     <warName>lcTestApplication</warName>
+                     <primaryArtifact>false</primaryArtifact>
+                     <webappDirectory>${project.build.directory}/lcTestApplication</webappDirectory>
+                     <webXml>${basedir}/src/test/resources/tutorial/jmeter/web.xml</webXml>
+                     <webResources>
+                        <resource>
+                           <directory>${basedir}/target/test-classes</directory>
+                           <targetPath>WEB-INF/classes</targetPath>
+                           <includes>
+                              <include>**/JMEntity.class</include>
+                              <include>**/JMeterTestServlet.class</include>
+                              <include>**/MonitorTestClass.class</include>
+                              <include>**/MonitorEjb.class</include>
+                           </includes>
+                        </resource>
+                        <resource>
+                           <directory>${basedir}/src/test/resources/tutorial/jmeter</directory>
+                           <targetPath>WEB-INF/classes/META-INF</targetPath>
+                           <includes>
+                              <include>persistence.xml</include>
+                              <include>aop.xml</include>
+                           </includes>
+                        </resource>
+                        <resource>
+                           <directory>${basedir}/src/test/resources/tutorial/jmeter</directory>
+                           <targetPath>WEB-INF/classes</targetPath>
+                           <includes>
+                              <include>cibet-config.xml</include>
+                           </includes>
+                        </resource>
+                        <resource>
+                           <directory>${basedir}/src/test/resources/tutorial/jmeter</directory>
+                           <targetPath>/WEB-INF</targetPath>
+                           <includes>
+                              <include>ejb-jar.xml</include>
+                           </includes>
+                        </resource>
+                        <resource>
+                           <directory>${basedir}/src/test/resources/tutorial/jmeter</directory>
+                           <targetPath>/</targetPath>
+                           <includes>
+                              <include>index.html</include>
+                           </includes>
+                        </resource>
+                        <resource>
+                           <directory>${project.build.directory}</directory>
+                           <targetPath>WEB-INF/lib</targetPath>
+                           <includes>
+                              <include>fallback-tests.jar</include>
+                           </includes>
+                        </resource>
+                     </webResources>
+                  </configuration>              
+               </plugin>            
+            </plugins>
+         </build>
+         
       </profile>
 
 	</profiles>

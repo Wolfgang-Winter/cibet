@@ -6,17 +6,6 @@
       
 	<display-name>Cibet Tutorial</display-name>
 
-<!--
-	<filter>
-		<filter-name>cibetContextFilter</filter-name>
-		<filter-class>com.logitags.cibet.context.CibetContextFilter</filter-class>
-	</filter>
-
-	<filter-mapping>
-		<filter-name>cibetContextFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
--->
 	<servlet>
 		<servlet-name>TutorialServlet</servlet-name>
 		<servlet-class>com.logitags.cibet.tutorial.TutorialServlet5</servlet-class>

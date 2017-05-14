@@ -437,7 +437,8 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
 
       // 2. Create CibetFilterInvocation
       CibetFilterInvocation filterInv = new CibetFilterInvocation(
-            new DummyServletRequest(resource.getHttpRequestData()), new DummyServletResponse(), new DummyFilterChain());
+            new DummyServletRequest(resource.getHttpRequestData(), resource.getHttpRequest()),
+            new DummyServletResponse(), new DummyFilterChain());
 
       if (urlAccessExpression) {
          log.debug("create CibetFilterInvocation with access expression rule: " + urlAccess);

@@ -41,6 +41,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
@@ -184,6 +186,26 @@ public class Resource implements Serializable {
    private HttpRequestData httpRequestData;
 
    /**
+    * HTTP request in case of http HTTP-FILTER requests, otherwise null.
+    */
+   @Transient
+   private transient HttpServletRequest httpRequest;
+
+   public HttpServletRequest getHttpRequest() {
+      return httpRequest;
+   }
+
+   public HttpServletResponse getHttpResponse() {
+      return httpResponse;
+   }
+
+   /**
+    * HTTP response in case of http HTTP-FILTER requests, otherwise null.
+    */
+   @Transient
+   private transient HttpServletResponse httpResponse;
+
+   /**
     * a handler to which Resource-specific logic is delegated.
     */
    @Transient
@@ -324,7 +346,7 @@ public class Resource implements Serializable {
    }
 
    /**
-    * constructor used for http ServletFilter resources
+    * constructor used for http proxy resources
     * 
     * @param rh
     * @param targ
@@ -336,6 +358,23 @@ public class Resource implements Serializable {
       targetType = targ;
       method = meth;
       httpRequestData = r;
+   }
+
+   /**
+    * constructor used for http ServletFilter resources
+    * 
+    * @param rh
+    * @param targ
+    * @param meth
+    * @param r
+    */
+   public Resource(Class<? extends ResourceHandler> rh, String targ, String meth, HttpServletRequest r,
+         HttpServletResponse response) {
+      resourceHandlerClass = rh.getName();
+      targetType = targ;
+      method = meth;
+      httpRequest = r;
+      httpResponse = response;
    }
 
    private void resolveTargetType(Object o) {

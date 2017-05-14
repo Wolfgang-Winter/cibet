@@ -1,0 +1,54 @@
+<html><head></head><body></p></p><h1>  LoadControl TestServlet</h1><br>
+call the servlet with http://localhost:8788/cibetJMeter/?loops=100&amp;test=calc&amp;param2=100<br>
+where 'test' is the name of one of the test methods<br> 
+and 'loops' is the number of loops that are executed within the method<br>
+and 'param2' is used only in some methods<br><br>
+<h2>Test methods</h2>
+<h3>Setpoint SP1-servletFilter</h3>
+calc - executes a Math calculation in a loop<br>
+calc2 - same as calc, but irregularly sleeps before looping. This allows different offsets of multi threaded requests. param2 is the sleep time in ms<br>
+io - writes into a file in a loop. Each thread writes into an own file<br>
+ioLog - an info message is written with log4j in a loop. On each loop, the thread sleeps for param2 ms.<br>
+ioLogLocal - same as io, but sleeps in each loop for param2 ms<br>
+mem - a String is added to a list in a loop<br>
+mem2 - a long String is added to a list in a loop. In each loop some elements of the list are replaced as food for garbage collection<br>
+
+<b>Synchronized:</b><br>
+syncCalc - same as calc, but as synchronized method<br> 
+syncIo - same as calc, but as synchronized method<br>
+calcSync - replaces a value in a synchronized map in a loop<br>
+calcSync2 - arbitrarily either calls calcSync or increases a counter depending on param2 which must be between 0 and 1. If param2 = 0, 
+always the counter is increased, if param2 = 1 always calcSync is called.<br>           
+ioSync - an info message is written with log4j in a loop<br>
+ioSync2 - arbitrarily either calls ioSync or writes into a file in a loop depending on param2 which must be between 0 and 1. If param2 = 0, 
+always writes into a file, if param2 = 1 always ioSync is called. Each thread has an own file.<br>
+ 
+<h3>Setpoint SP2-javaMethod</h3>
+cibetCalc - like calc<br>
+cibetIo - like io<br>
+cibetMem - like mem<br>
+cibetMem2 - like mem2<br>
+cibetCalcSync - like calcSync<br>
+cibetIoSync - like ioSync<br>
+syncCibetCalc - like cibetCalc but synchronized<br>
+syncCibetIo - like cibetIo but synchronized<br>
+
+<h3>Setpoint SP2-javaMethod + SP4-jpa</h3>
+cibetSelect - Executes a JPA SELECT query on a database table<br>
+
+<h3>Setpoint SP3-ejb</h3> 
+ejbCalc - executes calc<br>
+ejbIo - executes io<br>
+ejbInsert - Executes a JPA INSERT query in a loop<br>
+
+<h3>Setpoint SP3-ejb + SP4-jpa</h3> 
+ejbSelect - Executes a JPA SELECT query on a database table<br>
+
+<h3>Setpoint SP2-javaMethod + SP3-ejb</h3> 
+ejbCibetCalc - executes cibetCalc<br>
+ejbCibetIo - executes cibetIo<br>
+
+<h3>Setpoint SP2-javaMethod + SP3-ejb + Setpoint SP4-jpa</h3> 
+ejbCibetSelect - executes ejbSelect<br>
+
+</body></html>

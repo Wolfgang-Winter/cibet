@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.logitags.com  http://www.logitags.com/cibet/cibet-config_1.3.xsd">
+
+   <actuator name="LOADCONTROL">
+      <properties>
+         <loadControlCallback>com.logitags.jmeter.LoggingCallback</loadControlCallback>
+         <threadCountMonitor.status>ON</threadCountMonitor.status>
+         <threadCountMonitor.shedThreshold>9</threadCountMonitor.shedThreshold>
+         
+         <memoryMonitor.status>ON</memoryMonitor.status>
+         <memoryMonitor.collectionUsageAlarmThreshold>60%</memoryMonitor.collectionUsageAlarmThreshold>
+         <memoryMonitor.usageAlarmThreshold>85%</memoryMonitor.usageAlarmThreshold>
+      </properties>
+   </actuator>
+
+   <setpoint id="SP1-servletFilter">
+      <controls>
+         <target>http://localhost:8788/*</target>
+      </controls>
+      <actuator name="LOADCONTROL"/>
+   </setpoint>
+ 
+</cibet>

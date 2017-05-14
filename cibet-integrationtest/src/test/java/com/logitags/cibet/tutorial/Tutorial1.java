@@ -65,13 +65,18 @@ public class Tutorial1 {
 
       archive.addClasses(Person.class, Address.class, TutorialServlet1.class);
 
-      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withTransitivity()
+      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withoutTransitivity()
             .asFile();
       archive.addAsLibraries(cibet);
+
+      File[] spring = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-springsecurity")
+            .withTransitivity().asFile();
+      archive.addAsLibraries(spring);
 
       archive.addAsWebInfResource("tutorial/persistence-it1.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
       archive.addAsWebInfResource("tutorial/config.xml", "classes/cibet-config.xml");
+      archive.addAsWebInfResource("spring-context_1.xml", "classes/spring-context.xml");
 
       log.debug(archive.toString(true));
       archive.as(ZipExporter.class).exportTo(new File("target/" + warName), true);
@@ -136,6 +141,103 @@ public class Tutorial1 {
       response = client.execute(get);
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       readResponseBody(response);
+   }
+
+   @Test
+   public void spring1() throws Exception {
+      log.info("start spring1()");
+
+      // login
+      CloseableHttpClient client = HttpClients.createDefault();
+      HttpGet get = new HttpGet(BASEURL + "/loginSpring?USER=Abel&ROLE=persister&TENANT=SpringTest");
+      HttpResponse response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      readResponseBody(response);
+
+      // persist
+      get = new HttpGet(BASEURL + "/persist");
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      String id = readResponseBody(response);
+      Assert.assertNotNull(id);
+
+      // check that Person is not persisted
+      get = new HttpGet(BASEURL + "/loadPerson?expected=0");
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      String answer = readResponseBody(response);
+      Assert.assertEquals("no Person found", answer);
+
+      // login release user
+      get = new HttpGet(BASEURL + "/loginSpring?USER=Kain&ROLE=releaser&TENANT=SpringTest");
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      readResponseBody(response);
+
+      // release
+      get = new HttpGet(BASEURL + "/release");
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      readResponseBody(response);
+
+      // check that Person is persisted now
+      get = new HttpGet(BASEURL + "/loadPerson?expected=1");
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      answer = readResponseBody(response);
+      Assert.assertNotEquals("no Person found", answer);
+
+      // log off
+      get = new HttpGet(BASEURL + "/logoffSpring");
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+   }
+
+   @Test
+   public void locker1() throws Exception {
+      log.info("start locker1()");
+
+      // start batch
+      CloseableHttpClient client = HttpClients.createDefault();
+      HttpGet get = new HttpGet(BASEURL + "/batch");
+      HttpResponse response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      String answer = readResponseBody(response);
+      String[] ids = answer.split(":");
+
+      // now log in as another user
+      get = new HttpGet(BASEURL + "/loginSpring?USER=Kain&ROLE=releaser&TENANT=LockTest");
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      readResponseBody(response);
+
+      // try to load a Person
+      get = new HttpGet(BASEURL + "/findPerson");
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      answer = readResponseBody(response);
+      Assert.assertEquals("denied", answer);
+
+      // try to execute persist method
+      get = new HttpGet(BASEURL + "/persist");
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      answer = readResponseBody(response);
+      Assert.assertEquals("invoke of method persist denied", answer);
+
+      // now unlock
+      get = new HttpGet(BASEURL + "/unlock?LOCK1=" + ids[0] + "&LOCK2=" + ids[1]);
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      answer = readResponseBody(response);
+      Assert.assertEquals("unlocked completed", answer);
+
+      // try again to load a Person
+      get = new HttpGet(BASEURL + "/findPerson");
+      response = client.execute(get);
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+      answer = readResponseBody(response);
+      Assert.assertNotEquals("denied", answer);
    }
 
 }

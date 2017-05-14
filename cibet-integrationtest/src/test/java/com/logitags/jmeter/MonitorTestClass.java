@@ -22,7 +22,7 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.cibethelper.loadcontrol;
+package com.logitags.jmeter;
 
 import static java.lang.Math.atan;
 import static java.lang.Math.tan;
@@ -44,7 +44,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.io.IOUtils;
@@ -420,46 +419,9 @@ public class MonitorTestClass {
       return ioSync(count, param2);
    }
 
-   public void insertJMEntity(int nr) {
-      Random rnd = new Random(new Date().getTime());
-
-      if (fac == null) {
-         fac = Persistence.createEntityManagerFactory("localTest");
-      }
-
-      EntityManager em = fac.createEntityManager();
-      em.getTransaction().begin();
-
-      for (int i = 1; i < nr; i++) {
-         int i1 = rnd.nextInt(999);
-         int i2 = rnd.nextInt(999);
-
-         CoreJMEntity ent = new CoreJMEntity("nameValue" + i1, i1, "owner" + i2);
-         em.persist(ent);
-      }
-      em.getTransaction().commit();
-      em.close();
-   }
-
-   public void deleteJMEntity() {
-      if (fac == null) {
-         fac = Persistence.createEntityManagerFactory("localTest");
-      }
-
-      EntityManager em = fac.createEntityManager();
-      em.getTransaction().begin();
-
-      Query q = em.createQuery("delete from CoreJMEntity");
-      int nr = q.executeUpdate();
-      log.info(nr + " db entries deleted");
-
-      em.getTransaction().commit();
-      em.close();
-   }
-
    public String cibetSelect(int count, String param2) {
       if (fac == null) {
-         fac = Persistence.createEntityManagerFactory("localTest");
+         fac = Persistence.createEntityManagerFactory("CibetLocal-Derby");
       }
 
       EntityManager em = fac.createEntityManager();
@@ -469,19 +431,19 @@ public class MonitorTestClass {
       int i1 = rnd.nextInt(999);
       int i2 = rnd.nextInt(999);
 
-      TypedQuery<CoreJMEntity> q = em.createNamedQuery(CoreJMEntity.SEL, CoreJMEntity.class);
+      TypedQuery<JMEntity> q = em.createNamedQuery(JMEntity.SEL, JMEntity.class);
       q.setParameter("nameValue", "%" + i1 + "%");
       q.setParameter("owner", "%" + i2 + "%");
 
-      List<CoreJMEntity> list = q.getResultList();
+      List<JMEntity> list = q.getResultList();
       String str = "";
-      for (CoreJMEntity jm : list) {
+      for (JMEntity jm : list) {
          str += jm.getOwner().substring(0, 2);
       }
 
       em.getTransaction().commit();
       em.close();
-      return list.size() + " CoreJMEntity objects selected with nameValue like " + i1 + " and owner like " + i2 + ": "
+      return list.size() + " JMEntity objects selected with nameValue like " + i1 + " and owner like " + i2 + ": "
             + str;
    }
 

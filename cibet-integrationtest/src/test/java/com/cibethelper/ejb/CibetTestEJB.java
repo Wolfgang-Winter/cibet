@@ -394,19 +394,35 @@ public class CibetTestEJB {
       TEntity t2 = new TEntity("nam2", 45, "own2");
       TComplexEntity c = new TComplexEntity();
       c.setOwner("myOwner");
-      list.add(Context.requestScope().getExecutedEventResult());
+      EventResult e1 = Context.requestScope().getExecutedEventResult();
+      list.add(e1);
+      log.debug("added ER: " + e1);
+
       c.addLazyList(t1);
-      list.add(Context.requestScope().getExecutedEventResult());
+      EventResult e2 = Context.requestScope().getExecutedEventResult();
+      list.add(e2);
+      log.debug("added ER: " + e2);
+
       c.setTen(t2);
-      list.add(Context.requestScope().getExecutedEventResult());
+      EventResult e3 = Context.requestScope().getExecutedEventResult();
+      list.add(e3);
+      log.debug("added ER: " + e3);
+
       c.setStatValue(88);
-      list.add(Context.requestScope().getExecutedEventResult());
+      EventResult e4 = Context.requestScope().getExecutedEventResult();
+      list.add(e4);
+      log.debug("added ER: " + e4);
 
       // log.debug("persist in CibetTestEJB: " + c);
       applEman.persist(c);
-      list.add(Context.requestScope().getExecutedEventResult());
+      EventResult e5 = Context.requestScope().getExecutedEventResult();
+      list.add(e5);
+      log.debug("added ER: " + e5);
+
       long id = c.getId();
-      list.add(Context.requestScope().getExecutedEventResult());
+      EventResult e6 = Context.requestScope().getExecutedEventResult();
+      list.add(e6);
+      log.debug("added ER: " + e6);
       return list;
    }
 

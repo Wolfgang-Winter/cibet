@@ -73,13 +73,10 @@ public class InvokerControl extends AbstractControl {
                // a method of a class
                int index = clude.lastIndexOf(".");
                if (index < 0) {
-                  String msg = "failed to execute Invoker evaluation: " + "includeInvoker/excludeInvoker tag value "
-                        + clude + " is invalid";
-                  log.error(msg);
-                  throw new RuntimeException(msg);
+                  return false;
                }
                String classname = clude.substring(0, index);
-               String methodname = clude.substring(index + 1, clude.length() - 2);
+               String methodname = clude.substring(index + 1);
                if (methodname.endsWith("()")) {
                   methodname = methodname.substring(0, methodname.length() - 2);
                }
@@ -131,7 +128,7 @@ public class InvokerControl extends AbstractControl {
    private boolean evaluateTraceInvokers(BooleanAttributedControlValue controlValue, StackTraceElement[] traces) {
       if (log.isDebugEnabled()) {
          for (StackTraceElement trace : traces) {
-            log.debug(trace.toString());
+            log.debug(trace.getClassName() + "." + trace.getMethodName());
          }
       }
 

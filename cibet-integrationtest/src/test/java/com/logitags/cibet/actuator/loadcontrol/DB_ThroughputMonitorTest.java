@@ -69,6 +69,7 @@ public class DB_ThroughputMonitorTest {
    @AfterClass
    public static void afterClass() {
       mon.deleteJMEntity();
+      Configuration.instance().close();
    }
 
    @Test

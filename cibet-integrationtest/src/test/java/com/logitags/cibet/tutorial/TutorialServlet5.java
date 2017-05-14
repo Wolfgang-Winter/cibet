@@ -123,10 +123,6 @@ public class TutorialServlet5 extends HttpServlet {
       person.getAddresses().add(new Address("Hamburg"));
       person.getAddresses().add(new Address("Aachen"));
 
-      // req.getSession().setAttribute("CIBET_USER", "Mausi");
-      // req.getSession().setAttribute("CIBET_SCHEDULEDDATE", 3);
-      // req.getSession().setAttribute("CIBET_SCHEDULEDFIELD", Calendar.SECOND);
-      // req.getSession().setAttribute("CIBET_REMARK", "This is scheduled");
       Context.requestScope().setScheduledDate(Calendar.SECOND, 3);
       Context.requestScope().setRemark("This is scheduled");
       Context.sessionScope().setUser("Mausi");

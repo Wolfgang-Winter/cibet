@@ -1,0 +1,7 @@
+<aspectj>
+   <aspects>
+     <concrete-aspect name="JMeterAspectTest" extends="com.logitags.cibet.sensor.pojo.CustomAspect">
+         <pointcut name="cibetIntercept" expression="target(com.logitags.jmeter.MonitorTestClass) &amp;&amp; execution(public String cibet*(int, String))"/>
+     </concrete-aspect>
+   </aspects>
+</aspectj>

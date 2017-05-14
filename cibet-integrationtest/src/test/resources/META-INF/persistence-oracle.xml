@@ -49,7 +49,7 @@
       <class>com.cibethelper.entities.TEntity</class>
       <class>com.cibethelper.entities.TComplexEntity</class>
       <class>com.cibethelper.entities.TComplexEntity2</class>
-      <class>com.cibethelper.loadcontrol.JMEntity</class>
+      <class>com.cibethelper.loadcontrol.CoreJMEntity</class>
       <class>com.cibethelper.AuditedTEntity</class>
       <class>com.cibethelper.AuditedTComplexEntity</class>
       

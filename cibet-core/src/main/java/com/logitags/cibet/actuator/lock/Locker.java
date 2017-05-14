@@ -153,6 +153,9 @@ public abstract class Locker {
     * @param lo
     */
    public static synchronized void removeLock(LockedObject lo) {
+      if (lo == null) {
+         throw new IllegalArgumentException("LockedObject must not be null");
+      }
       if (!Context.internalRequestScope().getEntityManager().contains(lo)) {
          lo = Context.internalRequestScope().getEntityManager().merge(lo);
       }
@@ -169,6 +172,9 @@ public abstract class Locker {
     *            when the actual user is not allowed to unlock.
     */
    public static synchronized void removeLockStrict(LockedObject lo) {
+      if (lo == null) {
+         throw new IllegalArgumentException("LockedObject must not be null");
+      }
       if (!lo.getLockedBy().equals(Context.internalSessionScope().getUser())) {
          String msg = Context.internalSessionScope().getUser() + " is not allowed to unlock LockedObject "
                + lo.getLockedObjectId() + " locked by " + lo.getLockedBy();
@@ -187,6 +193,9 @@ public abstract class Locker {
     *           optional unlock remark
     */
    public static synchronized void unlock(LockedObject lo, String remark) {
+      if (lo == null) {
+         throw new IllegalArgumentException("LockedObject must not be null");
+      }
       lo.setLockState(LockState.UNLOCKED);
       lo.setUnlockDate(new Date());
       lo.setUnlockedBy(Context.internalSessionScope().getUser());
@@ -206,6 +215,9 @@ public abstract class Locker {
     *            when the actual user is not allowed to unlock.
     */
    public static synchronized void unlockStrict(LockedObject lo, String remark) {
+      if (lo == null) {
+         throw new IllegalArgumentException("LockedObject must not be null");
+      }
       if (!lo.getLockedBy().equals(Context.internalSessionScope().getUser())) {
          String msg = Context.internalSessionScope().getUser() + " is not allowed to unlock LockedObject "
                + lo.getLockedObjectId() + " locked by " + lo.getLockedBy();
