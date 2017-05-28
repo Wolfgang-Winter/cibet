@@ -65,9 +65,7 @@ import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.jndi.EjbLookup;
-import com.logitags.cibet.resource.HttpRequestData;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -248,8 +246,7 @@ public class CibetProxy extends HttpFiltersAdapter {
       }
 
       HttpRequestData httpData = new HttpRequestData(host, querystring, requestURI);
-      Resource resource = new Resource(HttpRequestResourceHandler.class, targetUrl, methodName, httpData);
-      resource.setInvokerClass(HttpRequestInvoker.class.getName());
+      HttpRequestResource resource = new HttpRequestResource(targetUrl, methodName, httpData);
       addHeaders(request.headers(), resource);
 
       String contentType = request.headers().get("Content-Type");
@@ -261,7 +258,7 @@ public class CibetProxy extends HttpFiltersAdapter {
       return metadata;
    }
 
-   private void addParameters(String querystring, String body, String contentType, Resource resource) {
+   private void addParameters(String querystring, String body, String contentType, HttpRequestResource resource) {
       if (querystring != null) {
          Map<String, List<String>> params = splitQuery(querystring);
          for (Entry<String, List<String>> entry : params.entrySet()) {
@@ -323,7 +320,7 @@ public class CibetProxy extends HttpFiltersAdapter {
       }
    }
 
-   private void addHeaders(HttpHeaders headers, Resource resource) {
+   private void addHeaders(HttpHeaders headers, HttpRequestResource resource) {
       log.debug("HTTP HEADERS:");
       for (String name : headers.names()) {
          if (name.toUpperCase().startsWith("CIBET_"))
@@ -611,7 +608,7 @@ public class CibetProxy extends HttpFiltersAdapter {
    @Override
    public void proxyToServerConnectionSucceeded(ChannelHandlerContext serverCtx) {
       log(serverCtx, "proxyToServerConnectionSucceeded");
-      if ("CONNECT".equals(metadata.getResource().getMethod())) {
+      if ("CONNECT".equals(((HttpRequestResource) metadata.getResource()).getMethod())) {
          stop(null);
       }
    }

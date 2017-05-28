@@ -67,6 +67,7 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.sensor.jdbc.bridge.JdbcBridgeEntityManager;
+import com.logitags.cibet.sensor.jdbc.driver.JdbcResource;
 
 @RunWith(Arquillian.class)
 public class JdbcStatementIT extends DBHelper {
@@ -162,7 +163,8 @@ public class JdbcStatementIT extends DBHelper {
 
       conn.commit();
 
-      rs = query("select * from cib_archive order by createDate");
+      rs = query(
+            "select a.*, r.primarykeyid, r.targettype, r.target from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createDate");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
@@ -204,7 +206,7 @@ public class JdbcStatementIT extends DBHelper {
       List<Archive> list = ArchiveLoader.loadArchives();
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
-      Assert.assertEquals("5", list.get(0).getResource().getPrimaryKeyId());
+      Assert.assertEquals("5", ((JdbcResource) list.get(0).getResource()).getPrimaryKeyId());
 
       List<DcControllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
@@ -267,9 +269,11 @@ public class JdbcStatementIT extends DBHelper {
 
       List<Archive> list = ArchiveLoader.loadArchives();
       Assert.assertEquals(2, list.size());
-      Assert.assertEquals(list.get(0).getResource().getPrimaryKeyId(), list.get(1).getResource().getPrimaryKeyId());
+      Assert.assertEquals(((JdbcResource) list.get(0).getResource()).getPrimaryKeyId(),
+            ((JdbcResource) list.get(1).getResource()).getPrimaryKeyId());
 
-      TEntity te = applEman.find(TEntity.class, Long.parseLong(list.get(0).getResource().getPrimaryKeyId()));
+      TEntity te = applEman.find(TEntity.class,
+            Long.parseLong(((JdbcResource) list.get(0).getResource()).getPrimaryKeyId()));
       Assert.assertNotNull(te);
       ejb.unregisterSetpoint(id);
    }

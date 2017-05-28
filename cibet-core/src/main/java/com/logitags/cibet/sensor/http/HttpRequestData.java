@@ -22,7 +22,7 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.resource;
+package com.logitags.cibet.sensor.http;
 
 import java.io.Serializable;
 

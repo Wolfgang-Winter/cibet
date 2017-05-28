@@ -48,8 +48,10 @@ import com.logitags.cibet.sensor.jdbc.def.EntityDefinition;
 import com.logitags.cibet.sensor.jdbc.def.EventResultDefinition;
 import com.logitags.cibet.sensor.jdbc.def.LockedObjectDefinition;
 import com.logitags.cibet.sensor.jdbc.def.PseudoEntityDefinition;
+import com.logitags.cibet.sensor.jdbc.def.ResourceDefinition;
 import com.logitags.cibet.sensor.jdbc.driver.CibetConnection;
 import com.logitags.cibet.sensor.jdbc.driver.CibetJdbcException;
+import com.logitags.cibet.sensor.jdbc.driver.JdbcResource;
 
 /**
  * An EntityManager that translates from JPA API to JDBC API. It is not for general use. It can only be used for
@@ -169,11 +171,13 @@ public class JdbcBridgeEntityManager implements EntityManager {
       DcControllableDefinition dcDef = DcControllableDefinition.getInstance();
       LockedObjectDefinition loDef = LockedObjectDefinition.getInstance();
       EventResultDefinition erDef = EventResultDefinition.getInstance();
+      ResourceDefinition rDef = ResourceDefinition.getInstance();
 
       registerEntityDefinition(Archive.class, arDef);
       registerEntityDefinition(DcControllable.class, dcDef);
       registerEntityDefinition(LockedObject.class, loDef);
       registerEntityDefinition(EventResult.class, erDef);
+      registerEntityDefinition(JdbcResource.class, rDef);
       isRegistered = true;
    }
 

@@ -35,7 +35,7 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.diff.Difference;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 /**
  * API for the cibet component
@@ -263,20 +263,20 @@ public abstract class ArchiveLoader {
       Map<Archive, List<Difference>> map = new TreeMap<Archive, List<Difference>>(comp);
       map.put(array[0], Collections.<Difference> emptyList());
       for (int i = 1; i < array.length; i++) {
-         if (!(array[i].getResource().getResourceHandler() instanceof JpaResourceHandler)) {
+         if (!(array[i].getResource() instanceof JpaResource)) {
             // only analyze differences of JPA entities
             map.put(array[i], Collections.<Difference> emptyList());
             continue;
          }
          int li = i - 1;
          Archive lastArchive = array[li];
-         while ((!(lastArchive.getResource().getResourceHandler() instanceof JpaResourceHandler)
+         while ((!(lastArchive.getResource() instanceof JpaResource)
                || lastArchive.getExecutionStatus() != ExecutionStatus.EXECUTED) && li > 0) {
             li = li - 1;
             lastArchive = array[li];
          }
 
-         if (!(lastArchive.getResource().getResourceHandler() instanceof JpaResourceHandler)
+         if (!(lastArchive.getResource() instanceof JpaResource)
                || lastArchive.getExecutionStatus() != ExecutionStatus.EXECUTED) {
             map.put(array[i], Collections.<Difference> emptyList());
             continue;
@@ -312,7 +312,8 @@ public abstract class ArchiveLoader {
       params.add(Context.sessionScope().getTenant());
       params.add(entityClass.getName());
       StringBuffer sql = new StringBuffer();
-      sql.append("SELECT a.* FROM CIB_ARCHIVE a WHERE a.TENANT = ? AND a.TARGETTYPE = ?");
+      sql.append(
+            "SELECT a.* FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and a.TENANT = ? AND r.TARGETTYPE = ?");
 
       if (properties != null) {
          for (Entry<String, Object> entry : properties.entrySet()) {
@@ -322,7 +323,7 @@ public abstract class ArchiveLoader {
             params.add(entry.getKey());
             sql.append(" AND p.STRINGVALUE = ?");
             params.add(value);
-            sql.append(" AND p.ARCHIVEID = a.ARCHIVEID");
+            sql.append(" AND p.RESOURCEID = a.RESOURCEID");
             sql.append(")");
          }
       }

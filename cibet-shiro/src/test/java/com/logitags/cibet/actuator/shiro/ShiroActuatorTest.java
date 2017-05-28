@@ -36,9 +36,8 @@ import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 /**
  * add -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9. jar to java command
@@ -123,7 +122,7 @@ public class ShiroActuatorTest extends CoreTestBase {
    public void beforeHttpNoRuleShiro() {
       log.debug("start beforeHttpNoRuleShiro");
       ShiroActuator act = new ShiroActuator();
-      Resource res = new Resource(HttpRequestResourceHandler.class, "http://localhost/dom", "GET", null);
+      HttpRequestResource res = new HttpRequestResource("http://localhost/dom", "GET", null);
       EventMetadata ctx = new EventMetadata(ControlEvent.DELETE, res);
       act.beforeEvent(ctx);
       Assert.assertNull(ctx.getException());
@@ -139,7 +138,7 @@ public class ShiroActuatorTest extends CoreTestBase {
       col.add("ROLE_USER");
       ShiroActuator act = new ShiroActuator();
       act.setHasAllRoles(col);
-      Resource res = new Resource(HttpRequestResourceHandler.class, "http://localhost/dom", "GET", null);
+      HttpRequestResource res = new HttpRequestResource("http://localhost/dom", "GET", null);
       EventMetadata ctx = new EventMetadata(ControlEvent.DELETE, res);
 
       act.beforeEvent(ctx);
@@ -290,7 +289,7 @@ public class ShiroActuatorTest extends CoreTestBase {
       act.setRequiresUser(null);
       act.setThrowDeniedException(true);
 
-      Resource res = new Resource(JpaResourceHandler.class, new TEntity());
+      JpaResource res = new JpaResource(new TEntity());
       EventMetadata meta = new EventMetadata(ControlEvent.PERSIST, res);
       act.beforeEvent(meta);
       Assert.assertEquals(ExecutionStatus.DENIED, meta.getExecutionStatus());
@@ -307,7 +306,7 @@ public class ShiroActuatorTest extends CoreTestBase {
       Context.sessionScope().setSecondUser("secondU");
       Context.internalSessionScope().setProperty(InternalSessionScope.SECOND_PRINCIPAL,
             new Subject.Builder().buildSubject());
-      Resource res = new Resource(JpaResourceHandler.class, new TEntity());
+      JpaResource res = new JpaResource(new TEntity());
       EventMetadata meta = new EventMetadata(ControlEvent.PERSIST, res);
       act.beforeEvent(meta);
       Assert.assertEquals(ExecutionStatus.EXECUTING, meta.getExecutionStatus());

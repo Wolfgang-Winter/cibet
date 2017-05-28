@@ -101,7 +101,8 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
       Context.end();
       Context.start();
 
-      rs = query("select * from cib_dccontrollable");
+      rs = query(
+            "select d.*, r.primarykeyid, r.targettype, r.target from cib_dccontrollable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
@@ -132,7 +133,8 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
       Context.end();
       Context.start();
 
-      rs = query("select * from cib_dccontrollable");
+      rs = query(
+            "select d.*, r.primarykeyid, r.targettype, r.target from cib_dccontrollable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("8", rs.getString("PRIMARYKEYID"));

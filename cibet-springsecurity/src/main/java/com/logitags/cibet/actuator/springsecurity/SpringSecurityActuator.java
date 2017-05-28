@@ -16,6 +16,8 @@ package com.logitags.cibet.actuator.springsecurity;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,8 +47,9 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
+import com.logitags.cibet.resource.ResourceParameter;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 /**
  *
@@ -110,15 +113,24 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
     */
    @Override
    public void beforeEvent(EventMetadata ctx) {
-      if (ctx.getResource().getResourceHandler() instanceof HttpRequestResourceHandler) {
-         beforeHttp(ctx, ctx.getResource());
+      if (ctx.getResource() instanceof HttpRequestResource) {
+         beforeHttp(ctx, (HttpRequestResource) ctx.getResource());
       } else {
          Object[] arguments = new Object[ctx.getResource().getParameters().size()];
-         for (int i = 0; i < ctx.getResource().getParameters().size(); i++) {
-            arguments[i] = ctx.getResource().getParameters().get(i).getUnencodedValue();
+         int i = 0;
+         Iterator<ResourceParameter> iter = ctx.getResource().getParameters().iterator();
+         while (iter.hasNext()) {
+            arguments[i] = iter.next().getUnencodedValue();
+            i++;
          }
-         CibetMethodInvocation methodInv = new CibetMethodInvocation(ctx.getResource().getObject(),
-               ctx.getResource().getMethodObject(), arguments, ctx.getSetpointIds() + this.getName(), null);
+
+         Method method = null;
+         if (ctx.getResource() instanceof MethodResource) {
+            method = ((MethodResource) ctx.getResource()).getMethodObject();
+         }
+
+         CibetMethodInvocation methodInv = new CibetMethodInvocation(ctx.getResource().getObject(), method, arguments,
+               ctx.getSetpointIds() + this.getName(), null);
          before(ctx, methodInv);
       }
    }
@@ -151,7 +163,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    public void afterInvoke(EventMetadata ctx) {
-      if (ctx.getResource().getResourceHandler() instanceof HttpRequestResourceHandler)
+      if (ctx.getResource() instanceof HttpRequestResource)
          return;
 
       // 1. if no Post-rules --> return
@@ -162,13 +174,20 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
 
       // 2. Create CibetMethodInvocation
       Object[] arguments = new Object[ctx.getResource().getParameters().size()];
-      for (int i = 0; i < ctx.getResource().getParameters().size(); i++) {
-         arguments[i] = ctx.getResource().getParameters().get(i).getUnencodedValue();
+      int i = 0;
+      Iterator<ResourceParameter> iter = ctx.getResource().getParameters().iterator();
+      while (iter.hasNext()) {
+         arguments[i] = iter.next().getUnencodedValue();
+         i++;
       }
 
-      CibetMethodInvocation methodInv = new CibetMethodInvocation(ctx.getResource().getTarget(),
-            ctx.getResource().getMethodObject(), arguments, ctx.getSetpointIds() + this.getName(),
-            ctx.getResource().getResultObject());
+      Method method = null;
+      if (ctx.getResource() instanceof MethodResource) {
+         method = ((MethodResource) ctx.getResource()).getMethodObject();
+      }
+
+      CibetMethodInvocation methodInv = new CibetMethodInvocation(ctx.getResource().getTarget(), method, arguments,
+            ctx.getSetpointIds() + this.getName(), ctx.getResource().getResultObject());
 
       // 2.c set pre- and post access roles
       if (preAuthorize != null)
@@ -427,7 +446,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
       }
    }
 
-   protected void beforeHttp(EventMetadata ctx, Resource resource) {
+   protected void beforeHttp(EventMetadata ctx, HttpRequestResource resource) {
       log.debug(this + ", context=" + context);
       // 1. if no rules --> return
       if (urlAccess == null) {

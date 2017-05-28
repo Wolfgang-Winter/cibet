@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.core.EventMetadata;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
 
 /**
  * evaluates the given class against configured setpoints. Accepts the following patterns as class name in the class
@@ -67,7 +68,8 @@ public class TargetControl extends AbstractControl {
             String noScheme = cl.substring(8);
             added.add(noScheme);
 
-            if ("CONNECT".equals(metadata.getResource().getMethod())) {
+            if (metadata.getResource() instanceof HttpRequestResource
+                  && "CONNECT".equals(((HttpRequestResource) metadata.getResource()).getMethod())) {
                String host = null;
                int occ = noScheme.indexOf("/");
                if (occ != -1) {

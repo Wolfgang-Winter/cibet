@@ -13,8 +13,8 @@ package com.logitags.cibet.sensor.ejb;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
@@ -31,8 +31,8 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 
 /**
@@ -78,13 +78,13 @@ public class CibetInterceptor implements Serializable {
                   + Context.internalSessionScope().getTenant());
          }
 
-         List<ResourceParameter> params = new LinkedList<ResourceParameter>();
+         Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
          for (int i = 0; i < ctx.getMethod().getParameterTypes().length; i++) {
             params.add(new ResourceParameter("PARAM" + i, ctx.getMethod().getParameterTypes()[i].getName(),
                   ctx.getParameters()[i], ParameterType.METHOD_PARAMETER, i));
          }
 
-         Resource resource = new Resource(EjbResourceHandler.class, ctx.getTarget(), method, params);
+         EjbResource resource = new EjbResource(ctx.getTarget(), method, params);
          resource.setInvokerClass(EJBInvoker.class.getName());
          metadata = new EventMetadata(controlEvent, resource);
          Configuration.instance().getController().evaluate(metadata);

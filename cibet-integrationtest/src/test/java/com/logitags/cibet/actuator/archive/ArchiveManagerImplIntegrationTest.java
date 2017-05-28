@@ -50,7 +50,7 @@ import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.security.DefaultSecurityProvider;
 import com.logitags.cibet.security.SecurityProvider;
 import com.logitags.cibet.sensor.jpa.CibetEntityManager;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 public class ArchiveManagerImplIntegrationTest extends DBHelper {
 
@@ -69,7 +69,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Archive a = null;
       for (int i = 0; i < nbr; i++) {
          a = createArchive("A" + i);
-         insertNativeArchive(a, eman, JpaResourceHandler.class.getName());
+         insertNativeArchive(a, eman);
       }
       eman.clear();
 
@@ -142,11 +142,20 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.RELEASE_UPDATE, archList.get(1).getControlEvent());
    }
 
-   private void insertNativeArchive(Archive a, EntityManager eman, String resourceType) {
+   private void insertNativeArchive(Archive a, EntityManager eman) {
+      Query rq = eman.createNativeQuery("INSERT INTO CIB_RESOURCE "
+            + "(RESOURCEID, TARGETTYPE, PRIMARYKEYID, RESOURCETYPE, ENCRYPTED, KEYREFERENCE, UNIQUEID"
+            + ") VALUES (?, ?, ?, 'JpaResource', 1,?,?)");
+      rq.setParameter(1, a.getResource().getResourceId());
+      rq.setParameter(2, a.getResource().getTargetType());
+      rq.setParameter(3, ((JpaResource) a.getResource()).getPrimaryKeyId());
+      rq.setParameter(4, a.getResource().getKeyReference());
+      rq.setParameter(5, a.getResource().getUniqueId());
+      rq.executeUpdate();
+
       Query q = eman.createNativeQuery("INSERT INTO CIB_ARCHIVE "
-            + "(ARCHIVEID, CONTROLEVENT, EXECUTIONSTATUS, CREATEUSER, CREATEDATE, " + "TENANT, REMARK, CHECKSUM, "
-            + "CASEID, TARGETTYPE, PRIMARYKEYID, VERSION, RESOURCEHANDLERCLASS, ENCRYPTED, KEYREFERENCE, UNIQUEID"
-            + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?,1,?,?)");
+            + "(ARCHIVEID, CONTROLEVENT, EXECUTIONSTATUS, CREATEUSER, CREATEDATE, TENANT, REMARK, CHECKSUM, "
+            + "CASEID, VERSION, RESOURCE" + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)");
       q.setParameter(1, a.getArchiveId());
       q.setParameter(2, a.getControlEvent().name());
       q.setParameter(3, a.getExecutionStatus().name());
@@ -156,11 +165,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       q.setParameter(7, a.getRemark());
       q.setParameter(8, a.getChecksum());
       q.setParameter(9, a.getCaseId());
-      q.setParameter(10, a.getResource().getTargetType());
-      q.setParameter(11, a.getResource().getPrimaryKeyId());
-      q.setParameter(12, resourceType);
-      q.setParameter(13, a.getResource().getKeyReference());
-      q.setParameter(14, a.getResource().getUniqueId());
+      q.setParameter(10, a.getResource().getResourceId());
       q.executeUpdate();
 
       eman.flush();
@@ -178,10 +183,10 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       a.setTenant(Context.sessionScope().getTenant());
       a.setRemark("remark");
 
-      Resource res = new Resource();
+      JpaResource res = new JpaResource();
+      res.setResourceId("R-" + archiveId);
       res.setPrimaryKeyId(String.valueOf(archiveId + 10));
       res.setTargetType(TEntity.class.getName());
-      res.setResourceHandlerClass(JpaResourceHandler.class.getName());
       res.setEncrypted(true);
       res.setKeyReference(secProvider.getCurrentSecretKey());
       a.setResource(res);
@@ -239,8 +244,8 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Context.internalRequestScope().getEntityManager().clear();
       List<Archive> list = ArchiveLoader.loadArchives(TEntity.class.getName());
       Assert.assertEquals(2, list.size());
-      Resource res0 = list.get(0).getResource();
-      Resource res1 = list.get(1).getResource();
+      JpaResource res0 = (JpaResource) list.get(0).getResource();
+      JpaResource res1 = (JpaResource) list.get(1).getResource();
 
       Assert.assertEquals(res0.getPrimaryKeyId(), res1.getPrimaryKeyId());
 

@@ -51,7 +51,7 @@ public class InfoLogActuator extends AbstractActuator {
     */
    @Override
    public void beforeEvent(EventMetadata ctx) {
-      log.info("InfoLogController.beforeEvent of :\n" + ctx);
+      log.info("\n*************InfoLogActuator.beforeEvent of :\n" + ctx + "\n*************");
       super.beforeEvent(ctx);
    }
 
@@ -62,7 +62,7 @@ public class InfoLogActuator extends AbstractActuator {
     */
    @Override
    public void afterEvent(EventMetadata ctx) {
-      log.info("InfoLogController.afterEvent of :\n" + ctx);
+      log.info("\n*************InfoLogActuator.afterEvent of :\n" + ctx + "\n*************");
       super.afterEvent(ctx);
    }
 

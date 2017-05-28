@@ -1183,11 +1183,11 @@ public class ActuatorIT extends AbstractArquillian {
 
       Context.sessionScope().setUser("releaseUser");
       TEntity result = (TEntity) release(l.get(1));
-      Assert.assertEquals(80, result.getCounter());
+      Assert.assertEquals(81, result.getCounter());
 
       List<TEntity> list = loadTEntities();
       Assert.assertEquals(1, list.size());
-      Assert.assertEquals(80, list.get(0).getCounter());
+      Assert.assertEquals(80 + 1, list.get(0).getCounter());
    }
 
    @Test
@@ -1251,13 +1251,13 @@ public class ActuatorIT extends AbstractArquillian {
       ut.rollback();
 
       TEntity result = (TEntity) release(l.get(0));
-      Assert.assertEquals(counter, result.getCounter());
+      Assert.assertEquals(counter + 1, result.getCounter());
 
       Thread.sleep(100);
 
       List<TEntity> list = loadTEntities();
       Assert.assertEquals(1, list.size());
-      Assert.assertEquals(counter, list.get(0).getCounter());
+      Assert.assertEquals(counter + 1, list.get(0).getCounter());
    }
 
    @Test

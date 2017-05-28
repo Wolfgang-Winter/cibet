@@ -28,9 +28,8 @@ import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.ejb.EjbResourceHandler;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.ejb.EjbResource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 public class TargetControlTest extends CoreTestBase {
 
@@ -70,22 +69,22 @@ public class TargetControlTest extends CoreTestBase {
 
       List<Setpoint> spB = Configuration.instance().getSetpoints();
 
-      Resource res = new Resource(EjbResourceHandler.class, "StringClass", (Method) null, null);
+      EjbResource res = new EjbResource("StringClass", (Method) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.ALL, res);
       List<Setpoint> list = evaluate(md, spB);
       Assert.assertEquals(2, list.size());
       Assert.assertEquals("B1", list.get(0).getId());
       Assert.assertEquals("D", list.get(1).getId());
 
-      res = new Resource(EjbResourceHandler.class, "String", (Method) null, null);
+      res = new EjbResource("String", (Method) null, null);
       md = new EventMetadata(ControlEvent.ALL, res);
       list = evaluate(md, spB);
       Assert.assertEquals(2, list.size());
       Assert.assertEquals("B1", list.get(0).getId());
       Assert.assertEquals("D", list.get(1).getId());
 
-      res = new Resource(JpaResourceHandler.class, new TEntity());
-      md = new EventMetadata(ControlEvent.ALL, res);
+      JpaResource res2 = new JpaResource(new TEntity());
+      md = new EventMetadata(ControlEvent.ALL, res2);
       list = evaluate(md, spB);
       Assert.assertEquals(5, list.size());
       Assert.assertEquals("B1", list.get(0).getId());
@@ -94,7 +93,7 @@ public class TargetControlTest extends CoreTestBase {
       Assert.assertEquals("C", list.get(3).getId());
       Assert.assertEquals("D", list.get(4).getId());
 
-      res = new Resource(EjbResourceHandler.class, new Sub4EyesController(), (Method) null, null);
+      res = new EjbResource(new Sub4EyesController(), (Method) null, null);
       md = new EventMetadata(ControlEvent.ALL, res);
       list = evaluate(md, spB);
       Assert.assertEquals(4, list.size());

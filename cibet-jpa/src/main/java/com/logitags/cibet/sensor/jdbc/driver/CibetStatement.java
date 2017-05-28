@@ -16,7 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,8 +29,8 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.Resource;
+import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.ResourceParameter;
 
 /**
@@ -262,7 +262,7 @@ public class CibetStatement implements Statement {
    }
 
    protected EventMetadata createJdbcEventMetadata(SqlParser parser, ControlEvent originalEvent, SqlParameter pk,
-         List<ResourceParameter> parameters) {
+         Set<ResourceParameter> parameters) {
       ControlEvent event = (ControlEvent) Context.internalRequestScope().getProperty(InternalRequestScope.CONTROLEVENT);
       if (event != null) {
          Context.internalRequestScope().removeProperty(InternalRequestScope.CONTROLEVENT);
@@ -270,7 +270,7 @@ public class CibetStatement implements Statement {
          event = originalEvent;
       }
 
-      Resource res = new Resource(JdbcResourceHandler.class, parser.getSql(), parser.getTargetType(), pk, parameters);
+      Resource res = new JdbcResource(parser.getSql(), parser.getTargetType(), pk, parameters);
       EventMetadata md = new EventMetadata(event, res);
 
       return md;

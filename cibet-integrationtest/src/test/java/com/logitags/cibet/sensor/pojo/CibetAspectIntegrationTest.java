@@ -56,7 +56,6 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.resource.Resource;
 
 /**
  * add -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9. jar to java command
@@ -79,7 +78,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       List<DcControllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
-      Resource res = l.get(0).getResource();
+      MethodResource res = (MethodResource) l.get(0).getResource();
       log.debug("size: " + res.getParameters().size());
 
       Context.sessionScope().setUser("test2");
@@ -100,7 +99,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
    }
@@ -123,7 +122,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
@@ -131,7 +130,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("setStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
       log.debug("size: " + res.getParameters().size());
@@ -158,7 +157,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setStaticStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
@@ -166,7 +165,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("setStaticStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
@@ -192,7 +191,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("Hasenfuss", res.getInvokerParam());
@@ -201,7 +200,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("setStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
@@ -228,7 +227,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
@@ -236,7 +235,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
@@ -263,7 +262,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("Walter", res.getInvokerParam());
@@ -272,7 +271,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("Walter", res.getInvokerParam());
@@ -301,7 +300,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
@@ -309,7 +308,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
@@ -336,7 +335,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
@@ -344,7 +343,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
@@ -371,7 +370,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
@@ -379,7 +378,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("com.cibethelper.base.SingletonFactory", res.getInvokerParam());
@@ -407,7 +406,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("com.cibethelper.base.SingletonFactory.create2()", res.getInvokerParam());
@@ -416,7 +415,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
@@ -454,7 +453,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(SpringBeanInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("MySpringExampleBean", res.getInvokerParam());
@@ -463,7 +462,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(SpringBeanInvoker.class.getName(), res.getInvokerClass());
 
@@ -501,7 +500,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(SpringBeanInvoker.class.getName(), res.getInvokerClass());
       Assert.assertTrue(res.getInvokerParam() == null || "".equals(res.getInvokerParam()));
@@ -510,7 +509,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(SpringBeanInvoker.class.getName(), res.getInvokerClass());
 
@@ -541,7 +540,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
 
       List<DcControllable> list1 = DcLoader.findUnreleased();
@@ -706,7 +705,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("callWithAspect", res.getMethod());
       Assert.assertEquals(AspectInvokeTestClass.class.getName(), res.getTargetType());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
@@ -730,7 +729,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("getName", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
@@ -738,7 +737,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      res = co.getResource();
+      res = (MethodResource) co.getResource();
       Assert.assertEquals("getName", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
@@ -767,7 +766,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("callWithException", res.getMethod());
       Assert.assertEquals(AspectInvokeTestClass.class.getName(), res.getTargetType());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());

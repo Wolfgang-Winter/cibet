@@ -25,6 +25,8 @@ import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.ResourceParameter;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 /**
  * evaluates the given method against configured setpoints. Accepts the following patterns as method name:
@@ -81,7 +83,18 @@ public class MethodControl extends AbstractControl {
 
    @Override
    public boolean evaluate(Object controlValue, EventMetadata metadata) {
-      if (metadata.getResource().getMethod() == null) {
+      String method;
+      if (metadata.getResource() instanceof MethodResource) {
+         method = ((MethodResource) metadata.getResource()).getMethod();
+      } else if (metadata.getResource() instanceof HttpRequestResource) {
+         method = ((HttpRequestResource) metadata.getResource()).getMethod();
+
+      } else {
+         log.info("skip method evaluation. Not applicable for " + metadata.getResource().getClass().getSimpleName());
+         return true;
+      }
+
+      if (method == null) {
          log.info("skip method evaluation: no method name given");
          return true;
       }
@@ -93,19 +106,19 @@ public class MethodControl extends AbstractControl {
             // all methods
             return true;
 
-         } else if (metadata.getResource().getMethod().equals(spMethodName)) {
+         } else if (method.equals(spMethodName)) {
             // all overloaded methods
             return true;
 
          } else if (spMethodName.endsWith("*")) {
             // method wildcard
             String pack = spMethodName.substring(0, spMethodName.length() - 1);
-            if (metadata.getResource().getMethod().startsWith(pack)) {
+            if (method.startsWith(pack)) {
                return true;
             }
 
          } else if (spMethodName.endsWith("()")) {
-            if (metadata.getResource().getMethod().equals(spMethodName.substring(0, spMethodName.length() - 2))
+            if (method.equals(spMethodName.substring(0, spMethodName.length() - 2))
                   && (metadata.getResource().getParameters() == null
                         || metadata.getResource().getParameters().isEmpty())) {
                // concrete method without parameters
@@ -121,7 +134,7 @@ public class MethodControl extends AbstractControl {
                log.error(msg);
                throw new RuntimeException(msg);
             }
-            if (!metadata.getResource().getMethod().equals(spMethodName.substring(0, index)))
+            if (!method.equals(spMethodName.substring(0, index)))
                continue;
             // check parameters
             StringTokenizer tok = new StringTokenizer(spMethodName.substring(index + 1, spMethodName.length() - 1),

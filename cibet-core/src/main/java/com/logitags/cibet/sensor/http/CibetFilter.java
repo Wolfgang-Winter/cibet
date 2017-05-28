@@ -261,8 +261,7 @@ public class CibetFilter extends CibetContextFilter implements Filter {
                + Context.internalSessionScope().getTenant() + ". Content-Type=" + request.getContentType());
       }
 
-      Resource resource = new Resource(HttpRequestResourceHandler.class, targetUrl, methodName, request, response);
-      resource.setInvokerClass(HttpRequestInvoker.class.getName());
+      HttpRequestResource resource = new HttpRequestResource(targetUrl, methodName, request, response);
       addParameters(request, resource);
       addHeaders(request, resource);
       addAttributes(request, resource);
@@ -328,7 +327,7 @@ public class CibetFilter extends CibetContextFilter implements Filter {
             // check if the object could be regenerated
             // (ClassNotFoundException?)
             CibetUtil.decode(param.getEncodedValue());
-            resource.getParameters().add(param);
+            resource.addParameter(param);
             log.debug(attrName + " = " + attr);
             continue;
          } catch (Exception e) {

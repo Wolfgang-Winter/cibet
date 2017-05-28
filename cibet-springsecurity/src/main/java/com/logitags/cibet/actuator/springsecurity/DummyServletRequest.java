@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
-import com.logitags.cibet.resource.HttpRequestData;
+import com.logitags.cibet.sensor.http.HttpRequestData;
 
 /**
  * A serializable wrapper of the HttpServletRequest

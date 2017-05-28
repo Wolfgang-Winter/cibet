@@ -40,8 +40,7 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventMetadata;
 
 /**
- * evaluates JavaScript conditions. The following variables can be used in
- * conditions:
+ * evaluates JavaScript conditions. The following variables can be used in conditions:
  * <p>
  * USER: the actual user id
  * <p>
@@ -51,8 +50,7 @@ import com.logitags.cibet.core.EventMetadata;
  * <p>
  * #simple class name#: the actual object
  * <p>
- * PARAM0, PARAM1 .. PARAMn: the method parameter objects in declared order
- * (only method level conditions)
+ * PARAM0, PARAM1 .. PARAMn: the method parameter objects in declared order (only method level conditions)
  */
 public class ConditionControl implements Control {
 
@@ -90,7 +88,7 @@ public class ConditionControl implements Control {
       engine.put("$APPLICATIONSCOPE", Context.applicationScope());
       engine.put("$EVENT", metadata.getControlEvent());
 
-      metadata.getResource().getResourceHandler().fillContext(engine);
+      metadata.getResource().fillContext(engine);
       metadata.getProperties().put(SCRIPTENGINE_KEY, engine);
       return engine;
    }
@@ -120,9 +118,8 @@ public class ConditionControl implements Control {
    }
 
    /**
-    * Returns a String value. If configValue does not start with file: returns
-    * configValue. Otherwise tries to load the script file from classpath or
-    * from an absolute position.
+    * Returns a String value. If configValue does not start with file: returns configValue. Otherwise tries to load the
+    * script file from classpath or from an absolute position.
     * 
     * @see com.logitags.cibet.control.AbstractControl#resolve(java.lang .String)
     */

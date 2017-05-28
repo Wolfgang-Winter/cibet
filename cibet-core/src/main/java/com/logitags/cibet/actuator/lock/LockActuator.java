@@ -13,6 +13,9 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.Resource;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 public class LockActuator extends AbstractActuator {
 
@@ -107,8 +110,7 @@ public class LockActuator extends AbstractActuator {
          if (isLocked(lo, ctx.getResource()) && ctx.getControlEvent().isChildOf(lo.getLockedEvent())) {
             if (!lo.getLockedBy().equals(Context.internalSessionScope().getUser())) {
                if (log.isDebugEnabled()) {
-                  log.debug(ctx.getControlEvent() + " of " + ctx.getResource().getTargetType() + " and method "
-                        + ctx.getResource().getMethod() + " is locked by: " + lo);
+                  log.debug(ctx.getControlEvent() + " of resource " + ctx.getResource() + " is locked by: " + lo);
                }
                ctx.setExecutionStatus(ExecutionStatus.DENIED);
                initDeniedException(ctx);
@@ -133,7 +135,12 @@ public class LockActuator extends AbstractActuator {
          return;
       }
 
-      String objectId = ctx.getResource().getPrimaryKeyObject().toString();
+      if (!(ctx.getResource() instanceof JpaResource)) {
+         return;
+      }
+
+      JpaResource jpar = (JpaResource) ctx.getResource();
+      String objectId = jpar.getPrimaryKeyObject().toString();
       for (LockedObject lo : list) {
          if (isLocked(ctx.getResource().getObject(), objectId, lo)
                && ctx.getControlEvent().isChildOf(lo.getLockedEvent())) {
@@ -201,10 +208,21 @@ public class LockActuator extends AbstractActuator {
       if (lo.getMethod() == null) {
          // this is invoke of a url
          return true;
-      } else if (resource.getMethod().equals(lo.getMethod())) {
-         // method invocation
-         return true;
       } else {
+         String method;
+         if (resource instanceof HttpRequestResource) {
+            method = ((HttpRequestResource) resource).getMethod();
+         } else if (resource instanceof MethodResource) {
+            method = ((MethodResource) resource).getMethod();
+         } else {
+            return false;
+         }
+
+         if (method.equals(lo.getMethod())) {
+            // method invocation
+            return true;
+         }
+
          return false;
       }
    }

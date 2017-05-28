@@ -55,8 +55,6 @@ import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.PersistenceUtil;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
-import com.logitags.cibet.sensor.jpa.JpaUpdateResourceHandler;
 
 public class SchedulerActuator extends FourEyesActuator {
 
@@ -241,10 +239,6 @@ public class SchedulerActuator extends FourEyesActuator {
          dc.setExecutionStatus(ExecutionStatus.SCHEDULED);
          dc.setActuator(getName());
          addStoredProperties(dc.getResource(), getStoredProperties());
-
-         if (ctx.getResource().getResourceHandler() instanceof JpaResourceHandler) {
-            dc.getResource().setResourceHandlerClass(JpaUpdateResourceHandler.class.getName());
-         }
          storeCleanResource(dc.getResource());
 
          break;
@@ -275,8 +269,12 @@ public class SchedulerActuator extends FourEyesActuator {
       }
 
       if (dcObj != null) {
-         if (isEncrypt()) {
-            dcObj.encrypt();
+         if (dcObj.getResource().getResourceId() == null) {
+            if (isEncrypt()) {
+               dcObj.getResource().encrypt();
+            }
+
+            Context.internalRequestScope().getEntityManager().persist(dcObj.getResource());
          }
          log.debug("persist scheduled DcControllable");
          Context.internalRequestScope().getEntityManager().persist(dcObj);
@@ -296,11 +294,6 @@ public class SchedulerActuator extends FourEyesActuator {
 
    protected void setActuatorSpecificProperties(DcControllable dc) {
       dc.setExecutionStatus(ExecutionStatus.SCHEDULED);
-
-      if (JpaResourceHandler.class.getName().equals(dc.getResource().getResourceHandlerClass())
-            && dc.getControlEvent() == ControlEvent.UPDATE) {
-         dc.getResource().setResourceHandlerClass(JpaUpdateResourceHandler.class.getName());
-      }
    }
 
    protected void checkScheduledResource(EventMetadata ctx) {
@@ -327,8 +320,8 @@ public class SchedulerActuator extends FourEyesActuator {
                if (dc.getControlEvent() == ControlEvent.UPDATE) {
                   ResourceParameter rp = dc.getResource().getParameter(SchedulerActuator.CLEANOBJECT);
                   if (rp == null) {
-                     String err = "Failed to find base entity of " + dc.getResource().getTargetType() + " with ID "
-                           + dc.getResource().getPrimaryKeyObject() + " in DcControllable " + dc;
+                     String err = "Failed to find base entity of resource " + dc.getResource() + " in DcControllable "
+                           + dc;
                      log.error(err);
                      throw new RuntimeException(err);
                   }
@@ -361,10 +354,10 @@ public class SchedulerActuator extends FourEyesActuator {
          co.setApprovalUser(Context.internalSessionScope().getUser());
          co.setApprovalRemark(Context.internalRequestScope().getRemark());
          co.setExecutionDate(co.getApprovalDate());
-
-         if (isEncrypt()) {
-            co.encrypt();
-         }
+         //
+         // if (isEncrypt()) {
+         // co.encrypt();
+         // }
          Context.internalRequestScope().getEntityManager().merge(co);
       }
    }
@@ -375,7 +368,7 @@ public class SchedulerActuator extends FourEyesActuator {
          log.debug("store clean object");
          ResourceParameter propertyResParam = new ResourceParameter(CLEANOBJECT, cleanResource.getClass().getName(),
                cleanResource, ParameterType.INTERNAL_PARAMETER, resource.getParameters().size() + 1);
-         resource.getParameters().add(propertyResParam);
+         resource.addParameter(propertyResParam);
       }
    }
 

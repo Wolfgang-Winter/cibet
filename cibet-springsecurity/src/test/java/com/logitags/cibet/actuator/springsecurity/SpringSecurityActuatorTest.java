@@ -39,11 +39,10 @@ import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.resource.HttpRequestData;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.ejb.EjbResourceHandler;
-import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
-import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
+import com.logitags.cibet.sensor.ejb.EjbResource;
+import com.logitags.cibet.sensor.http.HttpRequestData;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 /**
  * add -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9. jar to java command
@@ -332,7 +331,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
 
       TComplexEntity ent1 = new TComplexEntity();
       Method m = TComplexEntity.class.getMethod("giveCollection");
-      Resource resource = new Resource(MethodResourceHandler.class, ent1, m, null);
+      MethodResource resource = new MethodResource(ent1, m, null);
       EventMetadata metadata = new EventMetadata(ControlEvent.INVOKE, resource);
       metadata.addSetpoint(sp);
 
@@ -353,7 +352,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
 
       TComplexEntity ent1 = new TComplexEntity();
       Method m = TComplexEntity.class.getMethod("giveCollection");
-      Resource resource = new Resource(MethodResourceHandler.class, ent1, m, null);
+      MethodResource resource = new MethodResource(ent1, m, null);
       EventMetadata metadata = new EventMetadata(ControlEvent.INVOKE, resource);
       metadata.addSetpoint(sp);
 
@@ -375,7 +374,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       TComplexEntity ent1 = new TComplexEntity();
       Method m = TComplexEntity.class.getMethod("giveCollection");
 
-      Resource resource = new Resource(MethodResourceHandler.class, ent1, m, null);
+      MethodResource resource = new MethodResource(ent1, m, null);
       EventMetadata metadata = new EventMetadata(ControlEvent.INVOKE, resource);
       metadata.addSetpoint(sp);
       act.afterInvoke(metadata);
@@ -398,7 +397,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
 
       TComplexEntity ent1 = new TComplexEntity();
       Method m = TComplexEntity.class.getMethod("giveCollection");
-      Resource resource = new Resource(EjbResourceHandler.class, ent1, m, null);
+      EjbResource resource = new EjbResource(ent1, m, null);
       EventMetadata ctx = new EventMetadata(ControlEvent.INVOKE, resource);
       ctx.addSetpoint(sp);
 
@@ -514,7 +513,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
    public void beforeHttpNoRule() {
       log.debug("start beforeHttpNoRule");
       SpringSecurityActuator act = new SpringSecurityActuator();
-      Resource resource = new Resource(HttpRequestResourceHandler.class, "http://localhost/dom", "GET", null);
+      HttpRequestResource resource = new HttpRequestResource("http://localhost/dom", "GET", null);
       EventMetadata ctx = new EventMetadata(ControlEvent.INVOKE, resource);
       act.beforeEvent(ctx);
    }
@@ -527,7 +526,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       act.setUrlAccess("ROLE_USER");
       HttpRequestData rdata = new HttpRequestData("http://localhost/dom", null, "http://localhost/dom");
 
-      Resource resource = new Resource(HttpRequestResourceHandler.class, "http://localhost/dom", "GET", rdata);
+      HttpRequestResource resource = new HttpRequestResource("http://localhost/dom", "GET", rdata);
       EventMetadata ctx = new EventMetadata(ControlEvent.INVOKE, resource);
       try {
          act.beforeEvent(ctx);
@@ -547,7 +546,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       act.setUrlAccess("ROLE_USER");
 
       HttpRequestData rdata = new HttpRequestData("http://localhost/dom", null, "http://localhost/dom");
-      Resource resource = new Resource(HttpRequestResourceHandler.class, "http://localhost/dom", "GET", rdata);
+      HttpRequestResource resource = new HttpRequestResource("http://localhost/dom", "GET", rdata);
       EventMetadata ctx = new EventMetadata(ControlEvent.INVOKE, resource);
 
       FilterSecurityInterceptor interceptor = context.getBean(FilterSecurityInterceptor.class);
@@ -569,7 +568,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       act.setUrlAccess("ROLE_USER");
 
       HttpRequestData rdata = new HttpRequestData("http://localhost/dom", null, "http://localhost/dom");
-      Resource resource = new Resource(HttpRequestResourceHandler.class, "http://localhost/dom", "GET", rdata);
+      HttpRequestResource resource = new HttpRequestResource("http://localhost/dom", "GET", rdata);
       EventMetadata ctx = new EventMetadata(ControlEvent.INVOKE, resource);
       act.beforeEvent(ctx);
       Assert.assertEquals(ExecutionStatus.DENIED, ctx.getExecutionStatus());
@@ -585,7 +584,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       act.setUrlAccess("hasRole ( ROLE_USER) ");
 
       HttpRequestData rdata = new HttpRequestData("http://localhost/dom", null, "http://localhost/dom");
-      Resource resource = new Resource(HttpRequestResourceHandler.class, "http://localhost/dom", "GET", rdata);
+      HttpRequestResource resource = new HttpRequestResource("http://localhost/dom", "GET", rdata);
       EventMetadata ctx = new EventMetadata(ControlEvent.INVOKE, resource);
       act.beforeEvent(ctx);
       Assert.assertEquals(ExecutionStatus.DENIED, ctx.getExecutionStatus());
@@ -599,7 +598,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       act.setUrlAccess("hasRole ( ROLE_USER) ");
 
       HttpRequestData rdata = new HttpRequestData("http://localhost/dom", null, "http://localhost/dom");
-      Resource resource = new Resource(HttpRequestResourceHandler.class, "http://localhost/dom", "GET", rdata);
+      HttpRequestResource resource = new HttpRequestResource("http://localhost/dom", "GET", rdata);
       EventMetadata ctx = new EventMetadata(ControlEvent.INVOKE, resource);
       act.beforeEvent(ctx);
       Assert.assertEquals(ExecutionStatus.DENIED, ctx.getExecutionStatus());
@@ -614,7 +613,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       act.setUrlAccess("hasRole ( charlie) ");
 
       HttpRequestData rdata = new HttpRequestData("http://localhost/dom", null, "http://localhost/dom");
-      Resource resource = new Resource(HttpRequestResourceHandler.class, "http://localhost/dom", "GET", rdata);
+      HttpRequestResource resource = new HttpRequestResource("http://localhost/dom", "GET", rdata);
       EventMetadata ctx = new EventMetadata(ControlEvent.INVOKE, resource);
       act.beforeEvent(ctx);
       Assert.assertEquals(ExecutionStatus.EXECUTING, ctx.getExecutionStatus());

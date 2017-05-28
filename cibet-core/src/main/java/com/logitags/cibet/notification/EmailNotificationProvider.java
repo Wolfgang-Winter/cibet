@@ -257,7 +257,7 @@ public class EmailNotificationProvider implements NotificationProvider, Serializ
       ctx.put("tenant", c.getTenant());
       ctx.put("caseId", c.getCaseId());
 
-      for (Entry<String, Object> entry : c.getResource().getResourceHandler().getNotificationAttributes().entrySet()) {
+      for (Entry<String, Object> entry : c.getResource().getNotificationAttributes().entrySet()) {
          ctx.put(entry.getKey(), entry.getValue());
       }
 

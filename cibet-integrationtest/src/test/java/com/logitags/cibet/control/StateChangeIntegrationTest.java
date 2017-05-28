@@ -33,8 +33,7 @@ import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 /**
  *
@@ -83,7 +82,7 @@ public class StateChangeIntegrationTest extends DBHelper {
       List<TEntity> l = q.getResultList();
       Context.internalRequestScope().setApplicationEntityManager2(null);
 
-      Resource res = new Resource(JpaResourceHandler.class, te);
+      JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       try {
          Control eval = new StateChangeControl();
@@ -107,7 +106,7 @@ public class StateChangeIntegrationTest extends DBHelper {
       applEman.getTransaction().commit();
       te.setCounter(12);
 
-      Resource res = new Resource(JpaResourceHandler.class, te);
+      JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -115,7 +114,7 @@ public class StateChangeIntegrationTest extends DBHelper {
 
       te.setCounter(5);
       te.setNameValue("Wein");
-      res = new Resource(JpaResourceHandler.class, te);
+      res = new JpaResource(te);
       md = new EventMetadata(ControlEvent.UPDATE, res);
       list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(2, list.size());
@@ -138,7 +137,7 @@ public class StateChangeIntegrationTest extends DBHelper {
       te.setCounter(12);
       te.setNameValue("Wein");
 
-      Resource res = new Resource(JpaResourceHandler.class, te);
+      JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(2, list.size());
@@ -159,7 +158,7 @@ public class StateChangeIntegrationTest extends DBHelper {
 
       cte.getTen().setCounter(12);
 
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -182,7 +181,7 @@ public class StateChangeIntegrationTest extends DBHelper {
       TEntity t = cte2.getLazyList().iterator().next();
       cte2.getLazyList().remove(t);
 
-      Resource res = new Resource(JpaResourceHandler.class, cte2);
+      JpaResource res = new JpaResource(cte2);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -203,7 +202,7 @@ public class StateChangeIntegrationTest extends DBHelper {
       TComplexEntity cte2 = applEman.find(TComplexEntity.class, cte.getId());
       cte2.setOwner("Hase2");
 
-      Resource res = new Resource(JpaResourceHandler.class, cte2);
+      JpaResource res = new JpaResource(cte2);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(2, list.size());
@@ -225,7 +224,7 @@ public class StateChangeIntegrationTest extends DBHelper {
       te.setCounter(12);
 
       Context.internalRequestScope().setApplicationEntityManager2(null);
-      Resource res = new Resource(JpaResourceHandler.class, te);
+      JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       try {
          eval.evaluate(cman.getSetpoints(), md);
@@ -242,7 +241,7 @@ public class StateChangeIntegrationTest extends DBHelper {
 
       te.setCounter(5);
       te.setNameValue("Wein");
-      res = new Resource(JpaResourceHandler.class, te);
+      res = new JpaResource(te);
       md = new EventMetadata(ControlEvent.UPDATE, res);
       list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(0, list.size());
@@ -262,7 +261,7 @@ public class StateChangeIntegrationTest extends DBHelper {
       cte.getTen().setCounter(12);
 
       // CibetContext.setApplicationEntityManager2(createEntityManager());
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -284,7 +283,7 @@ public class StateChangeIntegrationTest extends DBHelper {
       TComplexEntity cte2 = applEman.find(TComplexEntity.class, cte.getId());
       cte2.getTen().setCounter(12);
 
-      Resource res = new Resource(JpaResourceHandler.class, cte2);
+      JpaResource res = new JpaResource(cte2);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -307,7 +306,7 @@ public class StateChangeIntegrationTest extends DBHelper {
       TEntity t = cte2.getLazyList().iterator().next();
       cte2.getLazyList().remove(t);
 
-      Resource res = new Resource(JpaResourceHandler.class, cte2);
+      JpaResource res = new JpaResource(cte2);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -329,7 +328,7 @@ public class StateChangeIntegrationTest extends DBHelper {
       TComplexEntity cte2 = applEman.find(TComplexEntity.class, cte.getId());
       cte2.setOwner("Hase");
 
-      Resource res = new Resource(JpaResourceHandler.class, cte2);
+      JpaResource res = new JpaResource(cte2);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(0, list.size());
@@ -348,7 +347,7 @@ public class StateChangeIntegrationTest extends DBHelper {
       applEman.clear();
 
       // CibetContext.setApplicationEntityManager2(createEntityManager());
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, cman.getSetpoints());
       Assert.assertEquals(0, list.size());

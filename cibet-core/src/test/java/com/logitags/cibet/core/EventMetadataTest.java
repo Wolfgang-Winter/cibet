@@ -12,29 +12,31 @@
 package com.logitags.cibet.core;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.common.DeniedException;
 import com.logitags.cibet.actuator.common.PostponedEjbException;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;
-import com.logitags.cibet.resource.HttpRequestData;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
-import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
-import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
+import com.logitags.cibet.sensor.http.HttpRequestData;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
-public class EventMetadataTest {
+public class EventMetadataTest implements Serializable {
 
    @Test
    public void getInvoker() {
-      Resource res = new Resource(JpaResourceHandler.class, null);
+      JpaResource res = new JpaResource((Object) null);
       Object o = res.getInvoker();
       Assert.assertTrue(o instanceof StackTraceElement[]);
       Assert.assertTrue(((StackTraceElement[]) o).length > 0);
@@ -42,15 +44,15 @@ public class EventMetadataTest {
 
    @Test
    public void getTargetType() {
-      Resource res = new Resource(JpaResourceHandler.class, EventMetadataTest.class, (Method) null, null);
+      JpaResource res = new JpaResource(EventMetadataTest.class, null);
       String targetType = res.getTargetType();
       Assert.assertEquals(EventMetadataTest.class.getName(), targetType);
 
-      res = new Resource(JpaResourceHandler.class, new EventMetadataTest(), (Method) null, null);
+      res = new JpaResource(new TEntity());
       targetType = res.getTargetType();
-      Assert.assertEquals(EventMetadataTest.class.getName(), targetType);
+      Assert.assertEquals(TEntity.class.getName(), targetType);
 
-      res = new Resource(JpaResourceHandler.class, null, (Method) null, null);
+      res = new JpaResource(null, null);
       targetType = res.getTargetType();
       Assert.assertEquals(null, targetType);
    }
@@ -59,7 +61,7 @@ public class EventMetadataTest {
    public void initEventMetadataDefault() {
       Context.internalRequestScope().setCaseId("AAA");
 
-      Resource res = new Resource(MethodResourceHandler.class, EventMetadataTest.class, (Method) null, null);
+      MethodResource res = new MethodResource(EventMetadataTest.class, (Method) null, null);
       EventMetadata cem = new EventMetadata(ControlEvent.DELETE, res);
       Assert.assertTrue(cem.getCaseId().equals("AAA"));
       Assert.assertEquals(ExecutionStatus.EXECUTING, cem.getExecutionStatus());
@@ -69,7 +71,7 @@ public class EventMetadataTest {
    public void initEventMetadataReject() {
       Context.internalRequestScope().setCaseId("BBB");
 
-      Resource res = new Resource(MethodResourceHandler.class, EventMetadataTest.class, (Method) null, null);
+      MethodResource res = new MethodResource(EventMetadataTest.class, (Method) null, null);
       EventMetadata cem = new EventMetadata(ControlEvent.REJECT, res);
       Assert.assertTrue(cem.getCaseId().equals("BBB"));
       Assert.assertNotNull(Context.internalRequestScope().getCaseId());
@@ -79,7 +81,7 @@ public class EventMetadataTest {
 
    @Test(expected = DeniedException.class)
    public void evaluateEventExecuteStatusDeniedWithException() throws Throwable {
-      Resource res = new Resource(MethodResourceHandler.class, EventMetadataTest.class, (Method) null, null);
+      MethodResource res = new MethodResource(EventMetadataTest.class, (Method) null, null);
       EventMetadata cem = new EventMetadata(ControlEvent.REJECT, res);
       res.setResultObject("res");
       cem.setException(new DeniedException("ex"));
@@ -89,7 +91,7 @@ public class EventMetadataTest {
 
    @Test
    public void evaluateEventExecuteStatusPostponed() throws Throwable {
-      Resource res = new Resource(MethodResourceHandler.class, EventMetadataTest.class, (Method) null, null);
+      MethodResource res = new MethodResource(EventMetadataTest.class, (Method) null, null);
       EventMetadata cem = new EventMetadata(ControlEvent.REJECT, res);
       res.setResultObject("res");
       cem.setExecutionStatus(ExecutionStatus.POSTPONED);
@@ -99,7 +101,7 @@ public class EventMetadataTest {
 
    @Test(expected = PostponedEjbException.class)
    public void evaluateEventExecuteStatusPostponedWithException() throws Throwable {
-      Resource res = new Resource(MethodResourceHandler.class, EventMetadataTest.class, (Method) null, null);
+      MethodResource res = new MethodResource(EventMetadataTest.class, (Method) null, null);
       EventMetadata cem = new EventMetadata(ControlEvent.REJECT, res);
       res.setResultObject("res");
       cem.setException(new PostponedEjbException());
@@ -109,27 +111,29 @@ public class EventMetadataTest {
 
    @Test(expected = IllegalArgumentException.class)
    public void addParameterNullKey() throws IOException {
-      Resource res = new Resource(HttpRequestResourceHandler.class, (String) null, (String) null,
-            (HttpRequestData) null);
+      HttpRequestResource res = new HttpRequestResource((String) null, (String) null, (HttpRequestData) null);
       res.addParameter(null, "Hase", ParameterType.HTTP_ATTRIBUTE);
    }
 
    @Test
    public void addParameter() throws IOException {
-      Resource res = new Resource(HttpRequestResourceHandler.class, (String) null, (String) null,
-            (HttpRequestData) null);
+      HttpRequestResource res = new HttpRequestResource((String) null, (String) null, (HttpRequestData) null);
       res.addParameter("k1", "Hase", ParameterType.HTTP_ATTRIBUTE);
       res.addParameter("k2", "Igel", ParameterType.HTTP_HEADER);
       res.addParameter("k3", null, ParameterType.HTTP_ATTRIBUTE);
 
-      List<ResourceParameter> params = res.getParameters();
+      Set<ResourceParameter> params = res.getParameters();
       Assert.assertEquals(3, params.size());
-      Assert.assertEquals("k1", params.get(0).getName());
-      Assert.assertEquals("k2", params.get(1).getName());
-      Assert.assertEquals("k3", params.get(2).getName());
-      Assert.assertEquals(1, params.get(0).getSequence());
-      Assert.assertEquals(2, params.get(1).getSequence());
-      Assert.assertEquals(3, params.get(2).getSequence());
+      Iterator<ResourceParameter> iter = params.iterator();
+      ResourceParameter p1 = iter.next();
+      ResourceParameter p2 = iter.next();
+      ResourceParameter p3 = iter.next();
+      Assert.assertEquals("k1", p1.getName());
+      Assert.assertEquals("k2", p2.getName());
+      Assert.assertEquals("k3", p3.getName());
+      Assert.assertEquals(1, p1.getSequence());
+      Assert.assertEquals(2, p2.getSequence());
+      Assert.assertEquals(3, p3.getSequence());
    }
 
 }

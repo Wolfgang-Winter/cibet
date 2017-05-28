@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -64,7 +65,8 @@ import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
-import com.logitags.cibet.resource.Resource;
+import com.logitags.cibet.resource.ResourceParameter;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 @RunWith(Arquillian.class)
 public class Jpa1EjbIT extends AbstractArquillian {
@@ -207,7 +209,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       List<Archive> list = ejb.queryArchiveByTenant();
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
-      Resource res = list.get(0).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
       List<DcControllable> list1 = ejb.queryDcControllable();
@@ -348,7 +350,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       List<Archive> list = ejb.queryArchiveByTenant();
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
-      Resource res = list.get(0).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
       List<DcControllable> list1 = ejb.queryDcControllable();
@@ -402,8 +404,8 @@ public class Jpa1EjbIT extends AbstractArquillian {
 
       List<Archive> list = ejb.queryArchiveByTenant();
       Assert.assertEquals(2, list.size());
-      Resource res1 = list.get(0).getResource();
-      Resource res2 = list.get(1).getResource();
+      JpaResource res1 = (JpaResource) list.get(0).getResource();
+      JpaResource res2 = (JpaResource) list.get(1).getResource();
       Assert.assertEquals(res1.getPrimaryKeyId(), res2.getPrimaryKeyId());
 
       TEntity te = ejb.findTEntity(Long.parseLong(res1.getPrimaryKeyId()));
@@ -518,8 +520,8 @@ public class Jpa1EjbIT extends AbstractArquillian {
 
       List<Archive> list = ejb.queryArchiveByTenant();
       Assert.assertEquals(2, list.size());
-      Resource res = list.get(0).getResource();
-      Resource res1 = list.get(1).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
+      JpaResource res1 = (JpaResource) list.get(1).getResource();
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
       Assert.assertEquals("0", res.getPrimaryKeyId());
       Assert.assertEquals(ControlEvent.INSERT, list.get(1).getControlEvent());
@@ -571,7 +573,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       }
       List<Archive> list = ejb.queryArchiveByTenant();
       Assert.assertEquals(1, list.size());
-      Resource res = list.get(0).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
@@ -613,7 +615,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
 
       List<Archive> list = ejb.queryArchive(TENANT, TComplexEntity.class.getName(), String.valueOf(ce.getId()));
       Assert.assertEquals(1, list.size());
-      Resource res = list.get(0).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
       TComplexEntity decObj = (TComplexEntity) res.getObject();
       Assert.assertEquals(2, decObj.getEagerList().size());
       Assert.assertEquals(3, decObj.getLazyList().size());
@@ -626,8 +628,8 @@ public class Jpa1EjbIT extends AbstractArquillian {
 
       list = ejb.queryArchive(TENANT, TComplexEntity.class.getName(), String.valueOf(ce.getId()));
       Assert.assertEquals(2, list.size());
-      Resource res1 = list.get(0).getResource();
-      Resource res2 = list.get(1).getResource();
+      JpaResource res1 = (JpaResource) list.get(0).getResource();
+      JpaResource res2 = (JpaResource) list.get(1).getResource();
       TComplexEntity decObj1 = (TComplexEntity) res1.getObject();
       TComplexEntity decObj2 = (TComplexEntity) res2.getObject();
       Assert.assertEquals(2, decObj1.getEagerList().size());
@@ -660,7 +662,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
 
       List<Archive> list = ejb.queryArchiveByTenant();
       Assert.assertEquals(1, list.size());
-      Resource res = list.get(0).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals(ControlEvent.SELECT, list.get(0).getControlEvent());
       Assert.assertEquals(String.valueOf(entity.getId()), res.getPrimaryKeyId());
       Assert.assertEquals(entity.getId(), res.getPrimaryKeyObject());
@@ -696,12 +698,12 @@ public class Jpa1EjbIT extends AbstractArquillian {
 
       List<Archive> list = ejb.queryArchiveByTenant();
       Assert.assertEquals(1, list.size());
-      Resource res = list.get(0).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals(ControlEvent.SELECT, list.get(0).getControlEvent());
       Assert.assertEquals(String.valueOf(entity.getId()), res.getPrimaryKeyId());
       Assert.assertEquals(entity.getId(), res.getPrimaryKeyObject());
       Assert.assertEquals(1, res.getParameters().size());
-      Assert.assertEquals(LockModeType.PESSIMISTIC_READ, res.getParameters().get(0).getUnencodedValue());
+      Assert.assertEquals(LockModeType.PESSIMISTIC_READ, res.getParameters().iterator().next().getUnencodedValue());
 
       List<DcControllable> list1 = (List<DcControllable>) ejb.queryDcControllable();
       Assert.assertEquals(1, list1.size());
@@ -736,19 +738,23 @@ public class Jpa1EjbIT extends AbstractArquillian {
 
       List<Archive> list = ejb.queryArchiveByTenant();
       Assert.assertEquals(1, list.size());
-      Resource res = list.get(0).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals(ControlEvent.SELECT, list.get(0).getControlEvent());
       Assert.assertEquals(String.valueOf(entity.getId()), res.getPrimaryKeyId());
       Assert.assertEquals(entity.getId(), res.getPrimaryKeyObject());
       Assert.assertEquals(2, res.getParameters().size());
 
       TEntity propsTE = null;
-      if (res.getParameters().get(0).getUnencodedValue() instanceof TEntity) {
-         propsTE = (TEntity) res.getParameters().get(0).getUnencodedValue();
-         Assert.assertEquals(LockModeType.PESSIMISTIC_READ, res.getParameters().get(1).getUnencodedValue());
+      Iterator<ResourceParameter> iter = res.getParameters().iterator();
+      ResourceParameter p0 = iter.next();
+      ResourceParameter p1 = iter.next();
+
+      if (p0.getUnencodedValue() instanceof TEntity) {
+         propsTE = (TEntity) p0.getUnencodedValue();
+         Assert.assertEquals(LockModeType.PESSIMISTIC_READ, p1.getUnencodedValue());
       } else {
-         propsTE = (TEntity) res.getParameters().get(1).getUnencodedValue();
-         Assert.assertEquals(LockModeType.PESSIMISTIC_READ, res.getParameters().get(0).getUnencodedValue());
+         propsTE = (TEntity) p1.getUnencodedValue();
+         Assert.assertEquals(LockModeType.PESSIMISTIC_READ, p0.getUnencodedValue());
       }
       Assert.assertEquals("Igel", propsTE.getNameValue());
 
@@ -785,12 +791,12 @@ public class Jpa1EjbIT extends AbstractArquillian {
 
       List<Archive> list = ejb.queryArchiveByTenant();
       Assert.assertEquals(1, list.size());
-      Resource res = list.get(0).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals(ControlEvent.SELECT, list.get(0).getControlEvent());
       Assert.assertEquals(String.valueOf(entity.getId()), res.getPrimaryKeyId());
       Assert.assertEquals(entity.getId(), res.getPrimaryKeyObject());
       Assert.assertEquals(1, res.getParameters().size());
-      TEntity propsTE = (TEntity) res.getParameters().get(0).getUnencodedValue();
+      TEntity propsTE = (TEntity) res.getParameters().iterator().next().getUnencodedValue();
       Assert.assertEquals("Igel", propsTE.getNameValue());
 
       List<DcControllable> list1 = (List<DcControllable>) ejb.queryDcControllable();
@@ -826,7 +832,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       List<Archive> list = ejb.queryArchiveByTenant();
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
-      Resource res = list.get(0).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
       List<DcControllable> list1 = ejb.queryDcControllable();
@@ -852,10 +858,10 @@ public class Jpa1EjbIT extends AbstractArquillian {
 
       list = ejb.queryArchiveByTenant();
       Assert.assertEquals(4, list.size());
-      Resource res0 = list.get(0).getResource();
-      Resource res1 = list.get(1).getResource();
-      Resource res2 = list.get(2).getResource();
-      Resource res3 = list.get(3).getResource();
+      JpaResource res0 = (JpaResource) list.get(0).getResource();
+      JpaResource res1 = (JpaResource) list.get(1).getResource();
+      JpaResource res2 = (JpaResource) list.get(2).getResource();
+      JpaResource res3 = (JpaResource) list.get(3).getResource();
       Assert.assertEquals(res0.getPrimaryKeyId(), res2.getPrimaryKeyId());
       Assert.assertEquals(res1.getPrimaryKeyId(), res3.getPrimaryKeyId());
       Assert.assertEquals(res0.getUniqueId(), res2.getUniqueId());

@@ -31,7 +31,6 @@ import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 
 public class CibetEntityManager implements EntityManager, CEntityManager {
 
@@ -197,7 +196,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
 
          entityManagerIntoContext();
          ControlEvent controlEvent = controlEvent(ControlEvent.SELECT);
-         Resource res = new Resource(JpaResourceHandler.class, clazz, id);
+         JpaResource res = new JpaResource(clazz, id);
          if (props != null) {
             for (Map.Entry<String, Object> entry : props.entrySet()) {
                res.addParameter(entry.getKey(), entry.getValue(), ParameterType.JPA_HINT);
@@ -350,7 +349,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
          startManaging = Context.start();
          entityManagerIntoContext();
          ControlEvent controlEvent = controlEvent(ControlEvent.UPDATE);
-         Resource res = new Resource(JpaResourceHandler.class, obj);
+         JpaResource res = new JpaResource(obj);
          metadata = new EventMetadata(controlEvent, res);
          Configuration.instance().getController().evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
@@ -413,7 +412,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
          startManaging = Context.start();
          entityManagerIntoContext();
          ControlEvent controlEvent = controlEvent(ControlEvent.INSERT);
-         Resource res = new Resource(JpaResourceHandler.class, obj);
+         JpaResource res = new JpaResource(obj);
          metadata = new EventMetadata(controlEvent, res);
          Configuration.instance().getController().evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
@@ -432,7 +431,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
                   nativeEntityManager.flush();
                   res.setPrimaryKeyObject(AnnotationUtil.primaryKeyAsObject(obj));
                   res.setObject(obj);
-                  res.setUniqueId(res.getResourceHandler().createUniqueId());
+                  res.setUniqueId(res.createUniqueId());
                }
             }
 
@@ -490,7 +489,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
          startManaging = Context.start();
          entityManagerIntoContext();
          ControlEvent controlEvent = controlEvent(ControlEvent.DELETE);
-         Resource res = new Resource(JpaResourceHandler.class, obj);
+         JpaResource res = new JpaResource(obj);
          metadata = new EventMetadata(controlEvent, res);
          Configuration.instance().getController().evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));

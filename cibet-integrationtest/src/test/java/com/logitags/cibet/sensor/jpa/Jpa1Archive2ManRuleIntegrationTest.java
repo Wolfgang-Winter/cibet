@@ -37,7 +37,6 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.resource.Resource;
 
 /**
  * tests CibetEntityManager with Archive and FourEyes- actuators.
@@ -83,7 +82,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
@@ -123,7 +122,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
 
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertTrue(!res.getPrimaryKeyId().equals("0"));
@@ -165,7 +164,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
 
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertTrue(!res.getPrimaryKeyId().equals("0"));
@@ -315,7 +314,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
             String.valueOf(selEnt3.getId()));
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
 
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertTrue(!res.getPrimaryKeyId().equals("0"));
@@ -813,7 +812,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
                String.valueOf(entity.getId()));
          Assert.assertEquals(2, list.size());
          Archive ar = list.get(0);
-         Resource res = ar.getResource();
+         JpaResource res = (JpaResource) ar.getResource();
 
          Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
          Assert.assertTrue(!res.getPrimaryKeyId().equals("0"));

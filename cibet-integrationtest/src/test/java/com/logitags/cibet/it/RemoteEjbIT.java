@@ -32,10 +32,11 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.naming.Context;
 import javax.naming.Name;
@@ -68,6 +69,7 @@ import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.config.ConfigurationService;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.common.Invoker;
@@ -123,7 +125,7 @@ public class RemoteEjbIT extends AbstractArquillian {
    @Test
    public void executeLocalRemoteEJBInvoker() throws Exception {
       log.debug("start executeLocalRemoteEJBInvoker()");
-      List<ResourceParameter> params = new ArrayList<>();
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
 
       URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
       log.debug("url=" + url);
@@ -170,7 +172,7 @@ public class RemoteEjbIT extends AbstractArquillian {
    @Test
    public void executeRemoteEJBInvokerNoContext() throws Exception {
       log.debug("start executeRemoteEJBInvokerNoContext()");
-      List<ResourceParameter> params = new ArrayList<>();
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       Invoker invoker = RemoteEJBInvoker.createInstance();
       try {
          List<Object> result = (List<Object>) invoker.execute(null, null, "testInvoke", params);
@@ -183,7 +185,7 @@ public class RemoteEjbIT extends AbstractArquillian {
    @Test
    public void executeRemoteEJBInvokerNoJndiname() throws Exception {
       log.debug("start executeRemoteEJBInvokerNoJndiname()");
-      List<ResourceParameter> params = new ArrayList<>();
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       ResourceParameter rp7 = new ResourceParameter(RemoteEjbInvocationHandler.JNDI_CONTEXT, Properties.class.getName(),
             new Properties(), ParameterType.INTERNAL_PARAMETER, 8);
       params.add(rp7);

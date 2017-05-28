@@ -94,6 +94,7 @@ import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.sensor.ejb.CibetRemoteContext;
 import com.logitags.cibet.sensor.ejb.CibetRemoteContextFactory;
+import com.logitags.cibet.sensor.ejb.EjbResource;
 import com.logitags.cibet.sensor.ejb.RemoteEJBInvoker;
 
 @RunWith(Arquillian.class)
@@ -338,7 +339,8 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
 
       List<DcControllable> dlist = DcLoader.loadByUser("klaus");
       Assert.assertEquals(1, dlist.size());
-      Assert.assertEquals(RemoteEJBInvoker.class.getName(), dlist.get(0).getResource().getInvokerClass());
+      Assert.assertEquals(RemoteEJBInvoker.class.getName(),
+            ((EjbResource) dlist.get(0).getResource()).getInvokerClass());
       Assert.assertEquals(ExecutionStatus.POSTPONED, dlist.get(0).getExecutionStatus());
 
       log.info("now release");

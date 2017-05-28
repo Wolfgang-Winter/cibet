@@ -15,6 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -27,6 +29,7 @@ import com.cibethelper.base.SingletonFactory;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.common.Invoker;
@@ -125,7 +128,7 @@ public class PojoInvokerTest {
 
    @Test
    public void invokeStatic() throws Exception {
-      List<ResourceParameter> parameters = new ArrayList<ResourceParameter>();
+      Set<ResourceParameter> parameters = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       ResourceParameter p1 = new ResourceParameter("pa1", String.class.getName(), "Hans",
             ParameterType.METHOD_PARAMETER, 4);
       parameters.add(p1);
@@ -140,7 +143,7 @@ public class PojoInvokerTest {
 
    @Test
    public void invokeStaticArray() throws Exception {
-      List<ResourceParameter> parameters = new ArrayList<ResourceParameter>();
+      Set<ResourceParameter> parameters = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       String[] strings = new String[] { "Hans", " Wurst2" };
       ResourceParameter p1 = new ResourceParameter("pa1", strings.getClass().getName(), strings,
             ParameterType.METHOD_PARAMETER, 4);
@@ -153,7 +156,7 @@ public class PojoInvokerTest {
 
    @Test
    public void invokeSimpleConstructor() throws Exception {
-      List<ResourceParameter> parameters = new ArrayList<ResourceParameter>();
+      Set<ResourceParameter> parameters = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       List<String> strings = new ArrayList<String>();
       strings.add("Hans");
       strings.add(" Wurst3");

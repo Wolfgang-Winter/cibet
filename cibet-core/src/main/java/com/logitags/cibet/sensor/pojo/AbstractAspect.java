@@ -26,8 +26,8 @@ package com.logitags.cibet.sensor.pojo;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,13 +41,13 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.common.Invoker;
 import com.logitags.cibet.sensor.ejb.CibetInterceptor;
 import com.logitags.cibet.sensor.ejb.EJBInvoker;
-import com.logitags.cibet.sensor.ejb.EjbResourceHandler;
+import com.logitags.cibet.sensor.ejb.EjbResource;
 
 public abstract class AbstractAspect extends CibetInterceptor {
 
@@ -97,20 +97,20 @@ public abstract class AbstractAspect extends CibetInterceptor {
 
          checkParam(param);
 
-         List<ResourceParameter> params = new LinkedList<ResourceParameter>();
+         Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
          for (int i = 0; i < method.getParameterTypes().length; i++) {
             params.add(new ResourceParameter("PARAM" + i, method.getParameterTypes()[i].getName(),
                   thisJoinPoint.getArgs()[i], ParameterType.METHOD_PARAMETER, i));
          }
 
          String sensorName;
-         Resource resource;
+         MethodResource resource;
          if (factoryClass == EJBInvoker.class) {
             sensorName = CibetInterceptor.SENSOR_NAME;
-            resource = new Resource(EjbResourceHandler.class, invokedObject, method, params);
+            resource = new EjbResource(invokedObject, method, params);
          } else {
             sensorName = SENSOR_NAME_POJO;
-            resource = new Resource(MethodResourceHandler.class, invokedObject, method, params);
+            resource = new MethodResource(invokedObject, method, params);
          }
 
          resource.setInvokerClass(factoryClass.getName());

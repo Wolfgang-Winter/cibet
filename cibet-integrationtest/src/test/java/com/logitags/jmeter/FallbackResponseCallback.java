@@ -29,6 +29,7 @@ import java.io.PrintWriter;
 
 import com.logitags.cibet.actuator.loadcontrol.LoadControlCallback;
 import com.logitags.cibet.actuator.loadcontrol.LoadControlData;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
 
 public class FallbackResponseCallback implements LoadControlCallback {
 
@@ -37,15 +38,15 @@ public class FallbackResponseCallback implements LoadControlCallback {
       StringBuffer b = new StringBuffer();
       b.append("<html><head>");
       b.append("</head><body></p></p><h1>Sorry! The system is currently under heavy load. Execution of test ");
-      b.append(lcData.getResource().getHttpRequest().getParameter("test"));
+      b.append(((HttpRequestResource) lcData.getResource()).getHttpRequest().getParameter("test"));
       b.append(" with loop count = ");
-      b.append(lcData.getResource().getHttpRequest().getParameter("loops"));
+      b.append(((HttpRequestResource) lcData.getResource()).getHttpRequest().getParameter("loops"));
       b.append(" could not be executed<br><br>");
       b.append("Please try again later");
       b.append("</h1></body></html>");
 
       try {
-         PrintWriter writer = lcData.getResource().getHttpResponse().getWriter();
+         PrintWriter writer = ((HttpRequestResource) lcData.getResource()).getHttpResponse().getWriter();
          writer.print(b.toString());
          writer.close();
       } catch (IOException e) {

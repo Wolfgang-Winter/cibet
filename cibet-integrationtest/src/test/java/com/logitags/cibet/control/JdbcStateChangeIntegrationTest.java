@@ -32,8 +32,7 @@ import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.jdbc.driver.JdbcResourceHandler;
+import com.logitags.cibet.sensor.jdbc.driver.JdbcResource;
 import com.logitags.cibet.sensor.jdbc.driver.SqlParser;
 
 /**
@@ -80,8 +79,7 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
       String sql = "update cib_testentity set counter=12 where id=77";
       SqlParser parser = new SqlParser(connection, sql);
 
-      Resource res = new Resource(JdbcResourceHandler.class, parser.getSql(), parser.getTargetType(),
-            parser.getPrimaryKey(), null);
+      JdbcResource res = new JdbcResource(parser.getSql(), parser.getTargetType(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -89,8 +87,7 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
 
       sql = "update cib_testentity set namevalue='Jug' where id=77";
       parser = new SqlParser(connection, sql);
-      res = new Resource(JdbcResourceHandler.class, parser.getSql(), parser.getTargetType(), parser.getPrimaryKey(),
-            null);
+      res = new JdbcResource(parser.getSql(), parser.getTargetType(), parser.getPrimaryKey(), null);
       md = new EventMetadata(ControlEvent.UPDATE, res);
       list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(2, list.size());
@@ -106,8 +103,7 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
       String sql = "update cib_testentity set counter=12, namevalue='Jug' where id=77";
       SqlParser parser = new SqlParser(connection, sql);
 
-      Resource res = new Resource(JdbcResourceHandler.class, parser.getSql(), parser.getTargetType(),
-            parser.getPrimaryKey(), null);
+      JdbcResource res = new JdbcResource(parser.getSql(), parser.getTargetType(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(2, list.size());
@@ -123,8 +119,7 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
       String sql = "update cib_testentity set counter=12 where id=77";
       SqlParser parser = new SqlParser(connection, sql);
 
-      Resource res = new Resource(JdbcResourceHandler.class, parser.getSql(), parser.getTargetType(),
-            parser.getPrimaryKey(), null);
+      JdbcResource res = new JdbcResource(parser.getSql(), parser.getTargetType(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -132,8 +127,7 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
 
       sql = "update cib_testentity set namevalue='Jug' where id=77";
       parser = new SqlParser(connection, sql);
-      res = new Resource(JdbcResourceHandler.class, parser.getSql(), parser.getTargetType(), parser.getPrimaryKey(),
-            null);
+      res = new JdbcResource(parser.getSql(), parser.getTargetType(), parser.getPrimaryKey(), null);
       md = new EventMetadata(ControlEvent.UPDATE, res);
       list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(0, list.size());

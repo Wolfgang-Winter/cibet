@@ -105,9 +105,8 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.it.AbstractArquillian;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.sensor.http.Headers;
-import com.logitags.cibet.sensor.http.HttpRequestInvoker;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
 
 /**
  * 
@@ -232,11 +231,10 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Assert.assertEquals(expected, list.size());
       if (expected > 0) {
          Archive ar = list.get(0);
-         Resource res = ar.getResource();
+         HttpRequestResource res = (HttpRequestResource) ar.getResource();
          Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
          Assert.assertEquals(url, res.getTargetType());
          Assert.assertEquals(method, res.getMethod());
-         Assert.assertEquals(HttpRequestInvoker.class.getName(), res.getInvokerClass());
       }
       return list;
    }
@@ -263,11 +261,10 @@ public class HttpLittleProxyIT extends AbstractArquillian {
 
       Assert.assertEquals(count, list.size());
       DcControllable ar = list.get(count - 1);
-      Resource res = ar.getResource();
+      HttpRequestResource res = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals(target, res.getTargetType());
       Assert.assertEquals(method, res.getMethod());
-      Assert.assertEquals(HttpRequestInvoker.class.getName(), res.getInvokerClass());
       return ar;
    }
 
@@ -1035,7 +1032,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_OK, a2.getResource().getResultObject());
       Assert.assertEquals(url, a2.getResource().getTargetType());
       Assert.assertEquals("Wolfgang", a2.getCreateUser());
-      Assert.assertEquals("GET", a2.getResource().getMethod());
+      Assert.assertEquals("GET", ((HttpRequestResource) a2.getResource()).getMethod());
    }
 
    @Test

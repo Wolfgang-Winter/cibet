@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
@@ -52,8 +53,8 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 
 public class CibetQuery implements Query {
@@ -531,8 +532,10 @@ public class CibetQuery implements Query {
    private EventMetadata before(QueryExecutionType executionType) {
       entityManager.entityManagerIntoContext();
       ControlEvent controlEvent = entityManager.controlEvent(ControlEvent.INVOKE);
-      Resource res = new Resource(JpaQueryResourceHandler.class, queryToken,
-            new ArrayList<ResourceParameter>(parameters.values()));
+
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
+      params.addAll(parameters.values());
+      JpaQueryResource res = new JpaQueryResource(queryToken, params);
       EventMetadata metadata = new EventMetadata(controlEvent, res);
 
       metadata.getResource().addParameter("StatementType", executionType, ParameterType.JPA_STATEMENT_TYPE);

@@ -33,14 +33,6 @@ import com.logitags.cibet.resource.Resource;
  */
 public class LoadControlData {
 
-   public LoadControlData(String spid, Resource r, ControlEvent ce, String mon, MonitorResult monResult) {
-      setpointId = spid;
-      resource = r;
-      controlEvent = ce;
-      monitor = mon;
-      monitorResult = monResult;
-   }
-
    /**
     * the id of the Setpoint that was applied on this business case
     */
@@ -96,6 +88,14 @@ public class LoadControlData {
     * Type of LoadControl
     */
    private MonitorResult monitorResult;
+
+   public LoadControlData(String spid, Resource r, ControlEvent ce, String mon, MonitorResult monResult) {
+      setpointId = spid;
+      resource = r;
+      controlEvent = ce;
+      monitor = mon;
+      monitorResult = monResult;
+   }
 
    public MonitorResult getMonitorResult() {
       return monitorResult;

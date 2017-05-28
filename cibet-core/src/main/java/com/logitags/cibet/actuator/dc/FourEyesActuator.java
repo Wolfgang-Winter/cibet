@@ -42,8 +42,7 @@ import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.PersistenceUtil;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
-import com.logitags.cibet.sensor.ejb.EjbResourceHandler;
-import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
+import com.logitags.cibet.sensor.ejb.EjbResource;
 
 /**
  * applies four-eyes control.
@@ -216,7 +215,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          List<Difference> diffs = PersistenceUtil.getDirtyUpdates(ctx);
          ResourceParameter propertyResParam = new ResourceParameter(DIFFERENCES, diffs.getClass().getName(), diffs,
                ParameterType.INTERNAL_PARAMETER, dcObj.getResource().getParameters().size() + 1);
-         dcObj.getResource().getParameters().add(propertyResParam);
+         dcObj.getResource().addParameter(propertyResParam);
          break;
 
       case DELETE:
@@ -248,9 +247,13 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       }
 
       if (dcObj != null) {
-         if (encrypt) {
-            dcObj.encrypt();
+         if (dcObj.getResource().getResourceId() == null) {
+            if (encrypt) {
+               dcObj.getResource().encrypt();
+            }
+            Context.internalRequestScope().getEntityManager().persist(dcObj.getResource());
          }
+
          Context.internalRequestScope().getEntityManager().persist(dcObj);
 
          if (ctx.getException() != null && ctx.getException() instanceof PostponedException) {
@@ -297,12 +300,10 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       dc.setExecutionStatus(ExecutionStatus.POSTPONED);
       dc.setCreateRemark(truncate255(Context.requestScope().getRemark()));
       dc.setScheduledDate(Context.requestScope().getScheduledDate());
-      dc.setResource(new Resource(ctx.getResource()));
-      dc.getResource().setEncrypted(encrypt);
+      dc.setResource(ctx.getResource());
 
-      if (ctx.getResource().getResourceHandler() instanceof EjbResourceHandler
-            && !(ctx.getResource().getResourceHandler() instanceof MethodResourceHandler)) {
-         dc.getResource().setInvokerParam(jndiName);
+      if (ctx.getResource() instanceof EjbResource) {
+         ((EjbResource) dc.getResource()).setInvokerParam(jndiName);
       }
 
       dc.setActuator(getName());
@@ -316,7 +317,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
 
          ResourceParameter proxyConfig = new ResourceParameter(ProxyConfig.PROXYCONFIG, ProxyConfig.class.getName(),
                ctx.getProxyConfig(), ParameterType.INTERNAL_PARAMETER, dc.getResource().getParameters().size() + 1);
-         dc.getResource().getParameters().add(proxyConfig);
+         dc.getResource().addParameter(proxyConfig);
       }
 
       return dc;
@@ -584,7 +585,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
 
          Context.internalRequestScope().setProperty(InternalRequestScope.DCCONTROLLABLE, co);
 
-         Object result = co.getResource().getResourceHandler().apply(co.getControlEvent());
+         Object result = co.getResource().apply(co.getControlEvent());
 
          if (!Context.requestScope().isPlaying()) {
             doRelease(co);
@@ -616,9 +617,9 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          co.setApprovalUser(Context.internalSessionScope().getUser());
          co.setApprovalRemark(Context.internalRequestScope().getRemark());
 
-         if (encrypt) {
-            co.encrypt();
-         }
+         // if (encrypt) {
+         // co.encrypt();
+         // }
          co = Context.internalRequestScope().getEntityManager().merge(co);
          if (sendReleaseNotification) {
             notifyApproval(co);
@@ -663,7 +664,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
             Context.internalRequestScope().setRemark(remark);
          }
 
-         co.getResource().getResourceHandler().apply(co.getControlEvent());
+         co.getResource().apply(co.getControlEvent());
 
          if (!Context.requestScope().isPlaying()) {
             EventResult eventResult = Context.internalRequestScope().getExecutedEventResult();
@@ -678,9 +679,9 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
                co.setApprovalUser(Context.internalSessionScope().getUser());
                co.setApprovalRemark(Context.internalRequestScope().getRemark());
 
-               if (encrypt) {
-                  co.encrypt();
-               }
+               // if (encrypt) {
+               // co.encrypt();
+               // }
                co = Context.internalRequestScope().getEntityManager().merge(co);
                if (sendRejectNotification) {
                   notifyApproval(co);
@@ -713,7 +714,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
             Context.internalRequestScope().setRemark(remark);
          }
 
-         co.getResource().getResourceHandler().apply(co.getControlEvent());
+         co.getResource().apply(co.getControlEvent());
 
          if (!Context.requestScope().isPlaying()) {
             EventResult eventResult = Context.internalRequestScope().getExecutedEventResult();
@@ -728,9 +729,9 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
                co.setApprovalUser(Context.internalSessionScope().getUser());
                co.setApprovalRemark(Context.internalRequestScope().getRemark());
 
-               if (encrypt) {
-                  co.encrypt();
-               }
+               // if (encrypt) {
+               // co.encrypt();
+               // }
                co = Context.internalRequestScope().getEntityManager().merge(co);
                if (sendPassBackNotification) {
                   notifyApproval(co);
@@ -763,7 +764,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
             Context.internalRequestScope().setRemark(remark);
          }
 
-         co.getResource().getResourceHandler().apply(co.getControlEvent());
+         co.getResource().apply(co.getControlEvent());
 
          if (!Context.requestScope().isPlaying()) {
             EventResult eventResult = Context.internalRequestScope().getExecutedEventResult();
@@ -781,9 +782,9 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
                   co.setScheduledDate(Context.internalRequestScope().getScheduledDate());
                }
 
-               if (encrypt) {
-                  co.encrypt();
-               }
+               // if (encrypt) {
+               // co.encrypt();
+               // }
                co = Context.internalRequestScope().getEntityManager().merge(co);
                notifyAssigned(ExecutionStatus.POSTPONED, co);
             }

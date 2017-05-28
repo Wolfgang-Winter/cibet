@@ -66,10 +66,9 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.it.AbstractArquillian;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.http.Headers;
-import com.logitags.cibet.sensor.http.HttpRequestInvoker;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
 
 /**
  * 
@@ -139,11 +138,10 @@ public class HttpParallelDcIT extends AbstractArquillian {
 
       Assert.assertEquals(count, list.size());
       DcControllable ar = list.get(count - 1);
-      Resource res = ar.getResource();
+      HttpRequestResource res = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals(target, res.getTargetType());
       Assert.assertEquals(method, res.getMethod());
-      Assert.assertEquals(HttpRequestInvoker.class.getName(), res.getInvokerClass());
       return ar;
    }
 
@@ -163,7 +161,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
       String body = readResponseBody(response);
       Assert.assertEquals("NO Persist, counter: 891", body);
       DcControllable co = checkDc(url, "GET", 1);
-      Resource res = co.getResource();
+      HttpRequestResource res = (HttpRequestResource) co.getResource();
       Assert.assertTrue(res.getParameters().size() > 4);
 
       String evReHeader = response.getFirstHeader(Headers.CIBET_EVENTRESULT.name()).getValue();

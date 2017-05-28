@@ -13,6 +13,12 @@
 		<class>com.logitags.cibet.core.EventResult</class>
 		<class>com.logitags.cibet.resource.ResourceParameter</class>
 		<class>com.logitags.cibet.resource.Resource</class>
+      <class>com.logitags.cibet.sensor.ejb.EjbResource</class>
+      <class>com.logitags.cibet.sensor.http.HttpRequestResource</class>
+      <class>com.logitags.cibet.sensor.jdbc.driver.JdbcResource</class>
+      <class>com.logitags.cibet.sensor.jpa.JpaResource</class>
+      <class>com.logitags.cibet.sensor.jpa.JpaQueryResource</class>
+      <class>com.logitags.cibet.sensor.pojo.MethodResource</class>
 
 		<properties>
 		</properties>

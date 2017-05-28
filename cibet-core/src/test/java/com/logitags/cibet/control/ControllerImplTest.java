@@ -13,8 +13,8 @@ package com.logitags.cibet.control;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 
@@ -43,11 +43,11 @@ import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
-import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
+import com.logitags.cibet.sensor.jpa.JpaResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ControllerImplTest extends CoreTestBase {
@@ -92,7 +92,7 @@ public class ControllerImplTest extends CoreTestBase {
 
       TComplexEntity cte = createEntity();
 
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       Controller ev = new DefaultController();
       ev.evaluate(md);
@@ -108,7 +108,7 @@ public class ControllerImplTest extends CoreTestBase {
       Context.internalRequestScope().setApplicationEntityManager2(em2);
 
       TComplexEntity cte = createEntity();
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
       Controller ev = new DefaultController();
       ev.evaluate(md);
@@ -125,7 +125,7 @@ public class ControllerImplTest extends CoreTestBase {
       Context.internalRequestScope().setApplicationEntityManager2(em2);
 
       TComplexEntity cte = createEntity();
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       Controller ev = new DefaultController();
       ev.evaluate(md);
@@ -151,7 +151,7 @@ public class ControllerImplTest extends CoreTestBase {
 
       createEntity();
       log.debug("xxx");
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
       Controller ev = new DefaultController();
       ev.evaluate(md);
@@ -176,7 +176,7 @@ public class ControllerImplTest extends CoreTestBase {
 
       createEntity();
 
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       Controller ev = new DefaultController();
       ev.evaluate(md);
@@ -192,7 +192,7 @@ public class ControllerImplTest extends CoreTestBase {
       initConfiguration("cibet-config.xml");
       Context.sessionScope().setTenant("ApiTest-loadXMLConfiguration-Owner");
 
-      Resource res = new Resource(JpaResourceHandler.class, new TEntity());
+      JpaResource res = new JpaResource(new TEntity());
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       new DefaultController().evaluate(md);
       Assert.assertTrue(md.getActuators().size() == 2);
@@ -207,7 +207,7 @@ public class ControllerImplTest extends CoreTestBase {
       initConfiguration("cibet-config.xml");
       Context.sessionScope().setTenant("ApiTest-loadXMLConfiguration-Owner");
 
-      Resource res = new Resource(JpaResourceHandler.class, new TComplexEntity());
+      JpaResource res = new JpaResource(new TComplexEntity());
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
       new DefaultController().evaluate(md);
       Assert.assertTrue(md.getActuators().size() == 1);
@@ -221,10 +221,10 @@ public class ControllerImplTest extends CoreTestBase {
       initConfiguration("cibet-config.xml");
       Context.sessionScope().setTenant("ApiTest-loadXMLConfiguration-Owner");
 
-      List<ResourceParameter> paramList = new LinkedList<ResourceParameter>();
+      Set<ResourceParameter> paramList = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       paramList.add(new ResourceParameter("PARAM_0", String.class.getName(), "XYZ", ParameterType.METHOD_PARAMETER, 1));
       Method m = TrueCustomControl.class.getDeclaredMethod("setGaga", new Class[] { String.class });
-      Resource res = new Resource(MethodResourceHandler.class, new TrueCustomControl(), m, paramList);
+      MethodResource res = new MethodResource(new TrueCustomControl(), m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       new DefaultController().evaluate(md);
       Assert.assertTrue(md.getActuators().size() == 1);
@@ -239,7 +239,7 @@ public class ControllerImplTest extends CoreTestBase {
       Context.sessionScope().setTenant("ApiTest-loadXMLConfiguration-Owner");
 
       Method m = TrueCustomControl.class.getDeclaredMethod("getName");
-      Resource res = new Resource(MethodResourceHandler.class, new TrueCustomControl(), m, null);
+      MethodResource res = new MethodResource(new TrueCustomControl(), m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       new DefaultController().evaluate(md);
 
@@ -264,7 +264,7 @@ public class ControllerImplTest extends CoreTestBase {
       sb.addActuator(Configuration.instance().getActuator(SixEyesActuator.DEFAULTNAME));
       Configuration.instance().registerSetpoint(sb);
 
-      Resource res = new Resource(JpaResourceHandler.class, new TEntity());
+      JpaResource res = new JpaResource(new TEntity());
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
       Controller contr = new DefaultController();
       contr.evaluate(md);
@@ -290,7 +290,7 @@ public class ControllerImplTest extends CoreTestBase {
       sb.addActuator(Configuration.instance().getActuator(SixEyesActuator.DEFAULTNAME));
       Configuration.instance().registerSetpoint(sb);
 
-      Resource res = new Resource(JpaResourceHandler.class, new TEntity());
+      JpaResource res = new JpaResource(new TEntity());
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
       Controller evaluator = new DefaultController();
       evaluator.evaluate(md);
@@ -316,7 +316,7 @@ public class ControllerImplTest extends CoreTestBase {
       sb.addActuator(Configuration.instance().getActuator("Willi"));
       Configuration.instance().registerSetpoint(sb);
 
-      Resource res = new Resource(JpaResourceHandler.class, new TEntity());
+      JpaResource res = new JpaResource(new TEntity());
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
       Controller evaluator = new DefaultController();
       evaluator.evaluate(md);
@@ -346,7 +346,7 @@ public class ControllerImplTest extends CoreTestBase {
       sb.addActuator(cman.getActuator("Willi"));
       cman.registerSetpoint(sb);
 
-      Resource res = new Resource(JpaResourceHandler.class, new TEntity());
+      JpaResource res = new JpaResource(new TEntity());
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
       Controller evaluator = new DefaultController();
       evaluator.evaluate(md);
@@ -365,7 +365,7 @@ public class ControllerImplTest extends CoreTestBase {
       initConfiguration("config_parents.xml");
 
       Method m = ControllerImplTest.class.getDeclaredMethod("evaluateWithParents");
-      Resource res = new Resource(MethodResourceHandler.class, this, m, null);
+      MethodResource res = new MethodResource(this, m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       Controller ev = new DefaultController();
       ev.evaluate(md);

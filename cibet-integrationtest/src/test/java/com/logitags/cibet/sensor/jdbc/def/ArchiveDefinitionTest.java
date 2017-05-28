@@ -33,11 +33,11 @@ import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.ejb.EJBInvoker;
 import com.logitags.cibet.sensor.jdbc.bridge.JdbcBridgeEntityManager;
-import com.logitags.cibet.sensor.jdbc.driver.JdbcResourceHandler;
+import com.logitags.cibet.sensor.jdbc.driver.JdbcResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 /**
  *
@@ -61,8 +61,7 @@ public class ArchiveDefinitionTest extends JdbcHelper {
 
    private Archive createStateArchive() throws IOException {
       Archive sa = new Archive();
-      Resource r = new Resource();
-      r.setResourceHandlerClass(JdbcResourceHandler.class.getName());
+      JdbcResource r = new JdbcResource();
       sa.setResource(r);
       sa.setCaseId("caseisxx");
       sa.setControlEvent(ControlEvent.INSERT);
@@ -83,8 +82,7 @@ public class ArchiveDefinitionTest extends JdbcHelper {
 
    private Archive createServiceArchive() throws IOException {
       Archive sa = new Archive();
-      Resource r = new Resource();
-      r.setResourceHandlerClass(JdbcResourceHandler.class.getName());
+      MethodResource r = new MethodResource();
       sa.setResource(r);
       sa.setCaseId("caseisxx");
       sa.setControlEvent(ControlEvent.INSERT);
@@ -105,7 +103,7 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          ap.setParameterType(ParameterType.METHOD_PARAMETER);
          ap.setSequence(i);
          ap.setUnencodedValue(ap);
-         r.getParameters().add(ap);
+         r.addParameter(ap);
       }
 
       byte[] r1 = CibetUtil.encode(sa);
@@ -126,7 +124,8 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          EntityDefinition def = ArchiveDefinition.getInstance();
          def.persist(connection, sa);
 
-         PreparedStatement ps = connection.prepareStatement("SELECT archiveid, caseid, result FROM CIB_ARCHIVE");
+         PreparedStatement ps = connection.prepareStatement(
+               "SELECT a.archiveid, a.caseid, r.result FROM CIB_ARCHIVE a, CIB_RESOURCE r where a.resourceid = r.resourceid");
          ResultSet rs = ps.executeQuery();
          Assert.assertTrue(rs.next());
          Assert.assertNotNull(rs.getString(1));
@@ -156,8 +155,8 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          EntityDefinition def = ArchiveDefinition.getInstance();
          def.persist(connection, sa);
 
-         PreparedStatement ps = connection
-               .prepareStatement("SELECT archiveid, caseid, result, method FROM CIB_ARCHIVE");
+         PreparedStatement ps = connection.prepareStatement(
+               "SELECT a.archiveid, a.caseid, r.result, r.method FROM CIB_ARCHIVE a, CIB_RESOURCE r where a.resourceid = r.resourceid");
          ResultSet rs = ps.executeQuery();
          Assert.assertTrue(rs.next());
          Assert.assertNotNull(rs.getString(1));
@@ -229,7 +228,7 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          Archive ar2 = jdbcEM.find(Archive.class, sa.getArchiveId());
          Assert.assertNotNull(ar2);
          Assert.assertEquals("caseisxx", ar2.getCaseId());
-         Assert.assertEquals("methodname", ar2.getResource().getMethod());
+         Assert.assertEquals("methodname", ((MethodResource) ar2.getResource()).getMethod());
          Assert.assertNotNull(ar2.getResource().getTarget());
          Object obj = CibetUtil.decode(ar2.getResource().getTarget());
          Assert.assertEquals(Archive.class, obj.getClass());
@@ -295,7 +294,7 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          Assert.assertTrue(sa.getArchiveId() != null);
 
          sa.setRemark("WilliBert");
-         sa.getResource().setMethod("Halleluja");
+         ((MethodResource) sa.getResource()).setMethod("Halleluja");
          jdbcEM.merge(sa);
          connection.commit();
 
@@ -303,7 +302,8 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          Assert.assertNotNull(ar2);
          Assert.assertEquals("caseisxx", ar2.getCaseId());
          Assert.assertEquals("WilliBert", ar2.getRemark());
-         Assert.assertEquals("Halleluja", ar2.getResource().getMethod());
+         // JdbcResource can not be updated
+         // Assert.assertEquals("Halleluja", ((MethodResource) ar2.getResource()).getMethod());
          Assert.assertNotNull(ar2.getResource().getTarget());
          Object obj = CibetUtil.decode(ar2.getResource().getTarget());
          Assert.assertEquals(Archive.class, obj.getClass());

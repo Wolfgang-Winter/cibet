@@ -7,7 +7,7 @@
  *
  * All rights reserved
  *
- * Copyright 2014 Dr. Wolfgang Winter
+ * Copyright 2016 Dr. Wolfgang Winter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,14 @@
  */
 package com.logitags.cibet.sensor.jpa;
 
-import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
@@ -46,25 +47,58 @@ import org.apache.commons.logging.LogFactory;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
-import com.logitags.cibet.resource.ParameterSequenceComparator;
-import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.resource.ResourceHandler;
+import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.ResourceParameter;
 
-public class JpaQueryResourceHandler implements Serializable, ResourceHandler {
+@Entity
+@DiscriminatorValue(value = "JpaQueryResource")
+public class JpaQueryResource extends Resource {
 
    /**
     * 
     */
-   private static final long serialVersionUID = 8323537176930055902L;
+   private static final long serialVersionUID = 1L;
 
-   private static Log log = LogFactory.getLog(JpaQueryResourceHandler.class);
+   private static Log log = LogFactory.getLog(JpaQueryResource.class);
 
-   private Resource resource;
+   public JpaQueryResource() {
+   }
 
-   public JpaQueryResourceHandler(Resource res) {
-      resource = res;
+   /**
+    * constructor for JPA Query sensor
+    * 
+    * @param rh
+    * @param queryToken
+    * @param params
+    */
+   public JpaQueryResource(String queryToken, Set<ResourceParameter> params) {
+      setObject(queryToken);
+      setTargetType(queryToken);
+      if (params != null) {
+         setParameters(params);
+      }
+   }
+
+   /**
+    * copy constructor
+    * 
+    * @param copy
+    */
+   public JpaQueryResource(JpaQueryResource copy) {
+      super(copy);
+   }
+
+   @Override
+   public void fillContext(ScriptEngine engine) {
+      engine.put("$TARGETTYPE", getTargetType());
+   }
+
+   @Override
+   public Map<String, Object> getNotificationAttributes() {
+      Map<String, Object> map = new HashMap<>();
+      map.put("targetType", getTargetType());
+      return map;
    }
 
    @Override
@@ -74,7 +108,7 @@ public class JpaQueryResourceHandler implements Serializable, ResourceHandler {
       QueryType queryType = null;
       Object addValue = null;
       QueryExecutionType queryExecution = null;
-      for (ResourceParameter par : resource.getParameters()) {
+      for (ResourceParameter par : getParameters()) {
          if (par.getParameterType() == ParameterType.JPA_QUERY_TYPE) {
             queryType = (QueryType) par.getUnencodedValue();
          }
@@ -101,25 +135,25 @@ public class JpaQueryResourceHandler implements Serializable, ResourceHandler {
       Query query = null;
       switch (queryType) {
       case NAMED_QUERY:
-         query = em.createNamedQuery((String) resource.getObject());
+         query = em.createNamedQuery((String) getObject());
          break;
       case NATIVE_MAPPED_QUERY:
-         query = em.createNativeQuery((String) resource.getObject(), (String) addValue);
+         query = em.createNativeQuery((String) getObject(), (String) addValue);
          break;
       case NATIVE_QUERY:
-         query = em.createNativeQuery((String) resource.getObject());
+         query = em.createNativeQuery((String) getObject());
          break;
       case NAMED_TYPED_QUERY:
-         query = em.createNamedQuery((String) resource.getObject(), (Class<?>) addValue);
+         query = em.createNamedQuery((String) getObject(), (Class<?>) addValue);
          break;
       case NATIVE_TYPED_QUERY:
-         query = em.createNativeQuery((String) resource.getObject(), (Class<?>) addValue);
+         query = em.createNativeQuery((String) getObject(), (Class<?>) addValue);
          break;
       case QUERY:
-         query = em.createQuery((String) resource.getObject());
+         query = em.createQuery((String) getObject());
          break;
       case TYPED_QUERY:
-         query = em.createQuery((String) resource.getObject(), (Class<?>) addValue);
+         query = em.createQuery((String) getObject(), (Class<?>) addValue);
          break;
       case CRITERIA_QUERY:
          String err = "<T> TypedQuery<T> createQuery(CriteriaQuery<T> arg0) is not controlled by Cibet";
@@ -128,7 +162,7 @@ public class JpaQueryResourceHandler implements Serializable, ResourceHandler {
       }
 
       // set parameters
-      for (ResourceParameter par : resource.getParameters()) {
+      for (ResourceParameter par : getParameters()) {
          setParameter(query, par);
       }
 
@@ -148,24 +182,24 @@ public class JpaQueryResourceHandler implements Serializable, ResourceHandler {
       return result;
    }
 
-   @Override
-   public void fillContext(ScriptEngine engine) {
-      engine.put("$TARGETTYPE", resource.getTargetType());
-   }
-
-   @Override
-   public Map<String, Object> getNotificationAttributes() {
-      Map<String, Object> map = new HashMap<>();
-      map.put("targetType", resource.getTargetType());
-      return map;
-   }
-
-   @Override
-   public String toString() {
-      StringBuffer b = new StringBuffer();
-      b.append("[JpaQueryResource] targetType: ");
-      b.append(resource.getTargetType());
+   /**
+    * concatenates the values for creating the checkSum.
+    */
+   public String createCheckSumString() {
+      StringBuffer b = new StringBuffer(super.createCheckSumString());
       return b.toString();
+   }
+
+   @Override
+   public String createUniqueId() {
+      Base64 b64 = new Base64();
+      StringBuffer b = new StringBuffer();
+      b.append(getTargetType());
+
+      for (ResourceParameter param : getParameters()) {
+         b.append(b64.encodeToString(param.getEncodedValue()));
+      }
+      return DigestUtils.sha256Hex(b.toString());
    }
 
    private void setParameter(Query query, ResourceParameter par) {
@@ -212,18 +246,11 @@ public class JpaQueryResourceHandler implements Serializable, ResourceHandler {
       }
    }
 
-   @Override
-   public String createUniqueId() {
-      Base64 b64 = new Base64();
+   public String toString() {
       StringBuffer b = new StringBuffer();
-      b.append(resource.getTargetType());
-
-      ParameterSequenceComparator comparator = new ParameterSequenceComparator();
-      Collections.sort(resource.getParameters(), comparator);
-      for (ResourceParameter param : resource.getParameters()) {
-         b.append(b64.encodeToString(param.getEncodedValue()));
-      }
-      return DigestUtils.sha256Hex(b.toString());
+      b.append("[JpaQueryResource] ");
+      b.append(super.toString());
+      return b.toString();
    }
 
 }

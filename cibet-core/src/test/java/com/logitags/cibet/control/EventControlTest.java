@@ -27,9 +27,8 @@ import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 public class EventControlTest extends CoreTestBase {
 
@@ -40,7 +39,7 @@ public class EventControlTest extends CoreTestBase {
       log.info("start evaluate()");
 
       Control eval = new EventControl();
-      Resource res = new Resource(JpaResourceHandler.class, null);
+      JpaResource res = new JpaResource((Object) null);
       EventMetadata md = new EventMetadata(ControlEvent.DELETE, res);
 
       List<Setpoint> list = new ArrayList<Setpoint>();
@@ -114,7 +113,7 @@ public class EventControlTest extends CoreTestBase {
       Setpoint sp2 = new Setpoint("head", sp);
       spB.add(sp2);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.FIRST_RELEASE, res);
 
       Control eval = new EventControl();

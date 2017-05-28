@@ -14,10 +14,11 @@ package com.logitags.cibet.control;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,11 +33,11 @@ import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
-import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
-import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 public class ConditionControlTest extends CoreTestBase {
 
@@ -73,7 +74,7 @@ public class ConditionControlTest extends CoreTestBase {
       Context.sessionScope().setProperty("Klaus", ent);
       Context.sessionScope().setProperty("Emil", new Integer(2));
 
-      Resource res = new Resource(MethodResourceHandler.class, ent, null, null);
+      MethodResource res = new MethodResource(ent, null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
 
@@ -97,13 +98,12 @@ public class ConditionControlTest extends CoreTestBase {
       Context.sessionScope().setProperty("Klaus", ent);
       Context.sessionScope().setProperty("Emil", new Integer(4));
 
-      List<ResourceParameter> paramList = new LinkedList<ResourceParameter>();
+      Set<ResourceParameter> paramList = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       paramList.add(new ResourceParameter("PARAM0", int.class.getName(), 2, ParameterType.METHOD_PARAMETER, 1));
       paramList.add(new ResourceParameter("PARAM1", TEntity.class.getName(), ent2, ParameterType.METHOD_PARAMETER, 2));
       paramList.add(new ResourceParameter("PARAM2", Date.class.getName(), now, ParameterType.METHOD_PARAMETER, 3));
       paramList.add(new ResourceParameter("PARAM3", Date.class.getName(), null, ParameterType.METHOD_PARAMETER, 4));
-      Resource res = new Resource(MethodResourceHandler.class, ent, String.class.getDeclaredMethod("getBytes"),
-            paramList);
+      MethodResource res = new MethodResource(ent, String.class.getDeclaredMethod("getBytes"), paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
 
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
@@ -131,13 +131,11 @@ public class ConditionControlTest extends CoreTestBase {
             + "&& $HTTPPARAMETERS.get('param1') == 67");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      res.getParameters()
-            .add(new ResourceParameter("p1", String.class.getName(), "Hase", ParameterType.HTTP_ATTRIBUTE, 1));
-      res.getParameters()
-            .add(new ResourceParameter("head1", boolean.class.getName(), true, ParameterType.HTTP_HEADER, 2));
-      res.getParameters().add(
+      res.addParameter(new ResourceParameter("p1", String.class.getName(), "Hase", ParameterType.HTTP_ATTRIBUTE, 1));
+      res.addParameter(new ResourceParameter("head1", boolean.class.getName(), true, ParameterType.HTTP_HEADER, 2));
+      res.addParameter(
             new ResourceParameter("param1", Integer.class.getName(), new Integer(67), ParameterType.HTTP_PARAMETER, 3));
 
       List<Setpoint> list = evaluate(md, spB);
@@ -154,13 +152,11 @@ public class ConditionControlTest extends CoreTestBase {
       sp.setCondition("imyInt = 5;");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      res.getParameters()
-            .add(new ResourceParameter("p1", String.class.getName(), "Hase", ParameterType.HTTP_ATTRIBUTE, 1));
-      res.getParameters()
-            .add(new ResourceParameter("head1", boolean.class.getName(), true, ParameterType.HTTP_HEADER, 2));
-      res.getParameters().add(
+      res.addParameter(new ResourceParameter("p1", String.class.getName(), "Hase", ParameterType.HTTP_ATTRIBUTE, 1));
+      res.addParameter(new ResourceParameter("head1", boolean.class.getName(), true, ParameterType.HTTP_HEADER, 2));
+      res.addParameter(
             new ResourceParameter("param1", Integer.class.getName(), new Integer(67), ParameterType.HTTP_PARAMETER, 3));
 
       try {
@@ -182,7 +178,7 @@ public class ConditionControlTest extends CoreTestBase {
       sp.setCondition("imyInt = 5sdd");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
 
       try {
@@ -203,7 +199,7 @@ public class ConditionControlTest extends CoreTestBase {
       sp.setCondition("$APPLICATIONSCOPE.getProperty('p1')=='Hase' ");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
 
       List<Setpoint> list = evaluate(md, spB);
@@ -228,7 +224,7 @@ public class ConditionControlTest extends CoreTestBase {
       sp.setCondition("$REQUESTSCOPE.getProperty('pxp')=='Hase' ");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
 
       List<Setpoint> list = evaluate(md, spB);
@@ -253,7 +249,7 @@ public class ConditionControlTest extends CoreTestBase {
             "$REQUESTSCOPE.getProperty('psx')=='Hase' &amp;&amp; $xyParam =='ann' &amp;&amp; $ZZParam.get('dubi2')!=null;");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
 
       Context.requestScope().setProperty("psx", "Hase");

@@ -14,15 +14,14 @@ package com.logitags.cibet.sensor.common;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Collections;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.core.CibetUtil;
-import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ResourceParameter;
 
 /**
@@ -35,13 +34,9 @@ public abstract class MethodInvoker implements Invoker {
 
    private static Log log = LogFactory.getLog(MethodInvoker.class);
 
-   protected static final ParameterSequenceComparator comparator = new ParameterSequenceComparator();
-
-   public Object execute(String parameter, String targetType, String methodName, List<ResourceParameter> parameters)
+   public Object execute(String parameter, String targetType, String methodName, Set<ResourceParameter> parameters)
          throws Exception {
       try {
-         Collections.sort(parameters, comparator);
-
          Class<?> objClass = Class.forName(targetType);
          Class<?>[] params = getParamTypes(parameters);
          Method method = objClass.getMethod(methodName, params);
@@ -59,20 +54,26 @@ public abstract class MethodInvoker implements Invoker {
       }
    }
 
-   protected Class<?>[] getParamTypes(List<ResourceParameter> params) {
+   protected Class<?>[] getParamTypes(Set<ResourceParameter> params) {
       Class<?>[] types = new Class[params.size()];
-      for (int i = 0; i < params.size(); i++) {
-         ResourceParameter param = params.get(i);
+      int i = 0;
+      Iterator<ResourceParameter> iter = params.iterator();
+      while (iter.hasNext()) {
+         ResourceParameter param = iter.next();
          types[i] = classForName(param.getClassname());
+         i++;
       }
       return types;
    }
 
-   protected Object[] getParamValues(List<ResourceParameter> params) {
+   protected Object[] getParamValues(Set<ResourceParameter> params) {
       Object[] objects = new Object[params.size()];
-      for (int i = 0; i < params.size(); i++) {
-         ResourceParameter param = params.get(i);
+      int i = 0;
+      Iterator<ResourceParameter> iter = params.iterator();
+      while (iter.hasNext()) {
+         ResourceParameter param = iter.next();
          objects[i] = param.getUnencodedValue();
+         i++;
       }
       return objects;
    }

@@ -37,7 +37,7 @@ public class PersistCallable implements Callable<Void> {
       }
       // refresh the object into the resource:
       entityManager.flush();
-      metadata.getResource().setPrimaryKeyObject(AnnotationUtil.primaryKeyAsObject(entity));
+      ((JpaResource) metadata.getResource()).setPrimaryKeyObject(AnnotationUtil.primaryKeyAsObject(entity));
       metadata.getResource().setObject(entity);
       return null;
    }

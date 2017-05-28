@@ -44,7 +44,7 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.diff.Difference;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 @CibetContext
 public abstract class DcLoader {
@@ -201,7 +201,8 @@ public abstract class DcLoader {
       params.add(Context.sessionScope().getTenant());
       params.add(entityClass.getName());
       StringBuffer sql = new StringBuffer();
-      sql.append("SELECT a.* FROM CIB_DCCONTROLLABLE a WHERE a.TENANT = ? AND a.TARGETTYPE = ?");
+      sql.append(
+            "SELECT a.* FROM CIB_DCCONTROLLABLE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and a.TENANT = ? AND r.TARGETTYPE = ?");
 
       if (properties != null) {
          for (Entry<String, Object> entry : properties.entrySet()) {
@@ -211,7 +212,7 @@ public abstract class DcLoader {
             params.add(entry.getKey());
             sql.append(" AND p.STRINGVALUE = ?");
             params.add(value);
-            sql.append(" AND p.DCCONTROLLABLEID = a.DCCONTROLLABLEID");
+            sql.append(" AND p.RESOURCEID = a.RESOURCEID");
             sql.append(")");
          }
       }
@@ -317,7 +318,7 @@ public abstract class DcLoader {
          throw new IllegalArgumentException("Parameter DcControllable (or dc.getResource()) must not be null");
       }
       Resource res = dc.getResource();
-      if (dc.getControlEvent() != ControlEvent.UPDATE || !(res.getResourceHandler() instanceof JpaResourceHandler)) {
+      if (dc.getControlEvent() != ControlEvent.UPDATE || !(res instanceof JpaResource)) {
          log.info("Differences can only be analyzed for UDATE events of JPA entites");
          return Collections.emptyList();
       }
@@ -335,7 +336,7 @@ public abstract class DcLoader {
       }
 
       String err = "DcControllable [" + dc + "] is in wrong state: Failed to find neither CLEANOBJECT nor DIFFERENCES ["
-            + res.getTargetType() + " with ID " + dc.getResource().getPrimaryKeyObject() + "]";
+            + res + "]";
       log.error(err);
       throw new IllegalStateException(err);
 

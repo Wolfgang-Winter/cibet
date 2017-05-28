@@ -27,8 +27,8 @@ package com.logitags.cibet.sensor.ejb;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.naming.Name;
 
@@ -42,8 +42,8 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 
 public class RemoteEjbInvocationHandler extends CibetInterceptor implements InvocationHandler {
@@ -91,7 +91,7 @@ public class RemoteEjbInvocationHandler extends CibetInterceptor implements Invo
             log.debug("Proxy: " + originalProxy);
          }
 
-         List<ResourceParameter> params = new LinkedList<ResourceParameter>();
+         Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
          for (int i = 0; i < method.getParameterTypes().length; i++) {
             params.add(new ResourceParameter("PARAM" + i, method.getParameterTypes()[i].getName(), args[i],
                   ParameterType.METHOD_PARAMETER, i));
@@ -113,7 +113,7 @@ public class RemoteEjbInvocationHandler extends CibetInterceptor implements Invo
             throw new IllegalArgumentException(err);
          }
 
-         Resource resource = new Resource(EjbResourceHandler.class, interf, method, params);
+         EjbResource resource = new EjbResource(interf, method, params);
          resource.setInvokerClass(RemoteEJBInvoker.class.getName());
          metadata = new EventMetadata(controlEvent, resource);
          Configuration.instance().getController().evaluate(metadata);

@@ -7,7 +7,7 @@
  *
  * All rights reserved
  *
- * Copyright 2012 Dr. Wolfgang Winter
+ * Copyright 2016 Dr. Wolfgang Winter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,19 +24,36 @@
  */
 package com.logitags.cibet.sensor.ejb;
 
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
-public class ResourceHandlerTest {
+import com.logitags.cibet.resource.ResourceParameter;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
-   @Test
-   public void getNotificationAttributesEjbResourceHandler() {
-      EjbResource r = new EjbResource();
-      r.setTargetType("tt");
-      Map<String, Object> formparams = r.getNotificationAttributes();
-      Assert.assertEquals(3, formparams.size());
+@Entity
+@DiscriminatorValue(value = "EjbResource")
+public class EjbResource extends MethodResource {
+
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
+
+   public EjbResource() {
+   }
+
+   /**
+    * constructor used for EJB and POJO resources
+    * 
+    * @param invokedObject
+    * @param m
+    * @param params
+    */
+   public EjbResource(Object invokedObject, Method m, Set<ResourceParameter> params) {
+      super(invokedObject, m, params);
    }
 
 }

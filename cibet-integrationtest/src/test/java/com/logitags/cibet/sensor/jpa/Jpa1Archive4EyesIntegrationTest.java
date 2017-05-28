@@ -43,7 +43,6 @@ import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.resource.Resource;
 
 /**
  * tests CibetEntityManager with Archive and FourEyes- actuators.
@@ -146,7 +145,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
 
       Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
       TEntity en = (TEntity) res.getObject();
@@ -168,7 +167,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
       TEntity en = (TEntity) res.getObject();
       Assert.assertTrue("expected: " + entity.getId() + ", actual: " + en.getId(), en.getId() == entity.getId());
@@ -189,7 +188,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
       TEntity en = (TEntity) res.getObject();
       Assert.assertTrue("expected: " + entity.getId() + ", actual: " + en.getId(), en.getId() == entity.getId());
@@ -213,7 +212,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
@@ -257,7 +256,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
 
@@ -369,7 +368,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       List<Archive> list = ArchiveLoader.loadArchives();
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ControlEvent.UPDATE, list.get(0).getControlEvent());
-      Resource res = list.get(0).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
       TEntity tent = (TEntity) res.getObject();
       Assert.assertEquals(12, tent.getCounter());
 
@@ -539,8 +538,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       q.setParameter("primaryKeyId", String.valueOf(entity.getId()));
       List<Archive> list = q.getResultList();
       Assert.assertEquals(2, list.size());
-      Resource res = list.get(0).getResource();
-      Resource res1 = list.get(1).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
+      JpaResource res1 = (JpaResource) list.get(1).getResource();
 
       Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
       Assert.assertEquals(5, ((TEntity) res.getObject()).getCounter());
@@ -578,7 +577,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(2, list.size());
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
-      Resource res = list.get(0).getResource();
+      JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
       Assert.assertTrue(list.get(1).getRemark().startsWith("An unreleased Dual Control business case with ID "));
@@ -631,7 +630,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       List<Archive> list1 = ArchiveLoader.loadArchives();
       Assert.assertEquals(1, list1.size());
       Archive ar = list1.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals(String.valueOf(entity.getId()), res.getPrimaryKeyId());
    }
@@ -658,12 +657,12 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       List<Archive> list = ArchiveLoader.loadArchives();
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
 
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals("0", res.getPrimaryKeyId());
       ar = list.get(1);
-      res = ar.getResource();
+      res = (JpaResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
@@ -745,7 +744,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       List<Archive> list = ArchiveLoader.loadArchives();
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
 
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals("0", res.getPrimaryKeyId());
@@ -774,7 +773,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       List<Archive> list = q.getResultList();
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
 
       Assert.assertEquals(TComplexEntity.class.getName(), res.getTargetType());
       TComplexEntity decObj = (TComplexEntity) res.getObject();
@@ -803,8 +802,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(2, list.size());
       Archive ar1 = list.get(0);
       Archive ar2 = list.get(1);
-      Resource res1 = ar1.getResource();
-      Resource res2 = ar2.getResource();
+      JpaResource res1 = (JpaResource) ar1.getResource();
+      JpaResource res2 = (JpaResource) ar2.getResource();
 
       TComplexEntity decObj1 = (TComplexEntity) res1.getObject();
       TComplexEntity decObj2 = (TComplexEntity) res2.getObject();
@@ -830,7 +829,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       list = ArchiveLoader.loadArchivesByPrimaryKeyId(ce.getClass().getName(), String.valueOf(ce.getId()));
       Assert.assertEquals(3, list.size());
       Archive ar3 = list.get(2);
-      res = ar3.getResource();
+      res = (JpaResource) ar3.getResource();
 
       TComplexEntity decObj3 = (TComplexEntity) res.getObject();
       Assert.assertEquals(122, decObj3.getCompValue());
@@ -954,7 +953,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       DcControllable dcOb = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(dcOb);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
-      Resource res1 = dcOb.getResource();
+      JpaResource res1 = (JpaResource) dcOb.getResource();
       selEnt = (TComplexEntity) res1.getObject();
       Assert.assertEquals(3, selEnt.getEagerList().size());
       Assert.assertEquals(3, selEnt.getLazyList().size());
@@ -979,7 +978,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       Assert.assertEquals(ControlEvent.SELECT, ar.getControlEvent());
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
 
       Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
       Assert.assertEquals(TEntity.class, res.getObject());
@@ -1015,7 +1014,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
       TEntity en = (TEntity) res.getObject();
       Assert.assertTrue("expected: " + entity.getId() + ", actual: " + en.getId(), en.getId() == entity.getId());
@@ -1133,7 +1132,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       List<Archive> list1 = ArchiveLoader.loadArchives();
       Assert.assertEquals(1, list1.size());
       Archive ar = list1.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals(String.valueOf(entity.getId()), res.getPrimaryKeyId());
       Assert.assertEquals(ExecutionStatus.ERROR, ar.getExecutionStatus());
@@ -1163,7 +1162,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       List<Archive> list1 = ArchiveLoader.loadArchives();
       Assert.assertEquals(1, list1.size());
       Archive ar = list1.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       Assert.assertEquals(ControlEvent.UPDATE, ar.getControlEvent());
       Assert.assertEquals(String.valueOf(entity.getId()), res.getPrimaryKeyId());
       Assert.assertEquals(ExecutionStatus.ERROR, ar.getExecutionStatus());
@@ -1199,7 +1198,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       List<Archive> list1 = ArchiveLoader.loadArchives();
       Assert.assertEquals(1, list1.size());
       Archive ar = list1.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       Assert.assertEquals(ControlEvent.DELETE, ar.getControlEvent());
       Assert.assertEquals(String.valueOf(entity.getId()), res.getPrimaryKeyId());
       Assert.assertEquals(ExecutionStatus.ERROR, ar.getExecutionStatus());
@@ -1231,7 +1230,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
          Assert.assertEquals(ExecutionStatus.EXECUTED, ar.getExecutionStatus());
       }
 
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
 
       Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
       Assert.assertEquals(TEntity.class, res.getObject());

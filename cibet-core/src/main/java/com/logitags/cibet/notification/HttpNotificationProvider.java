@@ -141,7 +141,7 @@ public class HttpNotificationProvider implements NotificationProvider, Serializa
       formparams.add(new BasicNameValuePair("tenant", c.getTenant()));
       formparams.add(new BasicNameValuePair("caseId", c.getCaseId()));
 
-      for (Entry<String, Object> entry : c.getResource().getResourceHandler().getNotificationAttributes().entrySet()) {
+      for (Entry<String, Object> entry : c.getResource().getNotificationAttributes().entrySet()) {
          formparams.add(
                new BasicNameValuePair(entry.getKey(), entry.getValue() == null ? null : entry.getValue().toString()));
       }

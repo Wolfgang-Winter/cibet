@@ -200,7 +200,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
          List<Difference> diffs = PersistenceUtil.getDirtyUpdates(ctx);
          ResourceParameter propertyResParam = new ResourceParameter(DIFFERENCES, diffs.getClass().getName(), diffs,
                ParameterType.INTERNAL_PARAMETER, dcObj.getResource().getParameters().size() + 1);
-         dcObj.getResource().getParameters().add(propertyResParam);
+         dcObj.getResource().addParameter(propertyResParam);
          break;
 
       case DELETE:
@@ -249,9 +249,13 @@ public class TwoManRuleActuator extends FourEyesActuator {
          }
 
          if (!Context.requestScope().isPlaying()) {
-            if (isEncrypt()) {
-               dcObj.encrypt();
+            if (dcObj.getResource().getResourceId() == null) {
+               if (isEncrypt()) {
+                  dcObj.getResource().encrypt();
+               }
+               Context.internalRequestScope().getEntityManager().persist(dcObj.getResource());
             }
+
             Context.internalRequestScope().getEntityManager().persist(dcObj);
 
             if (ctx.getException() != null && ctx.getException() instanceof PostponedException) {
@@ -297,7 +301,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
          Context.internalSessionScope().setUser(Context.internalSessionScope().getSecondUser());
          Context.internalRequestScope().setProperty(InternalRequestScope.DCCONTROLLABLE, co);
 
-         Object result = co.getResource().getResourceHandler().apply(co.getControlEvent());
+         Object result = co.getResource().apply(co.getControlEvent());
 
          if (!Context.requestScope().isPlaying()) {
             EventResult eventResult = Context.internalRequestScope().getExecutedEventResult();
@@ -317,9 +321,9 @@ public class TwoManRuleActuator extends FourEyesActuator {
                co.setApprovalRemark(Context.internalRequestScope().getRemark());
 
                if (co.getDcControllableId() != null) {
-                  if (isEncrypt()) {
-                     co.encrypt();
-                  }
+                  // if (isEncrypt()) {
+                  // co.encrypt();
+                  // }
                   co = Context.internalRequestScope().getEntityManager().merge(co);
                }
                if (isSendReleaseNotification()) {

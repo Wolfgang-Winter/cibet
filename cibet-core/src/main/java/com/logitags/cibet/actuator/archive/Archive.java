@@ -22,10 +22,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.persistence.AssociationOverride;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
@@ -35,6 +34,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -58,6 +58,7 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.security.SecurityProvider;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 /**
  * archived entity or method invocation action.
@@ -170,15 +171,8 @@ public class Archive implements Serializable {
    @Column(length = 50)
    private ExecutionStatus executionStatus;
 
-   @Embedded
-   // @AssociationOverride(name = "parameters", joinTable = @JoinTable(name =
-   // "CIB_ARCHIVEPARAMETER", joinColumns = @JoinColumn(name = "ARCHIVEID"),
-   // inverseJoinColumns = @JoinColumn(name = "PARAMETERID")))
-   // @AssociationOverride(name = "parameters", joinTable = @JoinTable(name =
-   // "CIB_ARCHIVEPARAMETER", joinColumns = @JoinColumn(name = "ARCHIVEID",
-   // referencedColumnName = "archiveId"), inverseJoinColumns = @JoinColumn(name
-   // = "PARAMETERID", referencedColumnName = "parameterId", unique = true)))
-   @AssociationOverride(name = "parameters", joinColumns = @JoinColumn(name = "ARCHIVEID", referencedColumnName = "ARCHIVEID"))
+   @OneToOne(cascade = CascadeType.DETACH)
+   @JoinColumn(name = "RESOURCEID")
    private Resource resource;
 
    @Version
@@ -189,11 +183,7 @@ public class Archive implements Serializable {
       if (resource != null) {
          resource.getUniqueId();
          if (resource.getGroupId() == null) {
-            if (Context.requestScope().getGroupId() != null) {
-               resource.setGroupId(Context.requestScope().getGroupId());
-            } else if (resource.getPrimaryKeyId() != null) {
-               resource.setGroupId(resource.getTargetType() + "-" + resource.getPrimaryKeyId());
-            }
+            resource.createGroupId();
          }
       }
 
@@ -202,9 +192,7 @@ public class Archive implements Serializable {
 
    @PreUpdate
    public void preMerge() {
-      if (resource.getGroupId().startsWith(resource.getTargetType() + "-") && resource.getPrimaryKeyId() != null) {
-         resource.setGroupId(resource.getTargetType() + "-" + resource.getPrimaryKeyId());
-      }
+      resource.createGroupId();
    }
 
    public String toString() {
@@ -238,11 +226,6 @@ public class Archive implements Serializable {
          Context.internalRequestScope().getEntityManager().detach(this);
          getResource().decrypt();
       }
-   }
-
-   public void encrypt() {
-      log.debug("encrypt Archive");
-      getResource().encrypt();
    }
 
    /**
@@ -318,7 +301,7 @@ public class Archive implements Serializable {
          }
          Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.REDO);
 
-         return getResource().getResourceHandler().apply(ControlEvent.REDO);
+         return getResource().apply(ControlEvent.REDO);
 
       } finally {
          Context.internalRequestScope().setCaseId(originalCaseId);
@@ -359,7 +342,7 @@ public class Archive implements Serializable {
             localEM = ((CEntityManager) entityManager).getNativeEntityManager();
          }
 
-         Object objFromDb = localEM.find(obj.getClass(), getResource().getPrimaryKeyObject());
+         Object objFromDb = localEM.find(obj.getClass(), ((JpaResource) getResource()).getPrimaryKeyObject());
          // set after find(), otherwise case id is removed:
          Context.internalRequestScope().setCaseId(getCaseId());
          if (remark != null) {

@@ -30,7 +30,8 @@ import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.jdbc.driver.JdbcResource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 /**
  * abstract implementation of Actuator that does nothing. Inherit custom Actuator implementations from this class to
@@ -192,18 +193,21 @@ public abstract class AbstractActuator implements Actuator, Serializable {
     *           EventMetadata object
     */
    protected void loadEager(EventMetadata metadata) {
-      if (metadata.getResource().getResourceHandler() instanceof JpaResourceHandler
-            && !(metadata.getResource().getObject() instanceof Class)
-            && !metadata.getResource().isEagerLoadedAndDetached()) {
-         log.debug("start loadEager");
-         Object resourceObject = metadata.getResource().getObject();
-         CibetUtil.loadLazyEntities(resourceObject, resourceObject.getClass());
-         List<Object> references = new ArrayList<Object>();
-         references.add(resourceObject);
-         CibetUtil.deepDetach(resourceObject, references);
-         metadata.getResource().setObject(resourceObject);
-         metadata.getResource().setEagerLoadedAndDetached(true);
-         log.debug("end loadEager");
+      if (metadata.getResource() instanceof JpaResource && !(metadata.getResource() instanceof JdbcResource)
+            && !(metadata.getResource().getObject() instanceof Class)) {
+
+         JpaResource jpar = (JpaResource) metadata.getResource();
+         if (!jpar.isEagerLoadedAndDetached()) {
+            log.debug("start loadEager");
+            Object resourceObject = jpar.getObject();
+            CibetUtil.loadLazyEntities(resourceObject, resourceObject.getClass());
+            List<Object> references = new ArrayList<Object>();
+            references.add(resourceObject);
+            CibetUtil.deepDetach(resourceObject, references);
+            jpar.setObject(resourceObject);
+            jpar.setEagerLoadedAndDetached(true);
+            log.debug("end loadEager");
+         }
       }
    }
 
@@ -232,7 +236,7 @@ public abstract class AbstractActuator implements Actuator, Serializable {
                      propertyResParam.setStringValue(property.toString());
                   }
 
-                  resource.getParameters().add(propertyResParam);
+                  resource.addParameter(propertyResParam);
                } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
                      | InvocationTargetException e) {
                   log.error("Ignore storing of entity attribute " + prop + ": " + e.getMessage());

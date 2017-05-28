@@ -46,6 +46,7 @@ import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
+import com.logitags.cibet.resource.Resource;
 
 public class SESchedulerTask extends TimerTask implements SchedulerTask {
 
@@ -140,8 +141,9 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
    protected void process(DcControllable co) {
       ExecutionStatus status = null;
       SchedulerTaskInterceptor interceptor = null;
+      SchedulerActuator schedact = null;
       try {
-         SchedulerActuator schedact = (SchedulerActuator) Configuration.instance().getActuator(co.getActuator());
+         schedact = (SchedulerActuator) Configuration.instance().getActuator(co.getActuator());
          interceptor = schedact.getBatchInterceptor();
          if (interceptor != null) {
             interceptor.beforeTask(co);
@@ -153,7 +155,7 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
          Context.sessionScope().setTenant(co.getTenant());
 
          try {
-            Object result = co.getResource().getResourceHandler().apply(co.getControlEvent());
+            Object result = co.getResource().apply(co.getControlEvent());
             try {
                CibetUtil.encode(result);
                co.getResource().setResultObject(result);
@@ -187,8 +189,16 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
          }
 
          if (!Context.requestScope().isPlaying()) {
-            if (co.getResource().isEncrypted()) {
-               co.encrypt();
+            if (status != ExecutionStatus.REJECTED && status != ExecutionStatus.ERROR) {
+
+               log.debug("resource: " + co.getResource());
+               if (schedact != null && schedact.isEncrypt()) {
+                  co.getResource().setEncrypted(false);
+                  co.getResource().encrypt();
+               }
+
+               Resource merged = Context.internalRequestScope().getEntityManager().merge(co.getResource());
+               co.setResource(merged);
             }
 
             co = Context.internalRequestScope().getEntityManager().merge(co);

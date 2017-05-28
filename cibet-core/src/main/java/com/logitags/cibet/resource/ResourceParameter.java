@@ -111,7 +111,7 @@ public class ResourceParameter implements Serializable {
 
    @PrePersist
    @PreUpdate
-   public void beforePersist() {
+   public void prePersist() {
       if (encodedValue == null && unencodedValue != null) {
          try {
             encodedValue = CibetUtil.encode(unencodedValue);
@@ -169,7 +169,7 @@ public class ResourceParameter implements Serializable {
     * @return the encodedValue
     */
    public byte[] getEncodedValue() {
-      beforePersist();
+      prePersist();
       return encodedValue;
    }
 
@@ -207,8 +207,12 @@ public class ResourceParameter implements Serializable {
 
    public String toString() {
       StringBuffer b = new StringBuffer();
-      b.append("Parameter name: ");
+      b.append("Parameter id: ");
+      b.append(parameterId);
+      b.append(", name: ");
       b.append(name);
+      b.append(", sequence: ");
+      b.append(sequence);
       b.append(", classname: ");
       b.append(classname);
       b.append(", value: ");
@@ -282,6 +286,40 @@ public class ResourceParameter implements Serializable {
     */
    public void setStringValue(String uniqueId) {
       this.stringValue = uniqueId;
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((name == null) ? 0 : name.hashCode());
+      result = prime * result + ((parameterType == null) ? 0 : parameterType.hashCode());
+      result = prime * result + ((stringValue == null) ? 0 : stringValue.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
+      ResourceParameter other = (ResourceParameter) obj;
+      if (name == null) {
+         if (other.name != null)
+            return false;
+      } else if (!name.equals(other.name))
+         return false;
+      if (parameterType != other.parameterType)
+         return false;
+      if (stringValue == null) {
+         if (other.stringValue != null)
+            return false;
+      } else if (!stringValue.equals(other.stringValue))
+         return false;
+      return true;
    }
 
 }

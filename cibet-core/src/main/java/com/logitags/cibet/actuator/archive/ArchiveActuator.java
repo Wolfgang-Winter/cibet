@@ -32,8 +32,8 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.ejb.EjbResourceHandler;
-import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
+import com.logitags.cibet.sensor.ejb.EjbResource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 /**
  * creates an archive entry in the database.
@@ -122,11 +122,10 @@ public class ArchiveActuator extends AbstractActuator {
       arch.setTenant(Context.internalSessionScope().getTenant());
       arch.setControlEvent(ctx.getControlEvent());
       arch.setExecutionStatus(ctx.getExecutionStatus());
-      arch.setResource(new Resource(ctx.getResource()));
+      arch.setResource(ctx.getResource());
 
-      if (ctx.getResource().getResourceHandler() instanceof EjbResourceHandler
-            && !(ctx.getResource().getResourceHandler() instanceof MethodResourceHandler)) {
-         arch.getResource().setInvokerParam(jndiName);
+      if (ctx.getResource() instanceof EjbResource) {
+         ((EjbResource) arch.getResource()).setInvokerParam(jndiName);
       }
 
       addStoredProperties(arch.getResource(), storedProperties);
@@ -135,12 +134,15 @@ public class ArchiveActuator extends AbstractActuator {
    }
 
    private void updateObjectId(Resource res, String caseId) {
-      // Context.internalRequestScope().getApplicationEntityManager().flush();
+      if (!(res instanceof JpaResource)) {
+         return;
+      }
+      JpaResource jpaRes = (JpaResource) res;
 
-      if (res.getPrimaryKeyObject() == null) {
-         String msg = "no value for primary key found in persisted object " + res.getObject();
-         log.error(msg);
-         throw new RuntimeException(msg);
+      if (jpaRes.getPrimaryKeyObject() == null) {
+         String msg = "no value for primary key found in persisted object " + jpaRes.getObject();
+         log.warn(msg);
+         return;
       }
 
       // set primary key of previous archives of this business case
@@ -149,16 +151,16 @@ public class ArchiveActuator extends AbstractActuator {
       q.setParameter("caseId", caseId);
       List<Archive> list = q.getResultList();
       for (Archive arch : list) {
-         Resource resource = arch.getResource();
+         JpaResource resource = (JpaResource) arch.getResource();
          resource.decrypt();
 
-         resource.setPrimaryKeyObject(res.getPrimaryKeyObject());
+         resource.setPrimaryKeyObject(jpaRes.getPrimaryKeyObject());
          if (!(resource.getObject() instanceof String)) {
             Object o = resource.getObject();
-            AnnotationUtil.setValueFromAnnotation(o, Id.class, res.getPrimaryKeyObject());
+            AnnotationUtil.setValueFromAnnotation(o, Id.class, jpaRes.getPrimaryKeyObject());
             resource.setObject(o);
          }
-         resource.setUniqueId(res.getUniqueId());
+         resource.setUniqueId(jpaRes.getUniqueId());
          update(arch);
          log.info(arch.getArchiveId() + " archive updated with objectId.");
       }
@@ -198,28 +200,35 @@ public class ArchiveActuator extends AbstractActuator {
    }
 
    private void update(Archive ar) {
-      EntityManager em = Context.internalRequestScope().getEntityManager();
-      if (isEncrypt()) {
-         ar.encrypt();
-      } else {
-         ar.getResource().setEncrypted(false);
-      }
-
       if (isIntegrityCheck()) {
          ar.createChecksum();
       }
+
+      EntityManager em = Context.internalRequestScope().getEntityManager();
+      if (isEncrypt()) {
+         ar.getResource().encrypt();
+         // } else {
+         // ar.getResource().setEncrypted(false);
+      }
+
+      ar.setResource(em.merge(ar.getResource()));
       em.merge(ar);
    }
 
    private void insert(Archive ar) {
-      EntityManager em = Context.internalRequestScope().getEntityManager();
-      if (isEncrypt()) {
-         ar.encrypt();
-      }
-
       if (isIntegrityCheck()) {
          ar.createChecksum();
       }
+
+      EntityManager em = Context.internalRequestScope().getEntityManager();
+      if (ar.getResource().getResourceId() == null) {
+         if (isEncrypt()) {
+            ar.getResource().encrypt();
+         }
+
+         em.persist(ar.getResource());
+      }
+
       em.persist(ar);
       log.debug("created Archive with id " + ar.getArchiveId());
       em.flush();

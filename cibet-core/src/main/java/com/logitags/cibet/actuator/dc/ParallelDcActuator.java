@@ -102,7 +102,7 @@ public class ParallelDcActuator extends FourEyesActuator {
                // check timelag
                long lag = new Date().getTime() - dcList.get(dcList.size() - 1).getCreateDate().getTime();
                if (lag < timelag * 1000) {
-                  String err = "Execution of method " + ctx.getResource().getMethod() + " controlled by " + getName()
+                  String err = "Invoke of resource " + ctx.getResource() + " controlled by " + getName()
                         + " not possible: Time lag between subsequent executions must be " + timelag
                         + " sec but is only " + lag / 1000 + " sec.";
                   log.warn(err);
@@ -182,9 +182,13 @@ public class ParallelDcActuator extends FourEyesActuator {
          ctx.setExecutionStatus(ExecutionStatus.POSTPONED);
          DcControllable dcObj = createControlledObject(ControlEvent.INVOKE, ctx);
 
-         if (isEncrypt()) {
-            dcObj.encrypt();
+         if (dcObj.getResource().getResourceId() == null) {
+            if (isEncrypt()) {
+               dcObj.getResource().encrypt();
+            }
+            Context.internalRequestScope().getEntityManager().persist(dcObj.getResource());
          }
+
          Context.internalRequestScope().getEntityManager().persist(dcObj);
 
          if (ctx.getException() != null && ctx.getException() instanceof PostponedException) {
@@ -272,7 +276,7 @@ public class ParallelDcActuator extends FourEyesActuator {
          }
          Context.internalRequestScope().setProperty(InternalRequestScope.DCCONTROLLABLE, co);
 
-         Object result = co.getResource().getResourceHandler().apply(co.getControlEvent());
+         Object result = co.getResource().apply(co.getControlEvent());
 
          if (!Context.requestScope().isPlaying()) {
             EventResult eventResult = Context.internalRequestScope().getExecutedEventResult();
@@ -292,9 +296,9 @@ public class ParallelDcActuator extends FourEyesActuator {
                co.setApprovalUser(Context.internalSessionScope().getUser());
                co.setApprovalRemark(Context.internalRequestScope().getRemark());
 
-               if (isEncrypt()) {
-                  co.encrypt();
-               }
+               // if (isEncrypt()) {
+               // co.encrypt();
+               // }
                co = Context.internalRequestScope().getEntityManager().merge(co);
                if (isSendReleaseNotification()) {
                   notifyApproval(co);
@@ -307,9 +311,9 @@ public class ParallelDcActuator extends FourEyesActuator {
                      dcElement.setApprovalUser(Context.internalSessionScope().getUser());
                      dcElement.setApprovalRemark(Context.internalRequestScope().getRemark());
 
-                     if (isEncrypt()) {
-                        dcElement.encrypt();
-                     }
+                     // if (isEncrypt()) {
+                     // dcElement.encrypt();
+                     // }
                      Context.internalRequestScope().getEntityManager().merge(dcElement);
                      if (isSendRejectNotification()) {
                         notifyApproval(dcElement);

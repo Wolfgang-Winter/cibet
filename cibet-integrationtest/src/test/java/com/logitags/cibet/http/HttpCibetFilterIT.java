@@ -61,9 +61,8 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.it.AbstractArquillian;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
-import com.logitags.cibet.sensor.http.HttpRequestInvoker;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
 
 @RunWith(Arquillian.class)
 public class HttpCibetFilterIT extends AbstractArquillian {
@@ -140,11 +139,10 @@ public class HttpCibetFilterIT extends AbstractArquillian {
 
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      HttpRequestResource res = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals(url, res.getTargetType());
       Assert.assertEquals(method, res.getMethod());
-      Assert.assertEquals(HttpRequestInvoker.class.getName(), res.getInvokerClass());
       return ar;
    }
 
@@ -391,7 +389,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       String expected = readResponseBody(response);
       Assert.assertEquals("OK message: ;mixi=hasenfiss", expected);
       Archive ar = check("POST", URL_TS);
-      Resource res = ar.getResource();
+      HttpRequestResource res = (HttpRequestResource) ar.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(8, res.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {
@@ -417,7 +415,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       HttpResponse response = client.execute(postMethod);
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       Archive ar = check("POST", getBaseURL() + "/test/context");
-      Resource res = ar.getResource();
+      HttpRequestResource res = (HttpRequestResource) ar.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(9, res.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {
@@ -448,7 +446,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       readResponseBody(response);
       Archive ar = check("POST", URL_TS);
-      Resource res = ar.getResource();
+      HttpRequestResource res = (HttpRequestResource) ar.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(10, res.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {
@@ -483,7 +481,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       HttpResponse response = client.execute(postMethod);
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       Archive ar = check("POST", URL_TS);
-      Resource res = ar.getResource();
+      HttpRequestResource res = (HttpRequestResource) ar.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(8, res.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {
@@ -524,7 +522,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       HttpResponse response = client.execute(postMethod);
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       Archive ar = check("POST", URL_EEE);
-      Resource res = ar.getResource();
+      HttpRequestResource res = (HttpRequestResource) ar.getResource();
       // if ("EmbeddedTomcat7".equals(container.getName())) {
       // // Tomcat7 adds an ATTRIBUTE 'org.apache.catalina.ASYNC_SUPPORTED'
       // Assert.assertEquals(11, res.getParameters().size());

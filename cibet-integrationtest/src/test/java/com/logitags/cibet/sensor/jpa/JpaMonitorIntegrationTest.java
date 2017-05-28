@@ -28,7 +28,6 @@ import com.logitags.cibet.actuator.circuitbreaker.CircuitBreakerActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.resource.Resource;
 
 /**
  * tests CibetEntityManager with Archive and FourEyes- actuators.
@@ -61,7 +60,7 @@ public class JpaMonitorIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals(String.valueOf(entity.getId()), res.getPrimaryKeyId());
    }
@@ -88,7 +87,7 @@ public class JpaMonitorIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       log.debug(ar);
-      Resource res = ar.getResource();
+      JpaResource res = (JpaResource) ar.getResource();
       log.debug(res);
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       // Assert.assertEquals(String.valueOf(entity.getId()),

@@ -29,17 +29,15 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.jdbc.driver.JdbcResourceHandler;
+import com.logitags.cibet.sensor.jdbc.driver.JdbcResource;
 
 public class JdbcResourceHandlerTest {
 
    @Test
    public void getNotificationAttributesJdbcResourceHandler() {
-      Resource r = new Resource();
+      JdbcResource r = new JdbcResource();
       r.setTargetType("tt");
-      JdbcResourceHandler hd = new JdbcResourceHandler(r);
-      Map<String, Object> formparams = hd.getNotificationAttributes();
+      Map<String, Object> formparams = r.getNotificationAttributes();
       Assert.assertEquals(3, formparams.size());
    }
 

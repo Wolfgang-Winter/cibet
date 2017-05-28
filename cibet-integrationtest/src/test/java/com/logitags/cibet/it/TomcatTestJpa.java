@@ -72,6 +72,7 @@ import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 @RunWith(Arquillian.class)
 public class TomcatTestJpa extends DBHelper {
@@ -297,7 +298,7 @@ public class TomcatTestJpa extends DBHelper {
          list = q.getResultList();
          Assert.assertEquals(2, list.size());
          Assert.assertEquals(ExecutionStatus.POSTPONED, list.get(1).getExecutionStatus());
-         Assert.assertEquals("0", ((Archive) list.get(1)).getResource().getPrimaryKeyId());
+         Assert.assertEquals("0", ((JpaResource) ((Archive) list.get(1)).getResource()).getPrimaryKeyId());
 
          q = applEman.createQuery("SELECT e FROM TEntity e");
          tentList = q.getResultList();
@@ -391,16 +392,17 @@ public class TomcatTestJpa extends DBHelper {
          cibetEman.refresh(list.get(2));
          cibetEman.refresh(list.get(3));
          for (Archive a : list) {
-            log.debug(":::" + a.getExecutionStatus() + a.getControlEvent() + " " + a.getResource().getPrimaryKeyId());
+            log.debug(":::" + a.getExecutionStatus() + a.getControlEvent() + " "
+                  + ((JpaResource) a.getResource()).getPrimaryKeyId());
          }
 
          Assert.assertEquals(ExecutionStatus.EXECUTED, list.get(3).getExecutionStatus());
          Assert.assertEquals("Fluppi", list.get(3).getCreateUser());
          Assert.assertEquals(list.get(1).getCaseId(), list.get(2).getCaseId());
          Assert.assertEquals(list.get(2).getCaseId(), list.get(3).getCaseId());
-         Assert.assertEquals(id, ((Archive) list.get(1)).getResource().getPrimaryKeyId());
-         Assert.assertEquals(id, ((Archive) list.get(2)).getResource().getPrimaryKeyId());
-         Assert.assertEquals(id, ((Archive) list.get(3)).getResource().getPrimaryKeyId());
+         Assert.assertEquals(id, ((JpaResource) ((Archive) list.get(1)).getResource()).getPrimaryKeyId());
+         Assert.assertEquals(id, ((JpaResource) ((Archive) list.get(2)).getResource()).getPrimaryKeyId());
+         Assert.assertEquals(id, ((JpaResource) ((Archive) list.get(3)).getResource()).getPrimaryKeyId());
       } finally {
          afterTest();
       }

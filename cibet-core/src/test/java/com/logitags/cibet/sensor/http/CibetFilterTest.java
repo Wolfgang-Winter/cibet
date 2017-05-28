@@ -38,7 +38,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.jndi.EjbLookup;
-import com.logitags.cibet.resource.HttpRequestData;
 import com.logitags.cibet.resource.Resource;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -159,14 +158,14 @@ public class CibetFilterTest {
    public void addBody() throws Exception {
       initHttpServletRequest();
       HttpRequestData reqdata = new HttpRequestData(httpRequest);
-      Resource resource = new Resource(HttpRequestResourceHandler.class, "", "", reqdata);
+      HttpRequestResource resource = new HttpRequestResource("", "", reqdata);
 
       CibetFilter filter = new CibetFilter();
       Method m = filter.getClass().getDeclaredMethod("addBody", ServletRequest.class, Resource.class);
       m.setAccessible(true);
       m.invoke(filter, httpRequest, resource);
       Assert.assertEquals(1, resource.getParameters().size());
-      byte[] bytes = (byte[]) resource.getParameters().get(0).getUnencodedValue();
+      byte[] bytes = (byte[]) resource.getParameters().iterator().next().getUnencodedValue();
       Assert.assertEquals(5, bytes.length);
       Assert.assertEquals(25, bytes[0]);
       Assert.assertEquals(34, bytes[1]);

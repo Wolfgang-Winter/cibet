@@ -7,7 +7,7 @@
  *
  * All rights reserved
  *
- * Copyright 2012 Dr. Wolfgang Winter
+ * Copyright 2016 Dr. Wolfgang Winter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -45,66 +44,80 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import javax.script.ScriptEngine;
 import javax.sql.DataSource;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.resource.ResourceHandler;
 import com.logitags.cibet.resource.ResourceParameter;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
-/**
- * A Resource that represents a JDBC statement. Target type is the table name. Target is the SQL statement.
- * 
- * @author Wolfgang
- * 
- */
-public class JdbcResourceHandler implements Serializable, ResourceHandler {
-
-   private transient Log log = LogFactory.getLog(JdbcResourceHandler.class);
+@Entity
+@DiscriminatorValue(value = "JdbcResource")
+public class JdbcResource extends JpaResource {
 
    /**
     * 
     */
-   private static final long serialVersionUID = -6897040315030765688L;
+   private static final long serialVersionUID = 1L;
 
-   private static final String DIRTY_DIFFERENCES_KEY = "__DIRTY_DIFFERENCES";
+   private static Log log = LogFactory.getLog(JdbcResource.class);
 
-   private Resource resource;
+   public JdbcResource() {
+   }
 
-   public JdbcResourceHandler(Resource res) {
-      resource = res;
+   /**
+    * constructor used for JDBC resources
+    * 
+    * @param rh
+    * @param sql
+    * @param targetType
+    * @param pk
+    * @param params
+    */
+   public JdbcResource(String sql, String targetType, SqlParameter pk, Set<ResourceParameter> params) {
+      try {
+         setTarget(CibetUtil.encode(sql));
+      } catch (IOException e) {
+         log.error(e.getMessage(), e);
+         throw new IllegalArgumentException(e);
+      }
+      setTargetType(targetType);
+      setPrimaryKeyObject(pk);
+      if (params != null) {
+         setParameters(params);
+      }
+   }
+
+   /**
+    * copy constructor
+    * 
+    * @param copy
+    */
+   public JdbcResource(JdbcResource copy) {
+      super(copy);
    }
 
    @Override
    public void fillContext(ScriptEngine engine) {
-      engine.put("$TARGETTYPE", resource.getTargetType());
-      engine.put("$TARGET", resource.getObject());
-      engine.put("$PRIMARYKEY", resource.getPrimaryKeyId());
+      engine.put("$TARGETTYPE", getTargetType());
+      engine.put("$TARGET", getObject());
+      engine.put("$PRIMARYKEY", getPrimaryKeyId());
 
-      SqlParser parser = new SqlParser(null, (String) resource.getObject());
+      SqlParser parser = new SqlParser(null, (String) getObject());
       List<SqlParameter> setColumns = parser.getInsertUpdateColumns();
       engine.put("$COLUMNS", setColumns);
-   }
-
-   @Override
-   public Map<String, Object> getNotificationAttributes() {
-      Map<String, Object> map = new HashMap<>();
-      map.put("targetType", resource.getTargetType());
-      map.put("target", resource.getObject());
-      map.put("primaryKeyId", resource.getPrimaryKeyId());
-      return map;
    }
 
    @Override
@@ -126,7 +139,7 @@ public class JdbcResourceHandler implements Serializable, ResourceHandler {
 
          StatementType statementType = null;
          Object addValue = null;
-         for (ResourceParameter par : resource.getParameters()) {
+         for (ResourceParameter par : getParameters()) {
             if (par.getParameterType() == ParameterType.JDBC_STATEMENT_TYPE) {
                statementType = (StatementType) par.getUnencodedValue();
             }
@@ -157,7 +170,7 @@ public class JdbcResourceHandler implements Serializable, ResourceHandler {
          }
 
          if (log.isDebugEnabled()) {
-            log.debug(resource.getObject() + ": result: " + result);
+            log.debug(getObject() + ": result: " + result);
          }
          return result;
 
@@ -176,16 +189,18 @@ public class JdbcResourceHandler implements Serializable, ResourceHandler {
       }
    }
 
-   @Override
-   public String toString() {
-      StringBuffer b = new StringBuffer();
-      b.append("[JdbcResource] targetType: ");
-      b.append(resource.getTargetType());
-      b.append(" ; SQL: ");
-      b.append(resource.getObject());
-      b.append(" ; primaryKeyId: ");
-      b.append(resource.getPrimaryKeyId());
-      return b.toString();
+   /**
+    * the primary key object of a JPA or JDBC resource.
+    * 
+    * @param id
+    *           the primaryKeyObject to set
+    */
+   public void setPrimaryKeyObject(Object id) {
+      this.primaryKeyObject = id;
+      if (id != null) {
+         SqlParameter sqlId = (SqlParameter) id;
+         setPrimaryKeyId(sqlId.getValue() == null ? null : sqlId.getValue().toString());
+      }
    }
 
    private boolean executeStatement(Connection conn, Object addValue) throws SQLException {
@@ -194,17 +209,16 @@ public class JdbcResourceHandler implements Serializable, ResourceHandler {
          stmt = conn.createStatement();
 
          if (addValue == null) {
-            return stmt.execute((String) resource.getObject());
+            return stmt.execute((String) getObject());
          } else if (addValue instanceof Integer) {
-            return stmt.execute((String) resource.getObject(), (int) addValue);
+            return stmt.execute((String) getObject(), (int) addValue);
          } else if (addValue instanceof int[]) {
-            return stmt.execute((String) resource.getObject(), (int[]) addValue);
+            return stmt.execute((String) getObject(), (int[]) addValue);
          } else if (addValue instanceof String[]) {
-            return stmt.execute((String) resource.getObject(), (String[]) addValue);
+            return stmt.execute((String) getObject(), (String[]) addValue);
          } else {
-            throw new RuntimeException(
-                  "Failed to execute Statement " + (String) resource.getObject() + " with additional value " + addValue
-                        + ": Type " + addValue.getClass().getName() + " is not supported");
+            throw new RuntimeException("Failed to execute Statement " + (String) getObject() + " with additional value "
+                  + addValue + ": Type " + addValue.getClass().getName() + " is not supported");
          }
       } finally {
          if (stmt != null)
@@ -218,17 +232,17 @@ public class JdbcResourceHandler implements Serializable, ResourceHandler {
          stmt = conn.createStatement();
 
          if (addValue == null) {
-            return stmt.executeUpdate((String) resource.getObject());
+            return stmt.executeUpdate((String) getObject());
          } else if (addValue instanceof Integer) {
-            return stmt.executeUpdate((String) resource.getObject(), (int) addValue);
+            return stmt.executeUpdate((String) getObject(), (int) addValue);
          } else if (addValue instanceof int[]) {
-            return stmt.executeUpdate((String) resource.getObject(), (int[]) addValue);
+            return stmt.executeUpdate((String) getObject(), (int[]) addValue);
          } else if (addValue instanceof String[]) {
-            return stmt.executeUpdate((String) resource.getObject(), (String[]) addValue);
+            return stmt.executeUpdate((String) getObject(), (String[]) addValue);
          } else {
             throw new RuntimeException(
-                  "Failed to executeUpdate Statement " + (String) resource.getObject() + " with additional value "
-                        + addValue + ": Type " + addValue.getClass().getName() + " is not supported");
+                  "Failed to executeUpdate Statement " + (String) getObject() + " with additional value " + addValue
+                        + ": Type " + addValue.getClass().getName() + " is not supported");
          }
       } finally {
          if (stmt != null)
@@ -239,8 +253,8 @@ public class JdbcResourceHandler implements Serializable, ResourceHandler {
    private boolean executePreparedStatement(Connection conn) throws SQLException {
       PreparedStatement stmt = null;
       try {
-         stmt = conn.prepareStatement((String) resource.getObject());
-         for (ResourceParameter par : resource.getParameters()) {
+         stmt = conn.prepareStatement((String) getObject());
+         for (ResourceParameter par : getParameters()) {
             setParameter(stmt, par);
          }
          return stmt.execute();
@@ -253,8 +267,8 @@ public class JdbcResourceHandler implements Serializable, ResourceHandler {
    private int executeUpdatePreparedStatement(Connection conn) throws SQLException {
       PreparedStatement stmt = null;
       try {
-         stmt = conn.prepareStatement((String) resource.getObject());
-         for (ResourceParameter par : resource.getParameters()) {
+         stmt = conn.prepareStatement((String) getObject());
+         for (ResourceParameter par : getParameters()) {
             setParameter(stmt, par);
          }
          return stmt.executeUpdate();
@@ -521,9 +535,13 @@ public class JdbcResourceHandler implements Serializable, ResourceHandler {
       }
    }
 
-   @Override
-   public String createUniqueId() {
-      return DigestUtils.sha256Hex(resource.getObject() + resource.getPrimaryKeyId());
+   public String toString() {
+      StringBuffer b = new StringBuffer(super.toString());
+
+      b.append(" ; SQL: ");
+      b.append(getObject());
+
+      return b.toString();
    }
 
 }

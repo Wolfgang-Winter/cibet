@@ -34,12 +34,11 @@ import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.ejb.EJBInvoker;
-import com.logitags.cibet.sensor.ejb.EjbResourceHandler;
+import com.logitags.cibet.sensor.ejb.EjbResource;
 import com.logitags.cibet.sensor.jdbc.bridge.JdbcBridgeEntityManager;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 /**
  *
@@ -63,9 +62,8 @@ public class DcControllableDefinitionTest extends JdbcHelper {
 
    private DcControllable createStateDcControllable() throws IOException {
       DcControllable sa = new DcControllable();
-      Resource r = new Resource();
+      JpaResource r = new JpaResource();
       sa.setResource(r);
-      r.setResourceHandlerClass(JpaResourceHandler.class.getName());
 
       sa.setCaseId("caseisxx");
       sa.setControlEvent(ControlEvent.INSERT);
@@ -85,9 +83,8 @@ public class DcControllableDefinitionTest extends JdbcHelper {
 
    private DcControllable createServiceDcControllable() throws IOException {
       DcControllable sa = new DcControllable();
-      Resource r = new Resource();
+      EjbResource r = new EjbResource();
       sa.setResource(r);
-      r.setResourceHandlerClass(EjbResourceHandler.class.getName());
 
       sa.setCaseId("caseisxx");
       sa.setControlEvent(ControlEvent.INSERT);
@@ -109,7 +106,7 @@ public class DcControllableDefinitionTest extends JdbcHelper {
          ap.setParameterType(ParameterType.METHOD_PARAMETER);
          ap.setSequence(i);
          ap.setUnencodedValue(ap);
-         r.getParameters().add(ap);
+         r.addParameter(ap);
       }
 
       byte[] r1 = CibetUtil.encode(sa);
@@ -127,8 +124,8 @@ public class DcControllableDefinitionTest extends JdbcHelper {
          EntityDefinition def = DcControllableDefinition.getInstance();
          def.persist(connection, sa);
 
-         PreparedStatement ps = connection
-               .prepareStatement("SELECT dccontrollableid, caseid, target FROM CIB_DCCONTROLLABLE");
+         PreparedStatement ps = connection.prepareStatement(
+               "SELECT d.dccontrollableid, d.caseid, r.target FROM CIB_DCCONTROLLABLE d, CIB_RESOURCE r where d.resourceid = r.resourceid");
          ResultSet rs = ps.executeQuery();
          Assert.assertTrue(rs.next());
          Assert.assertNotNull(rs.getString(1));
@@ -158,8 +155,8 @@ public class DcControllableDefinitionTest extends JdbcHelper {
          EntityDefinition def = DcControllableDefinition.getInstance();
          def.persist(connection, sa);
 
-         PreparedStatement ps = connection
-               .prepareStatement("SELECT dccontrollableid, caseid, target, method FROM CIB_DCCONTROLLABLE");
+         PreparedStatement ps = connection.prepareStatement(
+               "SELECT d.dccontrollableid, d.caseid, r.target, r.method FROM CIB_DCCONTROLLABLE d, CIB_RESOURCE r where d.resourceid = r.resourceid");
          ResultSet rs = ps.executeQuery();
          Assert.assertTrue(rs.next());
          Assert.assertNotNull(rs.getString(1));
@@ -231,7 +228,7 @@ public class DcControllableDefinitionTest extends JdbcHelper {
          DcControllable ar2 = jdbcEM.find(DcControllable.class, sa.getDcControllableId());
          Assert.assertNotNull(ar2);
          Assert.assertEquals("caseisxx", ar2.getCaseId());
-         Assert.assertEquals("methodname", ar2.getResource().getMethod());
+         Assert.assertEquals("methodname", ((EjbResource) ar2.getResource()).getMethod());
          Assert.assertNotNull(ar2.getResource().getTarget());
          Object obj = CibetUtil.decode(ar2.getResource().getTarget());
          Assert.assertEquals(DcControllable.class, obj.getClass());
@@ -260,14 +257,13 @@ public class DcControllableDefinitionTest extends JdbcHelper {
          Assert.assertTrue(sa.getDcControllableId() != null);
 
          sa.setActuator("newact");
-         sa.getResource().setPrimaryKeyId(null);
+         ((JpaResource) sa.getResource()).setPrimaryKeyId(null);
 
          DcControllable sa2 = jdbcEM.merge(sa);
          connection.commit();
 
          DcControllable ar2 = jdbcEM.find(DcControllable.class, sa.getDcControllableId());
          Assert.assertNotNull(ar2);
-         Assert.assertNull(ar2.getResource().getPrimaryKeyId());
          Assert.assertEquals("newact", ar2.getActuator());
          Assert.assertNotNull(ar2.getResource().getTarget());
          Object obj = CibetUtil.decode(ar2.getResource().getTarget());
@@ -297,7 +293,7 @@ public class DcControllableDefinitionTest extends JdbcHelper {
          Assert.assertTrue(sa.getDcControllableId() != null);
 
          sa.setActuator("newact");
-         sa.getResource().setMethod("Halleluja");
+         ((EjbResource) sa.getResource()).setMethod("Halleluja");
          jdbcEM.merge(sa);
          connection.commit();
 
@@ -305,7 +301,6 @@ public class DcControllableDefinitionTest extends JdbcHelper {
          Assert.assertNotNull(ar2);
          Assert.assertEquals("caseisxx", ar2.getCaseId());
          Assert.assertEquals("newact", ar2.getActuator());
-         Assert.assertEquals("Halleluja", ar2.getResource().getMethod());
          Assert.assertNotNull(ar2.getResource().getTarget());
          Object obj = CibetUtil.decode(ar2.getResource().getTarget());
          Assert.assertEquals(DcControllable.class, obj.getClass());

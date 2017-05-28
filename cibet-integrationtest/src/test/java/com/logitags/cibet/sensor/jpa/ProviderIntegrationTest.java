@@ -43,7 +43,6 @@ import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
-import com.logitags.cibet.resource.Resource;
 
 public class ProviderIntegrationTest extends DBHelper {
 
@@ -81,7 +80,7 @@ public class ProviderIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
-      Resource resource = ar.getResource();
+      JpaResource resource = (JpaResource) ar.getResource();
       Assert.assertEquals(TEntity.class.getName(), resource.getTargetType());
       TEntity en = (TEntity) resource.getObject();
       Assert.assertTrue("expected: " + entity.getId() + ", actual: " + en.getId(), en.getId() == entity.getId());

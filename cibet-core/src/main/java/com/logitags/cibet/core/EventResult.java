@@ -36,6 +36,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -109,7 +110,7 @@ public class EventResult implements Serializable {
     * if during execution of this event a second event is controlled by a setpoint, the result of the second event is
     * added to this list. Empty list, if there is no child controlled event
     */
-   @OneToMany(mappedBy = "parentResult", cascade = { CascadeType.ALL })
+   @OneToMany(mappedBy = "parentResult", cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
    private List<EventResult> childResults = new ArrayList<EventResult>();
 
    /**
@@ -145,7 +146,7 @@ public class EventResult implements Serializable {
    public EventResult(String sensor, EventMetadata metadata) {
       this.sensor = sensor;
       if (metadata != null) {
-         resource = metadata.getResource().getResourceHandler().toString();
+         resource = metadata.getResource().toString();
          this.event = metadata.getControlEvent();
          this.actuators = metadata.getActuatorNames();
          this.setpoints = metadata.getSetpointIds();

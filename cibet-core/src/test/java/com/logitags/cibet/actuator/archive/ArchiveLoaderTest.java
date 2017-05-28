@@ -28,9 +28,8 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.diff.Difference;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 public class ArchiveLoaderTest {
 
@@ -94,10 +93,9 @@ public class ArchiveLoaderTest {
       list.add(createArchive("3", 6, "t3", 201, ExecutionStatus.DENIED));
       list.add(createArchive("4", 7, "t4", 200, ExecutionStatus.EXECUTED));
 
-      Resource r1 = new Resource();
+      HttpRequestResource r1 = new HttpRequestResource();
       r1.setGroupId("Hase");
       r1.setObject("URL");
-      r1.setResourceHandlerClass(HttpRequestResourceHandler.class.getName());
 
       Archive a1 = new Archive();
       a1.setArchiveId("5");
@@ -106,10 +104,9 @@ public class ArchiveLoaderTest {
       setArchiveCreateDate(a1, 5);
       list.add(a1);
 
-      Resource r2 = new Resource();
+      HttpRequestResource r2 = new HttpRequestResource();
       r2.setGroupId("Hase");
       r2.setObject("URL2");
-      r2.setResourceHandlerClass(HttpRequestResourceHandler.class.getName());
 
       Archive a2 = new Archive();
       a2.setArchiveId("6");
@@ -127,8 +124,6 @@ public class ArchiveLoaderTest {
       while (it.hasNext()) {
          Archive a = it.next();
          List<Difference> difs = map.get(a);
-         b.append(a.getResource().getResourceHandlerClass());
-         b.append(" ");
          b.append(a.getExecutionStatus());
          b.append(" ");
          b.append(a.getResource().getObject());
@@ -172,10 +167,9 @@ public class ArchiveLoaderTest {
       log.info("start analyzeDifferences2()");
       List<Archive> list = new ArrayList<Archive>();
 
-      Resource r1 = new Resource();
+      HttpRequestResource r1 = new HttpRequestResource();
       r1.setGroupId("Hase");
       r1.setObject("URL");
-      r1.setResourceHandlerClass(HttpRequestResourceHandler.class.getName());
 
       Archive a1 = new Archive();
       a1.setArchiveId("1");
@@ -184,10 +178,9 @@ public class ArchiveLoaderTest {
       setArchiveCreateDate(a1, 1);
       list.add(a1);
 
-      Resource r2 = new Resource();
+      HttpRequestResource r2 = new HttpRequestResource();
       r2.setGroupId("Hase");
       r2.setObject("URL2");
-      r2.setResourceHandlerClass(HttpRequestResourceHandler.class.getName());
 
       Archive a2 = new Archive();
       a2.setArchiveId("2");
@@ -208,8 +201,6 @@ public class ArchiveLoaderTest {
       while (it.hasNext()) {
          Archive a = it.next();
          List<Difference> difs = map.get(a);
-         b.append(a.getResource().getResourceHandlerClass());
-         b.append(" ");
          b.append(a.getExecutionStatus());
          b.append(" ");
          b.append(a.getResource().getObject());
@@ -253,10 +244,9 @@ public class ArchiveLoaderTest {
       e1.setCounter(counter);
       t1.setTen(e1);
 
-      Resource r1 = new Resource();
+      JpaResource r1 = new JpaResource();
       r1.setGroupId("Hase");
       r1.setObject(t1);
-      r1.setResourceHandlerClass(JpaResourceHandler.class.getName());
 
       Archive a1 = new Archive();
       a1.setArchiveId(archiveId);

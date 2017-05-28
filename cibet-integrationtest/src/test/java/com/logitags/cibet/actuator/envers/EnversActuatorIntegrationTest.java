@@ -144,8 +144,8 @@ public class EnversActuatorIntegrationTest extends DBHelper {
       Assert.assertEquals(1, archList.size());
       Resource res0 = archList.get(0).getResource();
       Assert.assertEquals(2, res0.getParameters().size());
-      ResourceParameter rp1 = res0.getParameters().get(0);
-      ResourceParameter rp2 = res0.getParameters().get(1);
+      ResourceParameter rp1 = res0.getParameters().iterator().next();
+      ResourceParameter rp2 = res0.getParameters().iterator().next();
       Assert.assertTrue("compValue".equals(rp1.getName()) || "owner".equals(rp1.getName()));
       Assert.assertTrue("compValue".equals(rp2.getName()) || "owner".equals(rp2.getName()));
 

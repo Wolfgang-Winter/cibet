@@ -220,8 +220,9 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
       EventResult evResult = Context.requestScope().getExecutedEventResult();
       log.debug("evResult==" + evResult);
 
-      Assert.assertEquals("[EjbResource] targetType: com.cibethelper.ejb.CibetTestEJB ; method: release",
-            evResult.getResource());
+      Assert.assertTrue(evResult.getResource().startsWith("[EjbResource] "));
+      Assert.assertTrue(evResult.getResource().indexOf("targetType: com.cibethelper.ejb.CibetTestEJB") > 0);
+      Assert.assertTrue(evResult.getResource().indexOf("; method: release") > 0);
       Assert.assertEquals(1, evResult.getChildResults().size());
       Assert.assertEquals(ExecutionStatus.DENIED, evResult.getChildResults().get(0).getExecutionStatus());
       Context.sessionScope().setUser(USER);

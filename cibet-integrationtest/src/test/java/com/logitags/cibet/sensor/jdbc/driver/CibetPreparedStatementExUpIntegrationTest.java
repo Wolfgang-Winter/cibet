@@ -186,7 +186,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertTrue(rs.next());
       Assert.assertEquals(5L, rs.getLong(1));
 
-      rs = query("select * from cib_archive");
+      rs = query(
+            "select a.*, r.primarykeyid, r.targettype from cib_archive a, cib_resource r where a.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
@@ -194,7 +195,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
 
       int count = 0;
-      rs = query("select * from cib_resourceparameter where archiveid = '" + archiveId + "'");
+      rs = query("select * from cib_resourceparameter where resourceid = '" + rs.getString("resourceid") + "'");
       while (rs.next()) {
          count++;
          log.debug(rs.getString("NAME") + ", " + rs.getString("CLASSNAME") + ", " + rs.getString("PARAMETERTYPE") + ", "
@@ -226,7 +227,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals("Röschen", rs.getString(2));
       Assert.assertEquals(99, rs.getInt(3));
 
-      rs = query("select * from cib_archive order by createdate");
+      rs = query(
+            "select a.*, r.primarykeyid, r.targettype, r.target from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createdate");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
@@ -259,7 +261,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       ResultSet rs = query("select * from cib_testentity");
       Assert.assertTrue(!rs.next());
 
-      rs = query("select * from cib_archive order by createdate");
+      rs = query(
+            "select a.*, r.primarykeyid, r.targettype, r.target from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createdate");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
@@ -290,7 +293,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       ResultSet rs = query("select * from cib_testentity");
       Assert.assertTrue(!rs.next());
 
-      rs = query("select * from cib_dccontrollable");
+      rs = query(
+            "select d.*, r.primarykeyid, r.targettype from cib_dccontrollable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
@@ -338,8 +342,10 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals("rosen", rs.getString(2));
       Assert.assertEquals(255, rs.getInt(3));
 
-      rs = query("select * from cib_dccontrollable");
+      rs = query(
+            "select d.*, r.primarykeyid, r.targettype, r.target from cib_dccontrollable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
+
       Assert.assertEquals("UPDATE", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
       Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
@@ -385,7 +391,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       ResultSet rs = query("select * from cib_testentity");
       Assert.assertTrue(rs.next());
 
-      rs = query("select * from cib_dccontrollable");
+      rs = query(
+            "select d.*, r.primarykeyid, r.targettype, r.target from cib_dccontrollable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("DELETE", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
@@ -438,7 +445,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
-      Assert.assertEquals("5", ar.getResource().getPrimaryKeyId());
+      Assert.assertEquals("5", ((JdbcResource) ar.getResource()).getPrimaryKeyId());
 
       List<DcControllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
@@ -521,7 +528,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
-      Assert.assertTrue(!ar.getResource().getPrimaryKeyId().equals("0"));
+      Assert.assertTrue(!((JdbcResource) ar.getResource()).getPrimaryKeyId().equals("0"));
 
       list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
@@ -1142,7 +1149,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Context.end();
       Context.start();
 
-      rs = query("select * from cib_archive order by createdate");
+      rs = query(
+            "select a.*, r.primarykeyid, r.targettype from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createdate");
       Assert.assertTrue(rs.next());
       String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
@@ -1150,7 +1158,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
 
       int count2 = 0;
-      ResultSet rs2 = query("select * from cib_resourceparameter where archiveid = '" + archiveId + "'");
+      ResultSet rs2 = query(
+            "select * from cib_resourceparameter where resourceid = '" + rs.getString("resourceid") + "'");
       while (rs2.next()) {
          count2++;
          log.debug(rs2.getString("NAME") + ", " + rs2.getString("PARAMETERTYPE") + ", " + rs2.getString("CLASSNAME")
@@ -1174,7 +1183,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
 
       count2 = 0;
-      rs2 = query("select * from cib_resourceparameter where archiveid = '" + archiveId + "'");
+      rs2 = query("select * from cib_resourceparameter where resourceid = '" + rs.getString("resourceid") + "'");
       while (rs2.next()) {
          count2++;
          log.debug(rs2.getString("NAME") + ", " + rs2.getString("PARAMETERTYPE") + ", " + rs2.getString("CLASSNAME")
@@ -1345,7 +1354,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Context.end();
       Context.start();
 
-      ResultSet rs = query("select * from cib_archive");
+      ResultSet rs = query(
+            "select a.*, r.targettype from cib_archive a, cib_resource r where a.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
@@ -1353,7 +1363,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ExecutionStatus.ERROR.name(), rs.getString("EXECUTIONSTATUS"));
 
       int count = 0;
-      rs = query("select * from cib_resourceparameter where archiveid = '" + archiveId + "'");
+      rs = query("select * from cib_resourceparameter where resourceid = '" + rs.getString("resourceid") + "'");
       while (rs.next()) {
          count++;
          log.debug(rs.getString("NAME") + ", " + rs.getString("CLASSNAME") + ", " + rs.getString("PARAMETERTYPE") + ", "
@@ -1387,7 +1397,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Context.end();
       Context.start();
 
-      ResultSet rs = query("select * from cib_archive");
+      ResultSet rs = query(
+            "select a.*, r.targettype from cib_archive a, cib_resource r where a.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
@@ -1395,7 +1406,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ExecutionStatus.ERROR.name(), rs.getString("EXECUTIONSTATUS"));
 
       int count = 0;
-      rs = query("select * from cib_resourceparameter where archiveid = '" + archiveId + "'");
+      rs = query("select * from cib_resourceparameter where resourceid = '" + rs.getString("resourceid") + "'");
       while (rs.next()) {
          count++;
          log.debug(rs.getString("NAME") + ", " + rs.getString("CLASSNAME") + ", " + rs.getString("PARAMETERTYPE") + ", "

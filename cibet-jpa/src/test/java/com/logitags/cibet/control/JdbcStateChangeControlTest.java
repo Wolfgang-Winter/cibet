@@ -29,8 +29,7 @@ import com.cibethelper.base.CoreTestBase;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.jdbc.driver.JdbcResourceHandler;
+import com.logitags.cibet.sensor.jdbc.driver.JdbcResource;
 import com.logitags.cibet.sensor.jdbc.driver.SqlParser;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -73,8 +72,7 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
 
       String sql = "Update cuba SET ddss= 4, voodoo='huch' WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
-      Resource res = new Resource(JdbcResourceHandler.class, parser.getSql(), parser.getTargetType(),
-            parser.getPrimaryKey(), null);
+      JdbcResource res = new JdbcResource(parser.getSql(), parser.getTargetType(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, spB);
       Assert.assertEquals(1, list.size());
@@ -90,8 +88,7 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
 
       String sql = "Update cuba SET ddss= 4, voodoo='huch' WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
-      Resource res = new Resource(JdbcResourceHandler.class, parser.getSql(), parser.getTargetType(),
-            parser.getPrimaryKey(), null);
+      JdbcResource res = new JdbcResource(parser.getSql(), parser.getTargetType(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, spB);
       Assert.assertEquals(0, list.size());
@@ -107,8 +104,7 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
 
       String sql = "Update cuba SET ddss= 4, voodoo='huch',voodo=99 WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
-      Resource res = new Resource(JdbcResourceHandler.class, parser.getSql(), parser.getTargetType(),
-            parser.getPrimaryKey(), null);
+      JdbcResource res = new JdbcResource(parser.getSql(), parser.getTargetType(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, spB);
       Assert.assertEquals(1, list.size());
@@ -124,8 +120,7 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
 
       String sql = "Update cuba SET ddss= 4, voodo=99 WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
-      Resource res = new Resource(JdbcResourceHandler.class, parser.getSql(), parser.getTargetType(),
-            parser.getPrimaryKey(), null);
+      JdbcResource res = new JdbcResource(parser.getSql(), parser.getTargetType(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, spB);
       Assert.assertEquals(0, list.size());

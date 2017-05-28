@@ -62,8 +62,7 @@ import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.notification.HttpNotificationProvider;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 @RunWith(Arquillian.class)
 public class HttpNotificationProviderIT {
@@ -144,7 +143,7 @@ public class HttpNotificationProviderIT {
       c.setFirstApprovalDate(NOW_3.getTime());
       c.setFirstApprovalUser("firstApprovalUserId");
 
-      Resource res = new Resource(JpaResourceHandler.class, new TEntity());
+      JpaResource res = new JpaResource(new TEntity());
       c.setResource(res);
       c.setTenant("tenant");
 

@@ -14,12 +14,10 @@ package com.logitags.cibet.actuator.dc;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
-import javax.persistence.AssociationOverride;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EnumType;
@@ -28,6 +26,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -42,9 +41,7 @@ import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.diff.Difference;
 import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.resource.ResourceParameter;
 
 /**
  * The pre-release state of a controlled object. This can be an entity or a method invocation.
@@ -156,7 +153,7 @@ public class DcControllable implements Serializable {
    private Date approvalDate;
 
    /**
-    * remark of the approving user
+    * remark of the approving/releasing user
     */
    private String approvalRemark;
 
@@ -232,16 +229,8 @@ public class DcControllable implements Serializable {
    @Column(length = 50)
    private ExecutionStatus executionStatus;
 
-   @Embedded
-   // @AssociationOverride(name = "parameters", joinTable = @JoinTable(name =
-   // "CIB_DCPARAMETER", joinColumns = @JoinColumn(name = "DCCONTROLLABLEID"),
-   // inverseJoinColumns = @JoinColumn(name = "PARAMETERID")))
-   // @AssociationOverride(name = "parameters", joinTable = @JoinTable(name =
-   // "CIB_DCPARAMETER", joinColumns = @JoinColumn(name = "DCCONTROLLABLEID",
-   // referencedColumnName = "dcControllableId"), inverseJoinColumns =
-   // @JoinColumn(name = "PARAMETERID", referencedColumnName = "parameterId",
-   // unique = true)))
-   @AssociationOverride(name = "parameters", joinColumns = @JoinColumn(name = "DCCONTROLLABLEID", referencedColumnName = "DCCONTROLLABLEID"))
+   @OneToOne(cascade = CascadeType.DETACH)
+   @JoinColumn(name = "RESOURCEID")
    private Resource resource;
 
    @PrePersist
@@ -249,11 +238,7 @@ public class DcControllable implements Serializable {
       if (resource != null) {
          resource.getUniqueId();
          if (resource.getGroupId() == null) {
-            if (Context.requestScope().getGroupId() != null) {
-               resource.setGroupId(Context.requestScope().getGroupId());
-            } else if (resource.getPrimaryKeyId() != null) {
-               resource.setGroupId(resource.getTargetType() + "-" + resource.getPrimaryKeyId());
-            }
+            resource.createGroupId();
          }
       }
 
@@ -302,31 +287,6 @@ public class DcControllable implements Serializable {
       }
    }
 
-   public void encrypt() {
-      log.debug("encrypt DcControllable");
-      getResource().encrypt();
-   }
-
-   /**
-    * returns the list of differences for the modified attributes of the entity backed by this DcControllable. Only
-    * applicable if the event is UPDATE
-    * 
-    * @return
-    */
-   public List<Difference> getUpdateDifferences() {
-      if (resource == null) {
-         throw new IllegalStateException("DcControllable has no Resource");
-      }
-      ResourceParameter rp = resource.getParameter(FourEyesActuator.DIFFERENCES);
-      if (rp == null) {
-         String err = "Failed to find update differences of " + resource.getTargetType() + " with ID "
-               + resource.getPrimaryKeyObject();
-         log.error(err);
-         throw new IllegalStateException(err);
-      }
-      return (List<Difference>) rp.getUnencodedValue();
-   }
-
    /**
     * releases an event on a JPA resource. If it is the second release of a 6-eyes process the controlled object entry
     * is updated. If it is a 4-eyes process the real object is updated.
@@ -341,7 +301,7 @@ public class DcControllable implements Serializable {
     */
    @CibetContext
    public Object release(EntityManager entityManager, String remark) throws ResourceApplyException {
-      log.debug("start DefaultDcService.release");
+      log.debug("start release");
 
       if (entityManager != null) {
          Context.internalRequestScope().setApplicationEntityManager(entityManager);

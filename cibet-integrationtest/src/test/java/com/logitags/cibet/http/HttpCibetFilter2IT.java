@@ -65,10 +65,9 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.it.AbstractArquillian;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.http.Headers;
-import com.logitags.cibet.sensor.http.HttpRequestInvoker;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
 
 @RunWith(Arquillian.class)
 public class HttpCibetFilter2IT extends AbstractArquillian {
@@ -130,11 +129,10 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
 
       Assert.assertEquals(1, list.size());
       DcControllable ar = list.get(0);
-      Resource resource = ar.getResource();
+      HttpRequestResource resource = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals(target, resource.getTargetType());
       Assert.assertEquals(method, resource.getMethod());
-      Assert.assertEquals(HttpRequestInvoker.class.getName(), resource.getInvokerClass());
       return ar;
    }
 
@@ -159,9 +157,8 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       }
       Assert.assertEquals(expected, list.size());
       for (Archive ar : list) {
-         Resource res = ar.getResource();
+         HttpRequestResource res = (HttpRequestResource) ar.getResource();
          Assert.assertEquals(url, res.getTargetType());
-         Assert.assertEquals(HttpRequestInvoker.class.getName(), res.getInvokerClass());
       }
       return list;
    }
@@ -185,7 +182,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       log.debug("user: " + co.getCreateUser());
       log.debug("tenant: " + co.getTenant());
       Assert.assertEquals("Hausaddresse", co.getCreateAddress());
-      Resource res = co.getResource();
+      HttpRequestResource res = (HttpRequestResource) co.getResource();
       // JBoss: 8
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(5, res.getParameters().size());
@@ -222,7 +219,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_ACCEPTED, response.getStatusLine().getStatusCode());
       readResponseBody(response);
       DcControllable co = checkDc("POST", URL_TS);
-      Resource res = co.getResource();
+      HttpRequestResource res = (HttpRequestResource) co.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(9, res.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {
@@ -266,7 +263,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_ACCEPTED, response.getStatusLine().getStatusCode());
       readResponseBody(response);
       DcControllable co = checkDc("POST", URL_TS);
-      Resource res = co.getResource();
+      HttpRequestResource res = (HttpRequestResource) co.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(9, res.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {
@@ -311,7 +308,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_ACCEPTED, response.getStatusLine().getStatusCode());
       readResponseBody(response);
       DcControllable co = checkDc("POST", URL_TS);
-      Resource res = co.getResource();
+      HttpRequestResource res = (HttpRequestResource) co.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(9, res.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {
@@ -328,7 +325,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       List<Archive> ars = loadArchives(2, URL_TS);
       Assert.assertEquals(ControlEvent.INVOKE, ars.get(0).getControlEvent());
       Archive ar = ars.get(0);
-      Resource resi = ar.getResource();
+      HttpRequestResource resi = (HttpRequestResource) ar.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(9, resi.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {
@@ -362,7 +359,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
 
       List<Archive> ars = loadArchives(1, URL_TS);
       Archive ar = ars.get(0);
-      Resource res = ar.getResource();
+      HttpRequestResource res = (HttpRequestResource) ar.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(6, res.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {
@@ -393,7 +390,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
 
       List<Archive> ars = loadArchives(1, URL_TS);
       Archive ar = ars.get(0);
-      Resource res = ar.getResource();
+      HttpRequestResource res = (HttpRequestResource) ar.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(7, res.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {
@@ -464,7 +461,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       log.debug("Tenant: " + Context.sessionScope().getTenant());
 
       DcControllable co = checkDc("POST", URL_TS);
-      Resource res = co.getResource();
+      HttpRequestResource res = (HttpRequestResource) co.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(9, res.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {
@@ -485,7 +482,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       List<Archive> ars = loadArchives(1, URL_TS);
       Assert.assertEquals(ControlEvent.INVOKE, ars.get(0).getControlEvent());
       Archive ar = ars.get(0);
-      Resource resi = ar.getResource();
+      HttpRequestResource resi = (HttpRequestResource) ar.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(9, resi.getParameters().size());
       } else if (JBOSS.equals(APPSERVER)) {

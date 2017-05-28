@@ -13,8 +13,8 @@ package com.logitags.cibet.http;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -48,6 +48,7 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.it.AbstractArquillian;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.http.HttpRequestInvoker;
@@ -101,41 +102,47 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       // new ConfigurationService().reinitSetpoints();
    }
 
-   private ResourceParameter createParameter(String name, Object value) throws IOException {
+   private ResourceParameter createParameter(String name, Object value, int sequence) throws IOException {
       ResourceParameter ar1 = new ResourceParameter();
       ar1.setClassname(value.getClass().getName());
       ar1.setName(name);
       ar1.setParameterType(ParameterType.HTTP_PARAMETER);
       ar1.setUnencodedValue(value);
+      ar1.setSequence(sequence);
       return ar1;
    }
 
-   private ResourceParameter createDoubleParameter(String name, String value1, String value2) throws IOException {
+   private ResourceParameter createDoubleParameter(String name, String value1, String value2, int sequence)
+         throws IOException {
       ResourceParameter ar1 = new ResourceParameter();
       ar1.setClassname(String[].class.getName());
       ar1.setName(name);
       ar1.setParameterType(ParameterType.HTTP_PARAMETER);
       String[] str = new String[] { value1, value2 };
       ar1.setUnencodedValue(str);
+      ar1.setSequence(sequence);
       return ar1;
    }
 
-   private ResourceParameter createHeader(String name, String value) throws IOException {
+   private ResourceParameter createHeader(String name, String value, int sequence) throws IOException {
       ResourceParameter ar1 = new ResourceParameter();
       ar1.setClassname(String.class.getName());
       ar1.setName(name);
       ar1.setParameterType(ParameterType.HTTP_HEADER);
       ar1.setUnencodedValue(value);
+      ar1.setSequence(sequence);
       return ar1;
    }
 
-   private ResourceParameter createDoubleHeader(String name, String value1, String value2) throws IOException {
+   private ResourceParameter createDoubleHeader(String name, String value1, String value2, int sequence)
+         throws IOException {
       ResourceParameter ar1 = new ResourceParameter();
       ar1.setClassname(String[].class.getName());
       ar1.setName(name);
       ar1.setParameterType(ParameterType.HTTP_HEADER);
       String[] str = new String[] { value1, value2 };
       ar1.setUnencodedValue(str);
+      ar1.setSequence(sequence);
       return ar1;
    }
 
@@ -143,10 +150,10 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       log.info("start test with method " + method);
 
       HttpRequestInvoker inv = new HttpRequestInvoker();
-      List<ResourceParameter> params = new LinkedList<ResourceParameter>();
-      params.add(createParameter("Ente1", "Erpel"));
-      params.add(createParameter("PferdÖ1", "?Rüpel"));
-      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
+      params.add(createParameter("Ente1", "Erpel", 1));
+      params.add(createParameter("PferdÖ1", "?Rüpel", 2));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8", 3));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -176,10 +183,10 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       log.info("start testPUTRequest()");
 
       HttpRequestInvoker inv = new HttpRequestInvoker();
-      List<ResourceParameter> params = new LinkedList<ResourceParameter>();
-      params.add(createParameter("Ente1", "Erpel"));
-      params.add(createParameter("PferdÖ1", "?Rüpel"));
-      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
+      params.add(createParameter("Ente1", "Erpel", 1));
+      params.add(createParameter("PferdÖ1", "?Rüpel", 2));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8", 3));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -200,9 +207,9 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       log.info("start requestHEAD()");
 
       HttpRequestInvoker inv = new HttpRequestInvoker();
-      List<ResourceParameter> params = new LinkedList<ResourceParameter>();
-      params.add(createParameter("Ente1", "Erpel"));
-      params.add(createParameter("PferdÖ1", "?Rüpel"));
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
+      params.add(createParameter("Ente1", "Erpel", 1));
+      params.add(createParameter("PferdÖ1", "?Rüpel", 2));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -239,10 +246,10 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       log.info("start " + tenant);
 
       HttpRequestInvoker inv = new HttpRequestInvoker();
-      List<ResourceParameter> params = new LinkedList<ResourceParameter>();
-      params.add(createParameter("Ente1", "Erpel"));
-      params.add(createDoubleParameter("PferdÖ1", "?Rüpel", "Schnaps"));
-      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
+      params.add(createParameter("Ente1", "Erpel", 1));
+      params.add(createDoubleParameter("PferdÖ1", "?Rüpel", "Schnaps", 2));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8", 3));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -262,11 +269,11 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       log.info("start " + tenant);
 
       HttpRequestInvoker inv = new HttpRequestInvoker();
-      List<ResourceParameter> params = new LinkedList<ResourceParameter>();
-      params.add(createParameter("Ente1", "Erpel"));
-      params.add(createDoubleParameter("PferdÖ1", "?Rüpel", "Schnaps"));
-      params.add(createHeader("Warzenschwein", "Übelkeit"));
-      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
+      params.add(createParameter("Ente1", "Erpel", 1));
+      params.add(createDoubleParameter("PferdÖ1", "?Rüpel", "Schnaps", 2));
+      params.add(createHeader("Warzenschwein", "Übelkeit", 3));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8", 4));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -290,12 +297,12 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       log.info("start requestPOSTWithHeaders()");
 
       HttpRequestInvoker inv = new HttpRequestInvoker();
-      List<ResourceParameter> params = new LinkedList<ResourceParameter>();
-      params.add(createParameter("Ente1", "Erpel"));
-      params.add(createParameter("PferdÖ1", "?Rüpel"));
-      params.add(createParameter("PferdÖ1", "Schnaps"));
-      params.add(createHeader("Warzenschwein", "Übelkeit"));
-      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
+      params.add(createParameter("Ente1", "Erpel", 1));
+      String[] perds = new String[] { "?Rüpel", "Schnaps" };
+      params.add(createParameter("PferdÖ1", perds, 2));
+      params.add(createHeader("Warzenschwein", "Übelkeit", 3));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8", 4));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 
@@ -321,12 +328,12 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       log.info("start requestPOSTWithMultiHeaders()");
 
       HttpRequestInvoker inv = new HttpRequestInvoker();
-      List<ResourceParameter> params = new LinkedList<ResourceParameter>();
-      params.add(createParameter("Ente1", "Erpel"));
-      params.add(createParameter("PferdÖ1", "?Rüpel"));
-      params.add(createParameter("PferdÖ1", "Schnaps"));
-      params.add(createDoubleHeader("Warzenschwein", "Übelkeit", "Fahrenheit"));
-      params.add(createHeader("Content-Type", "text/html; charset=utf-8"));
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
+      params.add(createParameter("Ente1", "Erpel", 1));
+      String[] perds = new String[] { "?Rüpel", "Schnaps" };
+      params.add(createParameter("PferdÖ1", perds, 2));
+      params.add(createDoubleHeader("Warzenschwein", "Übelkeit", "Fahrenheit", 3));
+      params.add(createHeader("Content-Type", "text/html; charset=utf-8", 4));
 
       Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, ControlEvent.INVOKE);
 

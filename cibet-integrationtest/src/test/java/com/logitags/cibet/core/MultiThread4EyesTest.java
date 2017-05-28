@@ -40,7 +40,7 @@ import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.resource.Resource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 /**
  * -javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar
@@ -123,7 +123,7 @@ public class MultiThread4EyesTest extends DBHelper {
          }
          Assert.assertEquals(1, list.size());
          Archive ar = list.get(0);
-         Resource resource = ar.getResource();
+         JpaResource resource = (JpaResource) ar.getResource();
 
          if (ControlEvent.INSERT != ar.getControlEvent()) {
             resultList.add(new TResult(getName(), 262, ar.getControlEvent()));

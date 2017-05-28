@@ -37,7 +37,7 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.diff.Difference;
 import com.logitags.cibet.resource.ResourceParameter;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 /**
  * API for the cibet dual control management
@@ -128,7 +128,7 @@ public abstract class SchedulerLoader extends DcLoader {
     */
    public static List<Difference> executedDifferences(DcControllable dc) {
       if (dc.getExecutionStatus() != ExecutionStatus.EXECUTED || dc.getControlEvent() != ControlEvent.UPDATE
-            || !(dc.getResource().getResourceHandler() instanceof JpaResourceHandler)) {
+            || !(dc.getResource() instanceof JpaResource)) {
          return Collections.emptyList();
       }
 
@@ -184,8 +184,8 @@ public abstract class SchedulerLoader extends DcLoader {
 
             ResourceParameter rp = dc.getResource().getParameter(SchedulerActuator.CLEANOBJECT);
             if (rp == null) {
-               String err = "Failed to find base entity of " + entityClass.getName() + " with ID "
-                     + dc.getResource().getPrimaryKeyObject() + " in DcControllable " + dc;
+               String err = "Failed to find base entity of " + entityClass.getName() + " for resource "
+                     + dc.getResource();
                log.error(err);
                throw new RuntimeException(err);
             }

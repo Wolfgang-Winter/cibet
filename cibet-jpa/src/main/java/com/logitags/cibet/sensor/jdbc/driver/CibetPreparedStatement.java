@@ -36,10 +36,11 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -52,6 +53,7 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.ResourceParameter;
 
@@ -96,8 +98,9 @@ public class CibetPreparedStatement extends CibetStatement implements PreparedSt
 
          SqlParser parser = new SqlParser(cibetConnection, sql);
          ControlEvent originalEvent = parser.getControlEvent();
-         metadata = createJdbcEventMetadata(parser, originalEvent, getPrimaryKey(parser),
-               new ArrayList<ResourceParameter>(parameters.values()));
+         Set<ResourceParameter> rpSet = new TreeSet<>(new ParameterSequenceComparator());
+         rpSet.addAll(parameters.values());
+         metadata = createJdbcEventMetadata(parser, originalEvent, getPrimaryKey(parser), rpSet);
 
          metadata.getResource().addParameter("StatementType", StatementType.PREPAREDSTATEMENT_EXECUTE,
                ParameterType.JDBC_STATEMENT_TYPE);
@@ -151,8 +154,10 @@ public class CibetPreparedStatement extends CibetStatement implements PreparedSt
 
          SqlParser parser = new SqlParser(cibetConnection, sql);
          ControlEvent originalEvent = parser.getControlEvent();
-         metadata = createJdbcEventMetadata(parser, originalEvent, getPrimaryKey(parser),
-               new ArrayList<ResourceParameter>(parameters.values()));
+
+         Set<ResourceParameter> rpSet = new TreeSet<>(new ParameterSequenceComparator());
+         rpSet.addAll(parameters.values());
+         metadata = createJdbcEventMetadata(parser, originalEvent, getPrimaryKey(parser), rpSet);
 
          metadata.getResource().addParameter("StatementType", StatementType.PREPAREDSTATEMENT_EXECUTEUPDATE,
                ParameterType.JDBC_STATEMENT_TYPE);

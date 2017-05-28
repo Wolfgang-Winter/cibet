@@ -12,7 +12,7 @@
 
 package com.logitags.cibet.sensor.common;
 
-import java.util.List;
+import java.util.Set;
 
 import com.logitags.cibet.resource.ResourceParameter;
 
@@ -35,7 +35,7 @@ public interface Invoker {
     * @throws Exception
     *            in case of error
     */
-   Object execute(String parameter, String targetType, String methodName, List<ResourceParameter> parameters)
+   Object execute(String parameter, String targetType, String methodName, Set<ResourceParameter> parameters)
          throws Exception;
 
 }

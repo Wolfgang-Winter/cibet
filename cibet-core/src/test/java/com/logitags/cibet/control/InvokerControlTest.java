@@ -28,9 +28,8 @@ import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.http.HttpRequestResourceHandler;
-import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 public class InvokerControlTest extends CoreTestBase {
 
@@ -60,8 +59,8 @@ public class InvokerControlTest extends CoreTestBase {
       log.info("start evaluateExclude1()");
       initConfiguration("config_condition_stateChange2_invoker_method.xml");
 
-      Method m = null;// String.class.getDeclaredMethod("getBytes");
-      Resource res = new Resource(MethodResourceHandler.class, "ClassName", m, null);
+      Method m = null;
+      MethodResource res = new MethodResource("ClassName", m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -74,7 +73,7 @@ public class InvokerControlTest extends CoreTestBase {
       initConfiguration("config_stateChange1_invoker.xml");
 
       Method m = String.class.getDeclaredMethod("getBytes");
-      Resource res = new Resource(MethodResourceHandler.class, "ClassName", m, null);
+      MethodResource res = new MethodResource("ClassName", m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
 
@@ -88,7 +87,7 @@ public class InvokerControlTest extends CoreTestBase {
       initConfiguration("config_condition_stateChange1_invoker.xml");
 
       Method m = null;
-      Resource res = new Resource(MethodResourceHandler.class, "ClassName", m, null);
+      MethodResource res = new MethodResource("ClassName", m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
 
@@ -106,7 +105,7 @@ public class InvokerControlTest extends CoreTestBase {
       sp.setInvoker("168.52.3.4");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       res.setInvoker("168.52.3.4");
 
@@ -123,7 +122,7 @@ public class InvokerControlTest extends CoreTestBase {
       sp.setInvoker("168.52*");
       spB.add(sp);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       res.setInvoker("168.52.3.4");
 
@@ -143,7 +142,7 @@ public class InvokerControlTest extends CoreTestBase {
       Setpoint sp2 = new Setpoint("head", sp);
       spB.add(sp2);
 
-      Resource res = new Resource(HttpRequestResourceHandler.class, "targ", "POST", (HttpServletRequest) null, null);
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       res.setInvoker("167.52.3.4");
       List<Setpoint> list = evaluate(md, spB);

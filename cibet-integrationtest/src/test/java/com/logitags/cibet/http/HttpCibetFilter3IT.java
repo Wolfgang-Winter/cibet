@@ -52,8 +52,7 @@ import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.it.AbstractArquillian;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.http.HttpRequestInvoker;
+import com.logitags.cibet.sensor.http.HttpRequestResource;
 
 @RunWith(Arquillian.class)
 public class HttpCibetFilter3IT extends AbstractArquillian {
@@ -118,11 +117,10 @@ public class HttpCibetFilter3IT extends AbstractArquillian {
 
       Assert.assertEquals(1, list.size());
       DcControllable ar = list.get(0);
-      Resource res = ar.getResource();
+      HttpRequestResource res = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals(getBaseURL() + "/othereee", res.getTargetType());
       Assert.assertEquals(method, res.getMethod());
-      Assert.assertEquals(HttpRequestInvoker.class.getName(), res.getInvokerClass());
       return ar;
    }
 
@@ -139,7 +137,7 @@ public class HttpCibetFilter3IT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_ACCEPTED, response.getStatusLine().getStatusCode());
       getMethod.abort();
       DcControllable dc = checkDc("GET");
-      Resource res = dc.getResource();
+      HttpRequestResource res = (HttpRequestResource) dc.getResource();
       // if ("EmbeddedTomcat7".equals(container.getName())) {
       // // Tomcat7 adds an ATTRIBUTE 'org.apache.catalina.ASYNC_SUPPORTED'
       // Assert.assertEquals(8, res.getParameters().size());

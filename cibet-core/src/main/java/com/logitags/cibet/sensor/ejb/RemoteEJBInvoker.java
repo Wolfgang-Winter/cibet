@@ -12,11 +12,10 @@
 package com.logitags.cibet.sensor.ejb;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -25,6 +24,7 @@ import javax.naming.Name;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.common.Invoker;
 import com.logitags.cibet.sensor.common.MethodInvoker;
@@ -49,10 +49,11 @@ public class RemoteEJBInvoker extends MethodInvoker implements Invoker {
    protected RemoteEJBInvoker() {
    }
 
-   public Object execute(String parameter, String targetType, String methodName, List<ResourceParameter> parameters)
+   public Object execute(String parameter, String targetType, String methodName, Set<ResourceParameter> parameters)
          throws Exception {
       try {
-         List<ResourceParameter> methodParams = new ArrayList<ResourceParameter>(parameters);
+         Set<ResourceParameter> methodParams = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
+         methodParams.addAll(parameters);
 
          Hashtable<?, ?> environment = null;
          Object jndiName = null;
@@ -84,8 +85,6 @@ public class RemoteEJBInvoker extends MethodInvoker implements Invoker {
          } else {
             ejb = ctx.lookup((String) jndiName);
          }
-
-         Collections.sort(methodParams, comparator);
 
          Class<?>[] params = getParamTypes(methodParams);
          Method method = ejb.getClass().getMethod(methodName, params);

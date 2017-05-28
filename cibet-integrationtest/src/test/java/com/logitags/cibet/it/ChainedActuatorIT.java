@@ -56,7 +56,8 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.resource.Resource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 /**
  * add -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9. jar to java command
@@ -171,8 +172,12 @@ public class ChainedActuatorIT extends AbstractArquillian {
       Assert.assertTrue(childs.get(2).getResource().indexOf("setTen") > 0);
       Assert.assertTrue(childs.get(3).getResource().indexOf("setStatValue") > 0);
       // Assert.assertTrue(childs.get(4).getResource().indexOf("toString") > 0);
-      Assert.assertEquals("[JpaResource] targetType: com.cibethelper.entities.TComplexEntity ; primaryKeyId: 0",
-            childs.get(4).getResource());
+
+      log.debug(childs.get(4).getResource());
+      Assert.assertTrue(childs.get(4).getResource().startsWith("[JpaResource] "));
+      Assert.assertTrue(childs.get(4).getResource().indexOf("; primaryKeyId: 0") > 0);
+      Assert.assertTrue(childs.get(4).getResource().indexOf("targetType: com.cibethelper.entities.TComplexEntity") > 0);
+
       Assert.assertEquals(ControlEvent.INSERT, childs.get(4).getEvent());
       Assert.assertTrue(childs.get(5).getResource().indexOf("getId") > 0);
       for (EventResult child : childs) {
@@ -184,13 +189,13 @@ public class ChainedActuatorIT extends AbstractArquillian {
       Assert.assertEquals(2, list1.size());
       Archive ar = list1.get(0);
       log.debug(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals(TComplexEntity.class.getName(), res.getTargetType());
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals("setStatValue", res.getMethod());
 
       Archive ar2 = list1.get(1);
-      Resource res2 = ar2.getResource();
+      MethodResource res2 = (MethodResource) ar2.getResource();
       log.debug(ar2);
       Assert.assertEquals(CibetTestEJB.class.getName(), res2.getTargetType());
       Assert.assertEquals(ControlEvent.INVOKE, ar2.getControlEvent());
@@ -239,8 +244,12 @@ public class ChainedActuatorIT extends AbstractArquillian {
       // Assert.assertTrue(childs.get(4).getResource().indexOf("toString") > 0);
 
       log.debug("childs.get(5).getResource(): " + childs.get(4).getResource());
-      Assert.assertEquals("[JpaResource] targetType: com.cibethelper.entities.TComplexEntity ; primaryKeyId: 0",
-            childs.get(4).getResource());
+
+      log.debug(childs.get(4).getResource());
+      Assert.assertTrue(childs.get(4).getResource().startsWith("[JpaResource] "));
+      Assert.assertTrue(childs.get(4).getResource().indexOf("; primaryKeyId: 0") > 0);
+      Assert.assertTrue(childs.get(4).getResource().indexOf("targetType: com.cibethelper.entities.TComplexEntity") > 0);
+
       Assert.assertEquals(ControlEvent.INSERT, childs.get(4).getEvent());
       Assert.assertTrue(childs.get(5).getResource().indexOf("getId") > 0);
       for (EventResult child : childs) {
@@ -264,8 +273,12 @@ public class ChainedActuatorIT extends AbstractArquillian {
       Assert.assertTrue(childs.get(2).getResource().indexOf("setTen") > 0);
       Assert.assertTrue(childs.get(3).getResource().indexOf("setStatValue") > 0);
       // Assert.assertTrue(childs.get(4).getResource().indexOf("toString") > 0);
-      Assert.assertEquals("[JpaResource] targetType: com.cibethelper.entities.TComplexEntity ; primaryKeyId: 0",
-            childs.get(4).getResource());
+
+      log.debug(childs.get(4).getResource());
+      Assert.assertTrue(childs.get(4).getResource().startsWith("[JpaResource] "));
+      Assert.assertTrue(childs.get(4).getResource().indexOf("; primaryKeyId: 0") > 0);
+      Assert.assertTrue(childs.get(4).getResource().indexOf("targetType: com.cibethelper.entities.TComplexEntity") > 0);
+
       Assert.assertEquals(ControlEvent.INSERT, childs.get(4).getEvent());
       Assert.assertTrue(childs.get(5).getResource().indexOf("getId") > 0);
       for (EventResult child : childs) {
@@ -282,20 +295,20 @@ public class ChainedActuatorIT extends AbstractArquillian {
       Assert.assertEquals(3, list1.size());
       Archive ar = list1.get(0);
       log.debug(ar);
-      Resource res = ar.getResource();
+      MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals(TComplexEntity.class.getName(), res.getTargetType());
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals("setStatValue", res.getMethod());
 
       Archive ar2 = list1.get(1);
       log.debug(ar2);
-      Resource res2 = ar2.getResource();
+      JpaResource res2 = (JpaResource) ar2.getResource();
       Assert.assertEquals(TComplexEntity.class.getName(), res2.getTargetType());
       Assert.assertEquals(ControlEvent.INSERT, ar2.getControlEvent());
 
       Archive ar3 = list1.get(2);
       log.debug(ar3);
-      Resource res3 = ar3.getResource();
+      MethodResource res3 = (MethodResource) ar3.getResource();
       Assert.assertEquals(CibetTestEJB.class.getName(), res3.getTargetType());
       Assert.assertEquals(ControlEvent.INVOKE, ar3.getControlEvent());
       Assert.assertEquals("insertTComplexEntity", res3.getMethod());

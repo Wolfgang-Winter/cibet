@@ -26,6 +26,7 @@ package com.logitags.cibet.it;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -61,6 +62,8 @@ import com.logitags.cibet.actuator.scheduler.SchedulerLoader;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
+import com.logitags.cibet.resource.ResourceParameter;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 @RunWith(Arquillian.class)
 public class SchedulerActuatorIT extends DBHelper {
@@ -152,7 +155,7 @@ public class SchedulerActuatorIT extends DBHelper {
       Assert.assertEquals("SCHEDULER-1", co.getActuator());
       Assert.assertEquals(ExecutionStatus.EXECUTED, co.getExecutionStatus());
       Assert.assertNotNull(co.getExecutionDate());
-      Assert.assertNotNull(co.getResource().getPrimaryKeyId());
+      Assert.assertNotNull(((JpaResource) co.getResource()).getPrimaryKeyId());
 
       tlist = q.getResultList();
       Assert.assertEquals(1, tlist.size());
@@ -185,10 +188,13 @@ public class SchedulerActuatorIT extends DBHelper {
       Assert.assertEquals(1, l.size());
       DcControllable co = l.get(0);
       Assert.assertEquals(2, co.getResource().getParameters().size());
-      log.debug("PARAM1-- " + co.getResource().getParameters().get(0).getName());
-      log.debug("PARAM2-- " + co.getResource().getParameters().get(1).getName());
-      Assert.assertTrue("owner".equals(co.getResource().getParameters().get(0).getName())
-            || "owner".equals(co.getResource().getParameters().get(1).getName()));
+      Iterator<ResourceParameter> iter = co.getResource().getParameters().iterator();
+      ResourceParameter p0 = iter.next();
+      ResourceParameter p1 = iter.next();
+
+      log.debug("PARAM1-- " + p0.getName());
+      log.debug("PARAM2-- " + p1.getName());
+      Assert.assertTrue("owner".equals(p0.getName()) || "owner".equals(p1.getName()));
       log.debug(co.getScheduledDate());
       Assert.assertNotNull(co.getScheduledDate());
       log.debug("-------------------- sleep");
@@ -200,15 +206,19 @@ public class SchedulerActuatorIT extends DBHelper {
       Assert.assertEquals(1, l.size());
       co = l.get(0);
       Assert.assertEquals(3, co.getResource().getParameters().size());
-      Assert.assertEquals(SchedulerActuator.ORIGINAL_OBJECT, co.getResource().getParameters().get(2).getName());
+      Iterator<ResourceParameter> iter2 = co.getResource().getParameters().iterator();
+      ResourceParameter p = iter2.next();
+      p = iter2.next();
+      p = iter2.next();
+      Assert.assertEquals(SchedulerActuator.ORIGINAL_OBJECT, p.getName());
 
       Assert.assertEquals("SCHEDULER-2", co.getActuator());
       Assert.assertEquals(ExecutionStatus.EXECUTED, co.getExecutionStatus());
       Assert.assertNotNull(co.getExecutionDate());
-      Assert.assertNotNull(co.getResource().getPrimaryKeyId());
+      Assert.assertNotNull(((JpaResource) co.getResource()).getPrimaryKeyId());
 
       applEman.clear();
-      te = applEman.find(TEntity.class, Long.parseLong(co.getResource().getPrimaryKeyId()));
+      te = applEman.find(TEntity.class, Long.parseLong(((JpaResource) co.getResource()).getPrimaryKeyId()));
       Assert.assertNotNull(te);
       Assert.assertEquals("Newman", te.getOwner());
       Assert.assertEquals(45, te.getCounter());

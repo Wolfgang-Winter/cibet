@@ -38,9 +38,10 @@ import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.diff.Difference;
 import com.logitags.cibet.diff.DifferenceType;
+import com.logitags.cibet.sensor.jdbc.driver.JdbcResource;
 import com.logitags.cibet.sensor.jdbc.driver.SqlParameter;
 import com.logitags.cibet.sensor.jdbc.driver.SqlParser;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 public abstract class PersistenceUtil {
 
@@ -75,15 +76,15 @@ public abstract class PersistenceUtil {
 
          } else {
             // jpa
-            Object cleanObject = getCleanResource(metadata.getResource());
+            JpaResource jpar = (JpaResource) metadata.getResource();
+            Object cleanObject = getCleanResource(jpar);
             if (cleanObject == null) {
                String msg = "failed to load object from database: no object of class "
-                     + metadata.getResource().getObject().getClass().getName() + " with id "
-                     + metadata.getResource().getPrimaryKeyObject() + " found";
+                     + jpar.getObject().getClass().getName() + " with id " + jpar.getPrimaryKeyObject() + " found";
                log.error(msg);
                throw new IllegalStateException(msg);
             }
-            diffs = CibetUtil.compare(metadata.getResource().getObject(), cleanObject);
+            diffs = CibetUtil.compare(jpar.getObject(), cleanObject);
          }
          metadata.getProperties().put(DIRTY_DIFFERENCES_KEY, diffs);
       }
@@ -94,16 +95,16 @@ public abstract class PersistenceUtil {
     * loads the clean entity from the database.
     */
    public static Object getCleanResource(Resource resource) {
-      if (!(resource.getResourceHandler() instanceof JpaResourceHandler)) {
-         // JDBC
+      if (resource instanceof JdbcResource) {
          return null;
       }
 
+      JpaResource jpar = (JpaResource) resource;
       try {
          try {
-            if (resource.getPrimaryKeyObject() == null) {
+            if (jpar.getPrimaryKeyObject() == null) {
                String msg = "failed to load object from database: no value for primary key found in persisted object "
-                     + resource.getObject();
+                     + jpar.getObject();
                log.error(msg);
                throw new IllegalStateException(msg);
             }
@@ -122,14 +123,14 @@ public abstract class PersistenceUtil {
             throw new IllegalStateException(msg);
          }
 
-         Object storedObject = internalEM.find(resource.getObject().getClass(), resource.getPrimaryKeyObject());
+         Object storedObject = internalEM.find(jpar.getObject().getClass(), jpar.getPrimaryKeyObject());
          if (storedObject == null) {
             String msg = "failed to load object from database: no object of class "
-                  + resource.getObject().getClass().getName() + " with id " + resource.getPrimaryKeyObject() + " found";
+                  + jpar.getObject().getClass().getName() + " with id " + jpar.getPrimaryKeyObject() + " found";
             log.error(msg);
             throw new IllegalStateException(msg);
          }
-         CibetUtil.loadLazyEntities(storedObject, resource.getObject().getClass());
+         CibetUtil.loadLazyEntities(storedObject, jpar.getObject().getClass());
 
          return storedObject;
 

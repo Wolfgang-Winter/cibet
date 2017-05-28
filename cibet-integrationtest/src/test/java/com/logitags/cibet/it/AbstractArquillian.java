@@ -157,6 +157,15 @@ public abstract class AbstractArquillian extends CoreTestBase {
       }
       log.info(llist.size() + " LockedObjects removed");
 
+      q = cibetEman.createQuery("SELECT a FROM Resource a");
+      List<com.logitags.cibet.resource.Resource> rlist = q.getResultList();
+      log.info(rlist.size() + " resource loaded");
+      for (com.logitags.cibet.resource.Resource r : rlist) {
+         cibetEman.remove(r);
+         log.info("....");
+      }
+      log.info(rlist.size() + " Resources removed");
+
       q = applEman.createNativeQuery("DELETE FROM CIB_COMPLEXTESTENTITY_AUD");
       int count = q.executeUpdate();
       log.debug(count + " rows deleted in CIB_COMPLEXTESTENTITY_AUD");

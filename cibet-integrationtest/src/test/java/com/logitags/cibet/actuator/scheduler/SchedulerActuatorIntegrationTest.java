@@ -60,6 +60,8 @@ import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.diff.Difference;
 import com.logitags.cibet.resource.Resource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 import com.logitags.cibet.sensor.pojo.PojoInvoker;
 
 /**
@@ -167,7 +169,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       Assert.assertEquals("sa3", co.getActuator());
       Assert.assertEquals(ExecutionStatus.EXECUTED, co.getExecutionStatus());
       Assert.assertNotNull(co.getExecutionDate());
-      Assert.assertNotNull(co.getResource().getPrimaryKeyId());
+      Assert.assertNotNull(((JpaResource) co.getResource()).getPrimaryKeyId());
    }
 
    @Test
@@ -303,7 +305,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       q.setParameter("tenant", TENANT);
       DcControllable co = (DcControllable) q.getSingleResult();
       Assert.assertNotNull(co);
-      Resource res = co.getResource();
+      MethodResource res = (MethodResource) co.getResource();
       Assert.assertEquals("setStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
       log.debug("size: " + res.getParameters().size());
@@ -586,7 +588,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       Assert.assertEquals("sm1", co.getActuator());
       Assert.assertEquals(ExecutionStatus.EXECUTED, co.getExecutionStatus());
       Assert.assertNotNull(co.getExecutionDate());
-      Assert.assertEquals(String.valueOf(te2.getId()), co.getResource().getPrimaryKeyId());
+      Assert.assertEquals(String.valueOf(te2.getId()), ((JpaResource) co.getResource()).getPrimaryKeyId());
    }
 
    @Test
@@ -697,7 +699,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       Assert.assertEquals("sm1", co.getActuator());
       Assert.assertEquals(ExecutionStatus.EXECUTED, co.getExecutionStatus());
       Assert.assertNotNull(co.getExecutionDate());
-      Assert.assertEquals(String.valueOf(te2.getId()), co.getResource().getPrimaryKeyId());
+      Assert.assertEquals(String.valueOf(te2.getId()), ((JpaResource) co.getResource()).getPrimaryKeyId());
    }
 
    @Test

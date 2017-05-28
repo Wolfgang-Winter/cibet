@@ -35,9 +35,7 @@ import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
-import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StateChangeControlTest extends CoreTestBase {
@@ -73,7 +71,7 @@ public class StateChangeControlTest extends CoreTestBase {
    public void evaluateMetadataTargetNull() throws Exception {
       log.info("start evaluateMetadataTargetNull()");
 
-      Resource res = new Resource(JpaResourceHandler.class, null);
+      JpaResource res = new JpaResource((Object) null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> l = new ArrayList<Setpoint>();
       Setpoint s = new Setpoint("x");
@@ -99,7 +97,7 @@ public class StateChangeControlTest extends CoreTestBase {
       Mockito.when(em.find(TEntity.class, 1l)).thenReturn(te);
 
       try {
-         Resource res = new Resource(JpaResourceHandler.class, te);
+         JpaResource res = new JpaResource(te);
          EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
          Control eval = new StateChangeControl();
          eval.evaluate(Configuration.instance().getSetpoints(), md);
@@ -125,7 +123,7 @@ public class StateChangeControlTest extends CoreTestBase {
       te2.setId(1);
       Mockito.when(em2.find(TEntity.class, 1l)).thenReturn(te2);
 
-      Resource res = new Resource(JpaResourceHandler.class, te);
+      JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
 
@@ -147,7 +145,7 @@ public class StateChangeControlTest extends CoreTestBase {
       te2.setId(1);
       Mockito.when(em2.find(TEntity.class, 1l)).thenReturn(te2);
 
-      Resource res = new Resource(JpaResourceHandler.class, te);
+      JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
 
@@ -170,7 +168,7 @@ public class StateChangeControlTest extends CoreTestBase {
       te2.setId(1);
       Mockito.when(em2.find(TEntity.class, 1l)).thenReturn(te2);
 
-      Resource res = new Resource(JpaResourceHandler.class, te);
+      JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
 
@@ -204,7 +202,7 @@ public class StateChangeControlTest extends CoreTestBase {
       cte2.setId(1);
       Mockito.when(em2.find(TComplexEntity.class, 1l)).thenReturn(cte2);
 
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
 
@@ -244,7 +242,7 @@ public class StateChangeControlTest extends CoreTestBase {
       cte2.addLazyList(te4);
       Mockito.when(em.find(TComplexEntity.class, 1l)).thenReturn(cte2);
 
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -273,7 +271,7 @@ public class StateChangeControlTest extends CoreTestBase {
       cte2.setOwner("Igel");
       Mockito.when(em.find(TComplexEntity.class, 2l)).thenReturn(cte2);
 
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
 
@@ -296,7 +294,7 @@ public class StateChangeControlTest extends CoreTestBase {
       te2.setId(2);
       Mockito.when(em.find(TEntity.class, 2l)).thenReturn(te2);
 
-      Resource res = new Resource(JpaResourceHandler.class, te);
+      JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -304,7 +302,7 @@ public class StateChangeControlTest extends CoreTestBase {
 
       te.setCounter(5);
       te.setNameValue("Wein");
-      res = new Resource(JpaResourceHandler.class, te);
+      res = new JpaResource(te);
       md = new EventMetadata(ControlEvent.UPDATE, res);
       list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(0, list.size());
@@ -333,7 +331,7 @@ public class StateChangeControlTest extends CoreTestBase {
       cte2.setOwner("Igel");
       Mockito.when(em.find(TComplexEntity.class, 3l)).thenReturn(cte2);
 
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -372,7 +370,7 @@ public class StateChangeControlTest extends CoreTestBase {
       cte2.addLazyList(te4);
       Mockito.when(em.find(TComplexEntity.class, 1l)).thenReturn(cte2);
 
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -402,7 +400,7 @@ public class StateChangeControlTest extends CoreTestBase {
       cte2.setOwner("Igel");
       Mockito.when(em.find(TComplexEntity.class, 2l)).thenReturn(cte2);
 
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(0, list.size());
@@ -424,7 +422,7 @@ public class StateChangeControlTest extends CoreTestBase {
       spB.add(sp2);
 
       Method m = TEntity.class.getMethod("getCounter");
-      Resource res = new Resource(MethodResourceHandler.class, new TEntity(), m, null);
+      JpaResource res = new JpaResource(new TEntity());
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
 
       Control eval = new StateChangeControl();

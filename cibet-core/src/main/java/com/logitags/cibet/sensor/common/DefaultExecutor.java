@@ -31,6 +31,7 @@ import com.logitags.cibet.core.CEntityManager;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.sensor.ejb.CibetInterceptorCallable;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 public class DefaultExecutor implements SensorExecutor {
 
@@ -39,9 +40,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#proceed(com.logitags.cibet
-    * .core.EventMetadata, javax.interceptor.InvocationContext)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#proceed(com.logitags.cibet .core.EventMetadata,
+    * javax.interceptor.InvocationContext)
     */
    @Override
    public void proceed(EventMetadata metadata, InvocationContext invocationCtx) throws Exception {
@@ -52,10 +52,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#invoke(com.logitags.cibet.
-    * core.EventMetadata, java.lang.Object, java.lang.reflect.Method,
-    * java.lang.Object[])
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#invoke(com.logitags.cibet. core.EventMetadata,
+    * java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
     */
    @Override
    public void invoke(EventMetadata metadata, Object object, Method method, Object[] args)
@@ -69,9 +67,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#proceed(com.logitags.cibet
-    * .core.EventMetadata, org.aspectj.lang.ProceedingJoinPoint)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#proceed(com.logitags.cibet .core.EventMetadata,
+    * org.aspectj.lang.ProceedingJoinPoint)
     */
    @Override
    public void proceed(EventMetadata metadata, ProceedingJoinPoint joinPoint) throws Throwable {
@@ -84,10 +81,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#doChain(com.logitags.cibet
-    * .core.EventMetadata, javax.servlet.ServletRequest,
-    * javax.servlet.http.HttpServletResponse, javax.servlet.FilterChain)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#doChain(com.logitags.cibet .core.EventMetadata,
+    * javax.servlet.ServletRequest, javax.servlet.http.HttpServletResponse, javax.servlet.FilterChain)
     */
    @Override
    public void doChain(EventMetadata metadata, ServletRequest req, HttpServletResponse resp, FilterChain chain)
@@ -101,10 +96,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#executeSql(com.logitags.
-    * cibet.core.EventMetadata, java.sql.Statement, java.lang.String,
-    * java.lang.Object)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#executeSql(com.logitags. cibet.core.EventMetadata,
+    * java.sql.Statement, java.lang.String, java.lang.Object)
     */
    @Override
    public void executeSql(EventMetadata metadata, Statement statement, String sql, Object addValue)
@@ -131,9 +124,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see com.logitags.cibet.sensor.common.SensorExecutor#executeSqlUpdate(com.
-    * logitags.cibet.core.EventMetadata, java.sql.Statement, java.lang.String,
-    * java.lang.Object)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#executeSqlUpdate(com. logitags.cibet.core.EventMetadata,
+    * java.sql.Statement, java.lang.String, java.lang.Object)
     */
    @Override
    public void executeSqlUpdate(EventMetadata metadata, Statement statement, String sql, Object addValue)
@@ -160,9 +152,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#executeSql(com.logitags.
-    * cibet.core.EventMetadata, java.sql.PreparedStatement, java.lang.String)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#executeSql(com.logitags. cibet.core.EventMetadata,
+    * java.sql.PreparedStatement, java.lang.String)
     */
    @Override
    public void executeSql(EventMetadata metadata, PreparedStatement statement, String sql) throws SQLException {
@@ -179,9 +170,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see com.logitags.cibet.sensor.common.SensorExecutor#executeSqlUpdate(com.
-    * logitags.cibet.core.EventMetadata, java.sql.PreparedStatement,
-    * java.lang.String)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#executeSqlUpdate(com. logitags.cibet.core.EventMetadata,
+    * java.sql.PreparedStatement, java.lang.String)
     */
    @Override
    public void executeSqlUpdate(EventMetadata metadata, PreparedStatement statement, String sql) throws SQLException {
@@ -198,10 +188,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#jpaResultListQuery(com.
-    * logitags.cibet.core.EventMetadata, javax.persistence.Query,
-    * com.logitags.cibet.sensor.jpa.CibetEntityManager)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#jpaResultListQuery(com. logitags.cibet.core.EventMetadata,
+    * javax.persistence.Query, com.logitags.cibet.sensor.jpa.CibetEntityManager)
     */
    @Override
    public void jpaResultListQuery(EventMetadata metadata, Query query, CEntityManager entityManager) {
@@ -226,10 +214,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#jpaSingleResultQuery(com.
-    * logitags.cibet.core.EventMetadata, javax.persistence.Query,
-    * com.logitags.cibet.sensor.jpa.CibetEntityManager)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#jpaSingleResultQuery(com. logitags.cibet.core.EventMetadata,
+    * javax.persistence.Query, com.logitags.cibet.sensor.jpa.CibetEntityManager)
     */
    @Override
    public void jpaSingleResultQuery(EventMetadata metadata, Query query, CEntityManager entityManager) {
@@ -249,8 +235,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see com.logitags.cibet.sensor.common.SensorExecutor#jpaUpdateQuery(com.
-    * logitags.cibet.core.EventMetadata, javax.persistence.Query)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#jpaUpdateQuery(com. logitags.cibet.core.EventMetadata,
+    * javax.persistence.Query)
     */
    @Override
    public void jpaUpdateQuery(EventMetadata metadata, Query query) {
@@ -264,10 +250,9 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#jpaFind(com.logitags.cibet
-    * .core.EventMetadata, javax.persistence.EntityManager, java.lang.Class,
-    * java.lang.Object, javax.persistence.LockModeType, java.util.Map, boolean)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#jpaFind(com.logitags.cibet .core.EventMetadata,
+    * javax.persistence.EntityManager, java.lang.Class, java.lang.Object, javax.persistence.LockModeType, java.util.Map,
+    * boolean)
     */
    @Override
    public void jpaFind(EventMetadata metadata, EntityManager entityManager, Class<?> clazz, Object id,
@@ -287,10 +272,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#jpaMerge(com.logitags.
-    * cibet.core.EventMetadata, javax.persistence.EntityManager,
-    * java.lang.Object)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#jpaMerge(com.logitags. cibet.core.EventMetadata,
+    * javax.persistence.EntityManager, java.lang.Object)
     */
    @Override
    public void jpaMerge(EventMetadata metadata, EntityManager entityManager, Object obj) {
@@ -302,10 +285,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#jpaPersist(com.logitags.
-    * cibet.core.EventMetadata, javax.persistence.EntityManager,
-    * java.lang.Object)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#jpaPersist(com.logitags. cibet.core.EventMetadata,
+    * javax.persistence.EntityManager, java.lang.Object)
     */
    @Override
    public void jpaPersist(EventMetadata metadata, EntityManager entityManager, Object obj) {
@@ -313,7 +294,7 @@ public class DefaultExecutor implements SensorExecutor {
          entityManager.persist(obj);
          // refresh the object into the resource:
          entityManager.flush();
-         metadata.getResource().setPrimaryKeyObject(AnnotationUtil.primaryKeyAsObject(obj));
+         ((JpaResource) metadata.getResource()).setPrimaryKeyObject(AnnotationUtil.primaryKeyAsObject(obj));
          metadata.getResource().setObject(obj);
       }
    }
@@ -321,10 +302,8 @@ public class DefaultExecutor implements SensorExecutor {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.common.SensorExecutor#jpaRemove(com.logitags.
-    * cibet.core.EventMetadata, javax.persistence.EntityManager,
-    * java.lang.Object)
+    * @see com.logitags.cibet.sensor.common.SensorExecutor#jpaRemove(com.logitags. cibet.core.EventMetadata,
+    * javax.persistence.EntityManager, java.lang.Object)
     */
    @Override
    public void jpaRemove(EventMetadata metadata, EntityManager entityManager, Object obj) {

@@ -26,8 +26,7 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
-import com.logitags.cibet.resource.Resource;
-import com.logitags.cibet.sensor.jpa.JpaResourceHandler;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 /**
  * -javaagent:${project_loc}\..\cibet-material\technics\aspectjweaver-1.6.9.jar
@@ -50,7 +49,7 @@ public class ControllerImplIntegrationTest extends DBHelper {
       cte.setCompValue(23);
       cte.setOwner("Igel");
 
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       Controller ev = new DefaultController();
       ev.evaluate(md);
@@ -64,7 +63,7 @@ public class ControllerImplIntegrationTest extends DBHelper {
 
       TComplexEntity cte = persistTComplexEntity();
 
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
       Controller ev = new DefaultController();
       ev.evaluate(md);
@@ -85,7 +84,7 @@ public class ControllerImplIntegrationTest extends DBHelper {
       applEman.getTransaction().begin();
 
       Context.sessionScope().setTenant("ten2|x");
-      Resource res = new Resource(JpaResourceHandler.class, cte);
+      JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       Controller ev = new DefaultController();
       ev.evaluate(md);
@@ -105,7 +104,7 @@ public class ControllerImplIntegrationTest extends DBHelper {
       TComplexEntity cte2 = applEman.find(TComplexEntity.class, cte.getId());
       cte2.setOwner("Hase");
 
-      Resource res = new Resource(JpaResourceHandler.class, cte2);
+      JpaResource res = new JpaResource(cte2);
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
       Controller ev = new DefaultController();
       ev.evaluate(md);
@@ -129,7 +128,7 @@ public class ControllerImplIntegrationTest extends DBHelper {
       cte2.setOwner("Hase");
 
       Context.sessionScope().setTenant("ten2|x|cc");
-      Resource res = new Resource(JpaResourceHandler.class, cte2);
+      JpaResource res = new JpaResource(cte2);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       Controller ev = new DefaultController();
       ev.evaluate(md);

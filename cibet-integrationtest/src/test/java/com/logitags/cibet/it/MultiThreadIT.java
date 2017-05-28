@@ -50,7 +50,7 @@ import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
-import com.logitags.cibet.resource.Resource;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 @RunWith(Arquillian.class)
 public class MultiThreadIT extends AbstractArquillian {
@@ -169,7 +169,7 @@ public class MultiThreadIT extends AbstractArquillian {
 
          List<Archive> list = ejb.findArchives();
          Assert.assertEquals(1, list.size());
-         Resource res = list.get(0).getResource();
+         JpaResource res = (JpaResource) list.get(0).getResource();
          Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
          Assert.assertEquals("0", res.getPrimaryKeyId());
 
@@ -188,8 +188,8 @@ public class MultiThreadIT extends AbstractArquillian {
 
          list = ejb.findArchives();
          Assert.assertEquals(2, list.size());
-         res = list.get(0).getResource();
-         Resource res1 = list.get(1).getResource();
+         res = (JpaResource) list.get(0).getResource();
+         JpaResource res1 = (JpaResource) list.get(1).getResource();
 
          Assert.assertEquals(res.getPrimaryKeyId(), res1.getPrimaryKeyId());
          TEntity te = ejb.findTEntity(Long.parseLong(res.getPrimaryKeyId()));

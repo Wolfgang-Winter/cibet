@@ -14,7 +14,7 @@ package com.logitags.cibet.sensor.http;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +46,6 @@ import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.common.Invoker;
 
@@ -64,7 +63,7 @@ public class HttpRequestInvoker implements Invoker {
    }
 
    @Override
-   public Object execute(String parameter, String targetType, String methodName, List<ResourceParameter> parameters)
+   public Object execute(String parameter, String targetType, String methodName, Set<ResourceParameter> parameters)
          throws Exception {
       if (targetType == null) {
          throw new IllegalArgumentException("targetType must not be null");
@@ -189,7 +188,7 @@ public class HttpRequestInvoker implements Invoker {
          Context.internalRequestScope().registerEventResult(new EventResult(remoteResult));
       } else {
          log.debug("create new local EventResult");
-         Resource resource = new Resource(HttpRequestResourceHandler.class, targetType, methodName, null);
+         HttpRequestResource resource = new HttpRequestResource(targetType, methodName, null);
          EventMetadata metadata = new EventMetadata(
                (ControlEvent) Context.internalRequestScope().getProperty(InternalRequestScope.CONTROLEVENT), resource);
          EventResult thisResult = Context.internalRequestScope()
@@ -214,7 +213,7 @@ public class HttpRequestInvoker implements Invoker {
       return response;
    }
 
-   private String createQuerystringURL(String url, List<ResourceParameter> parameters)
+   private String createQuerystringURL(String url, Set<ResourceParameter> parameters)
          throws UnsupportedEncodingException {
       if (parameters == null)
          return url;
@@ -252,7 +251,7 @@ public class HttpRequestInvoker implements Invoker {
       return url;
    }
 
-   private void addBodyEntity(HttpEntityEnclosingRequestBase request, List<ResourceParameter> parameters) {
+   private void addBodyEntity(HttpEntityEnclosingRequestBase request, Set<ResourceParameter> parameters) {
       for (ResourceParameter param : parameters) {
          if (param.getParameterType() != ParameterType.HTTP_BODY)
             continue;

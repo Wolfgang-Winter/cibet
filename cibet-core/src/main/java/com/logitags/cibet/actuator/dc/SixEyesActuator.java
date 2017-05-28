@@ -72,7 +72,8 @@ public class SixEyesActuator extends FourEyesActuator {
 
    @Override
    protected void notifyAssigned(ExecutionStatus status, DcControllable dc) {
-      if (!isSendAssignNotification()) return;
+      if (!isSendAssignNotification())
+         return;
       if (status == ExecutionStatus.FIRST_POSTPONED && dc.getFirstApprovalAddress() != null) {
          NotificationProvider notifProvider = Configuration.instance().getNotificationProvider();
          if (notifProvider != null) {
@@ -251,7 +252,7 @@ public class SixEyesActuator extends FourEyesActuator {
 
          Context.internalRequestScope().setProperty(InternalRequestScope.DCCONTROLLABLE, co);
 
-         Object result = co.getResource().getResourceHandler().apply(co.getControlEvent());
+         Object result = co.getResource().apply(co.getControlEvent());
 
          if (!Context.requestScope().isPlaying()) {
             EventResult eventResult = Context.internalRequestScope().getExecutedEventResult();
@@ -289,9 +290,9 @@ public class SixEyesActuator extends FourEyesActuator {
                   }
                }
 
-               if (isEncrypt()) {
-                  co.encrypt();
-               }
+               // if (isEncrypt()) {
+               // co.encrypt();
+               // }
                Context.internalRequestScope().getEntityManager().merge(co);
             }
          }

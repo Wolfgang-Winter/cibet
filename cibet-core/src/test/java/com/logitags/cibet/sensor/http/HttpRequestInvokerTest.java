@@ -14,6 +14,8 @@ package com.logitags.cibet.sensor.http;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +26,7 @@ import org.junit.Test;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.core.ControlEvent;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
 import com.logitags.cibet.resource.ResourceParameter;
 
@@ -69,7 +72,7 @@ public class HttpRequestInvokerTest {
       String tenant = "test requestInvalidParamTypePoST";
       log.info("start " + tenant);
       HttpRequestInvoker inv = new HttpRequestInvoker();
-      List<ResourceParameter> params = new LinkedList<ResourceParameter>();
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       params.add(createParameter("Ente1", new Integer(6)));
       inv.execute(null, "xx", "POst", params);
    }
@@ -79,7 +82,7 @@ public class HttpRequestInvokerTest {
       String tenant = "test requestInvalidParamTypeGET";
       log.info("start " + tenant);
       HttpRequestInvoker inv = new HttpRequestInvoker();
-      List<ResourceParameter> params = new LinkedList<ResourceParameter>();
+      Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       params.add(createParameter("Ente1", new Integer(6)));
       inv.execute(null, "xx", "GET", params);
    }

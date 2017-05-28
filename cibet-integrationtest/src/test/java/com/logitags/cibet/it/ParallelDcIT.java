@@ -282,11 +282,11 @@ public class ParallelDcIT extends AbstractArquillian {
       ut.begin();
       TEntity result = (TEntity) l.get(1).release(applEman, "blabla");
       ut.commit();
-      Assert.assertEquals(80, result.getCounter());
+      Assert.assertEquals(80 + 1, result.getCounter());
 
       List<TEntity> list = loadTEntities();
       Assert.assertEquals(1, list.size());
-      Assert.assertEquals(80, list.get(0).getCounter());
+      Assert.assertEquals(80 + 1, list.get(0).getCounter());
    }
 
    @Test
@@ -353,13 +353,13 @@ public class ParallelDcIT extends AbstractArquillian {
       ut.begin();
       TEntity result = (TEntity) l.get(0).release(applEman, "blabla");
       ut.commit();
-      Assert.assertEquals(counter, result.getCounter());
+      Assert.assertEquals(counter + 1, result.getCounter());
 
       Thread.sleep(100);
 
       List<TEntity> list = loadTEntities();
       Assert.assertEquals(1, list.size());
-      Assert.assertEquals(counter, list.get(0).getCounter());
+      Assert.assertEquals(counter + 1, list.get(0).getCounter());
    }
 
 }

@@ -56,6 +56,7 @@ import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.EventResult;
+import com.logitags.cibet.resource.Resource;
 
 public class DBHelper extends CoreTestBase {
 
@@ -102,7 +103,11 @@ public class DBHelper extends CoreTestBase {
 
       if (applEman.getTransaction().isActive()) {
          applEman.getTransaction().rollback();
+         // applEman.getTransaction().commit();
       }
+
+      // if (1 == 1)
+      // return;
 
       applEman.clear();
       applEman.getTransaction().begin();
@@ -147,7 +152,15 @@ public class DBHelper extends CoreTestBase {
          Context.internalRequestScope().getEntityManager().remove(itEV.next());
       }
 
+      Query q7 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM Resource a");
+      Iterator<Resource> itR = q7.getResultList().iterator();
+      while (itR.hasNext()) {
+         Context.internalRequestScope().getEntityManager().remove(itR.next());
+      }
+
       applEman.getTransaction().commit();
+      // applEman.getTransaction().rollback();
+
       Context.end();
    }
 

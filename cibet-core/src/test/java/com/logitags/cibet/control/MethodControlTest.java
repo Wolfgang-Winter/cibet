@@ -13,10 +13,11 @@ package com.logitags.cibet.control;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -28,10 +29,10 @@ import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
+import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
-import com.logitags.cibet.sensor.pojo.MethodResourceHandler;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 public class MethodControlTest extends CoreTestBase {
 
@@ -61,7 +62,7 @@ public class MethodControlTest extends CoreTestBase {
       log.info("start evaluateNoMethod()");
       initConfiguration("config_condition_stateChange2_invoker_method.xml");
 
-      Resource res = new Resource(MethodResourceHandler.class, "classname", (Method) null, null);
+      MethodResource res = new MethodResource("classname", (Method) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(4, list.size());
@@ -73,7 +74,7 @@ public class MethodControlTest extends CoreTestBase {
       initConfiguration("config_condition_stateChange2_invoker_method.xml");
 
       Method m = String.class.getDeclaredMethod("getBytes");
-      Resource res = new Resource(MethodResourceHandler.class, "classname", m, null);
+      MethodResource res = new MethodResource("classname", m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -86,9 +87,9 @@ public class MethodControlTest extends CoreTestBase {
       initConfiguration("config_condition_stateChange2_invoker_method.xml");
 
       Method m = String.class.getDeclaredMethod("getBytes");
-      List<ResourceParameter> paramList = new LinkedList<ResourceParameter>();
+      Set<ResourceParameter> paramList = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       paramList.add(new ResourceParameter("PARAM0", int.class.getName(), 4, ParameterType.METHOD_PARAMETER, 1));
-      Resource res = new Resource(MethodResourceHandler.class, "classname", m, paramList);
+      MethodResource res = new MethodResource("classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(2, list.size());
@@ -102,7 +103,7 @@ public class MethodControlTest extends CoreTestBase {
       initConfiguration("config_stateChange2_method.xml");
 
       Method m = String.class.getDeclaredMethod("getBytes");
-      Resource res = new Resource(MethodResourceHandler.class, "Classname", m, null);
+      MethodResource res = new MethodResource("Classname", m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -115,11 +116,11 @@ public class MethodControlTest extends CoreTestBase {
       initConfiguration("config_stateChange2_method.xml");
 
       Method m = String.class.getDeclaredMethod("getBytes");
-      List<ResourceParameter> paramList = new LinkedList<ResourceParameter>();
+      Set<ResourceParameter> paramList = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       paramList.add(new ResourceParameter("PARAM0", int.class.getName(), 4, ParameterType.METHOD_PARAMETER, 1));
       paramList.add(new ResourceParameter("PARAM1", String.class.getName(), "Hase", ParameterType.METHOD_PARAMETER, 2));
 
-      Resource res = new Resource(MethodResourceHandler.class, "Classname", m, paramList);
+      MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -131,11 +132,11 @@ public class MethodControlTest extends CoreTestBase {
       initConfiguration("config_stateChange2_method.xml");
 
       Method m = String.class.getDeclaredMethod("getBytes");
-      List<ResourceParameter> paramList = new LinkedList<ResourceParameter>();
+      Set<ResourceParameter> paramList = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       paramList.add(new ResourceParameter("PARAM0", int.class.getName(), 4, ParameterType.METHOD_PARAMETER, 1));
       paramList.add(new ResourceParameter("PARAM1", byte[].class.getName(), new byte[] { 'x' },
             ParameterType.METHOD_PARAMETER, 2));
-      Resource res = new Resource(MethodResourceHandler.class, "Classname", m, paramList);
+      MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(0, list.size());
@@ -147,12 +148,12 @@ public class MethodControlTest extends CoreTestBase {
       initConfiguration("config_stateChange2_method.xml");
 
       Method m = String.class.getDeclaredMethod("getBytes");
-      List<ResourceParameter> paramList = new LinkedList<ResourceParameter>();
+      Set<ResourceParameter> paramList = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       paramList.add(new ResourceParameter("PARAM0", int.class.getName(), 4, ParameterType.METHOD_PARAMETER, 1));
       paramList.add(new ResourceParameter("PARAM1", String.class.getName(), "Hase", ParameterType.METHOD_PARAMETER, 2));
       paramList.add(
             new ResourceParameter("PARAM2", TEntity.class.getName(), new TEntity(), ParameterType.METHOD_PARAMETER, 3));
-      Resource res = new Resource(MethodResourceHandler.class, "Classname", m, paramList);
+      MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -165,13 +166,13 @@ public class MethodControlTest extends CoreTestBase {
       initConfiguration("config_stateChange2_method.xml");
 
       Method m = String.class.getDeclaredMethod("getBytes");
-      List<ResourceParameter> paramList = new LinkedList<ResourceParameter>();
+      Set<ResourceParameter> paramList = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       paramList.add(new ResourceParameter("PARAM0", Integer.class.getName(), new Integer(5),
             ParameterType.METHOD_PARAMETER, 1));
       paramList.add(new ResourceParameter("PARAM1", String.class.getName(), "Hase", ParameterType.METHOD_PARAMETER, 2));
       paramList.add(
             new ResourceParameter("PARAM2", TEntity.class.getName(), new TEntity(), ParameterType.METHOD_PARAMETER, 3));
-      Resource res = new Resource(MethodResourceHandler.class, "Classname", m, paramList);
+      MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -183,12 +184,12 @@ public class MethodControlTest extends CoreTestBase {
       initConfiguration("config_stateChange2_method.xml");
 
       Method m = String.class.getDeclaredMethod("getBytes");
-      List<ResourceParameter> paramList = new LinkedList<ResourceParameter>();
+      Set<ResourceParameter> paramList = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       paramList.add(
             new ResourceParameter("PARAM0", int[].class.getName(), new int[] { 5 }, ParameterType.METHOD_PARAMETER, 1));
       paramList.add(new ResourceParameter("PARAM1", String[][].class.getName(), new String[][] {},
             ParameterType.METHOD_PARAMETER, 2));
-      Resource res = new Resource(MethodResourceHandler.class, "Classname", m, paramList);
+      MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(1, list.size());
@@ -200,12 +201,12 @@ public class MethodControlTest extends CoreTestBase {
       initConfiguration("config_stateChange2_method.xml");
 
       Method m = String.class.getDeclaredMethod("getBytes");
-      List<ResourceParameter> paramList = new LinkedList<ResourceParameter>();
+      Set<ResourceParameter> paramList = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       paramList.add(new ResourceParameter("PARAM0", Integer[].class.getName(), new Integer[] {},
             ParameterType.METHOD_PARAMETER, 1));
       paramList.add(new ResourceParameter("PARAM1", String[][].class.getName(), new String[][] {},
             ParameterType.METHOD_PARAMETER, 2));
-      Resource res = new Resource(MethodResourceHandler.class, "Classname", m, paramList);
+      MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
       Assert.assertEquals(0, list.size());

@@ -68,6 +68,7 @@ import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.it.AbstractArquillian;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 import com.logitags.cibet.sensor.pojo.SpringBeanInvoker;
 
 @RunWith(Arquillian.class)
@@ -262,7 +263,7 @@ public class HttpGeneralIT extends AbstractArquillian {
       list = q.getResultList();
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.POSTPONED, list.get(0).getExecutionStatus());
-      Assert.assertEquals("0", ((Archive) list.get(0)).getResource().getPrimaryKeyId());
+      Assert.assertEquals("0", ((JpaResource) ((Archive) list.get(0)).getResource()).getPrimaryKeyId());
 
       tentList = (List<TEntity>) dbHelper.select("SELECT e FROM TEntity e");
       Assert.assertEquals(0, tentList.size());
@@ -342,9 +343,9 @@ public class HttpGeneralIT extends AbstractArquillian {
       Assert.assertEquals("Fluppi", list.get(2).getCreateUser());
       Assert.assertEquals(list.get(0).getCaseId(), list.get(1).getCaseId());
       Assert.assertEquals(list.get(0).getCaseId(), list.get(2).getCaseId());
-      Assert.assertEquals(id, ((Archive) list.get(0)).getResource().getPrimaryKeyId());
-      Assert.assertEquals(id, ((Archive) list.get(1)).getResource().getPrimaryKeyId());
-      Assert.assertEquals(id, ((Archive) list.get(2)).getResource().getPrimaryKeyId());
+      Assert.assertEquals(id, ((JpaResource) ((Archive) list.get(0)).getResource()).getPrimaryKeyId());
+      Assert.assertEquals(id, ((JpaResource) ((Archive) list.get(1)).getResource()).getPrimaryKeyId());
+      Assert.assertEquals(id, ((JpaResource) ((Archive) list.get(2)).getResource()).getPrimaryKeyId());
    }
 
    @Test
@@ -478,6 +479,8 @@ public class HttpGeneralIT extends AbstractArquillian {
       Query q = localcibet.createQuery("SELECT e FROM EventResult e WHERE e.parentResult IS NULL");
       List<EventResult> erlist = q.getResultList();
       Assert.assertEquals(1, erlist.size());
+      log.info("xxxx");
+
       log.debug(erlist.get(0));
       Assert.assertTrue(erlist.get(0).toString().indexOf(SpringBeanInvoker.class.getName()) > 0);
    }
