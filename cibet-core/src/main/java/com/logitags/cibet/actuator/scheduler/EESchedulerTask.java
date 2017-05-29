@@ -45,7 +45,7 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.CibetException;
@@ -97,12 +97,12 @@ public class EESchedulerTask extends SESchedulerTask implements SchedulerTask {
          Context.sessionScope().setUser("SchedulerTask-" + config.getSchedulerName());
 
          EntityManager em = Context.internalRequestScope().getEntityManager();
-         TypedQuery<DcControllable> q = em.createNamedQuery(DcControllable.SEL_SCHED_BY_DATE, DcControllable.class);
+         TypedQuery<Controllable> q = em.createNamedQuery(Controllable.SEL_SCHED_BY_DATE, Controllable.class);
          q.setParameter("actuator", config.getSchedulerName());
          q.setParameter("currentDate", new Date(), TemporalType.TIMESTAMP);
-         List<DcControllable> list = q.getResultList();
+         List<Controllable> list = q.getResultList();
          log.info(list.size() + " due scheduled business cases found");
-         for (DcControllable co : list) {
+         for (Controllable co : list) {
             co.decrypt();
             process(co);
          }

@@ -36,8 +36,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.InvalidUserException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.actuator.dc.UnapprovedResourceException;
@@ -200,7 +200,7 @@ public class SchedulerActuator extends FourEyesActuator {
          return;
       }
 
-      DcControllable dcObj = null;
+      Controllable dcObj = null;
       switch (ctx.getControlEvent()) {
 
       case UPDATE:
@@ -228,10 +228,9 @@ public class SchedulerActuator extends FourEyesActuator {
          break;
 
       case RELEASE_UPDATE:
-         DcControllable dc = (DcControllable) Context.internalRequestScope()
-               .getProperty(InternalRequestScope.DCCONTROLLABLE);
+         Controllable dc = (Controllable) Context.internalRequestScope().getProperty(InternalRequestScope.CONTROLLABLE);
          if (dc == null) {
-            String err = "Internal error: no DcControllable object found in internal context";
+            String err = "Internal error: no Controllable object found in internal context";
             log.error(err);
             throw new RuntimeException(err);
          }
@@ -247,9 +246,9 @@ public class SchedulerActuator extends FourEyesActuator {
       case RELEASE_SELECT:
       case RELEASE_DELETE:
       case RELEASE_INVOKE:
-         dc = (DcControllable) Context.internalRequestScope().getProperty(InternalRequestScope.DCCONTROLLABLE);
+         dc = (Controllable) Context.internalRequestScope().getProperty(InternalRequestScope.CONTROLLABLE);
          if (dc == null) {
-            String err = "Internal error: no DcControllable object found in internal context";
+            String err = "Internal error: no Controllable object found in internal context";
             log.error(err);
             throw new RuntimeException(err);
          }
@@ -276,7 +275,7 @@ public class SchedulerActuator extends FourEyesActuator {
 
             Context.internalRequestScope().getEntityManager().persist(dcObj.getResource());
          }
-         log.debug("persist scheduled DcControllable");
+         log.debug("persist scheduled Controllable");
          Context.internalRequestScope().getEntityManager().persist(dcObj);
 
          if (isThrowPostponedException()) {
@@ -292,24 +291,24 @@ public class SchedulerActuator extends FourEyesActuator {
       }
    }
 
-   protected void setActuatorSpecificProperties(DcControllable dc) {
+   protected void setActuatorSpecificProperties(Controllable dc) {
       dc.setExecutionStatus(ExecutionStatus.SCHEDULED);
    }
 
    protected void checkScheduledResource(EventMetadata ctx) {
-      Map<DcControllable, List<Difference>> scheduledResources = new HashMap<DcControllable, List<Difference>>();
+      Map<Controllable, List<Difference>> scheduledResources = new HashMap<Controllable, List<Difference>>();
 
       Resource resource = ctx.getResource();
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_UNIQUEID);
+      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_UNIQUEID);
       q.setParameter("uniqueId", resource.getUniqueId());
-      List<DcControllable> list = (List<DcControllable>) q.getResultList();
-      for (DcControllable dc : list) {
+      List<Controllable> list = (List<Controllable>) q.getResultList();
+      for (Controllable dc : list) {
          switch (dc.getExecutionStatus()) {
          case FIRST_POSTPONED:
          case FIRST_RELEASED:
          case PASSEDBACK:
          case POSTPONED:
-            String msg = "An unreleased business case with ID " + dc.getDcControllableId() + " and status "
+            String msg = "An unreleased business case with ID " + dc.getControllableId() + " and status "
                   + dc.getExecutionStatus() + " exists already for this resource of type " + resource.getTargetType()
                   + ". This business case must be released or rejected first.";
             log.info(msg);
@@ -320,7 +319,7 @@ public class SchedulerActuator extends FourEyesActuator {
                if (dc.getControlEvent() == ControlEvent.UPDATE) {
                   ResourceParameter rp = dc.getResource().getParameter(SchedulerActuator.CLEANOBJECT);
                   if (rp == null) {
-                     String err = "Failed to find base entity of resource " + dc.getResource() + " in DcControllable "
+                     String err = "Failed to find base entity of resource " + dc.getResource() + " in Controllable "
                            + dc;
                      log.error(err);
                      throw new RuntimeException(err);
@@ -340,7 +339,7 @@ public class SchedulerActuator extends FourEyesActuator {
    }
 
    @Override
-   protected void doRelease(DcControllable co) {
+   protected void doRelease(Controllable co) {
       EventResult eventResult = Context.internalRequestScope().getExecutedEventResult();
       if (eventResult == null) {
          eventResult = new EventResult();
@@ -478,25 +477,25 @@ public class SchedulerActuator extends FourEyesActuator {
       schedulerTask.startTimer(config, timerStart, timerPeriod);
    }
 
-   protected void checkRejectExecutionStatus(DcControllable co) throws ResourceApplyException {
+   protected void checkRejectExecutionStatus(Controllable co) throws ResourceApplyException {
       if (co.getExecutionStatus() != ExecutionStatus.SCHEDULED) {
-         String err = "Failed to reject DcControllable with ID " + co.getDcControllableId()
+         String err = "Failed to reject Controllable with ID " + co.getControllableId()
                + ": should be in status SCHEDULED but is in status " + co.getExecutionStatus();
          log.warn(err);
          throw new ResourceApplyException(err);
       }
    }
 
-   protected void checkExecutionStatus(String action, DcControllable co) throws ResourceApplyException {
+   protected void checkExecutionStatus(String action, Controllable co) throws ResourceApplyException {
       if (co.getExecutionStatus() != ExecutionStatus.SCHEDULED) {
-         String err = "Failed to " + action + " DcControllable with ID " + co.getDcControllableId()
+         String err = "Failed to " + action + " Controllable with ID " + co.getControllableId()
                + ": should be in status SCHEDULED but is in status " + co.getExecutionStatus();
          log.warn(err);
          throw new ResourceApplyException(err);
       }
    }
 
-   protected void checkApprovalUserId(DcControllable co) throws InvalidUserException {
+   protected void checkApprovalUserId(Controllable co) throws InvalidUserException {
       String approvalUserId = Context.internalSessionScope().getUser();
       if (approvalUserId == null) {
          String msg = "Release without user id not possible. No user set in Context!";
@@ -506,7 +505,7 @@ public class SchedulerActuator extends FourEyesActuator {
 
       if (co.getApprovalUser() != null && !co.getApprovalUser().equals(approvalUserId)) {
          String msg = "release failed: Only user " + co.getApprovalUser()
-               + " is allowed to release DcControllable with ID " + co.getDcControllableId();
+               + " is allowed to release Controllable with ID " + co.getControllableId();
          log.error(msg);
          throw new InvalidUserException(msg);
       }

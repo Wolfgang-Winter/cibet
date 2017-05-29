@@ -45,7 +45,7 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.lock.LockActuator;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
@@ -134,7 +134,7 @@ public class HttpLockerIT extends AbstractArquillian {
    public void lockUrlLockedSameUser() throws Exception {
       log.info("start lockUrlLockedSameUser()");
 
-      DcControllable lock = remoteEjb.lock(URL_TS);
+      Controllable lock = remoteEjb.lock(URL_TS);
       Assert.assertNotNull(lock);
       log.debug(lock);
 
@@ -153,7 +153,7 @@ public class HttpLockerIT extends AbstractArquillian {
    public void lockUrlLockedOtherUser() throws Exception {
       log.info("start lockUrlLockedOtherUser()");
 
-      DcControllable lock = remoteEjb.lock(URL_TS);
+      Controllable lock = remoteEjb.lock(URL_TS);
       Assert.assertNotNull(lock);
 
       HttpGet method = new HttpGet(getBaseURL() + "/test/setuser?USER=Willi&TENANT=" + TENANT);
@@ -170,7 +170,7 @@ public class HttpLockerIT extends AbstractArquillian {
    public void lockSubUrlLockedOtherUser() throws Exception {
       log.info("start lockSubUrlLockedOtherUser()");
 
-      DcControllable lock = remoteEjb.lock(URL_TS);
+      Controllable lock = remoteEjb.lock(URL_TS);
       Assert.assertNotNull(lock);
 
       HttpGet method = new HttpGet(getBaseURL() + "/test/setuser?USER=Willi&TENANT=" + TENANT);

@@ -24,7 +24,7 @@
  */
 package com.logitags.cibet.actuator.scheduler;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 
 /**
  * This interface is called back by the SchedulerTask implementation before and after executing the scheduled task
@@ -40,10 +40,10 @@ public interface SchedulerTaskInterceptor {
     * @param dc
     *           Object that contains the business case data (resource) and other metadata
     * @throws RejectException
-    *            thrown to indicate that the scheduled business case shall be not executed. The DcControllable object
-    *            will be set to status REJECTED
+    *            thrown to indicate that the scheduled business case shall be not executed. The Controllable object will
+    *            be set to status REJECTED
     */
-   void beforeTask(DcControllable dc) throws RejectException;
+   void beforeTask(Controllable dc) throws RejectException;
 
    /**
     * callback function executed after the scheduled business case is executed by the batch process.
@@ -51,6 +51,6 @@ public interface SchedulerTaskInterceptor {
     * @param dc
     *           Object that contains the business case data (resource) and other metadata
     */
-   void afterTask(DcControllable dc);
+   void afterTask(Controllable dc);
 
 }

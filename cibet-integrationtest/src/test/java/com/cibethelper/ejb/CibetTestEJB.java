@@ -36,8 +36,8 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.PostponedEjbException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.actuator.lock.AlreadyLockedException;
@@ -209,12 +209,12 @@ public class CibetTestEJB {
       return entity1.getId();
    }
 
-   public List<DcControllable> findUnreleased() {
+   public List<Controllable> findUnreleased() {
       EntityManager em = Context.requestScope().getEntityManager();
       em.clear();
 
-      List<DcControllable> l = DcLoader.findUnreleased();
-      for (DcControllable co : l) {
+      List<Controllable> l = DcLoader.findUnreleased();
+      for (Controllable co : l) {
          co.getResource().getParameters().size();
          co.getResource().getObject();
       }
@@ -222,40 +222,40 @@ public class CibetTestEJB {
       return l;
    }
 
-   public List<DcControllable> findScheduled() {
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+   public List<Controllable> findScheduled() {
+      List<Controllable> l = SchedulerLoader.findScheduled();
       return l;
    }
 
-   public List<DcControllable> findUnreleased(Class<?> cl) {
-      List<DcControllable> l = DcLoader.findUnreleased(cl.getName());
+   public List<Controllable> findUnreleased(Class<?> cl) {
+      List<Controllable> l = DcLoader.findUnreleased(cl.getName());
       return l;
    }
 
    public Object release() throws ResourceApplyException {
       log.debug("applEman= " + applEman + ", delegate= " + Context.requestScope().getEntityManager());
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       if (l.size() != 1) {
          throw new RuntimeException("list size is not 1: " + l.size());
       }
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       return co.release(applEman, null);
    }
 
-   public void release(DcControllable co) throws ResourceApplyException {
+   public void release(Controllable co) throws ResourceApplyException {
       co.release(applEman, null);
    }
 
-   public Object release(DcControllable co, String remark) throws ResourceApplyException {
+   public Object release(Controllable co, String remark) throws ResourceApplyException {
       Object obj = co.release(remark);
       return obj;
    }
 
-   public void reject(DcControllable co, String remark) throws ResourceApplyException {
+   public void reject(Controllable co, String remark) throws ResourceApplyException {
       co.reject(remark);
    }
 
-   public Object playRelease(DcControllable co, String remark) throws ResourceApplyException {
+   public Object playRelease(Controllable co, String remark) throws ResourceApplyException {
       Context.requestScope().startPlay();
       Object res = co.release(remark);
       Context.requestScope().stopPlay();
@@ -319,8 +319,8 @@ public class CibetTestEJB {
       EntityManager em = Context.requestScope().getEntityManager();
       em.clear();
 
-      if ("SELECT a FROM DcControllable a".equals(query)) {
-         Query q = em.createNamedQuery(DcControllable.SEL_BY_TENANT);
+      if ("SELECT a FROM Controllable a".equals(query)) {
+         Query q = em.createNamedQuery(Controllable.SEL_BY_TENANT);
          q.setParameter("tenant", Context.sessionScope().getTenant());
          return q.getSingleResult();
       } else {
@@ -368,19 +368,19 @@ public class CibetTestEJB {
       return q.getResultList();
    }
 
-   public List<DcControllable> queryDcControllable() {
+   public List<Controllable> queryControllable() {
       EntityManager em = Context.requestScope().getEntityManager();
       em.clear();
-      Query q = em.createNamedQuery(DcControllable.SEL_BY_TENANT);
+      Query q = em.createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", Context.sessionScope().getTenant());
       return q.getResultList();
    }
 
-   public DcControllable lockMethodFromClass() throws AlreadyLockedException, SecurityException, NoSuchMethodException {
+   public Controllable lockMethodFromClass() throws AlreadyLockedException, SecurityException, NoSuchMethodException {
       Method m = CibetTestEJB.class.getMethod("testInvoke", String.class, int.class, int.class, byte[].class,
             TEntity.class, Long.class);
       log.debug("method='" + m.toString() + "'");
-      DcControllable lo = Locker.lock(CibetTestEJB.class, "testInvoke", ControlEvent.INVOKE, "testremark");
+      Controllable lo = Locker.lock(CibetTestEJB.class, "testInvoke", ControlEvent.INVOKE, "testremark");
       return lo;
    }
 

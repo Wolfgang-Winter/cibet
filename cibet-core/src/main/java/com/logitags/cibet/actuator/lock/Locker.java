@@ -8,9 +8,9 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.DeniedException;
 import com.logitags.cibet.actuator.common.InvalidUserException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.AnnotationUtil;
@@ -48,12 +48,12 @@ public abstract class Locker {
     * @throws AlreadyLockedException
     *            if object is already locked.
     */
-   public static synchronized DcControllable lock(Object entity, ControlEvent event, String remark)
+   public static synchronized Controllable lock(Object entity, ControlEvent event, String remark)
          throws AlreadyLockedException {
       isLocked(entity, event);
       JpaResource resource = new JpaResource(entity);
       Context.internalRequestScope().getEntityManager().persist(resource);
-      DcControllable lo = createLockedObject(resource, event, remark);
+      Controllable lo = createLockedObject(resource, event, remark);
       Context.internalRequestScope().getEntityManager().persist(lo);
       return lo;
    }
@@ -70,12 +70,12 @@ public abstract class Locker {
     * @throws AlreadyLockedException
     *            if object is already locked.
     */
-   public static synchronized DcControllable lock(Class<?> cl, ControlEvent event, String remark)
+   public static synchronized Controllable lock(Class<?> cl, ControlEvent event, String remark)
          throws AlreadyLockedException {
       isLocked(cl.getName(), event);
       JpaResource resource = new JpaResource(cl, JpaResource.CLASSLOCK);
       Context.internalRequestScope().getEntityManager().persist(resource);
-      DcControllable lo = createLockedObject(resource, event, remark);
+      Controllable lo = createLockedObject(resource, event, remark);
       Context.internalRequestScope().getEntityManager().persist(lo);
       return lo;
    }
@@ -92,7 +92,7 @@ public abstract class Locker {
     * @return
     * @throws AlreadyLockedException
     */
-   public static synchronized DcControllable lock(Class<?> cl, String method, ControlEvent event, String remark)
+   public static synchronized Controllable lock(Class<?> cl, String method, ControlEvent event, String remark)
          throws AlreadyLockedException {
       if (cl.isInterface()) {
          String msg = "The Class argument must not be an interface. " + "Use the Class of the implementing class!";
@@ -105,7 +105,7 @@ public abstract class Locker {
       resource.setMethod(method);
       Context.internalRequestScope().getEntityManager().persist(resource);
 
-      DcControllable lo = createLockedObject(resource, event, remark);
+      Controllable lo = createLockedObject(resource, event, remark);
       Context.internalRequestScope().getEntityManager().persist(lo);
       return lo;
    }
@@ -123,7 +123,7 @@ public abstract class Locker {
     * @throws AlreadyLockedException
     *            if object is already locked.
     */
-   public static synchronized DcControllable lock(String url, HttpMethod method, ControlEvent event, String remark)
+   public static synchronized Controllable lock(String url, HttpMethod method, ControlEvent event, String remark)
          throws AlreadyLockedException {
       isLocked(url, event);
 
@@ -132,7 +132,7 @@ public abstract class Locker {
       resource.setMethod(method == null ? null : method.name());
       Context.internalRequestScope().getEntityManager().persist(resource);
 
-      DcControllable lo = createLockedObject(resource, event, remark);
+      Controllable lo = createLockedObject(resource, event, remark);
       Context.internalRequestScope().getEntityManager().persist(lo);
       return lo;
    }
@@ -151,7 +151,7 @@ public abstract class Locker {
     * @throws AlreadyLockedException
     *            if object is already locked.
     */
-   public static synchronized DcControllable lock(String tableName, String id, ControlEvent event, String remark)
+   public static synchronized Controllable lock(String tableName, String id, ControlEvent event, String remark)
          throws AlreadyLockedException {
       isLocked(tableName, id, event);
       JdbcResource resource = new JdbcResource();
@@ -159,7 +159,7 @@ public abstract class Locker {
       resource.setPrimaryKeyId(id == null ? JpaResource.CLASSLOCK : id);
       Context.internalRequestScope().getEntityManager().persist(resource);
 
-      DcControllable lo = createLockedObject(resource, event, remark);
+      Controllable lo = createLockedObject(resource, event, remark);
       Context.internalRequestScope().getEntityManager().persist(lo);
       return lo;
    }
@@ -172,9 +172,9 @@ public abstract class Locker {
     * @param remark
     *           optional unlock remark
     */
-   public static synchronized void unlock(DcControllable lo, String remark) {
+   public static synchronized void unlock(Controllable lo, String remark) {
       if (lo == null) {
-         throw new IllegalArgumentException("DcControllable must not be null");
+         throw new IllegalArgumentException("Controllable must not be null");
       }
       lo.setExecutionStatus(ExecutionStatus.UNLOCKED);
       lo.setApprovalDate(new Date());
@@ -194,9 +194,9 @@ public abstract class Locker {
     * @throws DeniedException
     *            when the actual user is not allowed to unlock.
     */
-   public static synchronized void unlockStrict(DcControllable lo, String remark) {
+   public static synchronized void unlockStrict(Controllable lo, String remark) {
       if (lo == null) {
-         throw new IllegalArgumentException("DcControllable must not be null");
+         throw new IllegalArgumentException("Controllable must not be null");
       }
       if (!lo.getCreateUser().equals(Context.internalSessionScope().getUser())) {
          String msg = Context.internalSessionScope().getUser() + " is not allowed to unlock " + lo + " locked by "
@@ -212,9 +212,9 @@ public abstract class Locker {
     * 
     * @return
     */
-   public static List<DcControllable> loadLockedObjects() {
-      TypedQuery<DcControllable> query = Context.internalRequestScope().getEntityManager()
-            .createNamedQuery(DcControllable.SEL_LOCKED_ALL, DcControllable.class);
+   public static List<Controllable> loadLockedObjects() {
+      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+            .createNamedQuery(Controllable.SEL_LOCKED_ALL, Controllable.class);
       query.setParameter("tenant", Context.internalSessionScope().getTenant());
       return query.getResultList();
    }
@@ -225,9 +225,9 @@ public abstract class Locker {
     * @param targetType
     * @return
     */
-   public static List<DcControllable> loadLockedObjects(String targetType) {
-      TypedQuery<DcControllable> query = Context.internalRequestScope().getEntityManager()
-            .createNamedQuery(DcControllable.SEL_LOCKED_BY_TARGETTYPE, DcControllable.class);
+   public static List<Controllable> loadLockedObjects(String targetType) {
+      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+            .createNamedQuery(Controllable.SEL_LOCKED_BY_TARGETTYPE, Controllable.class);
       query.setParameter("tenant", Context.internalSessionScope().getTenant());
       query.setParameter("targettype", targetType);
       return query.getResultList();
@@ -239,9 +239,9 @@ public abstract class Locker {
     * @param user
     * @return
     */
-   public static List<DcControllable> loadLockedObjectsByUser(String user) {
-      TypedQuery<DcControllable> query = Context.internalRequestScope().getEntityManager()
-            .createNamedQuery(DcControllable.SEL_LOCKED_BY_USER, DcControllable.class);
+   public static List<Controllable> loadLockedObjectsByUser(String user) {
+      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+            .createNamedQuery(Controllable.SEL_LOCKED_BY_USER, Controllable.class);
       query.setParameter("tenant", Context.internalSessionScope().getTenant());
       query.setParameter("user", user);
       return query.getResultList();
@@ -254,9 +254,9 @@ public abstract class Locker {
     * @param method
     * @return
     */
-   public static List<DcControllable> loadLockedObjects(Class<?> cl, String method) {
-      TypedQuery<DcControllable> query = Context.internalRequestScope().getEntityManager()
-            .createNamedQuery(DcControllable.SEL_LOCKED_BY_TARGETTYPE_METHOD, DcControllable.class);
+   public static List<Controllable> loadLockedObjects(Class<?> cl, String method) {
+      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+            .createNamedQuery(Controllable.SEL_LOCKED_BY_TARGETTYPE_METHOD, Controllable.class);
       query.setParameter("tenant", Context.internalSessionScope().getTenant());
       query.setParameter("targettype", cl.getName());
       query.setParameter("method", method);
@@ -277,11 +277,11 @@ public abstract class Locker {
          targetType = (String) obj;
       }
 
-      List<DcControllable> list = loadLockedObjects(targetType);
+      List<Controllable> list = loadLockedObjects(targetType);
       if (list.isEmpty()) {
          return;
       }
-      for (DcControllable dc : list) {
+      for (Controllable dc : list) {
          if (dc.getResource() instanceof JpaResource) {
             if (((JpaResource) dc.getResource()).isLocked(obj, objectId)
                   && (event.isChildOf(dc.getControlEvent()) || dc.getControlEvent().isChildOf(event))) {
@@ -298,11 +298,11 @@ public abstract class Locker {
       if (targetType == null) {
          throw new IllegalArgumentException("parameter targetType in method LockerImpl.isLocked() cannot be null");
       }
-      List<DcControllable> list = loadLockedObjects(targetType);
+      List<Controllable> list = loadLockedObjects(targetType);
       if (list.isEmpty()) {
          return;
       }
-      for (DcControllable lo : list) {
+      for (Controllable lo : list) {
          if ((event.isChildOf(lo.getControlEvent()) || lo.getControlEvent().isChildOf(event))) {
             if (log.isDebugEnabled()) {
                log.debug("targetType " + targetType + " is already locked for event " + event + " by: " + lo);
@@ -316,11 +316,11 @@ public abstract class Locker {
       if (method == null) {
          throw new IllegalArgumentException("parameter method in method LockerImpl.isLocked() cannot be null");
       }
-      List<DcControllable> list = loadLockedObjects(cl, method);
+      List<Controllable> list = loadLockedObjects(cl, method);
       if (list.isEmpty()) {
          return;
       }
-      for (DcControllable lo : list) {
+      for (Controllable lo : list) {
          if ((event.isChildOf(lo.getControlEvent()) || lo.getControlEvent().isChildOf(event))) {
             if (log.isDebugEnabled()) {
                log.debug("Method " + method.toString() + " is already locked for event " + event + " by: " + lo);
@@ -330,12 +330,12 @@ public abstract class Locker {
       }
    }
 
-   private static DcControllable createLockedObject(Resource resource, ControlEvent event, String remark) {
+   private static Controllable createLockedObject(Resource resource, ControlEvent event, String remark) {
       if (Context.internalSessionScope().getUser() == null) {
          throw new InvalidUserException("Failed to execute lock operation: No user in Cibet context");
       }
 
-      DcControllable lo = new DcControllable();
+      Controllable lo = new Controllable();
       lo.setCreateDate(new Date());
       lo.setCreateUser(Context.internalSessionScope().getUser());
       lo.setControlEvent(event);

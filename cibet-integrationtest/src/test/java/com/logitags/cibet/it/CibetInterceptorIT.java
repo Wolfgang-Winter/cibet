@@ -53,9 +53,9 @@ import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.PostponedEjbException;
 import com.logitags.cibet.actuator.common.PostponedException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
@@ -79,7 +79,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
 
    private static Logger log = Logger.getLogger(CibetInterceptorIT.class);
 
-   protected static final String SEL_DCCONTROLLABLE = "SELECT c FROM DcControllable c WHERE c.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED";
+   protected static final String SEL_CONTROLLABLE = "SELECT c FROM Controllable c WHERE c.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED";
 
    private static final String JNDINAME = "java:module/" + CibetTestEJB.class.getSimpleName();
 
@@ -161,7 +161,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(6, ar.getResource().getParameters().size());
 
       // release
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
       Context.sessionScope().setUser("test2");
       List<?> res = (List<?>) ejb.release(l.get(0), "Happy New Year");
@@ -170,7 +170,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(6, res.size());
 
       // check
-      List<DcControllable> list2 = DcLoader.findAllUnreleased();
+      List<Controllable> list2 = DcLoader.findAllUnreleased();
       Assert.assertEquals(0, list2.size());
 
       list1 = ejb.queryArchiveByTenant();
@@ -208,7 +208,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertTrue(res.getParameters().size() == 6);
 
       // release
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
       Context.sessionScope().setUser("test2");
       Object result = ejb.release(l.get(0), "Happy New Year");
@@ -217,7 +217,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(6, ((List<?>) result).size());
 
       // check
-      List<DcControllable> list2 = (List<DcControllable>) ejb.queryDcControllable();
+      List<Controllable> list2 = (List<Controllable>) ejb.queryControllable();
       Assert.assertEquals(0, list2.size());
 
       list1 = ejb.queryArchiveByTenant();
@@ -247,7 +247,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       // release
       EjbLookup.clearCache();
 
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
       Context.sessionScope().setUser("test2");
       ejb.release(l.get(0), "Happy New Year");
@@ -329,7 +329,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       ResourceParameter param = res.getParameters().iterator().next();
       Assert.assertEquals("java.lang.Object", param.getClassname());
 
-      List<DcControllable> list2 = ejb.queryDcControllable();
+      List<Controllable> list2 = ejb.queryControllable();
       Assert.assertEquals(1, list2.size());
       res = (EjbResource) list2.get(0).getResource();
 
@@ -501,14 +501,14 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(6, res.getParameters().size());
 
       // release
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.sessionScope().setUser("test2");
       ejb.release(l.get(0), "Happy New Year");
       Context.sessionScope().setUser(USER);
 
-      List<DcControllable> list2 = ejb.queryDcControllable();
+      List<Controllable> list2 = ejb.queryControllable();
       Assert.assertEquals(0, list2.size());
 
       list1 = ejb.queryArchiveByTenant();
@@ -547,7 +547,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertTrue(res.getParameters().size() == 6);
 
       // release
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
       Context.sessionScope().setUser("test2");
       Object result = ejb.release(l.get(0), "Happy New Year");
@@ -556,7 +556,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(6, ((List<?>) result).size());
 
       // check
-      List<DcControllable> list2 = ejb.queryDcControllable();
+      List<Controllable> list2 = ejb.queryControllable();
       Assert.assertEquals(0, list2.size());
 
       list1 = ejb.queryArchiveByTenant();
@@ -579,7 +579,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertNull(list);
 
       // release
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.sessionScope().setUser("test2");
@@ -612,7 +612,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(1, res.getParameters().size());
 
       // release
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.sessionScope().setUser("test2");
@@ -713,7 +713,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(1, arlist.size());
 
       // release
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.sessionScope().setUser("test2");
@@ -759,7 +759,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
          log.warn(e.getMessage());
       }
 
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
    }
 
@@ -801,7 +801,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(6, ar.getResource().getParameters().size());
 
       // release
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
       Context.sessionScope().setUser("test2");
       Context.requestScope().startPlay();
@@ -812,7 +812,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertNull(res);
 
       // check
-      List<DcControllable> list2 = DcLoader.findAllUnreleased();
+      List<Controllable> list2 = DcLoader.findAllUnreleased();
       Assert.assertEquals(1, list2.size());
 
       list1 = ejb.queryArchiveByTenant();

@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.cibethelper.base.JdbcHelper;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
@@ -60,8 +60,8 @@ public class DcControllableDefinitionTest extends JdbcHelper {
       Context.end();
    }
 
-   private DcControllable createStateDcControllable() throws IOException {
-      DcControllable sa = new DcControllable();
+   private Controllable createStateControllable() throws IOException {
+      Controllable sa = new Controllable();
       JpaResource r = new JpaResource();
       sa.setResource(r);
 
@@ -81,8 +81,8 @@ public class DcControllableDefinitionTest extends JdbcHelper {
       return sa;
    }
 
-   private DcControllable createServiceDcControllable() throws IOException {
-      DcControllable sa = new DcControllable();
+   private Controllable createServiceControllable() throws IOException {
+      Controllable sa = new Controllable();
       EjbResource r = new EjbResource();
       sa.setResource(r);
 
@@ -115,17 +115,17 @@ public class DcControllableDefinitionTest extends JdbcHelper {
    }
 
    @Test
-   public void persistStateDcControllable() throws Exception {
-      log.info("start persistStateDcControllable()");
+   public void persistStateControllable() throws Exception {
+      log.info("start persistStateControllable()");
       connection.setAutoCommit(false);
 
       try {
-         DcControllable sa = createStateDcControllable();
-         EntityDefinition def = DcControllableDefinition.getInstance();
+         Controllable sa = createStateControllable();
+         EntityDefinition def = ControllableDefinition.getInstance();
          def.persist(connection, sa);
 
          PreparedStatement ps = connection.prepareStatement(
-               "SELECT d.dccontrollableid, d.caseid, r.target FROM CIB_DCCONTROLLABLE d, CIB_RESOURCE r where d.resourceid = r.resourceid");
+               "SELECT d.controllableid, d.caseid, r.target FROM CIB_CONTROLLABLE d, CIB_RESOURCE r where d.resourceid = r.resourceid");
          ResultSet rs = ps.executeQuery();
          Assert.assertTrue(rs.next());
          Assert.assertNotNull(rs.getString(1));
@@ -133,10 +133,10 @@ public class DcControllableDefinitionTest extends JdbcHelper {
          byte[] r2 = rs.getBytes(3);
          Assert.assertNotNull(r2);
          Object obj = CibetUtil.decode(r2);
-         Assert.assertEquals(DcControllable.class, obj.getClass());
+         Assert.assertEquals(Controllable.class, obj.getClass());
 
          connection.commit();
-         log.info("end persistStateDcControllable()");
+         log.info("end persistStateControllable()");
       } finally {
          if (connection != null) {
             connection.rollback();
@@ -146,17 +146,17 @@ public class DcControllableDefinitionTest extends JdbcHelper {
    }
 
    @Test
-   public void persistServiceDcControllable() throws Exception {
-      log.info("start persistServiceDcControllable()");
+   public void persistServiceControllable() throws Exception {
+      log.info("start persistServiceControllable()");
       connection.setAutoCommit(false);
 
       try {
-         DcControllable sa = createServiceDcControllable();
-         EntityDefinition def = DcControllableDefinition.getInstance();
+         Controllable sa = createServiceControllable();
+         EntityDefinition def = ControllableDefinition.getInstance();
          def.persist(connection, sa);
 
          PreparedStatement ps = connection.prepareStatement(
-               "SELECT d.dccontrollableid, d.caseid, r.target, r.method FROM CIB_DCCONTROLLABLE d, CIB_RESOURCE r where d.resourceid = r.resourceid");
+               "SELECT d.controllableid, d.caseid, r.target, r.method FROM CIB_CONTROLLABLE d, CIB_RESOURCE r where d.resourceid = r.resourceid");
          ResultSet rs = ps.executeQuery();
          Assert.assertTrue(rs.next());
          Assert.assertNotNull(rs.getString(1));
@@ -164,8 +164,8 @@ public class DcControllableDefinitionTest extends JdbcHelper {
          byte[] r2 = rs.getBytes(3);
          Assert.assertNotNull(r2);
          Object obj = CibetUtil.decode(r2);
-         Assert.assertEquals(DcControllable.class, obj.getClass());
-         Assert.assertEquals(3, ((DcControllable) obj).getResource().getParameters().size());
+         Assert.assertEquals(Controllable.class, obj.getClass());
+         Assert.assertEquals(3, ((Controllable) obj).getResource().getParameters().size());
          Assert.assertEquals("methodname", rs.getString(4));
 
          ps = connection.prepareStatement("SELECT * FROM CIB_RESOURCEPARAMETER");
@@ -173,7 +173,7 @@ public class DcControllableDefinitionTest extends JdbcHelper {
          Assert.assertTrue(rs.next());
 
          connection.commit();
-         log.info("end persistDcControllable()");
+         log.info("end persistControllable()");
       } finally {
          if (connection != null) {
             connection.rollback();
@@ -183,27 +183,27 @@ public class DcControllableDefinitionTest extends JdbcHelper {
    }
 
    @Test
-   public void persistAndFindStateDcControllable() throws Exception {
-      log.info("start persistAndFindStateDcControllable()");
+   public void persistAndFindStateControllable() throws Exception {
+      log.info("start persistAndFindStateControllable()");
       connection.setAutoCommit(false);
 
       try {
-         DcControllable sa = createStateDcControllable();
+         Controllable sa = createStateControllable();
          JdbcBridgeEntityManager jdbcEM = new JdbcBridgeEntityManager(connection);
 
          jdbcEM.persist(sa);
          connection.commit();
-         Assert.assertTrue(sa.getDcControllableId() != null);
+         Assert.assertTrue(sa.getControllableId() != null);
 
-         DcControllable ar2 = jdbcEM.find(DcControllable.class, sa.getDcControllableId());
+         Controllable ar2 = jdbcEM.find(Controllable.class, sa.getControllableId());
          Assert.assertNotNull(ar2);
          Assert.assertEquals("caseisxx", ar2.getCaseId());
          Assert.assertNotNull(ar2.getResource().getTarget());
          Object obj = CibetUtil.decode(ar2.getResource().getTarget());
-         Assert.assertEquals(DcControllable.class, obj.getClass());
+         Assert.assertEquals(Controllable.class, obj.getClass());
 
          connection.commit();
-         log.info("end persistAndFindStateDcControllable()");
+         log.info("end persistAndFindStateControllable()");
       } finally {
          if (connection != null) {
             connection.rollback();
@@ -213,28 +213,28 @@ public class DcControllableDefinitionTest extends JdbcHelper {
    }
 
    @Test
-   public void persistAndFindServiceDcControllable() throws Exception {
-      log.info("start persistAndFindServiceDcControllable()");
+   public void persistAndFindServiceControllable() throws Exception {
+      log.info("start persistAndFindServiceControllable()");
       connection.setAutoCommit(false);
 
       try {
-         DcControllable sa = createServiceDcControllable();
+         Controllable sa = createServiceControllable();
          JdbcBridgeEntityManager jdbcEM = new JdbcBridgeEntityManager(connection);
 
          jdbcEM.persist(sa);
          connection.commit();
-         Assert.assertTrue(sa.getDcControllableId() != null);
+         Assert.assertTrue(sa.getControllableId() != null);
 
-         DcControllable ar2 = jdbcEM.find(DcControllable.class, sa.getDcControllableId());
+         Controllable ar2 = jdbcEM.find(Controllable.class, sa.getControllableId());
          Assert.assertNotNull(ar2);
          Assert.assertEquals("caseisxx", ar2.getCaseId());
          Assert.assertEquals("methodname", ((EjbResource) ar2.getResource()).getMethod());
          Assert.assertNotNull(ar2.getResource().getTarget());
          Object obj = CibetUtil.decode(ar2.getResource().getTarget());
-         Assert.assertEquals(DcControllable.class, obj.getClass());
+         Assert.assertEquals(Controllable.class, obj.getClass());
 
          connection.commit();
-         log.info("end persistAndFindServiceDcControllable()");
+         log.info("end persistAndFindServiceControllable()");
       } finally {
          if (connection != null) {
             connection.rollback();
@@ -244,33 +244,33 @@ public class DcControllableDefinitionTest extends JdbcHelper {
    }
 
    @Test
-   public void mergeStateDcControllable() throws Exception {
-      log.info("start mergeStateDcControllable()");
+   public void mergeStateControllable() throws Exception {
+      log.info("start mergeStateControllable()");
       connection.setAutoCommit(false);
 
       try {
-         DcControllable sa = createStateDcControllable();
+         Controllable sa = createStateControllable();
          JdbcBridgeEntityManager jdbcEM = new JdbcBridgeEntityManager(connection);
 
          jdbcEM.persist(sa);
          connection.commit();
-         Assert.assertTrue(sa.getDcControllableId() != null);
+         Assert.assertTrue(sa.getControllableId() != null);
 
          sa.setActuator("newact");
          ((JpaResource) sa.getResource()).setPrimaryKeyId(null);
 
-         DcControllable sa2 = jdbcEM.merge(sa);
+         Controllable sa2 = jdbcEM.merge(sa);
          connection.commit();
 
-         DcControllable ar2 = jdbcEM.find(DcControllable.class, sa.getDcControllableId());
+         Controllable ar2 = jdbcEM.find(Controllable.class, sa.getControllableId());
          Assert.assertNotNull(ar2);
          Assert.assertEquals("newact", ar2.getActuator());
          Assert.assertNotNull(ar2.getResource().getTarget());
          Object obj = CibetUtil.decode(ar2.getResource().getTarget());
-         Assert.assertEquals(DcControllable.class, obj.getClass());
+         Assert.assertEquals(Controllable.class, obj.getClass());
 
          connection.commit();
-         log.info("end mergeStateDcControllable()");
+         log.info("end mergeStateControllable()");
       } finally {
          if (connection != null) {
             connection.rollback();
@@ -280,34 +280,34 @@ public class DcControllableDefinitionTest extends JdbcHelper {
    }
 
    @Test
-   public void mergeServiceDcControllable() throws Exception {
-      log.info("start mergeServiceDcControllable()");
+   public void mergeServiceControllable() throws Exception {
+      log.info("start mergeServiceControllable()");
       connection.setAutoCommit(false);
 
       try {
-         DcControllable sa = createServiceDcControllable();
+         Controllable sa = createServiceControllable();
          JdbcBridgeEntityManager jdbcEM = new JdbcBridgeEntityManager(connection);
 
          jdbcEM.persist(sa);
          connection.commit();
-         Assert.assertTrue(sa.getDcControllableId() != null);
+         Assert.assertTrue(sa.getControllableId() != null);
 
          sa.setActuator("newact");
          ((EjbResource) sa.getResource()).setMethod("Halleluja");
          jdbcEM.merge(sa);
          connection.commit();
 
-         DcControllable ar2 = jdbcEM.find(DcControllable.class, sa.getDcControllableId());
+         Controllable ar2 = jdbcEM.find(Controllable.class, sa.getControllableId());
          Assert.assertNotNull(ar2);
          Assert.assertEquals("caseisxx", ar2.getCaseId());
          Assert.assertEquals("newact", ar2.getActuator());
          Assert.assertNotNull(ar2.getResource().getTarget());
          Object obj = CibetUtil.decode(ar2.getResource().getTarget());
-         Assert.assertEquals(DcControllable.class, obj.getClass());
-         Assert.assertEquals(3, ((DcControllable) obj).getResource().getParameters().size());
+         Assert.assertEquals(Controllable.class, obj.getClass());
+         Assert.assertEquals(3, ((Controllable) obj).getResource().getParameters().size());
 
          connection.commit();
-         log.info("end mergeServiceDcControllable()");
+         log.info("end mergeServiceControllable()");
       } finally {
          if (connection != null) {
             connection.rollback();
@@ -317,40 +317,40 @@ public class DcControllableDefinitionTest extends JdbcHelper {
    }
 
    @Test
-   public void createNamedQueryServiceDcControllable() throws Exception {
-      log.info("start createNamedQueryServiceDcControllable()");
+   public void createNamedQueryServiceControllable() throws Exception {
+      log.info("start createNamedQueryServiceControllable()");
       connection.setAutoCommit(false);
 
       try {
-         DcControllable sa = createServiceDcControllable();
+         Controllable sa = createServiceControllable();
          Thread.sleep(100);
-         DcControllable sa2 = createServiceDcControllable();
+         Controllable sa2 = createServiceControllable();
          JdbcBridgeEntityManager jdbcEM = new JdbcBridgeEntityManager(connection);
 
          jdbcEM.persist(sa);
          jdbcEM.persist(sa2);
          connection.commit();
-         Assert.assertTrue(sa.getDcControllableId() != null);
-         Assert.assertTrue(sa2.getDcControllableId() != null);
+         Assert.assertTrue(sa.getControllableId() != null);
+         Assert.assertTrue(sa2.getControllableId() != null);
 
-         Query q = jdbcEM.createNamedQuery(DcControllable.SEL_BY_TENANT);
+         Query q = jdbcEM.createNamedQuery(Controllable.SEL_BY_TENANT);
          q.setParameter("tenant", TENANT);
-         List<DcControllable> list = q.getResultList();
+         List<Controllable> list = q.getResultList();
          Assert.assertEquals(2, list.size());
-         // Assert.assertEquals(sa.getDcControllableId(), list.get(0)
-         // .getDcControllableId());
-         // Assert.assertEquals(sa2.getDcControllableId(), list.get(1)
-         // .getDcControllableId());
+         // Assert.assertEquals(sa.getControllableId(), list.get(0)
+         // .getControllableId());
+         // Assert.assertEquals(sa2.getControllableId(), list.get(1)
+         // .getControllableId());
 
-         q = jdbcEM.createNamedQuery(DcControllable.SEL_BY_TENANT_CLASS);
+         q = jdbcEM.createNamedQuery(Controllable.SEL_BY_TENANT_CLASS);
          q.setParameter("tenant", TENANT);
          q.setParameter("tenant2", "class");
          list = q.getResultList();
          Assert.assertEquals(2, list.size());
-         // Assert.assertEquals(sa.getDcControllableId(), list.get(0)
-         // .getDcControllableId());
-         // Assert.assertEquals(sa2.getDcControllableId(), list.get(1)
-         // .getDcControllableId());
+         // Assert.assertEquals(sa.getControllableId(), list.get(0)
+         // .getControllableId());
+         // Assert.assertEquals(sa2.getControllableId(), list.get(1)
+         // .getControllableId());
 
          connection.commit();
          log.info("end createNamedQueryServiceArchive()");
@@ -363,34 +363,30 @@ public class DcControllableDefinitionTest extends JdbcHelper {
    }
 
    @Test
-   public void createNamedQueryStateDcControllable() throws Exception {
-      log.info("start createNamedQueryStateDcControllable()");
+   public void createNamedQueryStateControllable() throws Exception {
+      log.info("start createNamedQueryStateControllable()");
       connection.setAutoCommit(false);
 
       try {
-         DcControllable sa = createStateDcControllable();
+         Controllable sa = createStateControllable();
          Thread.sleep(100);
-         DcControllable sa2 = createStateDcControllable();
+         Controllable sa2 = createStateControllable();
          JdbcBridgeEntityManager jdbcEM = new JdbcBridgeEntityManager(connection);
 
          jdbcEM.persist(sa);
          jdbcEM.persist(sa2);
          connection.commit();
-         Assert.assertTrue(sa.getDcControllableId() != null);
-         Assert.assertTrue(sa2.getDcControllableId() != null);
+         Assert.assertTrue(sa.getControllableId() != null);
+         Assert.assertTrue(sa2.getControllableId() != null);
 
-         Query q = jdbcEM.createNamedQuery(DcControllable.SEL_BY_ID_CLASS);
+         Query q = jdbcEM.createNamedQuery(Controllable.SEL_BY_ID_CLASS);
          q.setParameter("tenant", "25");
          q.setParameter("tt", "class");
-         List<DcControllable> list = q.getResultList();
+         List<Controllable> list = q.getResultList();
          Assert.assertEquals(2, list.size());
-         // Assert.assertEquals(sa.getDcControllableId(), list.get(0)
-         // .getDcControllableId());
-         // Assert.assertEquals(sa2.getDcControllableId(), list.get(1)
-         // .getDcControllableId());
 
          connection.commit();
-         log.info("end createNamedQueryStateDcControllable()");
+         log.info("end createNamedQueryStateControllable()");
       } finally {
          if (connection != null) {
             connection.rollback();
@@ -400,32 +396,32 @@ public class DcControllableDefinitionTest extends JdbcHelper {
    }
 
    @Test
-   public void persistAndRemoveServiceDcControllable() throws Exception {
-      log.info("start persistAndRemoveServiceDcControllable()");
+   public void persistAndRemoveServiceControllable() throws Exception {
+      log.info("start persistAndRemoveServiceControllable()");
       connection.setAutoCommit(false);
 
       try {
-         DcControllable sa = createServiceDcControllable();
+         Controllable sa = createServiceControllable();
          JdbcBridgeEntityManager jdbcEM = new JdbcBridgeEntityManager(connection);
 
          jdbcEM.persist(sa);
          connection.commit();
-         Assert.assertTrue(sa.getDcControllableId() != null);
+         Assert.assertTrue(sa.getControllableId() != null);
 
-         DcControllable ar2 = jdbcEM.find(DcControllable.class, sa.getDcControllableId());
+         Controllable ar2 = jdbcEM.find(Controllable.class, sa.getControllableId());
          Assert.assertNotNull(ar2);
 
          jdbcEM.remove(ar2);
          connection.commit();
 
          try {
-            ar2 = jdbcEM.find(DcControllable.class, sa.getDcControllableId());
+            ar2 = jdbcEM.find(Controllable.class, sa.getControllableId());
             Assert.fail();
          } catch (NoResultException e) {
          }
 
          connection.commit();
-         log.info("end persistAndRemoveServiceDcControllable()");
+         log.info("end persistAndRemoveServiceControllable()");
       } finally {
          if (connection != null) {
             connection.rollback();

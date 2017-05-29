@@ -218,8 +218,9 @@
 							</goals>
 							<configuration>
 								<includes>**/ResourceParameter.class , **/Resource.class ,
-									**/Archive.class , **/DcControllable.class ,
-									**/LockedObject.class , **/EventResult.class</includes>
+									**/Archive.class , **/Controllable.class , **/JpaQueryResource.class , 
+									**/JpaResource.class , **/JdbcResource.class , **/EjbResource.class , **/MethodResource.class , **/HttpRequestResource.class , **/EventResult.class
+								</includes>
 							</configuration>
 						</execution>
 						<execution>

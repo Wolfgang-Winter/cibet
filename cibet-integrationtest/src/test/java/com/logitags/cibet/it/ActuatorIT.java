@@ -63,8 +63,8 @@ import com.dumbster.smtp.SmtpMessage;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.InvalidUserException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ParallelDcActuator;
@@ -147,7 +147,7 @@ public class ActuatorIT extends AbstractArquillian {
       new ConfigurationService().initialise();
    }
 
-   protected Object release(DcControllable co) throws Exception {
+   protected Object release(Controllable co) throws Exception {
       Context.sessionScope().setUser("tester2");
       ut.begin();
       Object result = co.release(applEman, "blabla");
@@ -167,7 +167,7 @@ public class ActuatorIT extends AbstractArquillian {
       TEntity te = createTEntity(12, "Hirsch");
       persist(te);
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       l = DcLoader.findUnreleased(TEntity.class.getName());
@@ -187,9 +187,9 @@ public class ActuatorIT extends AbstractArquillian {
       persist(ent);
       Assert.assertEquals(0, ent.getId());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
 
       Object res = release(co);
@@ -222,9 +222,9 @@ public class ActuatorIT extends AbstractArquillian {
       persist(ent);
       Assert.assertEquals(0, ent.getId());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("fizz", co.getApprovalUser());
 
       Context.sessionScope().setUser("test2");
@@ -267,9 +267,9 @@ public class ActuatorIT extends AbstractArquillian {
       TEntity ent = createTEntity(12, "Hirsch");
       persist(ent);
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       ut.begin();
       try {
          co.release(applEman, null);
@@ -299,9 +299,9 @@ public class ActuatorIT extends AbstractArquillian {
       applEman.merge(tce);
       ut.commit();
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
 
       release(co);
 
@@ -340,9 +340,9 @@ public class ActuatorIT extends AbstractArquillian {
       remove(tce);
 
       // first release
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       Context.requestScope().setRemark("Manni");
       release(co);
       applEman.clear();
@@ -415,9 +415,9 @@ public class ActuatorIT extends AbstractArquillian {
       remove(tce);
 
       // first release
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       Context.sessionScope().setUser("tester2");
       try {
          ut.begin();
@@ -486,9 +486,9 @@ public class ActuatorIT extends AbstractArquillian {
       TComplexEntity tce = applEman.find(TComplexEntity.class, ce.getId());
       remove(tce);
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       ut.begin();
       co.reject(applEman, "blabla1");
       ut.commit();
@@ -519,9 +519,9 @@ public class ActuatorIT extends AbstractArquillian {
       List<TComplexEntity> l = query.getResultList();
       Assert.assertEquals(0, l.size());
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       release(co);
 
       l1 = DcLoader.findUnreleased();
@@ -569,9 +569,9 @@ public class ActuatorIT extends AbstractArquillian {
          Assert.assertEquals(0, server.getReceivedEmailSize());
 
          server = SimpleSmtpServer.start(8854);
-         List<DcControllable> l1 = DcLoader.findUnreleased();
+         List<Controllable> l1 = DcLoader.findUnreleased();
          Assert.assertEquals(1, l1.size());
-         DcControllable co = l1.get(0);
+         Controllable co = l1.get(0);
          Context.sessionScope().setUser("fizz");
          Context.sessionScope().setApprovalUser("Muzzi");
          ut.begin();
@@ -648,9 +648,9 @@ public class ActuatorIT extends AbstractArquillian {
          Assert.assertEquals("fizz@email.de", email.getHeaderValue("To"));
 
          server = SimpleSmtpServer.start(8854);
-         List<DcControllable> l1 = DcLoader.findUnreleased();
+         List<Controllable> l1 = DcLoader.findUnreleased();
          Assert.assertEquals(1, l1.size());
-         DcControllable co = l1.get(0);
+         Controllable co = l1.get(0);
          Context.sessionScope().setUser("fizz");
          Context.sessionScope().setApprovalUser("Muzzi");
          Context.sessionScope().setApprovalAddress("Muzzi@email.de");
@@ -732,9 +732,9 @@ public class ActuatorIT extends AbstractArquillian {
       persist(ce);
       remove(ce);
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       ut.begin();
       co.reject(applEman, "blabla1");
       ut.commit();
@@ -751,7 +751,7 @@ public class ActuatorIT extends AbstractArquillian {
    @Test(expected = IllegalArgumentException.class)
    public void rejectWithNoUser() throws ResourceApplyException {
       Context.sessionScope().setUser(null);
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.reject(applEman, "dfdf");
    }
@@ -760,7 +760,7 @@ public class ActuatorIT extends AbstractArquillian {
    public void reject6EyesWithNoUser() throws ResourceApplyException {
       Context.sessionScope().setUser(null);
       Configuration.instance().reinitAuthenticationProvider(null);
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.FIRST_POSTPONED);
@@ -770,7 +770,7 @@ public class ActuatorIT extends AbstractArquillian {
    @Test(expected = InvalidUserException.class)
    public void reject6EyesInvalidUser() throws ResourceApplyException {
       Context.sessionScope().setUser("II");
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.FIRST_POSTPONED);
@@ -783,7 +783,7 @@ public class ActuatorIT extends AbstractArquillian {
       Context.sessionScope().setUser(null);
       Configuration.instance().reinitAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(FourEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.POSTPONED);
@@ -795,7 +795,7 @@ public class ActuatorIT extends AbstractArquillian {
       Context.sessionScope().setUser(null);
       Configuration.instance().reinitAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.FIRST_POSTPONED);
@@ -807,7 +807,7 @@ public class ActuatorIT extends AbstractArquillian {
       Context.sessionScope().setUser("US");
       Configuration.instance().registerAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.FIRST_POSTPONED);
@@ -820,7 +820,7 @@ public class ActuatorIT extends AbstractArquillian {
       Context.sessionScope().setUser("xx");
       Configuration.instance().registerAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.REJECTED);
@@ -832,7 +832,7 @@ public class ActuatorIT extends AbstractArquillian {
       Context.sessionScope().setUser(null);
       Configuration.instance().registerAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(FourEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.EXECUTED);
@@ -844,7 +844,7 @@ public class ActuatorIT extends AbstractArquillian {
       Context.sessionScope().setUser(null);
       Configuration.instance().registerAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(TwoManRuleActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.EXECUTED);
@@ -865,7 +865,7 @@ public class ActuatorIT extends AbstractArquillian {
 
    @Test(expected = IllegalArgumentException.class)
    public void releaseInvalidEvent() throws ResourceApplyException {
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.REDO);
       sd.setActuator(FourEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.POSTPONED);
@@ -893,10 +893,10 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertNotNull("entity with id " + entity.getId() + " not found", selEnt);
       Assert.assertEquals(5, selEnt.getCounter());
 
-      List<DcControllable> unreleased = DcLoader.findUnreleased();
+      List<Controllable> unreleased = DcLoader.findUnreleased();
       Assert.assertTrue(unreleased.size() == 1);
 
-      DcControllable coObj = unreleased.get(0);
+      Controllable coObj = unreleased.get(0);
       List<Difference> list = DcLoader.differences(coObj);
       // DcLoader.compare(applEman, coObj.getResource());
       Assert.assertTrue(list.size() == 2);
@@ -923,7 +923,7 @@ public class ActuatorIT extends AbstractArquillian {
 
    @Test(expected = IllegalArgumentException.class)
    public void compareNotUpdatedObjects() {
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       DcLoader.differences(sd);
    }
@@ -947,9 +947,9 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertNull(tce);
 
       // first release
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       Context.requestScope().setRemark("Manni");
       TComplexEntity tce2 = (TComplexEntity) release(co);
       Assert.assertNull(tce2);
@@ -995,9 +995,9 @@ public class ActuatorIT extends AbstractArquillian {
       persist(ent);
       Assert.assertEquals(0, ent.getId());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
 
       Context.sessionScope().setUser("test2");
@@ -1055,7 +1055,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
       Assert.assertEquals(ParallelDcActuator.DEFAULTNAME, er.getActuators());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       List<TEntity> list = loadTEntities();
@@ -1108,7 +1108,7 @@ public class ActuatorIT extends AbstractArquillian {
       log.debug(er);
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       try {
@@ -1137,7 +1137,7 @@ public class ActuatorIT extends AbstractArquillian {
       log.debug(er);
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.requestScope().setCaseId(er.getCaseId());
@@ -1170,7 +1170,7 @@ public class ActuatorIT extends AbstractArquillian {
       log.debug(er);
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.requestScope().setCaseId(er.getCaseId());
@@ -1207,7 +1207,7 @@ public class ActuatorIT extends AbstractArquillian {
       log.debug(er);
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       // second
@@ -1268,11 +1268,11 @@ public class ActuatorIT extends AbstractArquillian {
       persist(te);
 
       ut.begin();
-      DcControllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
       Assert.assertEquals("testremark", l2.get(0).getCreateRemark());
@@ -1298,7 +1298,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(1, res.size());
 
       ut.begin();
-      DcControllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1314,7 +1314,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertNull(list.get(0).getRemark());
       Assert.assertNotNull(list.get(0).getResource().getTarget());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1338,7 +1338,7 @@ public class ActuatorIT extends AbstractArquillian {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       ut.begin();
-      DcControllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1350,7 +1350,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(0).getExecutionStatus());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1374,7 +1374,7 @@ public class ActuatorIT extends AbstractArquillian {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       ut.begin();
-      DcControllable lo = Locker.lock(TEntity.class, ControlEvent.DELETE, "testremark");
+      Controllable lo = Locker.lock(TEntity.class, ControlEvent.DELETE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1386,7 +1386,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(0).getExecutionStatus());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1405,11 +1405,11 @@ public class ActuatorIT extends AbstractArquillian {
       persist(te);
 
       ut.begin();
-      DcControllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
       Assert.assertEquals("testremark", l2.get(0).getCreateRemark());
@@ -1437,7 +1437,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(1, res.size());
 
       ut.begin();
-      DcControllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1454,7 +1454,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertNull(list.get(0).getRemark());
       Assert.assertNotNull(list.get(0).getResource().getTarget());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1479,7 +1479,7 @@ public class ActuatorIT extends AbstractArquillian {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       ut.begin();
-      DcControllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1493,7 +1493,7 @@ public class ActuatorIT extends AbstractArquillian {
       List<Archive> list = ArchiveLoader.loadArchives(TEntity.class.getName());
       Assert.assertEquals(1, list.size());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1518,7 +1518,7 @@ public class ActuatorIT extends AbstractArquillian {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       ut.begin();
-      DcControllable lo = Locker.lock(TEntity.class, ControlEvent.INSERT, "testremark");
+      Controllable lo = Locker.lock(TEntity.class, ControlEvent.INSERT, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1533,7 +1533,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(0).getExecutionStatus());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1556,14 +1556,14 @@ public class ActuatorIT extends AbstractArquillian {
 
       Context.sessionScope().setUser("user1");
       ut.begin();
-      DcControllable lo = Locker.lock(TEntity.class, ControlEvent.RELEASE, "testremark");
+      Controllable lo = Locker.lock(TEntity.class, ControlEvent.RELEASE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
       Context.sessionScope().setUser(USER);
 
       TEntity te = createTEntity(5, "Klaus");
       persist(te);
-      List<DcControllable> unr = DcLoader.findUnreleased();
+      List<Controllable> unr = DcLoader.findUnreleased();
       Assert.assertEquals(1, unr.size());
 
       Query q = applEman.createNamedQuery(TEntity.SEL_BY_OWNER);
@@ -1606,7 +1606,7 @@ public class ActuatorIT extends AbstractArquillian {
 
       TEntity te = createTEntity(5, "Klaus");
       persist(te);
-      List<DcControllable> unr = DcLoader.findUnreleased();
+      List<Controllable> unr = DcLoader.findUnreleased();
       Assert.assertEquals(1, unr.size());
 
       Query q = applEman.createNamedQuery(TEntity.SEL_BY_OWNER);
@@ -1616,7 +1616,7 @@ public class ActuatorIT extends AbstractArquillian {
 
       Context.sessionScope().setUser("user1");
       ut.begin();
-      DcControllable lo = Locker.lock(te, ControlEvent.RELEASE, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.RELEASE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1658,7 +1658,7 @@ public class ActuatorIT extends AbstractArquillian {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       ut.begin();
-      DcControllable lo = Locker.lock(te, ControlEvent.SELECT, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.SELECT, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 

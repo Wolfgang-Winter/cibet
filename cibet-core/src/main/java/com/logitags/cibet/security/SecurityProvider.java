@@ -25,7 +25,7 @@
 package com.logitags.cibet.security;
 
 /**
- * Supplies methods for encryption and decryption of sensible data in Archive, DcControllable and ResourceParameter.
+ * Supplies methods for encryption and decryption of sensible data in Archive, Controllable and ResourceParameter.
  * Supplies methods for creating a Message Digest.
  * 
  * @author Wolfgang

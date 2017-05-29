@@ -37,6 +37,7 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.CibetUtil;
@@ -55,144 +56,144 @@ public abstract class DcLoader {
    private static Log log = LogFactory.getLog(DcLoader.class);
 
    /**
-    * convenient method that returns all unreleased DcControllable for the given tenant and the given target type.
+    * convenient method that returns all unreleased Controllable for the given tenant and the given target type.
     * 
     * @param targetType
     *           target type
-    * @return list of DcControllable
+    * @return list of Controllable
     */
-   public static List<DcControllable> findUnreleased(String targetType) {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT_CLASS);
+   public static List<Controllable> findUnreleased(String targetType) {
+      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT_CLASS);
       q.setParameter("tenant", Context.internalSessionScope().getTenant());
       q.setParameter("oclass", targetType);
-      List<DcControllable> list = q.getResultList();
+      List<Controllable> list = q.getResultList();
       decrypt(list);
       return list;
    }
 
    /**
-    * convenient method that returns all unreleased DcControllable for all tenants and the given target type.
+    * convenient method that returns all unreleased Controllable for all tenants and the given target type.
     * 
     * @param targetType
     *           target type
-    * @return list of DcControllable
+    * @return list of Controllable
     */
-   public static List<DcControllable> findAllUnreleased(String targetType) {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_CLASS);
+   public static List<Controllable> findAllUnreleased(String targetType) {
+      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_CLASS);
       q.setParameter("oclass", targetType);
-      List<DcControllable> list = q.getResultList();
+      List<Controllable> list = q.getResultList();
       decrypt(list);
       return list;
    }
 
    /**
-    * convenient method that returns all unreleased DcControllables for the given tenant.
+    * convenient method that returns all unreleased Controllables for the given tenant.
     * 
-    * @return List of DcControllable
+    * @return List of Controllable
     */
-   public static List<DcControllable> findUnreleased() {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+   public static List<Controllable> findUnreleased() {
+      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", Context.internalSessionScope().getTenant());
-      List<DcControllable> list = q.getResultList();
+      List<Controllable> list = q.getResultList();
 
       decrypt(list);
       return list;
    }
 
    /**
-    * convenient method that returns all unreleased DcControllables for all tenants.
+    * convenient method that returns all unreleased Controllables for all tenants.
     * 
-    * @return List of DcControllable
+    * @return List of Controllable
     */
-   public static List<DcControllable> findAllUnreleased() {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(DcControllable.SEL_ALL);
-      List<DcControllable> list = q.getResultList();
+   public static List<Controllable> findAllUnreleased() {
+      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_ALL);
+      List<Controllable> list = q.getResultList();
       decrypt(list);
       return list;
    }
 
    /**
-    * loads all DcControllables of the current tenant that belong to the same case ID.
+    * loads all Controllables of the current tenant that belong to the same case ID.
     * 
     * @param caseId
     *           incidence id
-    * @return list of DcControllable
+    * @return list of Controllable
     */
-   public static List<DcControllable> loadByCaseId(String caseId) {
-      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_CASEID);
+   public static List<Controllable> loadByCaseId(String caseId) {
+      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_CASEID);
       String tenant = Context.internalSessionScope().getTenant();
       query.setParameter("tenant", tenant);
       query.setParameter("caseId", caseId);
-      List<DcControllable> list = query.getResultList();
+      List<Controllable> list = query.getResultList();
       decrypt(list);
       return list;
    }
 
    /**
-    * loads all DcControllables that belong to the same case ID. Tenant is not taken into account.
+    * loads all Controllables that belong to the same case ID. Tenant is not taken into account.
     * 
     * @param caseId
     *           incidence id
-    * @return list of DcControllable
+    * @return list of Controllable
     */
-   public static List<DcControllable> loadAllByCaseId(String caseId) {
+   public static List<Controllable> loadAllByCaseId(String caseId) {
       Query query = Context.internalRequestScope().getEntityManager()
-            .createNamedQuery(DcControllable.SEL_BY_CASEID_NO_TENANT);
+            .createNamedQuery(Controllable.SEL_BY_CASEID_NO_TENANT);
       query.setParameter("caseId", caseId);
-      List<DcControllable> list = query.getResultList();
+      List<Controllable> list = query.getResultList();
       decrypt(list);
       return list;
    }
 
    /**
-    * loads DcControllables of the current tenant that are created by the given user
+    * loads Controllables of the current tenant that are created by the given user
     * 
     * @param user
     *           user id
-    * @return list of DcControllable
+    * @return list of Controllable
     */
-   public static List<DcControllable> loadByUser(String user) {
-      TypedQuery<DcControllable> query = Context.internalRequestScope().getEntityManager()
-            .createNamedQuery(DcControllable.SEL_BY_USER, DcControllable.class);
+   public static List<Controllable> loadByUser(String user) {
+      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+            .createNamedQuery(Controllable.SEL_BY_USER, Controllable.class);
       query.setParameter("user", user);
       query.setParameter("tenant", Context.internalSessionScope().getTenant());
-      List<DcControllable> list = query.getResultList();
+      List<Controllable> list = query.getResultList();
       decrypt(list);
 
       return list;
    }
 
    /**
-    * loads DcControllables that are created by the given user. Tenant is not taken into account.
+    * loads Controllables that are created by the given user. Tenant is not taken into account.
     * 
     * @param user
     *           user id
-    * @return list of DcControllable
+    * @return list of Controllable
     */
-   public static List<DcControllable> loadAllByUser(String user) {
-      TypedQuery<DcControllable> query = Context.internalRequestScope().getEntityManager()
-            .createNamedQuery(DcControllable.SEL_BY_USER_NO_TENANT, DcControllable.class);
+   public static List<Controllable> loadAllByUser(String user) {
+      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+            .createNamedQuery(Controllable.SEL_BY_USER_NO_TENANT, Controllable.class);
       query.setParameter("user", user);
-      List<DcControllable> list = query.getResultList();
+      List<Controllable> list = query.getResultList();
       decrypt(list);
 
       return list;
    }
 
    /**
-    * load all DcControllables for the current tenant where target type is equal to the entity class and resource
+    * load all Controllables for the current tenant where target type is equal to the entity class and resource
     * parameters exist with name equal to the key of the map and stringValue equal to the map's value.
     * 
     * @param entityClass
     *           target type
     * @param properties
     *           map of property name and value as search parameters for ResourceParameter.
-    * @return list of DcControllable
+    * @return list of Controllable
     */
-   public static List<DcControllable> loadByProperties(Class<?> entityClass, Map<String, Object> properties) {
+   public static List<Controllable> loadByProperties(Class<?> entityClass, Map<String, Object> properties) {
       if (entityClass == null) {
          String msg = "parameter entityClass may not be null! "
-               + "Call method loadDcControllablesByProperties() with a Class object";
+               + "Call method loadControllablesByProperties() with a Class object";
          log.error(msg);
          throw new RuntimeException(msg);
       }
@@ -202,7 +203,7 @@ public abstract class DcLoader {
       params.add(entityClass.getName());
       StringBuffer sql = new StringBuffer();
       sql.append(
-            "SELECT a.* FROM CIB_DCCONTROLLABLE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and a.TENANT = ? AND r.TARGETTYPE = ?");
+            "SELECT a.* FROM CIB_CONTROLLABLE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and a.TENANT = ? AND r.TARGETTYPE = ?");
 
       if (properties != null) {
          for (Entry<String, Object> entry : properties.entrySet()) {
@@ -219,31 +220,31 @@ public abstract class DcLoader {
 
       log.debug("SQL: " + sql);
       EntityManager em = Context.internalRequestScope().getEntityManager();
-      Query q = em.createNativeQuery(sql.toString(), DcControllable.class);
+      Query q = em.createNativeQuery(sql.toString(), Controllable.class);
       for (int i = 0; i < params.size(); i++) {
          q.setParameter(i + 1, params.get(i));
       }
 
-      List<DcControllable> list = q.getResultList();
+      List<Controllable> list = q.getResultList();
 
       decrypt(list);
       return list;
    }
 
    /**
-    * load all DcControllables where target type is equal to the entity class and resource parameters exist with name
+    * load all Controllables where target type is equal to the entity class and resource parameters exist with name
     * equal to the key of the map and stringValue equal to the map's value. Tenant is not taken into account.
     * 
     * @param entityClass
     *           target type
     * @param properties
     *           map of property name and value as search parameters for ResourceParameter.
-    * @return list of DcControllable
+    * @return list of Controllable
     */
-   public static List<DcControllable> loadAllByProperties(Class<?> entityClass, Map<String, Object> properties) {
+   public static List<Controllable> loadAllByProperties(Class<?> entityClass, Map<String, Object> properties) {
       if (entityClass == null) {
          String msg = "parameter entityClass may not be null! "
-               + "Call method loadDcControllablesByProperties() with a Class object";
+               + "Call method loadControllablesByProperties() with a Class object";
          log.error(msg);
          throw new RuntimeException(msg);
       }
@@ -251,7 +252,8 @@ public abstract class DcLoader {
       List<Object> params = new ArrayList<Object>();
       params.add(entityClass.getName());
       StringBuffer sql = new StringBuffer();
-      sql.append("SELECT a.* FROM CIB_DCCONTROLLABLE a WHERE a.TARGETTYPE = ?");
+      sql.append(
+            "SELECT a.* FROM CIB_CONTROLLABLE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and r.TARGETTYPE = ?");
 
       if (properties != null) {
          for (Entry<String, Object> entry : properties.entrySet()) {
@@ -261,46 +263,46 @@ public abstract class DcLoader {
             params.add(entry.getKey());
             sql.append(" AND p.STRINGVALUE = ?");
             params.add(value);
-            sql.append(" AND p.DCCONTROLLABLEID = a.DCCONTROLLABLEID");
+            sql.append(" AND p.RESOURCEID = a.RESOURCEID");
             sql.append(")");
          }
       }
 
       log.debug("SQL: " + sql);
       EntityManager em = Context.internalRequestScope().getEntityManager();
-      Query q = em.createNativeQuery(sql.toString(), DcControllable.class);
+      Query q = em.createNativeQuery(sql.toString(), Controllable.class);
       for (int i = 0; i < params.size(); i++) {
          q.setParameter(i + 1, params.get(i));
       }
 
-      List<DcControllable> list = q.getResultList();
+      List<Controllable> list = q.getResultList();
 
       decrypt(list);
       return list;
    }
 
    /**
-    * loads all DcControllables with the given groupId. Tenant is not considered.
+    * loads all Controllables with the given groupId. Tenant is not considered.
     * 
     * @param groupId
     * @return
     */
-   public static List<DcControllable> loadAllByGroupId(String groupId) {
-      TypedQuery<DcControllable> query = Context.internalRequestScope().getEntityManager()
-            .createNamedQuery(DcControllable.SEL_BY_GROUPID, DcControllable.class);
+   public static List<Controllable> loadAllByGroupId(String groupId) {
+      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+            .createNamedQuery(Controllable.SEL_BY_GROUPID, Controllable.class);
       query.setParameter("groupId", groupId);
-      List<DcControllable> list = query.getResultList();
+      List<Controllable> list = query.getResultList();
       decrypt(list);
       return list;
    }
 
    /**
-    * decrypts the DcControllable and Resource data if the DcControllable is encrypted.
+    * decrypts the Controllable and Resource data if the Controllable is encrypted.
     * 
     * @param list
     */
-   public static void decrypt(List<DcControllable> list) {
-      for (DcControllable dc : list) {
+   public static void decrypt(List<Controllable> list) {
+      for (Controllable dc : list) {
          dc.decrypt();
       }
    }
@@ -310,12 +312,12 @@ public abstract class DcLoader {
     * original object. Only applicable for JPA resources and ControlEvent UPDATE.
     * 
     * @param dc
-    *           a DcControllable representing either a scheduled or a dual control event
+    *           a Controllable representing either a scheduled or a dual control event
     * @return
     */
-   public static List<Difference> differences(DcControllable dc) {
+   public static List<Difference> differences(Controllable dc) {
       if (dc == null || dc.getResource() == null) {
-         throw new IllegalArgumentException("Parameter DcControllable (or dc.getResource()) must not be null");
+         throw new IllegalArgumentException("Parameter Controllable (or dc.getResource()) must not be null");
       }
       Resource res = dc.getResource();
       if (dc.getControlEvent() != ControlEvent.UPDATE || !(res instanceof JpaResource)) {
@@ -335,7 +337,7 @@ public abstract class DcLoader {
          return (List<Difference>) rp.getUnencodedValue();
       }
 
-      String err = "DcControllable [" + dc + "] is in wrong state: Failed to find neither CLEANOBJECT nor DIFFERENCES ["
+      String err = "Controllable [" + dc + "] is in wrong state: Failed to find neither CLEANOBJECT nor DIFFERENCES ["
             + res + "]";
       log.error(err);
       throw new IllegalStateException(err);

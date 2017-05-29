@@ -17,7 +17,7 @@
       <class>com.logitags.cibet.sensor.pojo.MethodResource</class>
       <class>com.logitags.cibet.resource.ResourceParameter</class>
       <class>com.logitags.cibet.actuator.archive.Archive</class>
-      <class>com.logitags.cibet.actuator.dc.DcControllable</class>
+      <class>com.logitags.cibet.actuator.common.Controllable</class>
       <properties>
       	<property name="openjpa.RuntimeUnenhancedClasses" value="supported"/>
 <!--       	<property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" /> -->

@@ -39,7 +39,7 @@ import javax.persistence.PersistenceContext;
 import org.apache.log4j.Logger;
 
 import com.cibethelper.entities.TEntity;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.lock.AlreadyLockedException;
 import com.logitags.cibet.context.CibetContextInterceptor;
 import com.logitags.cibet.core.EventResult;
@@ -99,7 +99,7 @@ public class SecuredRemoteEJBImpl implements RemoteEJB {
    }
 
    @Override
-   public DcControllable lock(String targetType) throws AlreadyLockedException {
+   public Controllable lock(String targetType) throws AlreadyLockedException {
       // TODO Auto-generated method stub
       return null;
    }

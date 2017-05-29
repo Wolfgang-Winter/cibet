@@ -59,8 +59,8 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.InvalidUserException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.ParallelDcActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
@@ -152,7 +152,7 @@ public class ParallelDcIT extends AbstractArquillian {
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
       Assert.assertEquals(ParallelDcActuator.DEFAULTNAME, er.getActuators());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       List<TEntity> list = loadTEntities();
@@ -205,7 +205,7 @@ public class ParallelDcIT extends AbstractArquillian {
       log.debug(er);
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       try {
@@ -234,7 +234,7 @@ public class ParallelDcIT extends AbstractArquillian {
       log.debug(er);
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.requestScope().setCaseId(er.getCaseId());
@@ -267,7 +267,7 @@ public class ParallelDcIT extends AbstractArquillian {
       log.debug(er);
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.requestScope().setCaseId(er.getCaseId());
@@ -306,7 +306,7 @@ public class ParallelDcIT extends AbstractArquillian {
       log.debug(er);
       Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       // second

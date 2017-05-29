@@ -3,7 +3,7 @@ Hello $createUser,
 
 A business case under dual control has been rejected.
 
-The dual controlled business case is registered under id: $dcControllableId (case id: $caseId)
+The dual controlled business case is registered under id: $controllableId (case id: $caseId)
 
 
 control event:             $controlEvent

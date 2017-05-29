@@ -36,7 +36,7 @@ import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.HttpClients;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.config.ProxyConfig;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;
@@ -130,12 +130,12 @@ public class HttpRequestInvoker implements Invoker {
       // set Cibet headers
       if (proxyConfig != null) {
          String cibetCtx;
-         DcControllable dc = (DcControllable) Context.requestScope().getProperty(InternalRequestScope.DCCONTROLLABLE);
+         Controllable dc = (Controllable) Context.requestScope().getProperty(InternalRequestScope.CONTROLLABLE);
          if (dc != null) {
             // remove it to respect header max length
-            Context.requestScope().removeProperty(InternalRequestScope.DCCONTROLLABLE);
+            Context.requestScope().removeProperty(InternalRequestScope.CONTROLLABLE);
             cibetCtx = Context.encodeContext();
-            Context.requestScope().setProperty(InternalRequestScope.DCCONTROLLABLE, dc);
+            Context.requestScope().setProperty(InternalRequestScope.CONTROLLABLE, dc);
          } else {
             cibetCtx = Context.encodeContext();
          }

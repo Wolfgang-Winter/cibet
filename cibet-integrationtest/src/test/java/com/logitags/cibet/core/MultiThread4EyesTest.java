@@ -31,8 +31,8 @@ import com.cibethelper.base.DBHelper;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.PostponedException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
@@ -135,15 +135,15 @@ public class MultiThread4EyesTest extends DBHelper {
          }
          Assert.assertEquals("0", resource.getPrimaryKeyId());
 
-         q = cem.createQuery("SELECT a FROM DcControllable a WHERE a.tenant = :tenant");
+         q = cem.createQuery("SELECT a FROM Controllable a WHERE a.tenant = :tenant");
          q.setParameter("tenant", Context.sessionScope().getTenant());
-         List<DcControllable> list1 = q.getResultList();
+         List<Controllable> list1 = q.getResultList();
 
          if (list1.size() != 1) {
             resultList.add(new TResult(getName(), 278, list1.size()));
          }
          Assert.assertEquals(1, list1.size());
-         DcControllable dcOb = list1.get(0);
+         Controllable dcOb = list1.get(0);
 
          if (ControlEvent.INSERT != dcOb.getControlEvent()) {
             resultList.add(new TResult(getName(), 284, dcOb.getControlEvent()));
@@ -151,14 +151,14 @@ public class MultiThread4EyesTest extends DBHelper {
          Assert.assertEquals(ControlEvent.INSERT, dcOb.getControlEvent());
 
          appcem.clear();
-         List<DcControllable> l = DcLoader.findUnreleased(TEntity.class.getName());
+         List<Controllable> l = DcLoader.findUnreleased(TEntity.class.getName());
 
          if (l.size() != 1) {
             resultList.add(new TResult(getName(), 292, l.size()));
          }
          Assert.assertEquals(1, l.size());
 
-         DcControllable co = l.get(0);
+         Controllable co = l.get(0);
 
          Context.sessionScope().setUser("test22");
          TEntity afterReleaseEntity = null;

@@ -34,6 +34,7 @@ import javax.persistence.Query;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.actuator.common.PostponedException;
 import com.logitags.cibet.context.Context;
@@ -97,7 +98,7 @@ public class ParallelDcActuator extends FourEyesActuator {
 
          if (timelag > 0 || differentUsers) {
             log.debug(ctx.getCaseId());
-            List<DcControllable> dcList = DcLoader.loadByCaseId(ctx.getCaseId());
+            List<Controllable> dcList = DcLoader.loadByCaseId(ctx.getCaseId());
             if (!dcList.isEmpty()) {
                // check timelag
                long lag = new Date().getTime() - dcList.get(dcList.size() - 1).getCreateDate().getTime();
@@ -112,7 +113,7 @@ public class ParallelDcActuator extends FourEyesActuator {
                // check if different user
                if (differentUsers) {
                   String user = findUserId();
-                  for (DcControllable dc : dcList) {
+                  for (Controllable dc : dcList) {
                      if (user.equals(dc.getCreateUser()) && dc.getExecutionStatus() == ExecutionStatus.POSTPONED) {
                         String err = "This resource must be executed by different users. User " + user
                               + " has already invoked resource " + ctx.getResource();
@@ -180,7 +181,7 @@ public class ParallelDcActuator extends FourEyesActuator {
 
       case INVOKE:
          ctx.setExecutionStatus(ExecutionStatus.POSTPONED);
-         DcControllable dcObj = createControlledObject(ControlEvent.INVOKE, ctx);
+         Controllable dcObj = createControlledObject(ControlEvent.INVOKE, ctx);
 
          if (dcObj.getResource().getResourceId() == null) {
             if (isEncrypt()) {
@@ -192,7 +193,7 @@ public class ParallelDcActuator extends FourEyesActuator {
          Context.internalRequestScope().getEntityManager().persist(dcObj);
 
          if (ctx.getException() != null && ctx.getException() instanceof PostponedException) {
-            ((PostponedException) ctx.getException()).setDcControllable(dcObj);
+            ((PostponedException) ctx.getException()).setControllable(dcObj);
          }
 
          notifyAssigned(ctx.getExecutionStatus(), dcObj);
@@ -204,10 +205,10 @@ public class ParallelDcActuator extends FourEyesActuator {
    }
 
    protected void checkUnapprovedResource(EventMetadata ctx) {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_UNIQUEID);
+      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_UNIQUEID);
       q.setParameter("uniqueId", ctx.getResource().getUniqueId());
-      List<DcControllable> list = (List<DcControllable>) q.getResultList();
-      for (DcControllable dc : list) {
+      List<Controllable> list = (List<Controllable>) q.getResultList();
+      for (Controllable dc : list) {
          if (dc.getCaseId().equals(ctx.getCaseId()))
             continue;
          switch (dc.getExecutionStatus()) {
@@ -215,7 +216,7 @@ public class ParallelDcActuator extends FourEyesActuator {
          case FIRST_RELEASED:
          case PASSEDBACK:
          case POSTPONED:
-            String msg = "An unreleased Dual Control business case with ID " + dc.getDcControllableId() + " and status "
+            String msg = "An unreleased Dual Control business case with ID " + dc.getControllableId() + " and status "
                   + dc.getExecutionStatus() + " exists already for this resource of type "
                   + ctx.getResource().getTargetType()
                   + ". This Dual Control business case must be approved or rejected first.";
@@ -228,9 +229,9 @@ public class ParallelDcActuator extends FourEyesActuator {
    }
 
    @Override
-   public Object release(DcControllable co, String remark) throws ResourceApplyException {
+   public Object release(Controllable co, String remark) throws ResourceApplyException {
       if (co.getExecutionStatus() != ExecutionStatus.POSTPONED) {
-         String err = "Failed to release DcControllable with ID " + co.getDcControllableId()
+         String err = "Failed to release Controllable with ID " + co.getControllableId()
                + ": should be in status POSTPONED but is in status " + co.getExecutionStatus();
          log.warn(err);
          throw new ResourceApplyException(err);
@@ -245,11 +246,11 @@ public class ParallelDcActuator extends FourEyesActuator {
          ControlEvent thisEvent = controlEventForRelease(co);
          log.debug("release event: " + thisEvent);
 
-         List<DcControllable> dcList = DcLoader.loadByCaseId(co.getCaseId());
-         log.debug(dcList.size() + " DcControllable loaded with caseId " + co.getCaseId());
+         List<Controllable> dcList = DcLoader.loadByCaseId(co.getCaseId());
+         log.debug(dcList.size() + " Controllable loaded with caseId " + co.getCaseId());
 
          if (dcList.size() < executions) {
-            String err = "Failed to release DcControllable with ID " + co.getDcControllableId() + ": The event\n"
+            String err = "Failed to release Controllable with ID " + co.getControllableId() + ": The event\n"
                   + co.getResource() + "\nmust be executed at least " + executions
                   + " times but has been executed only " + dcList.size() + " times";
             log.warn(err);
@@ -257,11 +258,11 @@ public class ParallelDcActuator extends FourEyesActuator {
          }
 
          // copy list because OpenJPA: Result lists are read-only
-         List<DcControllable> copyList = new ArrayList<>(dcList);
+         List<Controllable> copyList = new ArrayList<>(dcList);
 
-         Iterator<DcControllable> iter = copyList.iterator();
+         Iterator<Controllable> iter = copyList.iterator();
          while (iter.hasNext()) {
-            DcControllable dcElement = iter.next();
+            Controllable dcElement = iter.next();
             if (dcElement.getExecutionStatus() != ExecutionStatus.POSTPONED) {
                iter.remove();
             } else {
@@ -274,7 +275,7 @@ public class ParallelDcActuator extends FourEyesActuator {
          if (remark != null) {
             Context.internalRequestScope().setRemark(remark);
          }
-         Context.internalRequestScope().setProperty(InternalRequestScope.DCCONTROLLABLE, co);
+         Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLLABLE, co);
 
          Object result = co.getResource().apply(co.getControlEvent());
 
@@ -304,8 +305,8 @@ public class ParallelDcActuator extends FourEyesActuator {
                   notifyApproval(co);
                }
 
-               for (DcControllable dcElement : copyList) {
-                  if (dcElement.getDcControllableId() != co.getDcControllableId()) {
+               for (Controllable dcElement : copyList) {
+                  if (dcElement.getControllableId() != co.getControllableId()) {
                      dcElement.setExecutionStatus(ExecutionStatus.REJECTED);
                      dcElement.setApprovalDate(co.getApprovalDate());
                      dcElement.setApprovalUser(Context.internalSessionScope().getUser());
@@ -329,7 +330,7 @@ public class ParallelDcActuator extends FourEyesActuator {
          Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, originalControlEvent);
          Context.requestScope().setCaseId(originalCaseId);
          Context.internalRequestScope().setRemark(originalRemark);
-         Context.internalRequestScope().removeProperty(InternalRequestScope.DCCONTROLLABLE);
+         Context.internalRequestScope().removeProperty(InternalRequestScope.CONTROLLABLE);
       }
    }
 

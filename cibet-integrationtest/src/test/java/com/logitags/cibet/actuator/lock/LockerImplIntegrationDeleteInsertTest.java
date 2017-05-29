@@ -26,7 +26,7 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.config.ConfigurationService;
@@ -51,10 +51,10 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
 
       TEntity te = persistTEntity();
 
-      DcControllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
       Assert.assertNotNull(lo);
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
       Assert.assertEquals("testremark", l2.get(0).getCreateRemark());
@@ -77,7 +77,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       List<TEntity> res = q.getResultList();
       Assert.assertEquals(1, res.size());
 
-      DcControllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
       Context.requestScope().getEntityManager().flush();
       Assert.assertNotNull(lo);
 
@@ -93,7 +93,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       Assert.assertNull(list.get(0).getRemark());
       Assert.assertNotNull(list.get(0).getResource().getTarget());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -114,7 +114,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
-      DcControllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
       Context.requestScope().getEntityManager().flush();
       Assert.assertNotNull(lo);
 
@@ -126,7 +126,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(0).getExecutionStatus());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -147,7 +147,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
-      DcControllable lo = Locker.lock(TEntity.class, ControlEvent.DELETE, "testremark");
+      Controllable lo = Locker.lock(TEntity.class, ControlEvent.DELETE, "testremark");
       Context.requestScope().getEntityManager().flush();
       Assert.assertNotNull(lo);
 
@@ -159,7 +159,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(0).getExecutionStatus());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -175,10 +175,10 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
 
       TEntity te = persistTEntity();
 
-      DcControllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
       Assert.assertNotNull(lo);
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
       Assert.assertEquals("testremark", l2.get(0).getCreateRemark());
@@ -201,7 +201,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       List<TEntity> res = q.getResultList();
       Assert.assertEquals(1, res.size());
 
-      DcControllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
       Context.requestScope().getEntityManager().flush();
       Assert.assertNotNull(lo);
 
@@ -217,7 +217,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       Assert.assertNull(list.get(0).getRemark());
       Assert.assertNotNull(list.get(0).getResource().getTarget());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -238,7 +238,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
-      DcControllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
       Context.requestScope().getEntityManager().flush();
       Assert.assertNotNull(lo);
 
@@ -250,7 +250,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       List<Archive> list = ArchiveLoader.loadArchives(TEntity.class.getName());
       Assert.assertEquals(1, list.size());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -271,7 +271,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
-      DcControllable lo = Locker.lock(TEntity.class, ControlEvent.INSERT, "testremark");
+      Controllable lo = Locker.lock(TEntity.class, ControlEvent.INSERT, "testremark");
       Context.requestScope().getEntityManager().flush();
       Assert.assertNotNull(lo);
 
@@ -283,7 +283,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(0).getExecutionStatus());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -303,13 +303,13 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST, ControlEvent.RELEASE);
 
       Context.sessionScope().setUser("user1");
-      DcControllable lo = Locker.lock(TEntity.class, ControlEvent.RELEASE, "testremark");
+      Controllable lo = Locker.lock(TEntity.class, ControlEvent.RELEASE, "testremark");
       Context.requestScope().getEntityManager().flush();
       Assert.assertNotNull(lo);
       Context.sessionScope().setUser(USER);
 
       TEntity te = persistTEntity();
-      List<DcControllable> unr = DcLoader.findUnreleased();
+      List<Controllable> unr = DcLoader.findUnreleased();
       Assert.assertEquals(1, unr.size());
 
       Query q = applEman.createNamedQuery(TEntity.SEL_BY_OWNER);
@@ -349,7 +349,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.INSERT, ControlEvent.RELEASE_INSERT);
 
       TEntity te = persistTEntity();
-      List<DcControllable> unr = DcLoader.findUnreleased();
+      List<Controllable> unr = DcLoader.findUnreleased();
       Assert.assertEquals(1, unr.size());
 
       Query q = applEman.createNamedQuery(TEntity.SEL_BY_OWNER);
@@ -358,7 +358,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       Assert.assertEquals(0, res.size());
 
       Context.sessionScope().setUser("user1");
-      DcControllable lo = Locker.lock(te, ControlEvent.RELEASE, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.RELEASE, "testremark");
       Context.requestScope().getEntityManager().flush();
       Assert.assertNotNull(lo);
 
@@ -396,7 +396,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
-      DcControllable lo = Locker.lock(te, ControlEvent.SELECT, "testremark");
+      Controllable lo = Locker.lock(te, ControlEvent.SELECT, "testremark");
       Context.requestScope().getEntityManager().flush();
       Assert.assertNotNull(lo);
 

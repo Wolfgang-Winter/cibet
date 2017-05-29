@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.core.CibetException;
 import com.logitags.cibet.diff.Difference;
 
@@ -31,30 +31,30 @@ public class ScheduledException extends CibetException {
     */
    private static final long serialVersionUID = 1613800779279337837L;
 
-   private Map<DcControllable, List<Difference>> scheduledResources = new HashMap<DcControllable, List<Difference>>();
+   private Map<Controllable, List<Difference>> scheduledResources = new HashMap<Controllable, List<Difference>>();
 
-   public ScheduledException(Map<DcControllable, List<Difference>> map) {
+   public ScheduledException(Map<Controllable, List<Difference>> map) {
       scheduledResources = map;
    }
 
    /**
-    * in case the DcControllable represents an already scheduled UPDATE event, the returned list contains the
-    * differences that are scheduled to be updated. For other control events null is returned.
+    * in case the Controllable represents an already scheduled UPDATE event, the returned list contains the differences
+    * that are scheduled to be updated. For other control events null is returned.
     * 
     * @param co
-    *           DcControllable
+    *           Controllable
     * @return the differences
     */
-   public List<Difference> getDifferences(DcControllable co) {
+   public List<Difference> getDifferences(Controllable co) {
       return scheduledResources.get(co);
    }
 
    /**
     * returns the list of already scheduled business cases.
     * 
-    * @return list of DcControllable
+    * @return list of Controllable
     */
-   public Set<DcControllable> getScheduledDcControllables() {
+   public Set<Controllable> getScheduledControllables() {
       return scheduledResources.keySet();
    }
 

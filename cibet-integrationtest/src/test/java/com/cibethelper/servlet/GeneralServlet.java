@@ -59,7 +59,7 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.scheduler.SchedulerActuator;
 import com.logitags.cibet.actuator.scheduler.SchedulerLoader;
@@ -305,7 +305,7 @@ public class GeneralServlet extends HttpServlet {
             throw new Exception("owner not null: " + list.get(0).getOwner());
          }
 
-         List<DcControllable> dcs = SchedulerLoader.findScheduled();
+         List<Controllable> dcs = SchedulerLoader.findScheduled();
          if (dcs.size() != 1) {
             throw new Exception("dclist size is " + list.size());
          }
@@ -335,11 +335,11 @@ public class GeneralServlet extends HttpServlet {
          Context.internalRequestScope().getEntityManager().clear();
          log.warn("after (sleep) ..................");
          Thread.sleep(5000);
-         List<DcControllable> dcList = DcLoader.loadByUser(Context.sessionScope().getUser());
+         List<Controllable> dcList = DcLoader.loadByUser(Context.sessionScope().getUser());
          if (dcList.size() != 1) {
-            throw new Exception("number of DcControllable: " + dcList.size());
+            throw new Exception("number of Controllable: " + dcList.size());
          }
-         DcControllable dc = dcList.get(0);
+         Controllable dc = dcList.get(0);
          if (dc.getExecutionDate() == null) {
             throw new Exception("executionDate is null");
          }
@@ -414,9 +414,9 @@ public class GeneralServlet extends HttpServlet {
    private void releaseHttp(HttpServletResponse resp) throws Exception {
       try {
          ut.begin();
-         List<DcControllable> dcs = DcLoader.findUnreleased();
+         List<Controllable> dcs = DcLoader.findUnreleased();
          if (dcs.size() != 1) {
-            String msg = "Found " + dcs.size() + " DcControllables instead of 1";
+            String msg = "Found " + dcs.size() + " Controllables instead of 1";
             log.error(msg);
             throw new Exception(msg);
          }
@@ -485,9 +485,9 @@ public class GeneralServlet extends HttpServlet {
       Object te = null;
       ut.begin();
       try {
-         List<DcControllable> dcs = DcLoader.findUnreleased();
+         List<Controllable> dcs = DcLoader.findUnreleased();
          if (dcs.size() != 1) {
-            String msg = "Found " + dcs.size() + " DcControllables instead of 1";
+            String msg = "Found " + dcs.size() + " Controllables instead of 1";
             log.error(msg);
             throw new Exception(msg);
          }
@@ -768,17 +768,11 @@ public class GeneralServlet extends HttpServlet {
          Context.internalRequestScope().getEntityManager().remove(ar);
       }
 
-      Query q4 = Context.internalRequestScope().getEntityManager().createQuery("select d from DcControllable d");
-      List<DcControllable> dclist = q4.getResultList();
-      for (DcControllable dc : dclist) {
+      Query q4 = Context.internalRequestScope().getEntityManager().createQuery("select d from Controllable d");
+      List<Controllable> dclist = q4.getResultList();
+      for (Controllable dc : dclist) {
          Context.internalRequestScope().getEntityManager().remove(dc);
       }
-
-      // Query q5 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
-      // Iterator<LockedObject> itLO = q5.getResultList().iterator();
-      // while (itLO.hasNext()) {
-      // Context.internalRequestScope().getEntityManager().remove(itLO.next());
-      // }
 
       Query q6 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
       Iterator<EventResult> itEV = q6.getResultList().iterator();

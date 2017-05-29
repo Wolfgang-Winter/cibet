@@ -42,7 +42,7 @@ import javax.persistence.Query;
 import org.apache.log4j.Logger;
 
 import com.cibethelper.entities.TEntity;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.lock.AlreadyLockedException;
 import com.logitags.cibet.actuator.lock.Locker;
 import com.logitags.cibet.context.CibetContextInterceptor;
@@ -131,8 +131,8 @@ public class RemoteEJBImpl implements RemoteEJB {
       return ev;
    }
 
-   public DcControllable lock(String url) throws AlreadyLockedException {
-      DcControllable lo = Locker.lock(url, HttpMethod.GET, ControlEvent.INVOKE, "testremark");
+   public Controllable lock(String url) throws AlreadyLockedException {
+      Controllable lo = Locker.lock(url, HttpMethod.GET, ControlEvent.INVOKE, "testremark");
       return lo;
    }
 

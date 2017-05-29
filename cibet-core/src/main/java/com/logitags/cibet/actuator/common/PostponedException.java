@@ -11,7 +11,6 @@
  */
 package com.logitags.cibet.actuator.common;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.core.CibetException;
 
 /**
@@ -21,29 +20,28 @@ import com.logitags.cibet.core.CibetException;
 public class PostponedException extends CibetException {
 
    /**
-	 * 
-	 */
+    * 
+    */
    private static final long serialVersionUID = 1613800779279337837L;
 
    /**
-    * The DcControllable object that has been created and stored in the
-    * database.
+    * The Controllable object that has been created and stored in the database.
     */
-   private DcControllable dcControllable;
+   private Controllable controllable;
 
    /**
-    * @return the dcControllable
+    * @return the controllable
     */
-   public DcControllable getDcControllable() {
-      return dcControllable;
+   public Controllable getControllable() {
+      return controllable;
    }
 
    /**
-    * @param dcControllable
-    *           the dcControllable to set
+    * @param controllable
+    *           the Controllable to set
     */
-   public void setDcControllable(DcControllable dcControllable) {
-      this.dcControllable = dcControllable;
+   public void setControllable(Controllable controllable) {
+      this.controllable = controllable;
    }
 
 }

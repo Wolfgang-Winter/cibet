@@ -26,7 +26,7 @@ package com.cibethelper;
 
 import org.apache.log4j.Logger;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.scheduler.RejectException;
 import com.logitags.cibet.actuator.scheduler.SchedulerTaskInterceptor;
 
@@ -35,13 +35,13 @@ public class SchedulerExceptionIntercept implements SchedulerTaskInterceptor {
    private static Logger log = Logger.getLogger(SchedulerExceptionIntercept.class);
 
    @Override
-   public void beforeTask(DcControllable dc) throws RejectException {
+   public void beforeTask(Controllable dc) throws RejectException {
       log.info("SchedulerIntercept.beforeTask");
       throw new RejectException("NO");
    }
 
    @Override
-   public void afterTask(DcControllable dc) {
+   public void afterTask(Controllable dc) {
       log.info("SchedulerIntercept.afterTask");
 
    }

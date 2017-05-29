@@ -57,7 +57,7 @@ import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.info.InfoLogActuator;
@@ -208,7 +208,7 @@ public class JdbcStatementIT extends DBHelper {
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
       Assert.assertEquals("5", ((JdbcResource) list.get(0).getResource()).getPrimaryKeyId());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(0).getControlEvent());
       ejb.unregisterSetpoint(id);
@@ -233,7 +233,7 @@ public class JdbcStatementIT extends DBHelper {
       List<Archive> list = ArchiveLoader.loadArchives();
       Assert.assertEquals(0, list.size());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
       ejb.unregisterSetpoint(id);
    }
@@ -253,7 +253,7 @@ public class JdbcStatementIT extends DBHelper {
             + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", false);
       Assert.assertEquals(0, count);
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       log.debug("now release");
@@ -303,7 +303,7 @@ public class JdbcStatementIT extends DBHelper {
       Assert.assertEquals("rosen", rs.getString(2));
       Assert.assertEquals(255, rs.getInt(3));
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
 
       log.debug("now release");

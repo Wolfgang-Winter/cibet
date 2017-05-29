@@ -53,9 +53,9 @@ import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.actuator.common.PostponedEjbException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.UnapprovedResourceException;
@@ -212,7 +212,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
-      List<DcControllable> list1 = ejb.queryDcControllable();
+      List<Controllable> list1 = ejb.queryControllable();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(0).getControlEvent());
    }
@@ -241,7 +241,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ControlEvent.DELETE, list.get(0).getControlEvent());
 
-      List<DcControllable> list1 = ejb.queryDcControllable();
+      List<Controllable> list1 = ejb.queryControllable();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.DELETE, list1.get(0).getControlEvent());
    }
@@ -353,7 +353,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
-      List<DcControllable> list1 = ejb.queryDcControllable();
+      List<Controllable> list1 = ejb.queryControllable();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(0).getControlEvent());
    }
@@ -370,7 +370,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       TEntity entity = createTEntity(5, "ggh");
       entity = ejb.persist(entity);
 
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       l = ejb.findUnreleased();
@@ -392,7 +392,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       TEntity entity = createTEntity(5, "lkaus");
       entity = ejb.persist(entity);
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.sessionScope().setUser("test2");
@@ -424,7 +424,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       TEntity entity = createTEntity(5, "iii");
       entity = ejb.persist(entity);
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
       try {
          ejb.release();
@@ -457,7 +457,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
 
       ejb.merge(tce);
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
 
       Context.sessionScope().setUser("tester2");
@@ -500,8 +500,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
    }
 
    /**
-    * 2 consecutive calls to persist on the same object leads to: with 4-eyes: two instances in DcControllable and
-    * ARCHIVE
+    * 2 consecutive calls to persist on the same object leads to: with 4-eyes: two instances in Controllable and ARCHIVE
     */
    @Test
    public void persistPersistWith4Eyes() throws Exception {
@@ -529,7 +528,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
 
       log.debug("CEM: " + Context.requestScope().getEntityManager());
 
-      List<DcControllable> list1 = (List<DcControllable>) ejb.queryDcControllable();
+      List<Controllable> list1 = (List<Controllable>) ejb.queryControllable();
       Assert.assertEquals(2, list1.size());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(0).getControlEvent());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(1).getControlEvent());
@@ -577,7 +576,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
-      DcControllable dcOb = (DcControllable) ejb.querySingleResult("SELECT a FROM DcControllable a");
+      Controllable dcOb = (Controllable) ejb.querySingleResult("SELECT a FROM Controllable a");
       Assert.assertEquals(ControlEvent.INSERT, dcOb.getControlEvent());
    }
 
@@ -667,7 +666,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       Assert.assertEquals(String.valueOf(entity.getId()), res.getPrimaryKeyId());
       Assert.assertEquals(entity.getId(), res.getPrimaryKeyObject());
 
-      List<DcControllable> list1 = (List<DcControllable>) ejb.queryDcControllable();
+      List<Controllable> list1 = (List<Controllable>) ejb.queryControllable();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.SELECT, list1.get(0).getControlEvent());
 
@@ -705,7 +704,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       Assert.assertEquals(1, res.getParameters().size());
       Assert.assertEquals(LockModeType.PESSIMISTIC_READ, res.getParameters().iterator().next().getUnencodedValue());
 
-      List<DcControllable> list1 = (List<DcControllable>) ejb.queryDcControllable();
+      List<Controllable> list1 = (List<Controllable>) ejb.queryControllable();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.SELECT, list1.get(0).getControlEvent());
 
@@ -758,7 +757,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       }
       Assert.assertEquals("Igel", propsTE.getNameValue());
 
-      List<DcControllable> list1 = (List<DcControllable>) ejb.queryDcControllable();
+      List<Controllable> list1 = (List<Controllable>) ejb.queryControllable();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.SELECT, list1.get(0).getControlEvent());
 
@@ -799,7 +798,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       TEntity propsTE = (TEntity) res.getParameters().iterator().next().getUnencodedValue();
       Assert.assertEquals("Igel", propsTE.getNameValue());
 
-      List<DcControllable> list1 = (List<DcControllable>) ejb.queryDcControllable();
+      List<Controllable> list1 = (List<Controllable>) ejb.queryControllable();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.SELECT, list1.get(0).getControlEvent());
 
@@ -835,7 +834,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       JpaResource res = (JpaResource) list.get(0).getResource();
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
-      List<DcControllable> list1 = ejb.queryDcControllable();
+      List<Controllable> list1 = ejb.queryControllable();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(0).getControlEvent());
 
@@ -843,7 +842,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       entity2 = ejb.persist(entity2);
       log.debug(":" + entity2);
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(2, l.size());
 
       Context.sessionScope().setUser("test2");

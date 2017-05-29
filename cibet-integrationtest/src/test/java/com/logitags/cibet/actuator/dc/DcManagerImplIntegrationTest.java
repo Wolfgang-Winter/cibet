@@ -29,6 +29,7 @@ import com.cibethelper.entities.TEntity;
 import com.dumbster.smtp.SimpleSmtpServer;
 import com.dumbster.smtp.SmtpMessage;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
@@ -60,7 +61,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
 
       persistTEntity();
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       l = DcLoader.findUnreleased(TEntity.class.getName());
@@ -77,9 +78,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       TEntity ent = persistTEntity();
       Assert.assertEquals(0, ent.getId());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
 
       Context.sessionScope().setUser("test2");
@@ -110,9 +111,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       TEntity ent = persistTEntity();
       Assert.assertEquals(0, ent.getId());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("fizz", co.getApprovalUser());
 
       Context.sessionScope().setUser("test2");
@@ -151,9 +152,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
 
       persistTEntity();
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       co.release(applEman, null);
    }
 
@@ -182,9 +183,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       applEman.flush();
       applEman.clear();
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
 
       Context.sessionScope().setUser("tester2");
       co.release(applEman, "blabla");
@@ -226,9 +227,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       applEman.flush();
 
       // first release
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       Context.sessionScope().setUser("tester2");
       Context.requestScope().setRemark("Manni");
       co.release(applEman, "blabla1");
@@ -297,9 +298,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       applEman.flush();
 
       // first release
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       Context.sessionScope().setUser("tester2");
       try {
          co.release(applEman, "blabla1");
@@ -364,9 +365,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       applEman.flush();
       applEman.clear();
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       co.reject(applEman, "blabla1");
       applEman.flush();
 
@@ -396,9 +397,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       List<TComplexEntity> l = query.getResultList();
       Assert.assertEquals(0, l.size());
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       Context.sessionScope().setUser("tester2");
       co.release(applEman, "blabla1");
       applEman.flush();
@@ -446,9 +447,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
          Assert.assertEquals(0, server.getReceivedEmailSize());
 
          server = SimpleSmtpServer.start(8854);
-         List<DcControllable> l1 = DcLoader.findUnreleased();
+         List<Controllable> l1 = DcLoader.findUnreleased();
          Assert.assertEquals(1, l1.size());
-         DcControllable co = l1.get(0);
+         Controllable co = l1.get(0);
          Context.sessionScope().setUser("fizz");
          Context.sessionScope().setApprovalUser("Muzzi");
          co.release(applEman, "blabla1");
@@ -520,9 +521,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
          Assert.assertEquals("fizz@email.de", email.getHeaderValue("To"));
 
          server = SimpleSmtpServer.start(8854);
-         List<DcControllable> l1 = DcLoader.findUnreleased();
+         List<Controllable> l1 = DcLoader.findUnreleased();
          Assert.assertEquals(1, l1.size());
-         DcControllable co = l1.get(0);
+         Controllable co = l1.get(0);
          Context.sessionScope().setUser("fizz");
          Context.sessionScope().setApprovalUser("Muzzi");
          Context.sessionScope().setApprovalAddress("Muzzi@email.de");
@@ -602,9 +603,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       applEman.flush();
       applEman.clear();
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       co.reject(applEman, "blabla1");
 
       l1 = DcLoader.findUnreleased();
@@ -619,7 +620,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
    @Test(expected = IllegalArgumentException.class)
    public void rejectWithNoUser() throws ResourceApplyException {
       Context.sessionScope().setUser(null);
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.reject("dfdf");
    }
@@ -627,7 +628,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
    @Test(expected = InvalidUserException.class)
    public void reject6EyesWithNoUser() throws ResourceApplyException {
       Context.sessionScope().setUser(null);
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.FIRST_POSTPONED);
@@ -637,7 +638,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
    @Test(expected = InvalidUserException.class)
    public void reject6EyesInvalidUser() throws ResourceApplyException {
       Context.sessionScope().setUser("II");
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.FIRST_POSTPONED);
@@ -649,7 +650,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
    public void releaseWithNoUser() throws ResourceApplyException {
       Context.sessionScope().setUser(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(FourEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.POSTPONED);
@@ -660,7 +661,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
    public void release6EyesWithNoUser() throws ResourceApplyException {
       Context.sessionScope().setUser(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.FIRST_POSTPONED);
@@ -672,7 +673,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       Context.sessionScope().setUser("US");
       Configuration.instance().registerAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.FIRST_POSTPONED);
@@ -685,7 +686,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       Context.sessionScope().setUser("xx");
       Configuration.instance().registerAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.REJECTED);
@@ -696,7 +697,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
    public void releaseWithWrongStatus() throws ResourceApplyException {
       Context.sessionScope().setUser(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(FourEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.EXECUTED);
@@ -707,7 +708,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
    public void releaseWithWrongStatus2ManRule() throws ResourceApplyException {
       Context.sessionScope().setUser(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(TwoManRuleActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.EXECUTED);
@@ -728,7 +729,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
 
    @Test(expected = IllegalArgumentException.class)
    public void releaseInvalidEvent() throws ResourceApplyException {
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.REDO);
       sd.setActuator(FourEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.POSTPONED);
@@ -738,7 +739,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
    @Test(expected = IllegalArgumentException.class)
    public void rejectInvalidEvent() throws ResourceApplyException {
       Context.sessionScope().setUser("tester");
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.REDO);
       sd.setActuator(FourEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.POSTPONED);
@@ -771,10 +772,10 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       Assert.assertNotNull("entity with id " + entity.getId() + " not found", selEnt);
       Assert.assertEquals(5, selEnt.getCounter());
 
-      List<DcControllable> unreleased = DcLoader.findUnreleased();
+      List<Controllable> unreleased = DcLoader.findUnreleased();
       Assert.assertTrue(unreleased.size() == 1);
 
-      DcControllable coObj = unreleased.get(0);
+      Controllable coObj = unreleased.get(0);
       List<Difference> list = DcLoader.differences(coObj);
       // dcManager.compare(Context.requestScope().getEntityManager(), coObj.getResource());
       Assert.assertTrue(list.size() == 2);
@@ -801,7 +802,7 @@ public class DcManagerImplIntegrationTest extends DBHelper {
 
    @Test(expected = IllegalArgumentException.class)
    public void compareNotUpdatedObjects() {
-      DcControllable sd = new DcControllable();
+      Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.DELETE);
       DcLoader.differences(sd);
       // compare(Context.requestScope().getEntityManager(), sd.getResource());
@@ -825,9 +826,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       // Assert.assertEquals(3, tce.getLazyList().size());
 
       // first release
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       Context.sessionScope().setUser("tester2");
       Context.requestScope().setRemark("Manni");
       TComplexEntity tce2 = (TComplexEntity) co.release(applEman, "blabla1");
@@ -870,9 +871,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       TEntity ent = persistTEntity();
       Assert.assertEquals(0, ent.getId());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
 
       Context.sessionScope().setUser("test2");
@@ -931,9 +932,9 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       applEman.clear();
       applEman.getTransaction().begin();
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       log.debug("now reject");
       co.reject(applEman, "blabla1");
 

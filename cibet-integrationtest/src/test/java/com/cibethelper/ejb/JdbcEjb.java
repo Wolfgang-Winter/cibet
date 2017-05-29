@@ -42,7 +42,7 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 
 import com.cibethelper.base.CibetTestDataSource;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.context.CibetContext;
@@ -117,7 +117,7 @@ public class JdbcEjb implements JdbcEjbInterface {
    }
 
    @CibetContext
-   public void release(DcControllable dc) throws Exception {
+   public void release(Controllable dc) throws Exception {
       log.debug("now release");
 
       Connection con = null;

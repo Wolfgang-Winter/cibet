@@ -35,7 +35,7 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
@@ -666,9 +666,9 @@ public class JpaQueryIntegrationTest extends DBHelper {
       List<TEntity> tlist = q.getResultList();
       Assert.assertEquals(0, tlist.size());
 
-      List<DcControllable> list = DcLoader.findUnreleased(qq);
+      List<Controllable> list = DcLoader.findUnreleased(qq);
       Assert.assertEquals(1, list.size());
-      DcControllable ar = list.get(0);
+      Controllable ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
       Assert.assertEquals(qq, r.getTargetType());
       Assert.assertEquals(4, r.getParameters().size());
@@ -699,9 +699,9 @@ public class JpaQueryIntegrationTest extends DBHelper {
       } catch (NoResultException e) {
       }
 
-      List<DcControllable> list = DcLoader.findUnreleased(qq);
+      List<Controllable> list = DcLoader.findUnreleased(qq);
       Assert.assertEquals(1, list.size());
-      DcControllable ar = list.get(0);
+      Controllable ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
       Assert.assertEquals(qq, r.getTargetType());
       Assert.assertEquals(4, r.getParameters().size());
@@ -730,9 +730,9 @@ public class JpaQueryIntegrationTest extends DBHelper {
       } catch (NoResultException e) {
       }
 
-      List<DcControllable> list = DcLoader.findUnreleased(qq);
+      List<Controllable> list = DcLoader.findUnreleased(qq);
       Assert.assertEquals(1, list.size());
-      DcControllable ar = list.get(0);
+      Controllable ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
       Assert.assertEquals(qq, r.getTargetType());
       Assert.assertEquals(4, r.getParameters().size());
@@ -763,9 +763,9 @@ public class JpaQueryIntegrationTest extends DBHelper {
       } catch (NoResultException e) {
       }
 
-      List<DcControllable> list = DcLoader.findUnreleased(qq);
+      List<Controllable> list = DcLoader.findUnreleased(qq);
       Assert.assertEquals(1, list.size());
-      DcControllable ar = list.get(0);
+      Controllable ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
       Assert.assertEquals(qq, r.getTargetType());
       Assert.assertEquals(4, r.getParameters().size());

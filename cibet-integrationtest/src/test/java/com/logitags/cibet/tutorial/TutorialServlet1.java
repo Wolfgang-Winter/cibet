@@ -38,8 +38,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.DeniedEjbException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.lock.AlreadyLockedException;
 import com.logitags.cibet.actuator.lock.Locker;
@@ -135,9 +135,9 @@ public class TutorialServlet1 extends HttpServlet {
          Context.requestScope().getEntityManager().remove(ar);
       }
 
-      Query q4 = Context.requestScope().getEntityManager().createQuery("select d from DcControllable d");
-      List<DcControllable> dclist = q4.getResultList();
-      for (DcControllable dc : dclist) {
+      Query q4 = Context.requestScope().getEntityManager().createQuery("select d from Controllable d");
+      List<Controllable> dclist = q4.getResultList();
+      for (Controllable dc : dclist) {
          Context.requestScope().getEntityManager().remove(dc);
       }
 
@@ -175,9 +175,9 @@ public class TutorialServlet1 extends HttpServlet {
    private void release(HttpServletRequest req, HttpServletResponse resp) throws Exception {
       log.debug("release");
       ut.begin();
-      List<DcControllable> dcList = DcLoader.findUnreleased(Person.class.getName());
+      List<Controllable> dcList = DcLoader.findUnreleased(Person.class.getName());
       if (dcList.size() == 0) {
-         throw new Exception("no DcControllable found for Target Person");
+         throw new Exception("no Controllable found for Target Person");
       }
       Person person = (Person) dcList.get(0).release(applEman, "now released");
       ut.commit();
@@ -276,12 +276,12 @@ public class TutorialServlet1 extends HttpServlet {
          Context.sessionScope().setUser("batch");
          Context.sessionScope().setTenant("LockTest");
          ut.begin();
-         DcControllable lock1 = Locker.lock(Person.class, ControlEvent.SELECT, null);
-         DcControllable lock2 = Locker.lock(this.getClass(), "persist", ControlEvent.INVOKE, null);
+         Controllable lock1 = Locker.lock(Person.class, ControlEvent.SELECT, null);
+         Controllable lock2 = Locker.lock(this.getClass(), "persist", ControlEvent.INVOKE, null);
          ut.commit();
 
          PrintWriter writer = resp.getWriter();
-         writer.print(lock1.getDcControllableId() + ":" + lock2.getDcControllableId());
+         writer.print(lock1.getControllableId() + ":" + lock2.getControllableId());
          writer.close();
       } catch (AlreadyLockedException e) {
          log.error(e.getMessage(), e);
@@ -297,10 +297,10 @@ public class TutorialServlet1 extends HttpServlet {
       String lock2Id = req.getParameter("LOCK2");
 
       ut.begin();
-      DcControllable lock1 = Context.requestScope().getEntityManager().find(DcControllable.class, lock1Id);
+      Controllable lock1 = Context.requestScope().getEntityManager().find(Controllable.class, lock1Id);
       Locker.unlock(lock1, null);
 
-      DcControllable lock2 = Context.requestScope().getEntityManager().find(DcControllable.class, lock2Id);
+      Controllable lock2 = Context.requestScope().getEntityManager().find(Controllable.class, lock2Id);
       Locker.unlock(lock2, null);
       ut.commit();
 

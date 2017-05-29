@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventResult;
@@ -125,9 +125,9 @@ public class TutorialServlet2 extends HttpServlet {
          Context.requestScope().getEntityManager().remove(ar);
       }
 
-      Query q4 = Context.requestScope().getEntityManager().createQuery("select d from DcControllable d");
-      List<DcControllable> dclist = q4.getResultList();
-      for (DcControllable dc : dclist) {
+      Query q4 = Context.requestScope().getEntityManager().createQuery("select d from Controllable d");
+      List<Controllable> dclist = q4.getResultList();
+      for (Controllable dc : dclist) {
          Context.requestScope().getEntityManager().remove(dc);
       }
 
@@ -207,7 +207,7 @@ public class TutorialServlet2 extends HttpServlet {
    }
 
    private void release(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-      List<DcControllable> dcList = DcLoader.findUnreleased();
+      List<Controllable> dcList = DcLoader.findUnreleased();
       String info = (String) dcList.get(0).release("now method is called");
       PrintWriter writer = resp.getWriter();
       writer.print(info);
@@ -215,7 +215,7 @@ public class TutorialServlet2 extends HttpServlet {
    }
 
    private void releaseHttp(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-      List<DcControllable> dcList = DcLoader.findUnreleased();
+      List<Controllable> dcList = DcLoader.findUnreleased();
       HttpResponse response = (HttpResponse) dcList.get(0).release("now method is called");
 
       PrintWriter writer = resp.getWriter();
@@ -225,12 +225,12 @@ public class TutorialServlet2 extends HttpServlet {
 
    private void loadDc(HttpServletRequest req, HttpServletResponse resp) throws Exception {
       int expected = Integer.valueOf(req.getParameter("expected"));
-      List<DcControllable> dcList = DcLoader.findUnreleased();
+      List<Controllable> dcList = DcLoader.findUnreleased();
       if (dcList.size() != expected) {
-         throw new Exception("DcControllable list size is not " + expected + " but " + dcList.size());
+         throw new Exception("Controllable list size is not " + expected + " but " + dcList.size());
       }
 
-      String response = "no DcControllable found";
+      String response = "no Controllable found";
       if (expected > 0) {
          response = dcList.get(0).toString();
          log.info(response);

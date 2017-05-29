@@ -34,7 +34,7 @@ import org.apache.shiro.subject.Subject;
 
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.shiro.ShiroService;
 import com.logitags.cibet.context.Context;
@@ -116,9 +116,9 @@ public class TutorialServlet3 extends HttpServlet {
          Context.requestScope().getEntityManager().remove(ar);
       }
 
-      Query q4 = Context.requestScope().getEntityManager().createQuery("select d from DcControllable d");
-      List<DcControllable> dclist = q4.getResultList();
-      for (DcControllable dc : dclist) {
+      Query q4 = Context.requestScope().getEntityManager().createQuery("select d from Controllable d");
+      List<Controllable> dclist = q4.getResultList();
+      for (Controllable dc : dclist) {
          Context.requestScope().getEntityManager().remove(dc);
       }
 
@@ -255,7 +255,7 @@ public class TutorialServlet3 extends HttpServlet {
    }
 
    private void release(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-      List<DcControllable> dcList = DcLoader.findUnreleased();
+      List<Controllable> dcList = DcLoader.findUnreleased();
       ut.begin();
       Person person = (Person) dcList.get(0).release(applEman, "now name is changed");
       ut.commit();

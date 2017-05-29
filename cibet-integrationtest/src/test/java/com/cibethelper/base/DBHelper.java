@@ -50,8 +50,8 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.PostponedException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.EventResult;
@@ -133,17 +133,11 @@ public class DBHelper extends CoreTestBase {
          Context.internalRequestScope().getEntityManager().remove(ar);
       }
 
-      Query q4 = Context.internalRequestScope().getEntityManager().createQuery("select d from DcControllable d");
-      List<DcControllable> dclist = q4.getResultList();
-      for (DcControllable dc : dclist) {
+      Query q4 = Context.internalRequestScope().getEntityManager().createQuery("select d from Controllable d");
+      List<Controllable> dclist = q4.getResultList();
+      for (Controllable dc : dclist) {
          Context.internalRequestScope().getEntityManager().remove(dc);
       }
-
-      // Query q5 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
-      // Iterator<LockedObject> itLO = q5.getResultList().iterator();
-      // while (itLO.hasNext()) {
-      // Context.internalRequestScope().getEntityManager().remove(itLO.next());
-      // }
 
       Query q6 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
       Iterator<EventResult> itEV = q6.getResultList().iterator();

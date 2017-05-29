@@ -47,7 +47,7 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.scheduler.SchedulerActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
@@ -132,10 +132,10 @@ public class HttpSchedulerIT extends AbstractArquillian {
       readResponseBody(response);
 
       EntityManager cem = Context.requestScope().getEntityManager();
-      Query q = cem.createQuery("SELECT c FROM DcControllable c");
-      List<DcControllable> list = q.getResultList();
+      Query q = cem.createQuery("SELECT c FROM Controllable c");
+      List<Controllable> list = q.getResultList();
       Assert.assertEquals(1, list.size());
-      DcControllable dc = list.get(0);
+      Controllable dc = list.get(0);
       Assert.assertEquals(ExecutionStatus.SCHEDULED, dc.getExecutionStatus());
       Assert.assertEquals("sa2", dc.getActuator());
       Assert.assertNull(dc.getExecutionDate());
@@ -146,7 +146,7 @@ public class HttpSchedulerIT extends AbstractArquillian {
       cem.clear();
       // cem.getTransaction().commit();
       // cem.getTransaction().begin();
-      q = cem.createQuery("SELECT c FROM DcControllable c");
+      q = cem.createQuery("SELECT c FROM Controllable c");
       list = q.getResultList();
       // cem.getTransaction().commit();
       Assert.assertEquals(1, list.size());

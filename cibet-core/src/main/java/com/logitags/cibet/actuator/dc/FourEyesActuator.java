@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.common.AbstractActuator;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.actuator.common.PostponedException;
 import com.logitags.cibet.config.Configuration;
@@ -84,12 +85,12 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
    private boolean encrypt = false;
 
    /**
-    * flag if eager loading of a JPA resource is necessary before storing the DcControllable.
+    * flag if eager loading of a JPA resource is necessary before storing the Controllable.
     */
    private boolean loadEager = true;
 
    /**
-    * list of property names that will be stored as ResourceParameters with the DcControllable. Only applicable for
+    * list of property names that will be stored as ResourceParameters with the Controllable. Only applicable for
     * PERSIST events.
     */
    private Collection<String> storedProperties = new ArrayList<String>();
@@ -206,7 +207,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          return;
       }
 
-      DcControllable dcObj = null;
+      Controllable dcObj = null;
 
       switch (ctx.getControlEvent()) {
       case UPDATE:
@@ -257,14 +258,14 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          Context.internalRequestScope().getEntityManager().persist(dcObj);
 
          if (ctx.getException() != null && ctx.getException() instanceof PostponedException) {
-            ((PostponedException) ctx.getException()).setDcControllable(dcObj);
+            ((PostponedException) ctx.getException()).setControllable(dcObj);
          }
 
          notifyAssigned(ctx.getExecutionStatus(), dcObj);
       }
    }
 
-   protected void notifyAssigned(ExecutionStatus status, DcControllable dc) {
+   protected void notifyAssigned(ExecutionStatus status, Controllable dc) {
       if (sendAssignNotification && status == ExecutionStatus.POSTPONED && dc.getApprovalAddress() != null) {
          NotificationProvider notifProvider = Configuration.instance().getNotificationProvider();
          if (notifProvider != null) {
@@ -273,7 +274,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       }
    }
 
-   protected void notifyApproval(DcControllable dc) {
+   protected void notifyApproval(Controllable dc) {
       if (dc.getCreateAddress() != null) {
          NotificationProvider notifProvider = Configuration.instance().getNotificationProvider();
          if (notifProvider != null) {
@@ -290,8 +291,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       }
    }
 
-   protected DcControllable createControlledObject(ControlEvent event, EventMetadata ctx) {
-      DcControllable dc = new DcControllable();
+   protected Controllable createControlledObject(ControlEvent event, EventMetadata ctx) {
+      Controllable dc = new Controllable();
       dc.setControlEvent(event);
       dc.setCaseId(ctx.getCaseId());
       dc.setCreateUser(findUserId());
@@ -336,16 +337,16 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       Resource resource = ctx.getResource();
       String uniqueId = resource.getUniqueId();
       log.debug("check unapproved resource with id " + uniqueId);
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_UNIQUEID);
+      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_UNIQUEID);
       q.setParameter("uniqueId", uniqueId);
-      List<DcControllable> list = (List<DcControllable>) q.getResultList();
-      for (DcControllable dc : list) {
+      List<Controllable> list = (List<Controllable>) q.getResultList();
+      for (Controllable dc : list) {
          switch (dc.getExecutionStatus()) {
          case FIRST_POSTPONED:
          case FIRST_RELEASED:
          case PASSEDBACK:
          case POSTPONED:
-            String msg = "An unreleased Dual Control business case with ID " + dc.getDcControllableId() + " and status "
+            String msg = "An unreleased Dual Control business case with ID " + dc.getControllableId() + " and status "
                   + dc.getExecutionStatus() + " exists already for this resource of type " + resource.getTargetType()
                   + ". This Dual Control business case must be approved or rejected first.";
             log.info(msg);
@@ -360,9 +361,9 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
     * set actuator of the ControlledObject to FOUR_EYES.
     * 
     * @param dc
-    *           DcControllable object
+    *           Controllable object
     */
-   protected void setActuatorSpecificProperties(DcControllable dc) {
+   protected void setActuatorSpecificProperties(Controllable dc) {
       dc.setApprovalUser(Context.internalSessionScope().getApprovalUser());
       dc.setApprovalAddress(Context.internalSessionScope().getApprovalAddress());
    }
@@ -401,7 +402,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       this.jndiName = jndiName;
    }
 
-   protected ControlEvent controlEventForRelease(DcControllable co) {
+   protected ControlEvent controlEventForRelease(Controllable co) {
       switch (co.getControlEvent()) {
       case INVOKE:
          return ControlEvent.RELEASE_INVOKE;
@@ -414,14 +415,14 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       case SELECT:
          return ControlEvent.RELEASE_SELECT;
       default:
-         String msg = "Controlled object [" + co.getDcControllableId() + "] with control event " + co.getControlEvent()
+         String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be released";
          log.error(msg);
          throw new IllegalArgumentException(msg);
       }
    }
 
-   protected ControlEvent controlEventForReject(DcControllable co) {
+   protected ControlEvent controlEventForReject(Controllable co) {
       switch (co.getControlEvent()) {
       case INVOKE:
          return ControlEvent.REJECT_INVOKE;
@@ -434,14 +435,14 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       case SELECT:
          return ControlEvent.REJECT_SELECT;
       default:
-         String msg = "Controlled object [" + co.getDcControllableId() + "] with control event " + co.getControlEvent()
+         String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be rejected";
          log.error(msg);
          throw new IllegalArgumentException(msg);
       }
    }
 
-   protected ControlEvent controlEventForPassBack(DcControllable co) {
+   protected ControlEvent controlEventForPassBack(Controllable co) {
       switch (co.getControlEvent()) {
       case INVOKE:
          return ControlEvent.PASSBACK_INVOKE;
@@ -454,14 +455,14 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       case SELECT:
          return ControlEvent.PASSBACK_SELECT;
       default:
-         String msg = "Controlled object [" + co.getDcControllableId() + "] with control event " + co.getControlEvent()
+         String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be passed back";
          log.error(msg);
          throw new IllegalArgumentException(msg);
       }
    }
 
-   protected ControlEvent controlEventForSubmit(DcControllable co) {
+   protected ControlEvent controlEventForSubmit(Controllable co) {
       switch (co.getControlEvent()) {
       case INVOKE:
          return ControlEvent.SUBMIT_INVOKE;
@@ -474,7 +475,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       case SELECT:
          return ControlEvent.SUBMIT_SELECT;
       default:
-         String msg = "Controlled object [" + co.getDcControllableId() + "] with control event " + co.getControlEvent()
+         String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be submitted";
          log.error(msg);
          throw new IllegalArgumentException(msg);
@@ -485,9 +486,9 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
     * checks if the user id who releases is different from the user who created the controlled object.
     * 
     * @param co
-    *           DcControllable
+    *           Controllable
     */
-   protected void checkApprovalUserId(DcControllable co) throws InvalidUserException {
+   protected void checkApprovalUserId(Controllable co) throws InvalidUserException {
       String approvalUserId = Context.internalSessionScope().getUser();
       if (approvalUserId == null) {
          String msg = "Release without user id not possible. No user set in Context!";
@@ -504,7 +505,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
 
       if (co.getApprovalUser() != null && !co.getApprovalUser().equals(approvalUserId)) {
          String msg = "release failed: Only user " + co.getApprovalUser()
-               + " is allowed to release DcControllable with ID " + co.getDcControllableId();
+               + " is allowed to release Controllable with ID " + co.getControllableId();
          log.error(msg);
          throw new InvalidUserException(msg);
       }
@@ -514,11 +515,11 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
     * checks if the user id who rejects is allowed to reject.
     * 
     * @param co
-    *           DcControllable
+    *           Controllable
     * @throws InvalidUserException
     *            if user has no permission
     */
-   protected void checkRejectUserId(DcControllable co) throws InvalidUserException {
+   protected void checkRejectUserId(Controllable co) throws InvalidUserException {
       String userId = Context.internalSessionScope().getUser();
       if (userId == null) {
          String msg = "Reject/pass back without user id not possible. No user set in CibetContext!";
@@ -533,13 +534,13 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
 
       if (co.getApprovalUser() != null && !co.getApprovalUser().equals(userId)) {
          String msg = "reject/pass back failed: Only user" + co.getApprovalUser()
-               + " is allowed to reject/pass back DcControllable with ID " + co.getDcControllableId();
+               + " is allowed to reject/pass back Controllable with ID " + co.getControllableId();
          log.error(msg);
          throw new InvalidUserException(msg);
       }
    }
 
-   protected void checkSubmitUserId(DcControllable co) throws InvalidUserException {
+   protected void checkSubmitUserId(Controllable co) throws InvalidUserException {
       String userId = Context.internalSessionScope().getUser();
       if (userId == null) {
          String msg = "Submit without user id not possible. No user set in CibetContext!";
@@ -549,8 +550,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
 
       // only initiating user can submit
       if (!userId.equals(co.getCreateUser())) {
-         String msg = "submit failed: Only user " + co.getCreateUser() + " is allowed to submit DcControllable with ID "
-               + co.getDcControllableId();
+         String msg = "submit failed: Only user " + co.getCreateUser() + " is allowed to submit Controllable with ID "
+               + co.getControllableId();
          log.error(msg);
          throw new InvalidUserException(msg);
       }
@@ -564,7 +565,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
    }
 
    @Override
-   public Object release(DcControllable co, String remark) throws ResourceApplyException {
+   public Object release(Controllable co, String remark) throws ResourceApplyException {
       checkExecutionStatus("release", co);
 
       ControlEvent originalControlEvent = (ControlEvent) Context.internalRequestScope()
@@ -583,7 +584,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
             Context.internalRequestScope().setRemark(remark);
          }
 
-         Context.internalRequestScope().setProperty(InternalRequestScope.DCCONTROLLABLE, co);
+         Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLLABLE, co);
 
          Object result = co.getResource().apply(co.getControlEvent());
 
@@ -597,11 +598,11 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, originalControlEvent);
          Context.requestScope().setCaseId(originalCaseId);
          Context.internalRequestScope().setRemark(originalRemark);
-         Context.internalRequestScope().removeProperty(InternalRequestScope.DCCONTROLLABLE);
+         Context.internalRequestScope().removeProperty(InternalRequestScope.CONTROLLABLE);
       }
    }
 
-   protected void doRelease(DcControllable co) {
+   protected void doRelease(Controllable co) {
       EventResult eventResult = Context.internalRequestScope().getExecutedEventResult();
       if (eventResult == null) {
          eventResult = new EventResult();
@@ -627,19 +628,19 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       }
    }
 
-   protected void checkExecutionStatus(String action, DcControllable co) throws ResourceApplyException {
+   protected void checkExecutionStatus(String action, Controllable co) throws ResourceApplyException {
       if (co.getExecutionStatus() != ExecutionStatus.POSTPONED) {
-         String err = "Failed to " + action + " DcControllable with ID " + co.getDcControllableId()
+         String err = "Failed to " + action + " Controllable with ID " + co.getControllableId()
                + ": should be in status POSTPONED but is in status " + co.getExecutionStatus();
          log.warn(err);
          throw new ResourceApplyException(err);
       }
    }
 
-   protected void checkRejectExecutionStatus(DcControllable co) throws ResourceApplyException {
+   protected void checkRejectExecutionStatus(Controllable co) throws ResourceApplyException {
       if (co.getExecutionStatus() != ExecutionStatus.POSTPONED
             && co.getExecutionStatus() != ExecutionStatus.PASSEDBACK) {
-         String err = "Failed to reject DcControllable with ID " + co.getDcControllableId()
+         String err = "Failed to reject Controllable with ID " + co.getControllableId()
                + ": should be in status POSTPONED or PASSEDBACK but is in status " + co.getExecutionStatus();
          log.warn(err);
          throw new ResourceApplyException(err);
@@ -647,7 +648,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
    }
 
    @Override
-   public void reject(DcControllable co, String remark) throws ResourceApplyException {
+   public void reject(Controllable co, String remark) throws ResourceApplyException {
       checkRejectExecutionStatus(co);
       checkRejectUserId(co);
 
@@ -697,7 +698,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
    }
 
    @Override
-   public void passBack(DcControllable co, String remark) throws ResourceApplyException {
+   public void passBack(Controllable co, String remark) throws ResourceApplyException {
       checkExecutionStatus("pass back", co);
       checkRejectUserId(co);
 
@@ -748,7 +749,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
    }
 
    @Override
-   public void submit(DcControllable co, String remark) throws ResourceApplyException {
+   public void submit(Controllable co, String remark) throws ResourceApplyException {
       checkSubmitUserId(co);
 
       ControlEvent originalControlEvent = (ControlEvent) Context.internalRequestScope()

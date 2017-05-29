@@ -50,8 +50,8 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.DeniedException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator;
 import com.logitags.cibet.config.Configuration;
@@ -158,7 +158,7 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
       Assert.assertNull(list);
 
       // release
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.sessionScope().setUser("test2");
@@ -171,7 +171,7 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
       Context.sessionScope().setUser(USER);
       Assert.assertNull(resultList);
 
-      List<DcControllable> list2 = ejb.queryDcControllable();
+      List<Controllable> list2 = ejb.queryControllable();
       Assert.assertEquals(1, list2.size());
    }
 
@@ -206,7 +206,7 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
       Assert.assertNull(list);
 
       // release
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.sessionScope().setUser("test2");
@@ -227,7 +227,7 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(ExecutionStatus.DENIED, evResult.getChildResults().get(0).getExecutionStatus());
       Context.sessionScope().setUser(USER);
 
-      List<DcControllable> list2 = ejb.queryDcControllable();
+      List<Controllable> list2 = ejb.queryControllable();
       Assert.assertEquals(1, list2.size());
    }
 
@@ -261,7 +261,7 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
       Assert.assertNull(list);
 
       // release
-      List<DcControllable> l = ejb.findUnreleased();
+      List<Controllable> l = ejb.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Context.sessionScope().setUser("test2");
@@ -274,7 +274,7 @@ public class SpringCibetInterceptorIT extends AbstractArquillian {
       Context.sessionScope().setUser(USER);
       Assert.assertNull(resultList);
 
-      List<DcControllable> list2 = ejb.queryDcControllable();
+      List<Controllable> list2 = ejb.queryControllable();
       Assert.assertEquals(1, list2.size());
    }
 

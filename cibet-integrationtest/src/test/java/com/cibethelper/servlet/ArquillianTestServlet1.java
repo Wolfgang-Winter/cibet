@@ -79,7 +79,7 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ProxyConfig;
 import com.logitags.cibet.config.ProxyConfig.ProxyMode;
@@ -552,9 +552,9 @@ public class ArquillianTestServlet1 extends HttpServlet {
          Context.internalRequestScope().getEntityManager().remove(ar);
       }
 
-      Query q4 = Context.internalRequestScope().getEntityManager().createQuery("select d from DcControllable d");
-      List<DcControllable> dclist = q4.getResultList();
-      for (DcControllable dc : dclist) {
+      Query q4 = Context.internalRequestScope().getEntityManager().createQuery("select d from Controllable d");
+      List<Controllable> dclist = q4.getResultList();
+      for (Controllable dc : dclist) {
          Context.internalRequestScope().getEntityManager().remove(dc);
       }
 

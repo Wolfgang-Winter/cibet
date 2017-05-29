@@ -12,6 +12,7 @@
 
 package com.logitags.cibet.actuator.dc;
 
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.core.CibetException;
 
 /**
@@ -23,21 +24,21 @@ public class UnapprovedResourceException extends CibetException {
     */
    private static final long serialVersionUID = 1L;
 
-   private DcControllable unapprovedResource;
+   private Controllable unapprovedResource;
 
-   public UnapprovedResourceException(String message, DcControllable dc) {
+   public UnapprovedResourceException(String message, Controllable dc) {
       super(message);
       unapprovedResource = dc;
    }
 
-   public UnapprovedResourceException(DcControllable dc) {
+   public UnapprovedResourceException(Controllable dc) {
       unapprovedResource = dc;
    }
 
    /**
     * @return the unapprovedResource
     */
-   public DcControllable getUnapprovedResource() {
+   public Controllable getUnapprovedResource() {
       return unapprovedResource;
    }
 

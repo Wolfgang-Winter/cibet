@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ExecutionStatus;
 
@@ -102,7 +102,7 @@ public class EmailNotificationProvider implements NotificationProvider, Serializ
    }
 
    @Override
-   public void notify(ExecutionStatus status, DcControllable controllable) {
+   public void notify(ExecutionStatus status, Controllable controllable) {
       createSession();
       try {
          MimeMessage msg = new MimeMessage(session);
@@ -237,9 +237,9 @@ public class EmailNotificationProvider implements NotificationProvider, Serializ
       }
    }
 
-   private VelocityContext createVelocityContext(ExecutionStatus type, DcControllable c) {
+   private VelocityContext createVelocityContext(ExecutionStatus type, Controllable c) {
       VelocityContext ctx = new VelocityContext();
-      ctx.put("dcControllableId", c.getDcControllableId());
+      ctx.put("controllableId", c.getControllableId());
       ctx.put("firstApprovalUser", c.getFirstApprovalUser());
       ctx.put("firstApprovalDate", c.getFirstApprovalDate());
       ctx.put("firstApprovalAddress", c.getFirstApprovalAddress());

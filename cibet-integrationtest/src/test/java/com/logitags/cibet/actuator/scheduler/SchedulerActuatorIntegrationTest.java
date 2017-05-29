@@ -46,8 +46,8 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.PostponedException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
@@ -86,7 +86,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
 
    private void release() throws ResourceApplyException {
       Context.internalRequestScope().getEntityManager().clear();
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       Resource res = l.get(0).getResource();
@@ -136,9 +136,9 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
 
       Assert.assertEquals(0, ent.getId());
 
-      List<DcControllable> l = SchedulerLoader.findScheduled(TEntity.class.getName());
+      List<Controllable> l = SchedulerLoader.findScheduled(TEntity.class.getName());
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
       Assert.assertEquals(ExecutionStatus.SCHEDULED, co.getExecutionStatus());
       log.debug(co.getScheduledDate());
@@ -185,17 +185,17 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       TEntity ent = persistTEntity();
       Assert.assertEquals(0, ent.getId());
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
       log.debug(co.getScheduledDate());
       log.debug("uniqueId: " + co.getResource().getUniqueId());
       Assert.assertNotNull(co.getScheduledDate());
 
-      Map<DcControllable, List<Difference>> map = SchedulerLoader.scheduledDifferences(ent);
+      Map<Controllable, List<Difference>> map = SchedulerLoader.scheduledDifferences(ent);
       Assert.assertEquals(1, map.size());
-      Entry<DcControllable, List<Difference>> entry = map.entrySet().iterator().next();
+      Entry<Controllable, List<Difference>> entry = map.entrySet().iterator().next();
       Assert.assertNull(entry.getValue());
    }
 
@@ -212,12 +212,12 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       TEntity ent = persistTEntity();
       Assert.assertEquals(0, ent.getId());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
 
-      List<DcControllable> sl = SchedulerLoader.findScheduled();
+      List<Controllable> sl = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, sl.size());
 
       Context.sessionScope().setUser("test2");
@@ -255,12 +255,12 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       Assert.assertEquals(0, ent.getId());
       log.debug("Context.requestScope().getExecutedEventResult(): " + Context.requestScope().getExecutedEventResult());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
 
-      List<DcControllable> sl = SchedulerLoader.findScheduled();
+      List<Controllable> sl = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, sl.size());
 
       Context.sessionScope().setUser("test2");
@@ -301,9 +301,9 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       ent1.setStatValue(3434);
       applEman.flush();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      Query q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       MethodResource res = (MethodResource) co.getResource();
       Assert.assertEquals("setStatValue", res.getMethod());
@@ -315,7 +315,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
 
       Assert.assertEquals(55, ent1.getStatValue());
 
-      List<DcControllable> sl = SchedulerLoader.findScheduled();
+      List<Controllable> sl = SchedulerLoader.findScheduled();
       Assert.assertEquals(1, sl.size());
       Assert.assertEquals("SCHEDULER", sl.get(0).getActuator());
    }
@@ -331,14 +331,14 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       TEntity ent = persistTEntity();
       Assert.assertTrue(ent.getId() != 0);
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
 
       applEman.remove(ent);
       TEntity te = applEman.find(TEntity.class, ent.getId());
       Assert.assertNotNull(te);
 
-      List<DcControllable> sl = SchedulerLoader.findScheduled();
+      List<Controllable> sl = SchedulerLoader.findScheduled();
       Assert.assertEquals(1, sl.size());
    }
 
@@ -364,7 +364,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
 
-      List<DcControllable> sl = SchedulerLoader.findScheduled();
+      List<Controllable> sl = SchedulerLoader.findScheduled();
       Assert.assertEquals(1, sl.size());
 
       ent.setCounter(67);
@@ -394,7 +394,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
 
       ent.setCounter(5656);
@@ -403,7 +403,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       Assert.assertNotNull(te);
       Assert.assertEquals(5, te.getCounter());
 
-      List<DcControllable> sl = SchedulerLoader.findScheduled();
+      List<Controllable> sl = SchedulerLoader.findScheduled();
       Assert.assertEquals(1, sl.size());
    }
 
@@ -436,7 +436,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().begin();
       Assert.assertTrue(ent.getId() != 0);
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
 
       ent.setCounter(5656);
@@ -452,7 +452,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
 
       Map<String, Object> properties = new HashMap<String, Object>();
       properties.put("nameValue", "valuexx");
-      List<DcControllable> sl = SchedulerLoader.loadByProperties(TEntity.class, properties);
+      List<Controllable> sl = SchedulerLoader.loadByProperties(TEntity.class, properties);
       Assert.assertEquals(1, sl.size());
 
       Context.sessionScope().setUser("test2");
@@ -482,15 +482,15 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
          // added: Parameter name: __CLEAN_OBJECT, classname: com.cibethelper.entities.TEntity, value: TEntity id:
          // 19251, counter: 5, owner: testTenant, xCaltimestamp: null
 
-         // UPDATE CIB_RESOURCEPARAMETER SET dcControllableId = ? WHERE (PARAMETERID = ?)
+         // UPDATE CIB_RESOURCEPARAMETER SET controllableId = ? WHERE (PARAMETERID = ?)
          // bind => [34107bd3-9793-4928-bc57-4d65c22001f2, null]
-         // UPDATE CIB_RESOURCEPARAMETER SET dcControllableId = ? WHERE (PARAMETERID = ?)
+         // UPDATE CIB_RESOURCEPARAMETER SET controllableId = ? WHERE (PARAMETERID = ?)
          // bind => [34107bd3-9793-4928-bc57-4d65c22001f2, null]
 
          return;
       }
       Assert.assertEquals(1, sl.size());
-      DcControllable sl1 = sl.get(0);
+      Controllable sl1 = sl.get(0);
       Assert.assertEquals(ExecutionStatus.SCHEDULED, sl1.getExecutionStatus());
 
    }
@@ -545,9 +545,9 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       Context.requestScope().getEntityManager().getTransaction().commit();
       Context.requestScope().getEntityManager().getTransaction().begin();
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
       Assert.assertEquals(ExecutionStatus.SCHEDULED, co.getExecutionStatus());
       log.debug(co.getScheduledDate());
@@ -641,17 +641,17 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.clear();
       applEman.getTransaction().begin();
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
       Assert.assertEquals(ExecutionStatus.SCHEDULED, co.getExecutionStatus());
       log.debug(co.getScheduledDate());
       Assert.assertNotNull(co.getScheduledDate());
 
-      Map<DcControllable, List<Difference>> map = SchedulerLoader.scheduledDifferences(base2);
+      Map<Controllable, List<Difference>> map = SchedulerLoader.scheduledDifferences(base2);
       Assert.assertEquals(1, map.size());
-      Entry<DcControllable, List<Difference>> entry = map.entrySet().iterator().next();
+      Entry<Controllable, List<Difference>> entry = map.entrySet().iterator().next();
       Assert.assertNotNull(entry.getValue());
       Assert.assertEquals(2, entry.getValue().size());
 
@@ -757,8 +757,8 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
          base3 = applEman.merge(base3);
          Assert.fail();
       } catch (ScheduledException e) {
-         Assert.assertEquals(1, e.getScheduledDcControllables().size());
-         DcControllable dc = e.getScheduledDcControllables().iterator().next();
+         Assert.assertEquals(1, e.getScheduledControllables().size());
+         Controllable dc = e.getScheduledControllables().iterator().next();
          List<Difference> diffs = e.getDifferences(dc);
          for (Difference d : diffs) {
             log.debug("diffff: " + d);
@@ -800,12 +800,12 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       EventResult result = Context.requestScope().getExecutedEventResult();
       Assert.assertEquals(ExecutionStatus.POSTPONED, result.getExecutionStatus());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
 
-      List<DcControllable> sl = SchedulerLoader.findScheduled();
+      List<Controllable> sl = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, sl.size());
 
       Context.sessionScope().setUser("test2");
@@ -935,14 +935,14 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().begin();
       applEman.clear();
 
-      List<DcControllable> sl = SchedulerLoader.loadByUser(USER);
+      List<Controllable> sl = SchedulerLoader.loadByUser(USER);
       Assert.assertEquals(1, sl.size());
-      DcControllable co = sl.get(0);
+      Controllable co = sl.get(0);
       Assert.assertEquals("sm8", co.getActuator());
       Assert.assertEquals(ExecutionStatus.REJECTED, co.getExecutionStatus());
       Assert.assertNotNull(co.getExecutionDate());
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
       co = sl.get(0);
       Context.internalRequestScope().getEntityManager().remove(co);
@@ -1000,9 +1000,9 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().begin();
       applEman.clear();
 
-      List<DcControllable> sl = SchedulerLoader.loadByUser(USER);
+      List<Controllable> sl = SchedulerLoader.loadByUser(USER);
       Assert.assertEquals(1, sl.size());
-      DcControllable co = sl.get(0);
+      Controllable co = sl.get(0);
       Assert.assertEquals("SCHED1", co.getActuator());
       Assert.assertEquals(ExecutionStatus.EXECUTED, co.getExecutionStatus());
       Assert.assertNotNull(co.getExecutionDate());
@@ -1012,7 +1012,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       Assert.assertTrue("polo".equals(telist.get(0).getOwner()) || "polo2".equals(telist.get(0).getOwner()));
       Assert.assertTrue("polo".equals(telist.get(1).getOwner()) || "polo2".equals(telist.get(1).getOwner()));
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
       co = sl.get(0);
       Context.internalRequestScope().getEntityManager().remove(co);
@@ -1063,7 +1063,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
 
-      List<DcControllable> dcList = SchedulerLoader.findScheduled(TComplexEntity.class.getName());
+      List<Controllable> dcList = SchedulerLoader.findScheduled(TComplexEntity.class.getName());
       Assert.assertEquals(1, dcList.size());
       dcList.get(0).reject(applEman, "my rejection");
 
@@ -1071,9 +1071,9 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().begin();
       applEman.clear();
 
-      List<DcControllable> sl = SchedulerLoader.loadByUser(USER);
+      List<Controllable> sl = SchedulerLoader.loadByUser(USER);
       Assert.assertEquals(1, sl.size());
-      DcControllable co = sl.get(0);
+      Controllable co = sl.get(0);
       Assert.assertEquals("SCHED1", co.getActuator());
       Assert.assertEquals(ExecutionStatus.REJECTED, co.getExecutionStatus());
       Assert.assertNull(co.getExecutionDate());
@@ -1103,7 +1103,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
          Context.internalRequestScope().getEntityManager().remove(ar);
       }
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
       co = sl.get(0);
       Context.internalRequestScope().getEntityManager().remove(co);
@@ -1156,7 +1156,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
 
-      List<DcControllable> dcList = SchedulerLoader.findScheduled(TComplexEntity.class.getName());
+      List<Controllable> dcList = SchedulerLoader.findScheduled(TComplexEntity.class.getName());
       Assert.assertEquals(1, dcList.size());
       dcList.get(0).reject(applEman, "my rejection");
 
@@ -1164,9 +1164,9 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().begin();
       applEman.clear();
 
-      List<DcControllable> sl = SchedulerLoader.loadByUser(USER);
+      List<Controllable> sl = SchedulerLoader.loadByUser(USER);
       Assert.assertEquals(1, sl.size());
-      DcControllable co = sl.get(0);
+      Controllable co = sl.get(0);
       Assert.assertEquals("SCHED1", co.getActuator());
       Assert.assertEquals(ExecutionStatus.REJECTED, co.getExecutionStatus());
       Assert.assertNull(co.getExecutionDate());
@@ -1196,7 +1196,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
          Context.internalRequestScope().getEntityManager().remove(ar);
       }
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
       co = sl.get(0);
       Context.internalRequestScope().getEntityManager().remove(co);
@@ -1253,7 +1253,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
 
-      List<DcControllable> dcList = SchedulerLoader.findScheduled(TComplexEntity.class.getName());
+      List<Controllable> dcList = SchedulerLoader.findScheduled(TComplexEntity.class.getName());
       Assert.assertEquals(1, dcList.size());
       dcList.get(0).release(applEman, "my rejection");
 
@@ -1261,9 +1261,9 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().begin();
       applEman.clear();
 
-      List<DcControllable> sl = SchedulerLoader.loadByUser(USER);
+      List<Controllable> sl = SchedulerLoader.loadByUser(USER);
       Assert.assertEquals(1, sl.size());
-      DcControllable co = sl.get(0);
+      Controllable co = sl.get(0);
       Assert.assertEquals("SCHED1", co.getActuator());
       Assert.assertEquals(ExecutionStatus.EXECUTED, co.getExecutionStatus());
       Assert.assertNotNull(co.getExecutionDate());
@@ -1293,7 +1293,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
          Context.internalRequestScope().getEntityManager().remove(ar);
       }
 
-      List<DcControllable> l = SchedulerLoader.findScheduled();
+      List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
       co = sl.get(0);
       Context.internalRequestScope().getEntityManager().remove(co);

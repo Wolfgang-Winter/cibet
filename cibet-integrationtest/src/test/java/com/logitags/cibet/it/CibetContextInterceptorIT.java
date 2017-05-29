@@ -83,7 +83,7 @@ import com.cibethelper.servlet.GeneralServlet;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.authentication.AbstractAuthenticationProvider;
@@ -337,7 +337,7 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals("klaus", list.get(0).getCreateUser());
       Assert.assertEquals(ExecutionStatus.POSTPONED, list.get(0).getExecutionStatus());
 
-      List<DcControllable> dlist = DcLoader.loadByUser("klaus");
+      List<Controllable> dlist = DcLoader.loadByUser("klaus");
       Assert.assertEquals(1, dlist.size());
       Assert.assertEquals(RemoteEJBInvoker.class.getName(),
             ((EjbResource) dlist.get(0).getResource()).getInvokerClass());

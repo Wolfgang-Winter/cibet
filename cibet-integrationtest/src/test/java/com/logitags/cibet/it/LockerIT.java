@@ -45,7 +45,7 @@ import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.common.Actuator;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.lock.AlreadyLockedException;
 import com.logitags.cibet.actuator.lock.LockActuator;
 import com.logitags.cibet.actuator.lock.Locker;
@@ -111,7 +111,7 @@ public class LockerIT extends AbstractArquillian {
       schemes.add(LockActuator.DEFAULTNAME);
       registerSetpoint(CibetTestEJB.class, schemes, "testInvoke", ControlEvent.INVOKE, ControlEvent.RELEASE_INVOKE);
 
-      DcControllable lo = ejb.lockMethodFromClass();
+      Controllable lo = ejb.lockMethodFromClass();
       Assert.assertNotNull(lo);
 
       TEntity entity = createTEntity(5, "valuexx");
@@ -125,7 +125,7 @@ public class LockerIT extends AbstractArquillian {
    @Test(expected = AlreadyLockedException.class)
    public void lockTwice() throws Exception {
       log.info("start lockTwice()");
-      DcControllable lo = ejb.lockMethodFromClass();
+      Controllable lo = ejb.lockMethodFromClass();
       Assert.assertNotNull(lo);
       lo = ejb.lockMethodFromClass();
    }
@@ -137,7 +137,7 @@ public class LockerIT extends AbstractArquillian {
       schemes.add(LockActuator.DEFAULTNAME);
       registerSetpoint(CibetTestEJB.class, schemes, "testInvoke", ControlEvent.INVOKE, ControlEvent.RELEASE_INVOKE);
 
-      DcControllable lo = ejb.lockMethodFromClass();
+      Controllable lo = ejb.lockMethodFromClass();
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("Hans");
@@ -167,9 +167,9 @@ public class LockerIT extends AbstractArquillian {
       schemes.add(LockActuator.DEFAULTNAME);
       registerSetpoint(CibetTestEJB.class, schemes, "testInvoke", ControlEvent.INVOKE, ControlEvent.RELEASE_INVOKE);
 
-      DcControllable lo = ejb.lockMethodFromClass();
+      Controllable lo = ejb.lockMethodFromClass();
       Assert.assertNotNull(lo);
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
 
       TEntity entity = createTEntity(5, "valuexx");

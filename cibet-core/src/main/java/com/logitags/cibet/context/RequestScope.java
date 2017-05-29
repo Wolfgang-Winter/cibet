@@ -175,7 +175,7 @@ public interface RequestScope extends ApplicationScope {
    boolean isIgnoreScheduledException();
 
    /**
-    * Resources in archives and DcControllables can be grouped. For JPA resources the group id is per default
+    * Resources in archives and Controllables can be grouped. For JPA resources the group id is per default
     * 'targetType'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
     * scope context before one of the Archive-, Dc- or Scheduler actuators are applied.
     * 
@@ -184,7 +184,7 @@ public interface RequestScope extends ApplicationScope {
    String getGroupId();
 
    /**
-    * Resources in archives and DcControllables can be grouped. For JPA resources the group id is per default
+    * Resources in archives and Controllables can be grouped. For JPA resources the group id is per default
     * 'targetType'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
     * scope context before one of the Archive-, Dc- or Scheduler actuators are applied.
     * 

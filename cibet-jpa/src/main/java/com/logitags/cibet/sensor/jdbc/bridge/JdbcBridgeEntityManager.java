@@ -37,12 +37,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.archive.Archive;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.core.AnnotationNotFoundException;
 import com.logitags.cibet.core.AnnotationUtil;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.sensor.jdbc.def.ArchiveDefinition;
-import com.logitags.cibet.sensor.jdbc.def.DcControllableDefinition;
+import com.logitags.cibet.sensor.jdbc.def.ControllableDefinition;
 import com.logitags.cibet.sensor.jdbc.def.EntityDefinition;
 import com.logitags.cibet.sensor.jdbc.def.EventResultDefinition;
 import com.logitags.cibet.sensor.jdbc.def.PseudoEntityDefinition;
@@ -166,13 +166,13 @@ public class JdbcBridgeEntityManager implements EntityManager {
          return;
 
       ArchiveDefinition arDef = ArchiveDefinition.getInstance();
-      DcControllableDefinition dcDef = DcControllableDefinition.getInstance();
+      ControllableDefinition dcDef = ControllableDefinition.getInstance();
       // LockedObjectDefinition loDef = LockedObjectDefinition.getInstance();
       EventResultDefinition erDef = EventResultDefinition.getInstance();
       ResourceDefinition rDef = ResourceDefinition.getInstance();
 
       registerEntityDefinition(Archive.class, arDef);
-      registerEntityDefinition(DcControllable.class, dcDef);
+      registerEntityDefinition(Controllable.class, dcDef);
       // registerEntityDefinition(LockedObject.class, loDef);
       registerEntityDefinition(EventResult.class, erDef);
       registerEntityDefinition(JdbcResource.class, rDef);

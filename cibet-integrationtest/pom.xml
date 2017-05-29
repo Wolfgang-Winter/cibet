@@ -436,7 +436,7 @@
 <!--                         <include>com/logitags/cibet/sensor/jdbc/def/*.java</include> -->
 <!--                         <include>com/logitags/cibet/sensor/jdbc/driver/*.java</include> -->
 <!--                         <include>**/JdbcStatementIT.java</include> -->
-                        <include>**/LockerIT.java</include>
+                        <include>**/CibetContextInterceptorIT.java</include>
 							</includes>
 							<enableAssertions>false</enableAssertions>
 							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx1024m -Xms1024m</argLine>

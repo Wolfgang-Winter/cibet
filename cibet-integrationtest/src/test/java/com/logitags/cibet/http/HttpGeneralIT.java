@@ -62,7 +62,7 @@ import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.GeneralServlet;
 import com.logitags.cibet.actuator.archive.Archive;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventResult;
@@ -76,7 +76,7 @@ public class HttpGeneralIT extends AbstractArquillian {
 
    private static Logger log = Logger.getLogger(HttpGeneralIT.class);
 
-   protected static final String SEL_DCCONTROLLABLE = "SELECT c FROM DcControllable c WHERE c.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED";
+   protected static final String SEL_CONTROLLABLE = "SELECT c FROM Controllable c WHERE c.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED";
 
    private DBHelper dbHelper = new DBHelper();
 
@@ -207,8 +207,8 @@ public class HttpGeneralIT extends AbstractArquillian {
          log.debug(te2);
          log.debug("AAAA:: " + te2.getEagerList().size());
 
-         Query q = localcibet.createQuery("select a from DcControllable a");
-         DcControllable dc = (DcControllable) q.getSingleResult();
+         Query q = localcibet.createQuery("select a from Controllable a");
+         Controllable dc = (Controllable) q.getSingleResult();
          log.debug(dc);
          log.debug("ExecutionDate:" + dc.getExecutionDate());
       }
@@ -268,8 +268,8 @@ public class HttpGeneralIT extends AbstractArquillian {
       tentList = (List<TEntity>) dbHelper.select("SELECT e FROM TEntity e");
       Assert.assertEquals(0, tentList.size());
 
-      q = localcibet.createQuery(SEL_DCCONTROLLABLE);
-      List<DcControllable> dcList = q.getResultList();
+      q = localcibet.createQuery(SEL_CONTROLLABLE);
+      List<Controllable> dcList = q.getResultList();
       Assert.assertEquals(1, dcList.size());
       Assert.assertEquals(ExecutionStatus.POSTPONED, dcList.get(0).getExecutionStatus());
 
@@ -290,7 +290,7 @@ public class HttpGeneralIT extends AbstractArquillian {
       body = executeGET(getBaseURL() + "/releasePersist.cibet");
       Assert.assertEquals("TEntity not released", body);
 
-      q = localcibet.createQuery(SEL_DCCONTROLLABLE);
+      q = localcibet.createQuery(SEL_CONTROLLABLE);
       dcList = q.getResultList();
       Assert.assertEquals(1, dcList.size());
       Assert.assertEquals(ExecutionStatus.POSTPONED, dcList.get(0).getExecutionStatus());
@@ -319,13 +319,13 @@ public class HttpGeneralIT extends AbstractArquillian {
 
       int index = body.indexOf(":");
       String id = body.substring(index + 2);
-      log.info("search TEntity and DcControllable with ID " + id);
+      log.info("search TEntity and Controllable with ID " + id);
 
       tentList = (List<TEntity>) dbHelper.select("SELECT e FROM TEntity e WHERE e.id=" + Long.parseLong(id));
       Assert.assertEquals(1, tentList.size());
 
       localcibet.clear();
-      q = localcibet.createQuery("SELECT e FROM DcControllable e WHERE e.resource.primaryKeyId = :id");
+      q = localcibet.createQuery("SELECT e FROM Controllable e WHERE e.resource.primaryKeyId = :id");
       q.setParameter("id", id);
       dcList = q.getResultList();
       Assert.assertEquals(1, dcList.size());
@@ -399,8 +399,8 @@ public class HttpGeneralIT extends AbstractArquillian {
       List<Archive> list = q.getResultList();
       Assert.assertEquals(1, list.size());
 
-      q = localcibet.createQuery("SELECT d FROM DcControllable d");
-      List<DcControllable> dcl = q.getResultList();
+      q = localcibet.createQuery("SELECT d FROM Controllable d");
+      List<Controllable> dcl = q.getResultList();
       Assert.assertEquals(1, dcl.size());
       Assert.assertEquals(ExecutionStatus.POSTPONED, dcl.get(0).getExecutionStatus());
 
@@ -438,7 +438,7 @@ public class HttpGeneralIT extends AbstractArquillian {
       Assert.assertEquals("Answer: EjbService.logThis called with: Hallo Cibet", body);
 
       localcibet.clear();
-      q = localcibet.createQuery("SELECT d FROM DcControllable d");
+      q = localcibet.createQuery("SELECT d FROM Controllable d");
       dcl = q.getResultList();
       Assert.assertEquals(1, dcl.size());
       Assert.assertEquals(ExecutionStatus.EXECUTED, dcl.get(0).getExecutionStatus());

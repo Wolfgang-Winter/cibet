@@ -42,9 +42,9 @@ import com.cibethelper.entities.TCompareEntity;
 import com.cibethelper.entities.TComplexEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.DeniedException;
 import com.logitags.cibet.actuator.common.PostponedException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
@@ -75,7 +75,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
 
    private void release() throws ResourceApplyException {
       Context.internalRequestScope().getEntityManager().clear();
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
       MethodResource res = (MethodResource) l.get(0).getResource();
@@ -126,9 +126,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("setStatValue", res.getMethod());
@@ -161,9 +161,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setStaticStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("setStaticStatValue", res.getMethod());
@@ -196,9 +196,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("Hasenfuss", res.getInvokerParam());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("setStatValue", res.getMethod());
@@ -231,9 +231,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
@@ -267,9 +267,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("Walter", res.getInvokerParam());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
@@ -304,9 +304,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
@@ -339,9 +339,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
@@ -374,9 +374,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
@@ -411,9 +411,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("com.cibethelper.base.SingletonFactory.create2()", res.getInvokerParam());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
@@ -458,9 +458,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals(SpringBeanInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("MySpringExampleBean", res.getInvokerParam());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
@@ -505,9 +505,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals(SpringBeanInvoker.class.getName(), res.getInvokerClass());
       Assert.assertTrue(res.getInvokerParam() == null || "".equals(res.getInvokerParam()));
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
@@ -543,9 +543,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("setCompValue", res.getMethod());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.INVOKE, dcOb.getControlEvent());
    }
 
@@ -575,7 +575,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Archive ar = list.get(0);
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
    }
 
@@ -733,9 +733,9 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("getName", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable co = (DcControllable) q.getSingleResult();
+      Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
       res = (MethodResource) co.getResource();
       Assert.assertEquals("getName", res.getMethod());

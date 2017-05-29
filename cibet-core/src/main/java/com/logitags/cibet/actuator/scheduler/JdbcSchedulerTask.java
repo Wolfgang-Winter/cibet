@@ -40,7 +40,7 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.context.Context;
 
 public class JdbcSchedulerTask extends SESchedulerTask implements SchedulerTask {
@@ -87,11 +87,11 @@ public class JdbcSchedulerTask extends SESchedulerTask implements SchedulerTask 
          Context.sessionScope().setUser("SchedulerTask-" + timerConfig.getSchedulerName());
 
          EntityManager em = Context.internalRequestScope().getEntityManager();
-         TypedQuery<DcControllable> q = em.createNamedQuery(DcControllable.SEL_SCHED_BY_DATE, DcControllable.class);
+         TypedQuery<Controllable> q = em.createNamedQuery(Controllable.SEL_SCHED_BY_DATE, Controllable.class);
          q.setParameter("actuator", timerConfig.getSchedulerName());
          q.setParameter("currentDate", new Date(), TemporalType.TIMESTAMP);
-         List<DcControllable> list = q.getResultList();
-         for (DcControllable co : list) {
+         List<Controllable> list = q.getResultList();
+         for (Controllable co : list) {
             co.decrypt();
             process(co);
 

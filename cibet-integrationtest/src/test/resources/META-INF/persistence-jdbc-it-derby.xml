@@ -8,7 +8,7 @@
 		<provider>com.logitags.cibet.sensor.jdbc.bridge.JdbcBridgeProvider</provider>
 		<jta-data-source>java:/CibetDS</jta-data-source>
 		<class>com.logitags.cibet.actuator.archive.Archive</class>
-		<class>com.logitags.cibet.actuator.dc.DcControllable</class>
+		<class>com.logitags.cibet.actuator.common.Controllable</class>
 		<class>com.logitags.cibet.core.EventResult</class>
 		<class>com.logitags.cibet.resource.ResourceParameter</class>
 		<class>com.logitags.cibet.resource.Resource</class>

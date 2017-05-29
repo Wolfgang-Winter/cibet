@@ -61,8 +61,7 @@ public abstract class JdbcHelper extends CoreTestBase {
    private static final String DEL_RESOURCE = "delete from cib_resource";
    private static final String DEL_SYNT2ENTITY = "delete from cib_syntetic2entity";
    private static final String DEL_ARCHIVEPARAMETER = "delete from CIB_RESOURCEPARAMETER";
-   private static final String DEL_DCCONTROLLABLE = "delete from CIB_DCCONTROLLABLE";
-   private static final String DEL_LOCKEDOBJECT = "delete from CIB_LOCKEDOBJECT";
+   private static final String DEL_CONTROLLABLE = "delete from CIB_CONTROLLABLE";
 
    protected static final String USER = "THE_USER";
 
@@ -124,13 +123,9 @@ public abstract class JdbcHelper extends CoreTestBase {
          count = stmt.executeUpdate();
          log.info(count + " records cleaned from table CIB_ARCHIVE");
 
-         stmt = connection.prepareStatement(DEL_DCCONTROLLABLE);
+         stmt = connection.prepareStatement(DEL_CONTROLLABLE);
          count = stmt.executeUpdate();
-         log.info(count + " records cleaned from table CIB_DCCONTROLLABLE");
-
-         stmt = connection.prepareStatement(DEL_LOCKEDOBJECT);
-         count = stmt.executeUpdate();
-         log.info(count + " records cleaned from table CIB_LOCKEDOBJECT");
+         log.info(count + " records cleaned from table CIB_CONTROLLABLE");
 
          stmt = connection.prepareStatement(DEL_RESOURCE);
          count = stmt.executeUpdate();

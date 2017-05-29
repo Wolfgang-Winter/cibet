@@ -47,6 +47,8 @@ Version 2.0 ()
   
   * LockedObject removed, moved to DcControllable + Resource
   
+  * dc.DcControllable moved to common.Controllable
+  
   
 Version 1.9 (9.10.2016)
 

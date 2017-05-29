@@ -27,7 +27,7 @@ package com.cibethelper.ejb;
 import java.util.List;
 
 import com.cibethelper.entities.TEntity;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.lock.AlreadyLockedException;
 import com.logitags.cibet.core.EventResult;
 
@@ -43,7 +43,7 @@ public interface RemoteEJB {
 
    EventResult executeUpdateQuery(String qn, Object... objects);
 
-   DcControllable lock(String targetType) throws AlreadyLockedException;
+   Controllable lock(String targetType) throws AlreadyLockedException;
 
    List<Object> testInvoke(String str1, int int1, int int2, byte[] bytes1, TEntity entity, Long long1);
 

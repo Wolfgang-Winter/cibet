@@ -17,7 +17,7 @@ import java.util.Set;
 import com.logitags.cibet.resource.ResourceParameter;
 
 /**
- * interface to execute the event of an Archive or DcControllable.
+ * interface to execute the event of an Archive or Controllable.
  */
 public interface Invoker {
 

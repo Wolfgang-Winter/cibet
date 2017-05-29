@@ -22,12 +22,12 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.actuator.dc;
+package com.logitags.cibet.actuator.common;
 
 import java.io.Serializable;
 import java.util.Comparator;
 
-public class DcControllableComparator implements Serializable, Comparator<DcControllable> {
+public class ControllableComparator implements Serializable, Comparator<Controllable> {
 
    /**
     * 
@@ -35,9 +35,9 @@ public class DcControllableComparator implements Serializable, Comparator<DcCont
    private static final long serialVersionUID = 8017710795553467074L;
 
    @Override
-   public int compare(DcControllable d1, DcControllable d2) {
+   public int compare(Controllable d1, Controllable d2) {
       if (d1 == null || d2 == null)
-         throw new IllegalArgumentException("DcControllable is null");
+         throw new IllegalArgumentException("Controllable is null");
       return -(d1.getCreateDate().compareTo(d2.getCreateDate()));
    }
 

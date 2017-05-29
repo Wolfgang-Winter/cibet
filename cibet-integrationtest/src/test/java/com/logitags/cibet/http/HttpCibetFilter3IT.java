@@ -46,7 +46,7 @@ import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.cibethelper.servlet.ContextSetFilter;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
@@ -103,9 +103,9 @@ public class HttpCibetFilter3IT extends AbstractArquillian {
       new ConfigurationService().reinitSetpoints();
    }
 
-   private DcControllable checkDc(String method) throws Exception {
+   private Controllable checkDc(String method) throws Exception {
       log.debug("now check");
-      List<DcControllable> list = null;
+      List<Controllable> list = null;
       for (int i = 1; i < 6; i++) {
          list = DcLoader.findUnreleased();
          if (1 == list.size())
@@ -116,7 +116,7 @@ public class HttpCibetFilter3IT extends AbstractArquillian {
       }
 
       Assert.assertEquals(1, list.size());
-      DcControllable ar = list.get(0);
+      Controllable ar = list.get(0);
       HttpRequestResource res = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals(getBaseURL() + "/othereee", res.getTargetType());
@@ -136,7 +136,7 @@ public class HttpCibetFilter3IT extends AbstractArquillian {
       HttpResponse response = client.execute(getMethod);
       Assert.assertEquals(HttpStatus.SC_ACCEPTED, response.getStatusLine().getStatusCode());
       getMethod.abort();
-      DcControllable dc = checkDc("GET");
+      Controllable dc = checkDc("GET");
       HttpRequestResource res = (HttpRequestResource) dc.getResource();
       // if ("EmbeddedTomcat7".equals(container.getName())) {
       // // Tomcat7 adds an ATTRIBUTE 'org.apache.catalina.ASYNC_SUPPORTED'

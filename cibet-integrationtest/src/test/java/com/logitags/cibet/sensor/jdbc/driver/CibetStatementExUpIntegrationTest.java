@@ -34,9 +34,9 @@ import com.cibethelper.base.JdbcHelper;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.DeniedException;
 import com.logitags.cibet.actuator.common.InvalidUserException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.SixEyesActuator;
@@ -229,16 +229,16 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertTrue(!rs.next());
 
       rs = query(
-            "select d.*, r.primarykeyid, r.targettype from cib_dccontrollable d, cib_resource r where d.resourceid = r.resourceid");
+            "select d.*, r.primarykeyid, r.targettype from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
       Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
 
       log.debug("now release");
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
 
       Context.sessionScope().setUser("test2");
       Object res = co.release(Context.requestScope().getEntityManager(), null);
@@ -281,7 +281,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(255, rs.getInt(3));
 
       rs = query(
-            "select d.*, r.primarykeyid, r.targettype, r.target from cib_dccontrollable d, cib_resource r where d.resourceid = r.resourceid");
+            "select d.*, r.primarykeyid, r.targettype, r.target from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("UPDATE", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
@@ -290,9 +290,9 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
             CibetUtil.decode(rs.getBytes("TARGET")));
 
       log.debug("now release");
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
 
       Context.sessionScope().setUser("test2");
       Object res = co.release(new JdbcBridgeEntityManager(connection), null);
@@ -326,7 +326,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertTrue(rs.next());
 
       rs = query(
-            "select d.*, r.primarykeyid, r.targettype, r.target from cib_dccontrollable d, cib_resource r where d.resourceid = r.resourceid");
+            "select d.*, r.primarykeyid, r.targettype, r.target from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("DELETE", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
@@ -334,9 +334,9 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals("delete from cib_testentity WHERE id=5 ", CibetUtil.decode(rs.getBytes("TARGET")));
 
       log.debug("now release");
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
 
       Context.sessionScope().setUser("test2");
       Object res = co.release(new JdbcBridgeEntityManager(connection), null);
@@ -377,9 +377,9 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals("5", ((JdbcResource) ar.getResource()).getPrimaryKeyId());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.INSERT, dcOb.getControlEvent());
    }
 
@@ -411,7 +411,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertTrue(
             ControlEvent.INSERT == ar.getControlEvent() || ControlEvent.RELEASE_INSERT == ar.getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
    }
 
@@ -436,9 +436,9 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
 
       log.info("now release");
       Context.sessionScope().setSecondUser("secondUser");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.INSERT, dcOb.getControlEvent());
       Object res = dcOb.release(new JdbcBridgeEntityManager(connection), "2man rule test");
       checkResult(res);
@@ -489,9 +489,9 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Archive ar = list.get(0);
       Assert.assertEquals(ControlEvent.DELETE, ar.getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.DELETE, dcOb.getControlEvent());
    }
 
@@ -525,7 +525,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertTrue(
             ControlEvent.DELETE == ar.getControlEvent() || ControlEvent.RELEASE_DELETE == ar.getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
    }
 
@@ -555,9 +555,9 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
 
       log.info("now release");
       Context.sessionScope().setSecondUser("secondUser");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.DELETE, dcOb.getControlEvent());
       Object res = dcOb.release(new JdbcBridgeEntityManager(connection), "2man rule test");
       checkResult(res);
@@ -607,9 +607,9 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Archive ar = list.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, ar.getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
    }
 
@@ -644,7 +644,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertTrue(
             ControlEvent.UPDATE == ar.getControlEvent() || ControlEvent.RELEASE_UPDATE == ar.getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
    }
 
@@ -676,9 +676,9 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
 
       log.info("now release");
       Context.sessionScope().setSecondUser("secondUser");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
       dcOb.release(new JdbcBridgeEntityManager(connection), "2man rule test");
       Assert.assertEquals(ExecutionStatus.EXECUTED,
@@ -779,7 +779,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       ResultSet rs = query("select namevalue, counter from cib_testentity where id = 5");
       Assert.assertTrue(rs.next());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
       Configuration.instance().unregisterSetpoint(sp2.getId());
    }
@@ -805,9 +805,9 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Context.start();
 
       // first release
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       Context.sessionScope().setUser("tester2");
       co.release(new JdbcBridgeEntityManager(connection), "blabla1");
 
@@ -910,7 +910,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
             + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", 1);
       ResultSet rs = query("select namevalue, counter from cib_testentity where id = 5");
       Assert.assertTrue(rs.next());
-      DcControllable lo = Locker.lock("cib_testentity", "5", ControlEvent.UPDATE, "testremark");
+      Controllable lo = Locker.lock("cib_testentity", "5", ControlEvent.UPDATE, "testremark");
       Assert.assertNotNull(lo);
 
       log.debug("now update");
@@ -932,7 +932,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertNull(list.get(0).getRemark());
       Assert.assertNotNull(list.get(0).getResource().getTarget());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
    }
@@ -949,7 +949,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       sp = registerSetpoint("cib_testentity", schemes, ControlEvent.PERSIST);
 
-      DcControllable lo = Locker.lock("cib_testentity", (String) null, ControlEvent.UPDATE, "testremark");
+      Controllable lo = Locker.lock("cib_testentity", (String) null, ControlEvent.UPDATE, "testremark");
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("otherUser");
@@ -963,7 +963,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(0).getExecutionStatus());
 
-      List<DcControllable> l2 = Locker.loadLockedObjects();
+      List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
    }

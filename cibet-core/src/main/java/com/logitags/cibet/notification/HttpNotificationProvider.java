@@ -43,11 +43,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.core.ExecutionStatus;
 
 /**
- * Implementation that sends a http POST request to an address. The properties of DcControllable are sent as form
+ * Implementation that sends a http POST request to an address. The properties of Controllable are sent as form
  * parameters in the body of the request.
  * 
  * @author Wolfgang
@@ -66,7 +66,7 @@ public class HttpNotificationProvider implements NotificationProvider, Serializa
    private static Log log = LogFactory.getLog(HttpNotificationProvider.class);
 
    @Override
-   public void notify(ExecutionStatus status, DcControllable c) {
+   public void notify(ExecutionStatus status, Controllable c) {
       List<NameValuePair> formparams = createNameValuePairs(c.getExecutionStatus(), c);
 
       String address = null;
@@ -110,11 +110,11 @@ public class HttpNotificationProvider implements NotificationProvider, Serializa
       }
    }
 
-   private List<NameValuePair> createNameValuePairs(ExecutionStatus type, DcControllable c) {
+   private List<NameValuePair> createNameValuePairs(ExecutionStatus type, Controllable c) {
       DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
       List<NameValuePair> formparams = new ArrayList<NameValuePair>();
-      formparams.add(new BasicNameValuePair("dcControllableId", String.valueOf(c.getDcControllableId())));
+      formparams.add(new BasicNameValuePair("controllableId", String.valueOf(c.getControllableId())));
       formparams.add(new BasicNameValuePair("firstApprovalUser", c.getFirstApprovalUser()));
       if (c.getFirstApprovalDate() != null) {
          formparams.add(new BasicNameValuePair("firstApprovalDate", dateFormat.format(c.getFirstApprovalDate())));

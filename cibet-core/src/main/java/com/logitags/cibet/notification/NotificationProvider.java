@@ -24,7 +24,7 @@
  */
 package com.logitags.cibet.notification;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.core.ExecutionStatus;
 
 /**
@@ -35,5 +35,5 @@ import com.logitags.cibet.core.ExecutionStatus;
  */
 public interface NotificationProvider {
 
-   void notify(ExecutionStatus status, DcControllable controllable);
+   void notify(ExecutionStatus status, Controllable controllable);
 }

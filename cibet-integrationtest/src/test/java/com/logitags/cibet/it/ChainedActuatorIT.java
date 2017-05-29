@@ -45,7 +45,7 @@ import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.info.InfoLogActuator;
 import com.logitags.cibet.actuator.info.TrackerActuator;
@@ -313,7 +313,7 @@ public class ChainedActuatorIT extends AbstractArquillian {
       Assert.assertEquals(ControlEvent.INVOKE, ar3.getControlEvent());
       Assert.assertEquals("insertTComplexEntity", res3.getMethod());
 
-      List<DcControllable> dcs = ejb.queryDcControllable();
+      List<Controllable> dcs = ejb.queryControllable();
       Assert.assertEquals(1, dcs.size());
 
       Configuration.instance().unregisterSetpoint(sp2.getId());

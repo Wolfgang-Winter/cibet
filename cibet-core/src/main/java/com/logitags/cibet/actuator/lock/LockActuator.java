@@ -8,8 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.common.AbstractActuator;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.DeniedException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -74,9 +74,9 @@ public class LockActuator extends AbstractActuator {
    }
 
    private void checkBeforeInvoke(EventMetadata ctx) {
-      List<DcControllable> list = Locker.loadLockedObjects(ctx.getResource().getTargetType());
+      List<Controllable> list = Locker.loadLockedObjects(ctx.getResource().getTargetType());
 
-      for (DcControllable lo : list) {
+      for (Controllable lo : list) {
 
          if (isLocked(lo.getResource(), ctx.getResource()) && ctx.getControlEvent().isChildOf(lo.getControlEvent())) {
             if (!lo.getCreateUser().equals(Context.internalSessionScope().getUser())) {
@@ -100,7 +100,7 @@ public class LockActuator extends AbstractActuator {
    }
 
    private void checkBeforePersist(EventMetadata ctx) {
-      List<DcControllable> list = Locker.loadLockedObjects(ctx.getResource().getTargetType());
+      List<Controllable> list = Locker.loadLockedObjects(ctx.getResource().getTargetType());
       if (list.isEmpty()) {
          return;
       }
@@ -111,7 +111,7 @@ public class LockActuator extends AbstractActuator {
 
       JpaResource jpar = (JpaResource) ctx.getResource();
       String objectId = jpar.getPrimaryKeyObject().toString();
-      for (DcControllable lo : list) {
+      for (Controllable lo : list) {
          if (lo.getResource() instanceof JpaResource) {
             if (((JpaResource) lo.getResource()).isLocked(ctx.getResource().getObject(), objectId)
                   && ctx.getControlEvent().isChildOf(lo.getControlEvent())) {

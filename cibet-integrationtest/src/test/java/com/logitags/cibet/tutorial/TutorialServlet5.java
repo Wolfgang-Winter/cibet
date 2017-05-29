@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.logitags.cibet.actuator.archive.Archive;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventResult;
@@ -95,9 +95,9 @@ public class TutorialServlet5 extends HttpServlet {
          Context.requestScope().getEntityManager().remove(ar);
       }
 
-      Query q4 = Context.requestScope().getEntityManager().createQuery("select d from DcControllable d");
-      List<DcControllable> dclist = q4.getResultList();
-      for (DcControllable dc : dclist) {
+      Query q4 = Context.requestScope().getEntityManager().createQuery("select d from Controllable d");
+      List<Controllable> dclist = q4.getResultList();
+      for (Controllable dc : dclist) {
          Context.requestScope().getEntityManager().remove(dc);
       }
 

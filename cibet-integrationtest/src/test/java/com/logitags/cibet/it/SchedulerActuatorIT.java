@@ -56,7 +56,7 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.scheduler.SchedulerActuator;
 import com.logitags.cibet.actuator.scheduler.SchedulerLoader;
 import com.logitags.cibet.context.Context;
@@ -133,7 +133,7 @@ public class SchedulerActuatorIT extends DBHelper {
       log.debug(te2);
       Assert.assertTrue(te2.getId() == 0);
 
-      List<DcControllable> list = SchedulerLoader.findAllScheduled();
+      List<Controllable> list = SchedulerLoader.findAllScheduled();
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(userName, list.get(0).getCreateUser());
       Query q = applEman.createQuery("SELECT e FROM TEntity e");
@@ -151,7 +151,7 @@ public class SchedulerActuatorIT extends DBHelper {
 
       list = SchedulerLoader.loadByUser(userName);
       Assert.assertEquals(1, list.size());
-      DcControllable co = list.get(0);
+      Controllable co = list.get(0);
       Assert.assertEquals("SCHEDULER-1", co.getActuator());
       Assert.assertEquals(ExecutionStatus.EXECUTED, co.getExecutionStatus());
       Assert.assertNotNull(co.getExecutionDate());
@@ -184,9 +184,9 @@ public class SchedulerActuatorIT extends DBHelper {
       Assert.assertEquals(5, te.getCounter());
       Assert.assertEquals("theTenant", te.getOwner());
 
-      List<DcControllable> l = SchedulerLoader.findAllScheduled();
+      List<Controllable> l = SchedulerLoader.findAllScheduled();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals(2, co.getResource().getParameters().size());
       Iterator<ResourceParameter> iter = co.getResource().getParameters().iterator();
       ResourceParameter p0 = iter.next();
@@ -201,7 +201,7 @@ public class SchedulerActuatorIT extends DBHelper {
       Thread.sleep(8000);
       log.debug("--------------- after TimerTask");
 
-      l = (List<DcControllable>) Context.requestScope().getEntityManager().createQuery("SELECT d FROM DcControllable d")
+      l = (List<Controllable>) Context.requestScope().getEntityManager().createQuery("SELECT d FROM Controllable d")
             .getResultList();
       Assert.assertEquals(1, l.size());
       co = l.get(0);
@@ -244,9 +244,9 @@ public class SchedulerActuatorIT extends DBHelper {
       log.debug(ev1);
       log.debug("Eventresult: " + Context.requestScope().getExecutedEventResult());
 
-      List<DcControllable> l = SchedulerLoader.findAllScheduled();
+      List<Controllable> l = SchedulerLoader.findAllScheduled();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       log.debug(co.getScheduledDate());
       log.debug(co.getCreateUser());
       Assert.assertNotNull(co.getScheduledDate());
@@ -280,9 +280,9 @@ public class SchedulerActuatorIT extends DBHelper {
       EventResult ev = ejb.executeUpdateQuery(qn, 456, "Felix", 1222);
       log.debug(ev);
 
-      List<DcControllable> l = SchedulerLoader.findAllScheduled();
+      List<Controllable> l = SchedulerLoader.findAllScheduled();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       log.debug(co.getScheduledDate());
       Assert.assertNotNull(co.getScheduledDate());
       log.debug("-------------------- sleep");

@@ -34,7 +34,7 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.UnapprovedResourceException;
@@ -102,7 +102,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertTrue(list.get(1).getRemark().startsWith("An unreleased Dual Control business case with ID "));
       Assert.assertEquals(ExecutionStatus.ERROR, list.get(1).getExecutionStatus());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.UPDATE, list1.get(0).getControlEvent());
    }
@@ -216,9 +216,9 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.INSERT, dcOb.getControlEvent());
    }
 
@@ -290,7 +290,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ControlEvent.DELETE, list.get(0).getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.DELETE, list1.get(0).getControlEvent());
    }
@@ -372,7 +372,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       TEntity tent = (TEntity) res.getObject();
       Assert.assertEquals(12, tent.getCounter());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased(TEntity.class.getName());
+      List<Controllable> list1 = DcLoader.findUnreleased(TEntity.class.getName());
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.UPDATE, list1.get(0).getControlEvent());
    }
@@ -583,7 +583,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertTrue(list.get(1).getRemark().startsWith("An unreleased Dual Control business case with ID "));
       Assert.assertEquals(ExecutionStatus.ERROR, list.get(1).getExecutionStatus());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(0).getControlEvent());
    }
@@ -636,8 +636,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
    }
 
    /**
-    * 2 consecutive calls to persist on the same object leads to: with 4-eyes: two instances in DcControllable and
-    * ARCHIVE
+    * 2 consecutive calls to persist on the same object leads to: with 4-eyes: two instances in Controllable and ARCHIVE
     */
    @Test
    public void persistPersistWith4Eyes() {
@@ -666,7 +665,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased(TEntity.class.getName());
+      List<Controllable> list1 = DcLoader.findUnreleased(TEntity.class.getName());
       Assert.assertEquals(2, list1.size());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(0).getControlEvent());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(1).getControlEvent());
@@ -752,7 +751,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertTrue(list.get(1).getRemark().startsWith("An unreleased Dual Control business case with ID "));
       Assert.assertEquals(ExecutionStatus.ERROR, list.get(1).getExecutionStatus());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased(TEntity.class.getName());
+      List<Controllable> list1 = DcLoader.findUnreleased(TEntity.class.getName());
       Assert.assertEquals(1, list1.size());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(0).getControlEvent());
    }
@@ -948,9 +947,9 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Context.end();
       Context.start();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(DcControllable.SEL_BY_TENANT);
+      Query q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      DcControllable dcOb = (DcControllable) q.getSingleResult();
+      Controllable dcOb = (Controllable) q.getSingleResult();
       Assert.assertNotNull(dcOb);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
       JpaResource res1 = (JpaResource) dcOb.getResource();
@@ -1079,7 +1078,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       // applEman.getTransaction().commit();
       // applEman.getTransaction().begin();
 
-      List<DcControllable> listx = DcLoader.loadByProperties(TEntity.class, params);
+      List<Controllable> listx = DcLoader.loadByProperties(TEntity.class, params);
       Assert.assertEquals(1, listx.size());
    }
 
@@ -1109,7 +1108,10 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       // applEman.getTransaction().commit();
       // applEman.getTransaction().begin();
 
-      List<DcControllable> listx = DcLoader.loadByProperties(TEntity.class, params);
+      List<Controllable> listx = DcLoader.loadByProperties(TEntity.class, params);
+      Assert.assertEquals(1, listx.size());
+
+      listx = DcLoader.loadAllByProperties(TEntity.class, params);
       Assert.assertEquals(1, listx.size());
    }
 

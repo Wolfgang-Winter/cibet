@@ -55,7 +55,7 @@ import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.config.ConfigurationService;
@@ -121,14 +121,14 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       new ConfigurationService().reinitSetpoints();
    }
 
-   private DcControllable checkDc(String method, String target) throws Exception {
+   private Controllable checkDc(String method, String target) throws Exception {
       Thread.sleep(300);
 
       log.debug("now check");
-      List<DcControllable> list = DcLoader.findUnreleased();
+      List<Controllable> list = DcLoader.findUnreleased();
 
       Assert.assertEquals(1, list.size());
-      DcControllable ar = list.get(0);
+      Controllable ar = list.get(0);
       HttpRequestResource resource = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals(target, resource.getTargetType());
@@ -138,7 +138,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
 
    private void checkDc0() throws Exception {
       Thread.sleep(350);
-      List<DcControllable> list = DcLoader.findUnreleased();
+      List<Controllable> list = DcLoader.findUnreleased();
       Assert.assertEquals(0, list.size());
    }
 
@@ -178,7 +178,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       response = client.execute(g);
       Assert.assertEquals(HttpStatus.SC_ACCEPTED, response.getStatusLine().getStatusCode());
       readResponseBody(response);
-      DcControllable co = checkDc("GET", URL_TS);
+      Controllable co = checkDc("GET", URL_TS);
       log.debug("user: " + co.getCreateUser());
       log.debug("tenant: " + co.getTenant());
       Assert.assertEquals("Hausaddresse", co.getCreateAddress());
@@ -218,7 +218,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       response = client.execute(postMethod);
       Assert.assertEquals(HttpStatus.SC_ACCEPTED, response.getStatusLine().getStatusCode());
       readResponseBody(response);
-      DcControllable co = checkDc("POST", URL_TS);
+      Controllable co = checkDc("POST", URL_TS);
       HttpRequestResource res = (HttpRequestResource) co.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(9, res.getParameters().size());
@@ -262,7 +262,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       response = client.execute(postMethod);
       Assert.assertEquals(HttpStatus.SC_ACCEPTED, response.getStatusLine().getStatusCode());
       readResponseBody(response);
-      DcControllable co = checkDc("POST", URL_TS);
+      Controllable co = checkDc("POST", URL_TS);
       HttpRequestResource res = (HttpRequestResource) co.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(9, res.getParameters().size());
@@ -307,7 +307,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       response = client.execute(postMethod);
       Assert.assertEquals(HttpStatus.SC_ACCEPTED, response.getStatusLine().getStatusCode());
       readResponseBody(response);
-      DcControllable co = checkDc("POST", URL_TS);
+      Controllable co = checkDc("POST", URL_TS);
       HttpRequestResource res = (HttpRequestResource) co.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(9, res.getParameters().size());
@@ -460,7 +460,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
 
       log.debug("Tenant: " + Context.sessionScope().getTenant());
 
-      DcControllable co = checkDc("POST", URL_TS);
+      Controllable co = checkDc("POST", URL_TS);
       HttpRequestResource res = (HttpRequestResource) co.getResource();
       if (TOMEE.equals(APPSERVER)) {
          Assert.assertEquals(9, res.getParameters().size());

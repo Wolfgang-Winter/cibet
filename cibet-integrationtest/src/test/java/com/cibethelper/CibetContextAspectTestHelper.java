@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 
 import com.cibethelper.entities.TEntity;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.CibetContextAspectTest;
@@ -53,9 +53,9 @@ public class CibetContextAspectTestHelper {
       TEntity ent = testClass.persistTEntity();
       Assert.assertEquals(0, ent.getId());
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Assert.assertEquals(CibetContextAspectTest.AUSER, co.getCreateUser());
 
       Context.sessionScope().setUser("test2");

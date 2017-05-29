@@ -89,7 +89,7 @@ import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.scheduler.SchedulerActuator;
@@ -200,10 +200,10 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       SecurityContextHolder.getContext().setAuthentication(result);
    }
 
-   private DcControllable loadDcControllable(int expected) {
-      DcControllable dc = null;
-      Query q = localEM.createQuery("SELECT a FROM DcControllable a");
-      List<DcControllable> list = q.getResultList();
+   private Controllable loadControllable(int expected) {
+      Controllable dc = null;
+      Query q = localEM.createQuery("SELECT a FROM Controllable a");
+      List<Controllable> list = q.getResultList();
       Assert.assertEquals(expected, list.size());
       if (expected == 1) {
          dc = list.get(0);
@@ -246,10 +246,10 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Assert.assertEquals(0, list.size());
    }
 
-   private DcControllable checkDc(String target, String method, int count) throws Exception {
+   private Controllable checkDc(String target, String method, int count) throws Exception {
       log.debug("now check");
 
-      List<DcControllable> list = null;
+      List<Controllable> list = null;
       for (int i = 1; i < 6; i++) {
          list = DcLoader.findUnreleased();
          if (1 == list.size())
@@ -260,7 +260,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       }
 
       Assert.assertEquals(count, list.size());
-      DcControllable ar = list.get(count - 1);
+      Controllable ar = list.get(count - 1);
       HttpRequestResource res = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals(target, res.getTargetType());
@@ -648,7 +648,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
 
       checkArchive("POST", getBaseURL() + "/test/setuser", 1);
 
-      DcControllable dc = loadDcControllable(1);
+      Controllable dc = loadControllable(1);
       Assert.assertEquals(FourEyesActuator.DEFAULTNAME, dc.getActuator());
       Assert.assertEquals("Olbert", dc.getCreateUser());
       Assert.assertEquals(getBaseURL() + "/test/setuser", dc.getResource().getTargetType());
@@ -736,7 +736,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
 
       checkArchive("POST", getBaseURL() + "/test/setuser", 1);
 
-      DcControllable dc = loadDcControllable(1);
+      Controllable dc = loadControllable(1);
       Assert.assertEquals(ExecutionStatus.SCHEDULED, dc.getExecutionStatus());
       Assert.assertEquals("sm1", dc.getActuator());
       Assert.assertEquals("Olbert", dc.getCreateUser());
@@ -755,7 +755,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Context.start();
       localEM = Context.requestScope().getEntityManager();
 
-      dc = loadDcControllable(1);
+      dc = loadControllable(1);
       Assert.assertEquals(ExecutionStatus.EXECUTED, dc.getExecutionStatus());
 
       List<Archive> arlist = checkArchive("POST", getBaseURL() + "/test/setuser", 3);

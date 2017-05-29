@@ -138,7 +138,7 @@ public abstract class Resource implements Serializable {
    private String keyReference;
 
    /**
-    * Resources in archives and DcControllables can be grouped. For JPA resources the group id is per default
+    * Resources in archives and Controllables can be grouped. For JPA resources the group id is per default
     * 'targetType'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
     * scope context.
     */

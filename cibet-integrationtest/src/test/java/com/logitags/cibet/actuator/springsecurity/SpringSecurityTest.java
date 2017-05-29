@@ -31,8 +31,8 @@ import com.cibethelper.SpringTestBase;
 import com.cibethelper.entities.TComplexEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.DeniedException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
@@ -118,7 +118,7 @@ public class SpringSecurityTest extends SpringTestBase {
 
       // release
       Context.sessionScope().setUser("releaser");
-      List<DcControllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
+      List<Controllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
       log.debug(l.get(0));
       l.get(0).release(Context.requestScope().getEntityManager(), null);
 
@@ -178,7 +178,7 @@ public class SpringSecurityTest extends SpringTestBase {
 
       // release
       Context.sessionScope().setUser("releaser");
-      List<DcControllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
+      List<Controllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
       l.get(0).release(Context.requestScope().getEntityManager(), null);
       Assert.assertEquals(22, ent1.getStatValue());
    }
@@ -206,7 +206,7 @@ public class SpringSecurityTest extends SpringTestBase {
       Assert.assertEquals(ExecutionStatus.DENIED, Context.requestScope().getExecutedEventResult().getExecutionStatus());
       Assert.assertEquals(55, ent1.getStatValue());
 
-      List<DcControllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
+      List<Controllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
       Assert.assertEquals(0, l.size());
    }
 
@@ -232,7 +232,7 @@ public class SpringSecurityTest extends SpringTestBase {
 
       // release
       Context.sessionScope().setUser("releaser");
-      List<DcControllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
+      List<Controllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
       l.get(0).release(Context.requestScope().getEntityManager(), null);
       Assert.assertEquals(33, ent1.getStatValue());
    }

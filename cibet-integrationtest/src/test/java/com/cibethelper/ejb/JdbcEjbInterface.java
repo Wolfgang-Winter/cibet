@@ -26,7 +26,7 @@ package com.cibethelper.ejb;
 
 import java.util.List;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.core.ControlEvent;
 
 public interface JdbcEjbInterface {
@@ -37,5 +37,5 @@ public interface JdbcEjbInterface {
 
    void unregisterSetpoint(String id);
 
-   void release(DcControllable dc) throws Exception;
+   void release(Controllable dc) throws Exception;
 }

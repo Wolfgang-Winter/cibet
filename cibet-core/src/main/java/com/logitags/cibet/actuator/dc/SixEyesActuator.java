@@ -19,6 +19,7 @@ import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
@@ -52,8 +53,8 @@ public class SixEyesActuator extends FourEyesActuator {
    }
 
    @Override
-   protected DcControllable createControlledObject(ControlEvent event, EventMetadata ctx) {
-      DcControllable co = super.createControlledObject(event, ctx);
+   protected Controllable createControlledObject(ControlEvent event, EventMetadata ctx) {
+      Controllable co = super.createControlledObject(event, ctx);
       co.setExecutionStatus(ExecutionStatus.FIRST_POSTPONED);
       return co;
    }
@@ -62,16 +63,16 @@ public class SixEyesActuator extends FourEyesActuator {
     * set actuator of the ControlledObject to SIX_EYES.
     * 
     * @param dc
-    *           DcControllable object
+    *           Controllable object
     */
    @Override
-   protected void setActuatorSpecificProperties(DcControllable dc) {
+   protected void setActuatorSpecificProperties(Controllable dc) {
       dc.setFirstApprovalUser(Context.internalSessionScope().getApprovalUser());
       dc.setFirstApprovalAddress(Context.internalSessionScope().getApprovalAddress());
    }
 
    @Override
-   protected void notifyAssigned(ExecutionStatus status, DcControllable dc) {
+   protected void notifyAssigned(ExecutionStatus status, Controllable dc) {
       if (!isSendAssignNotification())
          return;
       if (status == ExecutionStatus.FIRST_POSTPONED && dc.getFirstApprovalAddress() != null) {
@@ -92,7 +93,7 @@ public class SixEyesActuator extends FourEyesActuator {
       return ExecutionStatus.FIRST_POSTPONED;
    }
 
-   private ControlEvent controlEventForFirstRelease(DcControllable co) {
+   private ControlEvent controlEventForFirstRelease(Controllable co) {
       switch (co.getControlEvent()) {
       case INVOKE:
          return ControlEvent.FIRST_RELEASE_INVOKE;
@@ -105,7 +106,7 @@ public class SixEyesActuator extends FourEyesActuator {
       case SELECT:
          return ControlEvent.FIRST_RELEASE_SELECT;
       default:
-         String msg = "Controlled object [" + co.getDcControllableId() + "] with control event " + co.getControlEvent()
+         String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be first released";
          log.error(msg);
          throw new IllegalArgumentException(msg);
@@ -113,7 +114,7 @@ public class SixEyesActuator extends FourEyesActuator {
    }
 
    @Override
-   protected void checkApprovalUserId(DcControllable co) throws InvalidUserException {
+   protected void checkApprovalUserId(Controllable co) throws InvalidUserException {
       String approvalUserId = Context.internalSessionScope().getUser();
       if (approvalUserId == null) {
          String msg = "Release without user id not possible. No user set in CibetContext!";
@@ -131,7 +132,7 @@ public class SixEyesActuator extends FourEyesActuator {
          // first release
          if (co.getFirstApprovalUser() != null && !co.getFirstApprovalUser().equals(approvalUserId)) {
             String msg = "release failed: Only user" + co.getFirstApprovalUser()
-                  + " is allowed to make first release/reject of DcControllable with ID " + co.getDcControllableId();
+                  + " is allowed to make first release/reject of Controllable with ID " + co.getControllableId();
             log.error(msg);
             throw new InvalidUserException(msg);
          }
@@ -146,7 +147,7 @@ public class SixEyesActuator extends FourEyesActuator {
 
          if (co.getApprovalUser() != null && !co.getApprovalUser().equals(approvalUserId)) {
             String msg = "release failed: Only user" + co.getApprovalUser()
-                  + " is allowed to release/reject DcControllable with ID " + co.getDcControllableId();
+                  + " is allowed to release/reject Controllable with ID " + co.getControllableId();
             log.error(msg);
             throw new InvalidUserException(msg);
          }
@@ -157,12 +158,12 @@ public class SixEyesActuator extends FourEyesActuator {
     * checks if the user id who rejects is allowed to reject.
     * 
     * @param co
-    *           DcControllable object
+    *           Controllable object
     * @throws InvalidUserException
     *            if user has no permission
     */
    @Override
-   protected void checkRejectUserId(DcControllable co) throws InvalidUserException {
+   protected void checkRejectUserId(Controllable co) throws InvalidUserException {
       String rejectUserId = Context.internalSessionScope().getUser();
       if (rejectUserId == null) {
          String msg = "Reject/pass back without user id not possible. No user set in CibetContext!";
@@ -179,7 +180,7 @@ public class SixEyesActuator extends FourEyesActuator {
          // first release
          if (co.getFirstApprovalUser() != null && !co.getFirstApprovalUser().equals(rejectUserId)) {
             String msg = "reject/pass back failed: Only user" + co.getFirstApprovalUser()
-                  + " is allowed to reject/pass back DcControllable with ID " + co.getDcControllableId();
+                  + " is allowed to reject/pass back Controllable with ID " + co.getControllableId();
             log.error(msg);
             throw new InvalidUserException(msg);
          }
@@ -188,7 +189,7 @@ public class SixEyesActuator extends FourEyesActuator {
          // final release
          if (co.getApprovalUser() != null && !co.getApprovalUser().equals(rejectUserId)) {
             String msg = "reject/pass back failed: Only user" + co.getApprovalUser()
-                  + " is allowed to reject/pass back DcControllable with ID " + co.getDcControllableId();
+                  + " is allowed to reject/pass back Controllable with ID " + co.getControllableId();
             log.error(msg);
             throw new InvalidUserException(msg);
          }
@@ -196,21 +197,21 @@ public class SixEyesActuator extends FourEyesActuator {
    }
 
    @Override
-   protected void checkExecutionStatus(String action, DcControllable co) throws ResourceApplyException {
+   protected void checkExecutionStatus(String action, Controllable co) throws ResourceApplyException {
       if (co.getExecutionStatus() != ExecutionStatus.FIRST_POSTPONED
             && co.getExecutionStatus() != ExecutionStatus.FIRST_RELEASED) {
-         String err = "Failed to " + action + " DcControllable with ID " + co.getDcControllableId()
+         String err = "Failed to " + action + " Controllable with ID " + co.getControllableId()
                + ": should be in status FIRST_POSTPONED or FIRST_RELEASED but is in status " + co.getExecutionStatus();
          log.warn(err);
          throw new ResourceApplyException(err);
       }
    }
 
-   protected void checkRejectExecutionStatus(DcControllable co) throws ResourceApplyException {
+   protected void checkRejectExecutionStatus(Controllable co) throws ResourceApplyException {
       if (co.getExecutionStatus() != ExecutionStatus.FIRST_POSTPONED
             && co.getExecutionStatus() != ExecutionStatus.FIRST_RELEASED
             && co.getExecutionStatus() != ExecutionStatus.PASSEDBACK) {
-         String err = "Failed to pass back DcControllable with ID " + co.getDcControllableId()
+         String err = "Failed to pass back Controllable with ID " + co.getControllableId()
                + ": should be in status FIRST_POSTPONED, FIRST_RELEASED or PASSEDBACK but is in status "
                + co.getExecutionStatus();
          log.warn(err);
@@ -221,11 +222,11 @@ public class SixEyesActuator extends FourEyesActuator {
    /*
     * (non-Javadoc)
     * 
-    * @see com.logitags.cibet.actuator.dc.FourEyesActuator#release(com.logitags.cibet .actuator.dc.DcControllable,
+    * @see com.logitags.cibet.actuator.dc.FourEyesActuator#release(com.logitags.cibet .actuator.common.Controllable,
     * java.lang.String)
     */
    @Override
-   public Object release(DcControllable co, String remark) throws ResourceApplyException {
+   public Object release(Controllable co, String remark) throws ResourceApplyException {
       checkExecutionStatus("release", co);
 
       ControlEvent originalControlEvent = (ControlEvent) Context.internalRequestScope()
@@ -250,7 +251,7 @@ public class SixEyesActuator extends FourEyesActuator {
             Context.internalRequestScope().setRemark(remark);
          }
 
-         Context.internalRequestScope().setProperty(InternalRequestScope.DCCONTROLLABLE, co);
+         Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLLABLE, co);
 
          Object result = co.getResource().apply(co.getControlEvent());
 
@@ -303,7 +304,7 @@ public class SixEyesActuator extends FourEyesActuator {
          Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, originalControlEvent);
          Context.internalRequestScope().setCaseId(originalCaseId);
          Context.internalRequestScope().setRemark(originalRemark);
-         Context.internalRequestScope().removeProperty(InternalRequestScope.DCCONTROLLABLE);
+         Context.internalRequestScope().removeProperty(InternalRequestScope.CONTROLLABLE);
       }
    }
 }

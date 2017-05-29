@@ -56,8 +56,8 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.InvalidUserException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.context.Context;
@@ -123,10 +123,10 @@ public class HttpParallelDcIT extends AbstractArquillian {
       Context.end();
    }
 
-   private DcControllable checkDc(String target, String method, int count) throws Exception {
+   private Controllable checkDc(String target, String method, int count) throws Exception {
       log.debug("now check");
 
-      List<DcControllable> list = null;
+      List<Controllable> list = null;
       for (int i = 1; i < 6; i++) {
          list = DcLoader.findUnreleased();
          if (1 == list.size())
@@ -137,7 +137,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
       }
 
       Assert.assertEquals(count, list.size());
-      DcControllable ar = list.get(count - 1);
+      Controllable ar = list.get(count - 1);
       HttpRequestResource res = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals(target, res.getTargetType());
@@ -160,7 +160,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       String body = readResponseBody(response);
       Assert.assertEquals("NO Persist, counter: 891", body);
-      DcControllable co = checkDc(url, "GET", 1);
+      Controllable co = checkDc(url, "GET", 1);
       HttpRequestResource res = (HttpRequestResource) co.getResource();
       Assert.assertTrue(res.getParameters().size() > 4);
 
@@ -185,7 +185,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       String body = readResponseBody(response);
       Assert.assertEquals("NO Persist, counter: 891", body);
-      DcControllable co = checkDc(url, "GET", 1);
+      Controllable co = checkDc(url, "GET", 1);
 
       String evReHeader = response.getFirstHeader(Headers.CIBET_EVENTRESULT.name()).getValue();
       Assert.assertNotNull(evReHeader);
@@ -218,7 +218,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       String body = readResponseBody(response);
       Assert.assertEquals("NO Persist, counter: 891", body);
-      DcControllable co = checkDc(url, "GET", 1);
+      Controllable co = checkDc(url, "GET", 1);
 
       String evReHeader = response.getFirstHeader(Headers.CIBET_EVENTRESULT.name()).getValue();
       Assert.assertNotNull(evReHeader);
@@ -276,7 +276,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       String body = readResponseBody(response);
       Assert.assertEquals("NO Persist, counter: 891", body);
-      DcControllable co = checkDc(url, "GET", 1);
+      Controllable co = checkDc(url, "GET", 1);
 
       String evReHeader = response.getFirstHeader(Headers.CIBET_EVENTRESULT.name()).getValue();
       Assert.assertNotNull(evReHeader);

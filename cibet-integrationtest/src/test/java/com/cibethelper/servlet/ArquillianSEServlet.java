@@ -46,7 +46,7 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.scheduler.SchedulerActuator;
 import com.logitags.cibet.actuator.scheduler.SchedulerLoader;
@@ -280,7 +280,7 @@ public class ArquillianSEServlet extends HttpServlet {
             throw new Exception("owner is not owner1: " + list.get(0).getOwner());
          }
 
-         List<DcControllable> dcs = SchedulerLoader.findScheduled();
+         List<Controllable> dcs = SchedulerLoader.findScheduled();
          if (dcs.size() != 1) {
             throw new Exception("dclist size is " + list.size());
          }
@@ -348,7 +348,7 @@ public class ArquillianSEServlet extends HttpServlet {
             throw new Exception("owner not null: " + list.get(0).getOwner());
          }
 
-         List<DcControllable> dcs = SchedulerLoader.findScheduled();
+         List<Controllable> dcs = SchedulerLoader.findScheduled();
          if (dcs.size() != 1) {
             throw new Exception("dclist size is " + list.size());
          }
@@ -384,9 +384,9 @@ public class ArquillianSEServlet extends HttpServlet {
    private void releaseHttp(HttpServletResponse resp) throws Exception {
       try {
          cibet2.getTransaction().begin();
-         List<DcControllable> dcs = DcLoader.findUnreleased();
+         List<Controllable> dcs = DcLoader.findUnreleased();
          if (dcs.size() != 1) {
-            String msg = "Found " + dcs.size() + " DcControllables instead of 1";
+            String msg = "Found " + dcs.size() + " Controllables instead of 1";
             log.error(msg);
             throw new Exception(msg);
          }
@@ -444,9 +444,9 @@ public class ArquillianSEServlet extends HttpServlet {
       TEntity te = null;
       cibet2.getTransaction().begin();
       try {
-         List<DcControllable> dcs = DcLoader.findUnreleased();
+         List<Controllable> dcs = DcLoader.findUnreleased();
          if (dcs.size() != 1) {
-            String msg = "Found " + dcs.size() + " DcControllables instead of 1";
+            String msg = "Found " + dcs.size() + " Controllables instead of 1";
             log.error(msg);
             throw new Exception(msg);
          }

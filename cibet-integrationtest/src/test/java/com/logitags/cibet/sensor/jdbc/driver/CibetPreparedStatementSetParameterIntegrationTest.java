@@ -45,7 +45,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.cibethelper.base.JdbcHelper;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.config.Configuration;
@@ -102,7 +102,7 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
       Context.start();
 
       rs = query(
-            "select d.*, r.primarykeyid, r.targettype, r.target from cib_dccontrollable d, cib_resource r where d.resourceid = r.resourceid");
+            "select d.*, r.primarykeyid, r.targettype, r.target from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
@@ -110,9 +110,9 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
       Assert.assertEquals(sql, CibetUtil.decode(rs.getBytes("TARGET")));
 
       log.debug("now release");
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
 
       Context.sessionScope().setUser("test2");
       int res = (Integer) co.release(new JdbcBridgeEntityManager(connection), null);
@@ -134,7 +134,7 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
       Context.start();
 
       rs = query(
-            "select d.*, r.primarykeyid, r.targettype, r.target from cib_dccontrollable d, cib_resource r where d.resourceid = r.resourceid");
+            "select d.*, r.primarykeyid, r.targettype, r.target from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("8", rs.getString("PRIMARYKEYID"));
@@ -142,9 +142,9 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
       Assert.assertEquals(INSERT, CibetUtil.decode(rs.getBytes("TARGET")));
 
       log.debug("now release");
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
 
       Context.sessionScope().setUser("test2");
       int res = (Integer) co.release(new JdbcBridgeEntityManager(connection), null);

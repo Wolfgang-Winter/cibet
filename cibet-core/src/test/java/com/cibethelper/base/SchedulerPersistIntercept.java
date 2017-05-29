@@ -31,7 +31,7 @@ import javax.persistence.EntityManager;
 import org.apache.log4j.Logger;
 
 import com.cibethelper.entities.TEntity;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.scheduler.RejectException;
 import com.logitags.cibet.actuator.scheduler.SchedulerLoader;
 import com.logitags.cibet.actuator.scheduler.SchedulerTaskInterceptor;
@@ -43,7 +43,7 @@ public class SchedulerPersistIntercept implements SchedulerTaskInterceptor {
    private static Logger log = Logger.getLogger(SchedulerPersistIntercept.class);
 
    @Override
-   public void beforeTask(DcControllable dc) throws RejectException {
+   public void beforeTask(Controllable dc) throws RejectException {
       log.info("SchedulerPersistIntercept.beforeTask");
       EntityManager appEM = Context.internalRequestScope().getApplicationEntityManager();
       TEntity te = new TEntity("Nana", 888, "polo");
@@ -51,7 +51,7 @@ public class SchedulerPersistIntercept implements SchedulerTaskInterceptor {
    }
 
    @Override
-   public void afterTask(DcControllable dc) {
+   public void afterTask(Controllable dc) {
       log.info("SchedulerPersistIntercept.afterTask");
       EntityManager appEM = Context.internalRequestScope().getApplicationEntityManager();
       TEntity te = new TEntity("Nana2", 999, "polo2");

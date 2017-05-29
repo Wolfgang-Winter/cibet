@@ -46,7 +46,7 @@ import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
@@ -173,13 +173,13 @@ public class MultiThreadIT extends AbstractArquillian {
          Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
          Assert.assertEquals("0", res.getPrimaryKeyId());
 
-         List<DcControllable> list1 = ejb.queryDcControllable();
+         List<Controllable> list1 = ejb.queryControllable();
          Assert.assertEquals(1, list1.size());
          Assert.assertEquals(ControlEvent.INSERT, list1.get(0).getControlEvent());
 
          // Release
-         List<DcControllable> li = ejb.findUnreleased();
-         DcControllable co = li.get(0);
+         List<Controllable> li = ejb.findUnreleased();
+         Controllable co = li.get(0);
          Context.sessionScope().setUser("test22");
          ejb.release(co);
 

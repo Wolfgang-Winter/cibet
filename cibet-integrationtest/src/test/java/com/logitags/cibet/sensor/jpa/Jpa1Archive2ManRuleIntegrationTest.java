@@ -25,9 +25,9 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.DeniedException;
 import com.logitags.cibet.actuator.common.InvalidUserException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.TwoManRuleActuator;
 import com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator;
@@ -86,9 +86,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertEquals("0", res.getPrimaryKeyId());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.INSERT, dcOb.getControlEvent());
    }
 
@@ -127,7 +127,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertTrue(!res.getPrimaryKeyId().equals("0"));
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
    }
 
@@ -169,7 +169,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
       Assert.assertTrue(!res.getPrimaryKeyId().equals("0"));
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
       Context.sessionScope().setApprovalUser(null);
    }
@@ -196,7 +196,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       TEntity selEnt = applEman.find(TEntity.class, entity.getId());
       Assert.assertNull(selEnt);
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
       log.debug("***: " + list1.get(0));
       Assert.assertEquals("Fizzi", list1.get(0).getApprovalUser());
@@ -219,9 +219,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Assert.assertNull(selEnt);
 
       log.info("now release");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.INSERT, dcOb.getControlEvent());
       dcOb.release(applEman, "2man rule test");
    }
@@ -242,9 +242,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       log.info("now release");
       Context.sessionScope().setSecondUser("secondUser");
       Context.sessionScope().setUser("secondUser");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.INSERT, dcOb.getControlEvent());
       try {
          dcOb.release(applEman, "2man rule test");
@@ -269,9 +269,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       log.info("now release");
       Context.sessionScope().setSecondUser("yyyy");
       Context.sessionScope().setUser("xxxx");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.INSERT, dcOb.getControlEvent());
       try {
          dcOb.release(applEman, "2man rule test");
@@ -297,9 +297,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
 
       log.info("now release");
       Context.sessionScope().setSecondUser("secondUser");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.INSERT, dcOb.getControlEvent());
       TEntity selEnt2 = (TEntity) dcOb.release(Context.internalRequestScope().getApplicationEntityManager(),
             "2man rule test");
@@ -348,9 +348,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Archive ar = list.get(0);
       Assert.assertEquals(ControlEvent.DELETE, ar.getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.DELETE, dcOb.getControlEvent());
    }
 
@@ -381,7 +381,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Assert.assertTrue(
             ControlEvent.DELETE == ar.getControlEvent() || ControlEvent.RELEASE_DELETE == ar.getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
    }
 
@@ -401,9 +401,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Assert.assertNotNull(selEnt);
 
       log.info("now release");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.DELETE, dcOb.getControlEvent());
       dcOb.release(applEman, "2man rule test");
    }
@@ -426,9 +426,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       log.info("now release");
       Context.sessionScope().setSecondUser("secondUser");
       Context.sessionScope().setUser("secondUser");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.DELETE, dcOb.getControlEvent());
       try {
          dcOb.release(applEman, "2man rule test");
@@ -455,9 +455,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       log.info("now release");
       Context.sessionScope().setSecondUser("yyyy");
       Context.sessionScope().setUser("xxxx");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.DELETE, dcOb.getControlEvent());
       try {
          dcOb.release(applEman, "2man rule test");
@@ -484,9 +484,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
 
       log.info("now release");
       Context.sessionScope().setSecondUser("secondUser");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.DELETE, dcOb.getControlEvent());
       TEntity selEnt2 = (TEntity) dcOb.release(Context.internalRequestScope().getApplicationEntityManager(),
             "2man rule test");
@@ -534,9 +534,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Archive ar = list.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, ar.getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
    }
 
@@ -570,7 +570,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Archive ar = list.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, ar.getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
    }
 
@@ -617,9 +617,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Assert.assertEquals("valuexx", selEnt.getNameValue());
 
       log.info("now release");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
       dcOb.release(applEman, "2man rule test");
    }
@@ -644,9 +644,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       log.info("now release");
       Context.sessionScope().setSecondUser("secondUser");
       Context.sessionScope().setUser("secondUser");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
       try {
          dcOb.release(applEman, "2man rule test");
@@ -674,9 +674,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
 
       log.info("now release");
       Context.sessionScope().setSecondUser(USER);
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
       try {
          dcOb.release(applEman, "2man rule test");
@@ -705,9 +705,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       log.info("now release");
       Context.sessionScope().setSecondUser("yyyy");
       Context.sessionScope().setUser("xxxx");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
       try {
          dcOb.release(applEman, "2man rule test");
@@ -744,9 +744,9 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
 
       log.info("now release");
       Context.sessionScope().setSecondUser("secondUser");
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
-      DcControllable dcOb = list1.get(0);
+      Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
       TEntity selEnt2 = (TEntity) dcOb.release(Context.internalRequestScope().getApplicationEntityManager(),
             "2man rule test");
@@ -817,7 +817,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
          Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
          Assert.assertTrue(!res.getPrimaryKeyId().equals("0"));
 
-         List<DcControllable> list1 = DcLoader.findUnreleased();
+         List<Controllable> list1 = DcLoader.findUnreleased();
          Assert.assertEquals(0, list1.size());
       } finally {
          Configuration.instance().unregisterSetpoint(sp2.getId());
@@ -856,7 +856,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(0, list.size());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
    }
 
@@ -887,7 +887,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Assert.assertTrue(
             ControlEvent.SELECT == ar.getControlEvent() || ControlEvent.RELEASE_SELECT == ar.getControlEvent());
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
    }
 

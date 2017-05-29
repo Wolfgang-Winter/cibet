@@ -75,7 +75,7 @@ public class Tutorial1 {
 
       archive.addAsWebInfResource("tutorial/persistence-it1.xml", "classes/META-INF/persistence.xml");
       archive.addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");
-      archive.addAsWebInfResource("tutorial/config.xml", "classes/cibet-config.xml");
+      archive.addAsWebInfResource("tutorial/config-spring.xml", "classes/cibet-config.xml");
       archive.addAsWebInfResource("spring-context_1.xml", "classes/spring-context.xml");
 
       log.debug(archive.toString(true));

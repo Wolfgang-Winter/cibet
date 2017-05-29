@@ -32,7 +32,7 @@ import com.cibethelper.base.DBHelper;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
@@ -112,9 +112,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertNull(er.getParentResult());
       Assert.assertEquals(ControlEvent.UPDATE, er.getEvent());
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       Context.sessionScope().setUser("tester2");
       co.release(applEman, "blabla");
 
@@ -228,9 +228,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertTrue(alist.size() == 1);
       String caseId = alist.get(0).getCaseId();
 
-      List<DcControllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
-      DcControllable co = l.get(0);
+      Controllable co = l.get(0);
       Context.sessionScope().setUser("test2");
       co.release(Context.internalRequestScope().getApplicationEntityManager(), null);
 
@@ -296,9 +296,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       applEman.flush();
 
       // first release
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       Context.sessionScope().setUser("tester2");
       co.release(Context.internalRequestScope().getApplicationEntityManager(), "blabla1");
       applEman.clear();
@@ -352,9 +352,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       applEman.flush();
       applEman.clear();
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       co.reject(Context.internalRequestScope().getApplicationEntityManager(), "blabla1");
       applEman.flush();
 
@@ -405,9 +405,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals("SIX_EYES, ARCHIVE", er.getActuators());
 
       Thread.sleep(100);
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       Context.sessionScope().setUser("tester2");
       co.release(Context.internalRequestScope().getApplicationEntityManager(), "blabla1");
       applEman.flush();
@@ -470,9 +470,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       applEman.flush();
       applEman.clear();
 
-      List<DcControllable> l1 = DcLoader.findUnreleased();
+      List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
-      DcControllable co = l1.get(0);
+      Controllable co = l1.get(0);
       co.reject(Context.internalRequestScope().getApplicationEntityManager(), "blabla1");
 
       List<Archive> list = ArchiveLoader.loadArchives(TComplexEntity.class.getName());
@@ -721,9 +721,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       selEnt = applEman.find(TComplexEntity.class, primaryKey);
       Assert.assertNull(selEnt);
 
-      List<DcControllable> dcList = DcLoader.findUnreleased(TComplexEntity.class.getName());
+      List<Controllable> dcList = DcLoader.findUnreleased(TComplexEntity.class.getName());
       Assert.assertEquals(1, dcList.size());
-      DcControllable dcObj = dcList.get(0);
+      Controllable dcObj = dcList.get(0);
       Assert.assertEquals(list.get(0).getCaseId(), dcObj.getCaseId());
       Assert.assertEquals(ControlEvent.INSERT, dcObj.getControlEvent());
 
@@ -787,9 +787,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       selEnt = applEman.find(TComplexEntity.class, selEnt.getId());
       Assert.assertEquals(18, selEnt.getCompValue());
 
-      List<DcControllable> dcList = DcLoader.findUnreleased(TComplexEntity.class.getName());
+      List<Controllable> dcList = DcLoader.findUnreleased(TComplexEntity.class.getName());
       Assert.assertEquals(1, dcList.size());
-      DcControllable dcObj = dcList.get(0);
+      Controllable dcObj = dcList.get(0);
       Assert.assertEquals(list.get(2).getCaseId(), dcObj.getCaseId());
       Assert.assertEquals(ControlEvent.UPDATE, dcObj.getControlEvent());
    }

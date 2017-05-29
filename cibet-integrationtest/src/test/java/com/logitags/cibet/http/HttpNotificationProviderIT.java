@@ -58,7 +58,7 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ShiroServlet;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.notification.HttpNotificationProvider;
@@ -126,8 +126,8 @@ public class HttpNotificationProviderIT {
       return httpUrl + this.getClass().getSimpleName();
    }
 
-   protected DcControllable createDcControllable(ExecutionStatus status) throws IOException {
-      DcControllable c = new DcControllable();
+   protected Controllable createControllable(ExecutionStatus status) throws IOException {
+      Controllable c = new Controllable();
       c.setActuator("FOUR_EYES");
       c.setApprovalAddress(getBaseURL() + "/notif?nottype=approv");
       c.setApprovalDate(NOW.getTime());
@@ -138,7 +138,7 @@ public class HttpNotificationProviderIT {
       c.setCreateAddress(getBaseURL() + "/notif?nottype=create");
       c.setCreateDate(NOW_5.getTime());
       c.setCreateUser("userId");
-      c.setDcControllableId("123");
+      c.setControllableId("123");
       c.setFirstApprovalAddress(getBaseURL() + "/notif?nottype=firstApp");
       c.setFirstApprovalDate(NOW_3.getTime());
       c.setFirstApprovalUser("firstApprovalUserId");
@@ -155,7 +155,7 @@ public class HttpNotificationProviderIT {
       log.debug("start notifyAssign()");
       File file = null;
       try {
-         DcControllable c = createDcControllable(ExecutionStatus.POSTPONED);
+         Controllable c = createControllable(ExecutionStatus.POSTPONED);
          HttpNotificationProvider prov = new HttpNotificationProvider();
 
          prov.notify(ExecutionStatus.POSTPONED, c);
@@ -188,11 +188,11 @@ public class HttpNotificationProviderIT {
          Assert.assertEquals("approvalUser=approvalUser", iter.next());
          Assert.assertEquals("caseId=test-caseid", iter.next());
          Assert.assertEquals("controlEvent=DELETE", iter.next());
+         Assert.assertEquals("controllableId=123", iter.next());
          Assert.assertEquals("createAddress=" + getBaseURL() + "/notif?nottype=create", iter.next());
          Assert.assertEquals("createDate=2013-09-20 16:13:22.000", iter.next());
          Assert.assertEquals("createRemark=", iter.next());
          Assert.assertEquals("createUser=userId", iter.next());
-         Assert.assertEquals("dcControllableId=123", iter.next());
          Assert.assertEquals("firstApprovalAddress=" + getBaseURL() + "/notif?nottype=firstApp", iter.next());
          Assert.assertEquals("firstApprovalDate=2013-09-22 16:13:22.000", iter.next());
          Assert.assertEquals("firstApprovalRemark=", iter.next());

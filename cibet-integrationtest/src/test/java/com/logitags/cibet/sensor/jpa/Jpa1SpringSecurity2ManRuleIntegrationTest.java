@@ -22,8 +22,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.cibethelper.base.DBHelper;
 import com.cibethelper.entities.TEntity;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.DeniedException;
-import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.TwoManRuleActuator;
 import com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator;
@@ -277,7 +277,7 @@ public class Jpa1SpringSecurity2ManRuleIntegrationTest extends DBHelper {
       TEntity selEnt = applEman.find(TEntity.class, entity.getId());
       Assert.assertNotNull(selEnt);
 
-      List<DcControllable> list1 = DcLoader.findUnreleased();
+      List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
    }
 

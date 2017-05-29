@@ -21,6 +21,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.InvalidUserException;
 import com.logitags.cibet.actuator.common.PostponedException;
 import com.logitags.cibet.context.Context;
@@ -164,7 +165,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
          return;
       }
 
-      DcControllable dcObj = null;
+      Controllable dcObj = null;
 
       switch (ctx.getControlEvent()) {
       case RELEASE_DELETE:
@@ -259,7 +260,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
             Context.internalRequestScope().getEntityManager().persist(dcObj);
 
             if (ctx.getException() != null && ctx.getException() instanceof PostponedException) {
-               ((PostponedException) ctx.getException()).setDcControllable(dcObj);
+               ((PostponedException) ctx.getException()).setControllable(dcObj);
             }
 
             notifyAssigned(ctx.getExecutionStatus(), dcObj);
@@ -270,13 +271,13 @@ public class TwoManRuleActuator extends FourEyesActuator {
    /*
     * (non-Javadoc)
     * 
-    * @see com.logitags.cibet.actuator.dc.FourEyesActuator#release(com.logitags.cibet .actuator.dc.DcControllable,
+    * @see com.logitags.cibet.actuator.dc.FourEyesActuator#release(com.logitags.cibet .actuator.common.Controllable,
     * java.lang.String)
     */
    @Override
-   public Object release(DcControllable co, String remark) throws ResourceApplyException {
+   public Object release(Controllable co, String remark) throws ResourceApplyException {
       if (co.getExecutionStatus() != ExecutionStatus.POSTPONED) {
-         String err = "Failed to release DcControllable with ID " + co.getDcControllableId()
+         String err = "Failed to release Controllable with ID " + co.getControllableId()
                + ": should be in status POSTPONED but is in status " + co.getExecutionStatus();
          log.warn(err);
          throw new ResourceApplyException(err);
@@ -299,7 +300,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
             Context.internalRequestScope().setRemark(remark);
          }
          Context.internalSessionScope().setUser(Context.internalSessionScope().getSecondUser());
-         Context.internalRequestScope().setProperty(InternalRequestScope.DCCONTROLLABLE, co);
+         Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLLABLE, co);
 
          Object result = co.getResource().apply(co.getControlEvent());
 
@@ -320,7 +321,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
                co.setApprovalUser(Context.internalSessionScope().getSecondUser());
                co.setApprovalRemark(Context.internalRequestScope().getRemark());
 
-               if (co.getDcControllableId() != null) {
+               if (co.getControllableId() != null) {
                   // if (isEncrypt()) {
                   // co.encrypt();
                   // }
@@ -339,7 +340,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
          Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, originalControlEvent);
          Context.internalRequestScope().setCaseId(originalCaseId);
          Context.internalRequestScope().setRemark(originalRemark);
-         Context.internalRequestScope().removeProperty(InternalRequestScope.DCCONTROLLABLE);
+         Context.internalRequestScope().removeProperty(InternalRequestScope.CONTROLLABLE);
 
          if (removeSecondUserAfterRelease && !Context.requestScope().isPlaying()) {
             Context.internalSessionScope().setSecondUser(null);
@@ -367,11 +368,11 @@ public class TwoManRuleActuator extends FourEyesActuator {
     * checks if the user id who releases / rejects is different from the user who created the controlled object.
     * 
     * @param co
-    *           DcControllable
+    *           Controllable
     * @throws InvalidUserException
     *            if the user has no permission
     */
-   protected void checkApprovalUserId(DcControllable co) throws InvalidUserException {
+   protected void checkApprovalUserId(Controllable co) throws InvalidUserException {
       String approvalUserId = Context.internalSessionScope().getSecondUser();
       if (approvalUserId == null) {
          String msg = "Release without second user id not possible. No second user set in CibetContext!";
@@ -396,7 +397,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
 
       if (co.getApprovalUser() != null && !co.getApprovalUser().equals(approvalUserId)) {
          String msg = "release failed: Only user" + co.getApprovalUser()
-               + " is allowed to release/reject DcControllable with ID " + co.getDcControllableId();
+               + " is allowed to release/reject Controllable with ID " + co.getControllableId();
          log.error(msg);
          throw new InvalidUserException(msg);
       }

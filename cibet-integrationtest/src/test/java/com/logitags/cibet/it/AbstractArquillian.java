@@ -57,7 +57,7 @@ import com.cibethelper.base.CoreTestBase;
 import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventResult;
@@ -128,12 +128,12 @@ public abstract class AbstractArquillian extends CoreTestBase {
       }
       log.info(tentList.size() + " TEntitys removed");
 
-      q = cibetEman.createQuery("SELECT e FROM DcControllable e");
-      List<DcControllable> dcList = q.getResultList();
-      for (DcControllable dc : dcList) {
+      q = cibetEman.createQuery("SELECT e FROM Controllable e");
+      List<Controllable> dcList = q.getResultList();
+      for (Controllable dc : dcList) {
          cibetEman.remove(dc);
       }
-      log.info(dcList.size() + " DcControllables removed");
+      log.info(dcList.size() + " Controllables removed");
 
       q = cibetEman.createQuery("SELECT a FROM Archive a");
       List<Archive> list = q.getResultList();
@@ -148,13 +148,6 @@ public abstract class AbstractArquillian extends CoreTestBase {
          cibetEman.remove(er);
       }
       log.info(erlist.size() + " EventResults removed");
-
-      // q = cibetEman.createQuery("SELECT e FROM LockedObject e");
-      // List<LockedObject> llist = q.getResultList();
-      // for (LockedObject er : llist) {
-      // cibetEman.remove(er);
-      // }
-      // log.info(llist.size() + " LockedObjects removed");
 
       q = cibetEman.createQuery("SELECT a FROM Resource a");
       List<com.logitags.cibet.resource.Resource> rlist = q.getResultList();

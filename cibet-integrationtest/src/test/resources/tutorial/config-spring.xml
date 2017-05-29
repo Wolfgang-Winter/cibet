@@ -16,6 +16,20 @@
       </properties>
    </actuator>
 
+   <actuator name="SPRINGSECURITY_PERSIST">
+      <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+      <properties>
+         <preAuthorize>hasRole("persister")</preAuthorize>
+      </properties>
+   </actuator>
+   
+   <actuator name="SPRINGSECURITY_RELEASE">
+      <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+      <properties>
+         <preAuthorize>hasRole("releaser")</preAuthorize>
+      </properties>
+   </actuator>
+
    <actuator name="LOCKER">
       <properties>
          <throwDeniedException>true</throwDeniedException>
@@ -81,6 +95,23 @@
          <invoker>com.logitags.cibet.tutorial.TutorialServlet5.persist()</invoker>
       </controls>
       <actuator name="LOCAL-SCHEDULER"/>
+   </setpoint>
+
+   <setpoint id="setpoint-9">
+      <controls>
+         <event>INSERT</event>
+         <target>com.logitags.cibet.tutorial.Person</target>
+         <tenant>SpringTest</tenant>
+      </controls>
+      <actuator name="FOUR_EYES"/>
+      <actuator name="SPRINGSECURITY_PERSIST"/>
+   </setpoint>
+
+   <setpoint id="setpoint-10" extends="setpoint-9">
+      <controls>
+         <event>RELEASE</event>
+      </controls>
+      <actuator name="SPRINGSECURITY_RELEASE"/>
    </setpoint>
 
    <setpoint id="setpoint-11">

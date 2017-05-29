@@ -23,115 +23,112 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.sensor.jdbc.driver.CibetJdbcException;
 
-public class DcControllableDefinition extends ResourceDefinition {
+public class ControllableDefinition extends ResourceDefinition {
 
    /**
     * 
     */
    private static final long serialVersionUID = 3483812263086473190L;
 
-   private static Log log = LogFactory.getLog(DcControllableDefinition.class);
+   private static Log log = LogFactory.getLog(ControllableDefinition.class);
 
-   public static final String SEL_BY_PRIMARYKEY = "DCCONTROLLABLE.SEL_BY_PRIMARYKEY";
+   public static final String SEL_BY_PRIMARYKEY = "CONTROLLABLE.SEL_BY_PRIMARYKEY";
 
-   protected static final String DCCONTROLLABLE = "d.dccontrollableid, d.caseid, d.controlevent, d.createuser, d.createdate, "
+   protected static final String CONTROLLABLE = "d.controllableid, d.caseid, d.controlevent, d.createuser, d.createdate, "
          + "d.createaddress, d.createremark, d.tenant, d.actuator, d.firstapprovuser, d.firstapprovaldate, d.firstapprovaddr, "
          + "d.firstapprovremark, d.approvaluser, d.approvaldate, d.approvaladdress, d.approvalremark, d.executionstatus, d.version"
          + ", d.scheduleddate, d.executiondate, d.resourceid";
-   protected static final String DCCONTROLLABLE2 = "dccontrollableid, caseid, controlevent, createuser, createdate, "
+   protected static final String CONTROLLABLE2 = "controllableid, caseid, controlevent, createuser, createdate, "
          + "createaddress, createremark, tenant, actuator, firstapprovuser, firstapprovaldate, firstapprovaddr, "
          + "firstapprovremark, approvaluser, approvaldate, approvaladdress, approvalremark, executionstatus, version"
          + ", scheduleddate, executiondate, resourceid";
 
-   private static final String INSERT_DCCONTROLLABLE = "INSERT INTO cib_dccontrollable (" + DCCONTROLLABLE2
+   private static final String INSERT_CONTROLLABLE = "INSERT INTO cib_controllable (" + CONTROLLABLE2
          + ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-   private static final String UPDATE_DCCONTROLLABLE = "UPDATE cib_dccontrollable SET "
+   private static final String UPDATE_CONTROLLABLE = "UPDATE cib_controllable SET "
          + "caseid=?, controlevent=?, actuator=?, firstapprovuser=?, firstapprovaldate=?, firstapprovremark=?, "
          + "version=version+1, approvaluser=?, approvaldate=?, approvaladdress=?, approvalremark=?,  executionstatus=?, "
-         + "scheduleddate=?, executiondate=? WHERE dccontrollableid=? AND version = ?";
+         + "scheduleddate=?, executiondate=? WHERE controllableid=? AND version = ?";
 
-   private static final String DELETE_DCCONTROLLABLE = "DELETE FROM cib_dccontrollable WHERE dccontrollableid=?";
+   private static final String DELETE_CONTROLLABLE = "DELETE FROM cib_controllable WHERE controllableid=?";
 
-   private static DcControllableDefinition instance;
+   private static ControllableDefinition instance;
 
-   public static synchronized DcControllableDefinition getInstance() {
+   public static synchronized ControllableDefinition getInstance() {
       if (instance == null) {
-         instance = new DcControllableDefinition();
+         instance = new ControllableDefinition();
       }
       return instance;
    }
 
-   public DcControllableDefinition() {
-      queries.put(SEL_BY_PRIMARYKEY,
-            "SELECT " + DCCONTROLLABLE + " FROM cib_dccontrollable d WHERE d.dccontrollableid = ?");
+   public ControllableDefinition() {
+      queries.put(SEL_BY_PRIMARYKEY, "SELECT " + CONTROLLABLE + " FROM cib_controllable d WHERE d.controllableid = ?");
 
-      queries.put(DcControllable.SEL_BY_TENANT, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d WHERE d.tenant LIKE ? AND (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
+      queries.put(Controllable.SEL_BY_TENANT, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d WHERE d.tenant LIKE ? AND (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
 
-      queries.put(DcControllable.SEL_ALL, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d WHERE (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
+      queries.put(Controllable.SEL_ALL, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d WHERE (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
 
-      queries.put(DcControllable.SEL_BY_TENANT_CLASS, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d, cib_resource r WHERE d.resourceid = r.resourceid and d.tenant LIKE ? AND r.targettype = ? AND (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
+      queries.put(Controllable.SEL_BY_TENANT_CLASS, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and d.tenant LIKE ? AND r.targettype = ? AND (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
 
-      queries.put(DcControllable.SEL_BY_CLASS, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d, cib_resource r WHERE d.resourceid = r.resourceid and r.targettype = ? AND (d.executionstatus = 'POSTPONED' OR d.executionStatus = 'FIRST_POSTPONED' OR d.executionStatus = 'FIRST_RELEASED')");
+      queries.put(Controllable.SEL_BY_CLASS, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and r.targettype = ? AND (d.executionstatus = 'POSTPONED' OR d.executionStatus = 'FIRST_POSTPONED' OR d.executionStatus = 'FIRST_RELEASED')");
 
-      queries.put(DcControllable.SEL_BY_ID_CLASS, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d, cib_resource r WHERE d.resourceid = r.resourceid and r.primarykeyid = ? AND r.targettype = ? AND (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
+      queries.put(Controllable.SEL_BY_ID_CLASS, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and r.primarykeyid = ? AND r.targettype = ? AND (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
 
-      queries.put(DcControllable.SEL_BY_CASEID, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d WHERE d.tenant LIKE ? AND d.caseid = ? ORDER BY d.createdate");
+      queries.put(Controllable.SEL_BY_CASEID, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d WHERE d.tenant LIKE ? AND d.caseid = ? ORDER BY d.createdate");
 
-      queries.put(DcControllable.SEL_BY_CASEID_NO_TENANT,
-            "SELECT " + DCCONTROLLABLE + " FROM cib_dccontrollable d WHERE d.caseid = ? ORDER BY d.createdate");
+      queries.put(Controllable.SEL_BY_CASEID_NO_TENANT,
+            "SELECT " + CONTROLLABLE + " FROM cib_controllable d WHERE d.caseid = ? ORDER BY d.createdate");
 
-      queries.put(DcControllable.SEL_BY_UNIQUEID, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d, cib_resource r WHERE d.resourceid = r.resourceid and r.uniqueid = ? ORDER BY d.createdate");
+      queries.put(Controllable.SEL_BY_UNIQUEID, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and r.uniqueid = ? ORDER BY d.createdate");
 
-      queries.put(DcControllable.SEL_BY_USER,
-            "SELECT " + DCCONTROLLABLE + " FROM cib_dccontrollable d WHERE d.createuser = ? AND d.tenant = ?");
+      queries.put(Controllable.SEL_BY_USER,
+            "SELECT " + CONTROLLABLE + " FROM cib_controllable d WHERE d.createuser = ? AND d.tenant = ?");
 
-      queries.put(DcControllable.SEL_BY_USER_NO_TENANT,
-            "SELECT " + DCCONTROLLABLE + " FROM cib_dccontrollable d WHERE d.createuser = ?");
+      queries.put(Controllable.SEL_BY_USER_NO_TENANT,
+            "SELECT " + CONTROLLABLE + " FROM cib_controllable d WHERE d.createuser = ?");
 
-      queries.put(DcControllable.SEL_SCHED_BY_DATE, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d WHERE d.actuator = ? AND d.executionstatus = 'SCHEDULED' AND d.scheduleddate <= ?");
+      queries.put(Controllable.SEL_SCHED_BY_DATE, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d WHERE d.actuator = ? AND d.executionstatus = 'SCHEDULED' AND d.scheduleddate <= ?");
 
-      queries.put(DcControllable.SEL_SCHED_BY_TARGETTYPE, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d, cib_resource r WHERE d.resourceid = r.resourceid and d.tenant LIKE ? AND r.targettype = ? AND d.executionstatus = 'SCHEDULED'");
+      queries.put(Controllable.SEL_SCHED_BY_TARGETTYPE, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and d.tenant LIKE ? AND r.targettype = ? AND d.executionstatus = 'SCHEDULED'");
 
-      queries.put(DcControllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d, cib_resource r WHERE d.resourceid = r.resourceid and r.targettype = ? AND d.executionstatus = 'SCHEDULED'");
+      queries.put(Controllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and r.targettype = ? AND d.executionstatus = 'SCHEDULED'");
 
-      queries.put(DcControllable.SEL_SCHED_BY_TENANT, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d WHERE d.tenant LIKE ? AND d.executionstatus = 'SCHEDULED'");
+      queries.put(Controllable.SEL_SCHED_BY_TENANT, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d WHERE d.tenant LIKE ? AND d.executionstatus = 'SCHEDULED'");
 
-      queries.put(DcControllable.SEL_SCHED,
-            "SELECT " + DCCONTROLLABLE + " FROM cib_dccontrollable d WHERE d.executionstatus = 'SCHEDULED'");
+      queries.put(Controllable.SEL_SCHED,
+            "SELECT " + CONTROLLABLE + " FROM cib_controllable d WHERE d.executionstatus = 'SCHEDULED'");
 
-      queries.put(DcControllable.SEL_LOCKED_BY_TARGETTYPE,
-            "SELECT " + DCCONTROLLABLE
-                  + " FROM cib_dccontrollable d, cib_resource r WHERE d.resourceid = r.resourceid and "
+      queries.put(Controllable.SEL_LOCKED_BY_TARGETTYPE,
+            "SELECT " + CONTROLLABLE + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and "
                   + "d.tenant LIKE ? AND r.targetType = ? AND d.executionstatus = 'LOCKED'");
 
-      queries.put(DcControllable.SEL_LOCKED_BY_TARGETTYPE_METHOD,
-            "SELECT " + DCCONTROLLABLE
-                  + " FROM cib_dccontrollable d, cib_resource r WHERE d.resourceid = r.resourceid and "
+      queries.put(Controllable.SEL_LOCKED_BY_TARGETTYPE_METHOD,
+            "SELECT " + CONTROLLABLE + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and "
                   + "d.tenant LIKE ? AND r.targetType = ? AND r.method = ? AND d.executionstatus = 'LOCKED'");
 
-      queries.put(DcControllable.SEL_LOCKED_ALL, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d WHERE d.tenant LIKE ? AND d.executionstatus = 'LOCKED'");
+      queries.put(Controllable.SEL_LOCKED_ALL, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d WHERE d.tenant LIKE ? AND d.executionstatus = 'LOCKED'");
 
-      queries.put(DcControllable.SEL_LOCKED_BY_USER, "SELECT " + DCCONTROLLABLE
-            + " FROM cib_dccontrollable d WHERE d.tenant LIKE ? AND d.createuser = ? AND d.executionstatus = 'LOCKED'");
+      queries.put(Controllable.SEL_LOCKED_BY_USER, "SELECT " + CONTROLLABLE
+            + " FROM cib_controllable d WHERE d.tenant LIKE ? AND d.createuser = ? AND d.executionstatus = 'LOCKED'");
    }
 
    @Override
@@ -144,13 +141,13 @@ public class DcControllableDefinition extends ResourceDefinition {
       if (rs == null) {
          throw new IllegalArgumentException("Failed to execute createFromResultSet: ResultSet is null");
       }
-      List<DcControllable> list = new ArrayList<DcControllable>();
+      List<Controllable> list = new ArrayList<Controllable>();
 
       while (rs.next()) {
-         DcControllable dc = new DcControllable();
+         Controllable dc = new Controllable();
          list.add(dc);
 
-         dc.setDcControllableId(rs.getString(1));
+         dc.setControllableId(rs.getString(1));
          dc.setCaseId(rs.getString(2));
          dc.setControlEvent(ControlEvent.valueOf(rs.getString(3)));
          dc.setCreateUser(rs.getString(4));
@@ -182,16 +179,16 @@ public class DcControllableDefinition extends ResourceDefinition {
 
    @Override
    public void persist(Connection jdbcConnection, Object obj) throws SQLException {
-      DcControllable dc = (DcControllable) obj;
+      Controllable dc = (Controllable) obj;
 
       dc.prePersist();
       dc.setVersion(1);
 
       super.persist(jdbcConnection, dc.getResource());
 
-      PreparedStatement ps = jdbcConnection.prepareStatement(INSERT_DCCONTROLLABLE);
+      PreparedStatement ps = jdbcConnection.prepareStatement(INSERT_CONTROLLABLE);
       try {
-         ps.setString(1, dc.getDcControllableId());
+         ps.setString(1, dc.getControllableId());
          ps.setString(2, dc.getCaseId());
          ps.setString(3, dc.getControlEvent().name());
          ps.setString(4, dc.getCreateUser());
@@ -241,8 +238,8 @@ public class DcControllableDefinition extends ResourceDefinition {
 
    @Override
    public <T> T merge(Connection jdbcConnection, T obj) throws SQLException {
-      DcControllable dc = (DcControllable) obj;
-      PreparedStatement ps = jdbcConnection.prepareStatement(UPDATE_DCCONTROLLABLE);
+      Controllable dc = (Controllable) obj;
+      PreparedStatement ps = jdbcConnection.prepareStatement(UPDATE_CONTROLLABLE);
       try {
          ps.setString(1, dc.getCaseId());
          ps.setString(2, dc.getControlEvent().name());
@@ -274,13 +271,13 @@ public class DcControllableDefinition extends ResourceDefinition {
             ps.setNull(13, Types.TIMESTAMP);
          }
 
-         ps.setString(14, dc.getDcControllableId());
+         ps.setString(14, dc.getControllableId());
          ps.setInt(15, dc.getVersion());
 
          int count = ps.executeUpdate();
          if (count != 1) {
             throw new CibetJdbcException(
-                  "Failed to update DcControllable with id " + dc.getDcControllableId() + ": id not found");
+                  "Failed to update Controllable with id " + dc.getControllableId() + ": id not found");
          }
          dc.setVersion(dc.getVersion() + 1);
       } finally {
@@ -294,11 +291,11 @@ public class DcControllableDefinition extends ResourceDefinition {
    public void remove(Connection jdbcConnection, Object obj) throws SQLException {
       PreparedStatement ps = null;
       try {
-         DcControllable dc = (DcControllable) obj;
-         ps = jdbcConnection.prepareStatement(DELETE_DCCONTROLLABLE);
-         ps.setString(1, dc.getDcControllableId());
+         Controllable dc = (Controllable) obj;
+         ps = jdbcConnection.prepareStatement(DELETE_CONTROLLABLE);
+         ps.setString(1, dc.getControllableId());
          int count = ps.executeUpdate();
-         log.debug(count + " DcControllable deleted");
+         log.debug(count + " Controllable deleted");
       } finally {
          if (ps != null)
             ps.close();

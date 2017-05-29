@@ -67,7 +67,7 @@ import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianSEServlet;
 import com.logitags.cibet.actuator.archive.Archive;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventResult;
@@ -81,7 +81,7 @@ public class TomcatTestJpa extends DBHelper {
 
    protected CloseableHttpClient client = HttpClients.createDefault();
 
-   protected static final String SEL_DCCONTROLLABLE = "SELECT c FROM DcControllable c WHERE c.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED";
+   protected static final String SEL_CONTROLLABLE = "SELECT c FROM Controllable c WHERE c.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED";
 
    @Deployment(name = "jpa", testable = false)
    public static WebArchive createDeployment() {
@@ -304,8 +304,8 @@ public class TomcatTestJpa extends DBHelper {
          tentList = q.getResultList();
          Assert.assertEquals(0, tentList.size());
 
-         q = cibetEman.createQuery(SEL_DCCONTROLLABLE);
-         List<DcControllable> dcList = q.getResultList();
+         q = cibetEman.createQuery(SEL_CONTROLLABLE);
+         List<Controllable> dcList = q.getResultList();
          Assert.assertEquals(1, dcList.size());
          Assert.assertEquals(ExecutionStatus.POSTPONED, dcList.get(0).getExecutionStatus());
 
@@ -326,7 +326,7 @@ public class TomcatTestJpa extends DBHelper {
          body = executeGET(getBaseURL() + "/releasePersist.cibet");
          Assert.assertEquals("TEntity not released", body);
 
-         q = cibetEman.createQuery(SEL_DCCONTROLLABLE);
+         q = cibetEman.createQuery(SEL_CONTROLLABLE);
          dcList = q.getResultList();
          Assert.assertEquals(1, dcList.size());
          Assert.assertEquals(ExecutionStatus.POSTPONED, dcList.get(0).getExecutionStatus());
@@ -360,7 +360,7 @@ public class TomcatTestJpa extends DBHelper {
 
          int index = body.indexOf(":");
          String id = body.substring(index + 2);
-         log.info("search TEntity and DcControllable with ID " + id);
+         log.info("search TEntity and Controllable with ID " + id);
 
          applEman.getTransaction().commit();
          applEman.getTransaction().begin();
@@ -373,7 +373,7 @@ public class TomcatTestJpa extends DBHelper {
          cibetEman.getTransaction().commit();
          cibetEman.getTransaction().begin();
 
-         q = cibetEman.createQuery("SELECT e FROM DcControllable e WHERE e.resource.primaryKeyId = :id");
+         q = cibetEman.createQuery("SELECT e FROM Controllable e WHERE e.resource.primaryKeyId = :id");
          q.setParameter("id", id);
          dcList = q.getResultList();
          Assert.assertEquals(1, dcList.size());
@@ -471,8 +471,8 @@ public class TomcatTestJpa extends DBHelper {
          List<Archive> list = q.getResultList();
          Assert.assertEquals(1, list.size());
 
-         q = cibetEman.createQuery("SELECT d FROM DcControllable d");
-         List<DcControllable> dcl = q.getResultList();
+         q = cibetEman.createQuery("SELECT d FROM Controllable d");
+         List<Controllable> dcl = q.getResultList();
          Assert.assertEquals(1, dcl.size());
          Assert.assertEquals(ExecutionStatus.POSTPONED, dcl.get(0).getExecutionStatus());
 
@@ -514,7 +514,7 @@ public class TomcatTestJpa extends DBHelper {
          cibetEman.getTransaction().commit();
          cibetEman.getTransaction().begin();
 
-         q = cibetEman.createQuery("SELECT d FROM DcControllable d");
+         q = cibetEman.createQuery("SELECT d FROM Controllable d");
          dcl = q.getResultList();
          Assert.assertEquals(1, dcl.size());
 

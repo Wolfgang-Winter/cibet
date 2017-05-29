@@ -10,7 +10,7 @@
  *******************************************************************************
  */
 
-package com.logitags.cibet.actuator.dc;
+package com.logitags.cibet.actuator.common;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -36,6 +36,8 @@ import javax.persistence.Version;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.actuator.dc.DcActuator;
+import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
@@ -47,77 +49,77 @@ import com.logitags.cibet.resource.Resource;
  * The pre-release state of a controlled object. This can be an entity or a method invocation.
  */
 @Entity
-@Table(name = "CIB_DCCONTROLLABLE")
+@Table(name = "CIB_CONTROLLABLE")
 @NamedQueries({
-      @NamedQuery(name = DcControllable.SEL_BY_TENANT_CLASS, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :oclass AND (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
-      @NamedQuery(name = DcControllable.SEL_BY_CLASS, query = "SELECT a FROM DcControllable a WHERE a.resource.targetType = :oclass AND (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
-      @NamedQuery(name = DcControllable.SEL_BY_TENANT, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
-      @NamedQuery(name = DcControllable.SEL_BY_GROUPID, query = "SELECT a FROM DcControllable a WHERE a.resource.groupId = :groupId"),
-      @NamedQuery(name = DcControllable.SEL_ALL, query = "SELECT a FROM DcControllable a WHERE (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
-      @NamedQuery(name = DcControllable.SEL_BY_ID_CLASS, query = "SELECT ob FROM DcControllable ob WHERE ob.resource.primaryKeyId = :objectId AND ob.resource.targetType = :objectClass AND (ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
-      @NamedQuery(name = DcControllable.SEL_BY_UNIQUEID, query = "SELECT d FROM DcControllable d WHERE d.resource.uniqueId = :uniqueId ORDER BY d.createDate"),
-      @NamedQuery(name = DcControllable.SEL_BY_USER, query = "SELECT d FROM DcControllable d WHERE d.createUser = :user AND d.tenant=:tenant"),
-      @NamedQuery(name = DcControllable.SEL_BY_USER_NO_TENANT, query = "SELECT d FROM DcControllable d WHERE d.createUser = :user"),
-      @NamedQuery(name = DcControllable.SEL_BY_CASEID, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate"),
-      @NamedQuery(name = DcControllable.SEL_BY_CASEID_NO_TENANT, query = "SELECT a FROM DcControllable a WHERE a.caseId = :caseId ORDER BY a.createDate"),
-      @NamedQuery(name = DcControllable.SEL_SCHED_BY_TENANT, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
-      @NamedQuery(name = DcControllable.SEL_SCHED, query = "SELECT a FROM DcControllable a WHERE a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
-      @NamedQuery(name = DcControllable.SEL_SCHED_BY_TARGETTYPE, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :oclass AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
-      @NamedQuery(name = DcControllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT, query = "SELECT a FROM DcControllable a WHERE a.resource.targetType = :oclass AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
-      @NamedQuery(name = DcControllable.SEL_SCHED_BY_DATE, query = "SELECT a FROM DcControllable a WHERE a.actuator = :actuator AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED AND a.scheduledDate <= :currentDate"),
-      @NamedQuery(name = DcControllable.SEL_LOCKED_BY_TARGETTYPE, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :targettype AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
-      @NamedQuery(name = DcControllable.SEL_LOCKED_BY_TARGETTYPE_METHOD, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :targettype AND a.resource.method = :method AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
-      @NamedQuery(name = DcControllable.SEL_LOCKED_ALL, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
-      @NamedQuery(name = DcControllable.SEL_LOCKED_BY_USER, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.createUser = :user AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED") })
-public class DcControllable implements Serializable {
+      @NamedQuery(name = Controllable.SEL_BY_TENANT_CLASS, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :oclass AND (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
+      @NamedQuery(name = Controllable.SEL_BY_CLASS, query = "SELECT a FROM Controllable a WHERE a.resource.targetType = :oclass AND (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
+      @NamedQuery(name = Controllable.SEL_BY_TENANT, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
+      @NamedQuery(name = Controllable.SEL_BY_GROUPID, query = "SELECT a FROM Controllable a WHERE a.resource.groupId = :groupId"),
+      @NamedQuery(name = Controllable.SEL_ALL, query = "SELECT a FROM Controllable a WHERE (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
+      @NamedQuery(name = Controllable.SEL_BY_ID_CLASS, query = "SELECT ob FROM Controllable ob WHERE ob.resource.primaryKeyId = :objectId AND ob.resource.targetType = :objectClass AND (ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
+      @NamedQuery(name = Controllable.SEL_BY_UNIQUEID, query = "SELECT d FROM Controllable d WHERE d.resource.uniqueId = :uniqueId ORDER BY d.createDate"),
+      @NamedQuery(name = Controllable.SEL_BY_USER, query = "SELECT d FROM Controllable d WHERE d.createUser = :user AND d.tenant=:tenant"),
+      @NamedQuery(name = Controllable.SEL_BY_USER_NO_TENANT, query = "SELECT d FROM Controllable d WHERE d.createUser = :user"),
+      @NamedQuery(name = Controllable.SEL_BY_CASEID, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate"),
+      @NamedQuery(name = Controllable.SEL_BY_CASEID_NO_TENANT, query = "SELECT a FROM Controllable a WHERE a.caseId = :caseId ORDER BY a.createDate"),
+      @NamedQuery(name = Controllable.SEL_SCHED_BY_TENANT, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
+      @NamedQuery(name = Controllable.SEL_SCHED, query = "SELECT a FROM Controllable a WHERE a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
+      @NamedQuery(name = Controllable.SEL_SCHED_BY_TARGETTYPE, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :oclass AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
+      @NamedQuery(name = Controllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT, query = "SELECT a FROM Controllable a WHERE a.resource.targetType = :oclass AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
+      @NamedQuery(name = Controllable.SEL_SCHED_BY_DATE, query = "SELECT a FROM Controllable a WHERE a.actuator = :actuator AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED AND a.scheduledDate <= :currentDate"),
+      @NamedQuery(name = Controllable.SEL_LOCKED_BY_TARGETTYPE, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :targettype AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
+      @NamedQuery(name = Controllable.SEL_LOCKED_BY_TARGETTYPE_METHOD, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :targettype AND a.resource.method = :method AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
+      @NamedQuery(name = Controllable.SEL_LOCKED_ALL, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
+      @NamedQuery(name = Controllable.SEL_LOCKED_BY_USER, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.createUser = :user AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED") })
+public class Controllable implements Serializable {
 
    /**
     * 
     */
    private static final long serialVersionUID = 1L;
 
-   private static Log log = LogFactory.getLog(DcControllable.class);
+   private static Log log = LogFactory.getLog(Controllable.class);
 
    /**
     * named query
     */
-   public final static String SEL_BY_TENANT_CLASS = "com.logitags.cibet.actuator.dc.DcControllable.DCCONTROLLABLE_SEL_BY_TENANT_CLASS";
-   public final static String SEL_BY_CLASS = "com.logitags.cibet.actuator.dc.DcControllable.DCCONTROLLABLE_SEL_BY_CLASS";
+   public final static String SEL_BY_TENANT_CLASS = "com.logitags.cibet.actuator.common.Controllable.CONTROLLABLE_SEL_BY_TENANT_CLASS";
+   public final static String SEL_BY_CLASS = "com.logitags.cibet.actuator.common.Controllable.CONTROLLABLE_SEL_BY_CLASS";
    /**
     * named query
     */
-   public final static String SEL_BY_TENANT = "com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_TENANT";
-   public final static String SEL_ALL = "com.logitags.cibet.actuator.dc.DcControllable.SEL_ALL";
+   public final static String SEL_BY_TENANT = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_TENANT";
+   public final static String SEL_ALL = "com.logitags.cibet.actuator.common.Controllable.SEL_ALL";
 
-   public final static String SEL_BY_ID_CLASS = "com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_ID_CLASS";
+   public final static String SEL_BY_ID_CLASS = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_ID_CLASS";
 
-   public final static String SEL_BY_CASEID = "com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_CASEID";
-   public final static String SEL_BY_CASEID_NO_TENANT = "com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_CASEID_NO_TENANT";
+   public final static String SEL_BY_CASEID = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_CASEID";
+   public final static String SEL_BY_CASEID_NO_TENANT = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_CASEID_NO_TENANT";
 
-   public final static String SEL_BY_UNIQUEID = "com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_UNIQUEID";
+   public final static String SEL_BY_UNIQUEID = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_UNIQUEID";
 
-   public final static String SEL_BY_USER = "com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_USER";
-   public final static String SEL_BY_USER_NO_TENANT = "com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_USER_NO_TENANT";
+   public final static String SEL_BY_USER = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_USER";
+   public final static String SEL_BY_USER_NO_TENANT = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_USER_NO_TENANT";
 
-   public final static String SEL_SCHED_BY_TENANT = "com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED_BY_TENANT";
-   public final static String SEL_SCHED = "com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED";
+   public final static String SEL_SCHED_BY_TENANT = "com.logitags.cibet.actuator.common.Controllable.SEL_SCHED_BY_TENANT";
+   public final static String SEL_SCHED = "com.logitags.cibet.actuator.common.Controllable.SEL_SCHED";
 
-   public final static String SEL_SCHED_BY_TARGETTYPE = "com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED_BY_TARGETTYPE";
-   public final static String SEL_SCHED_BY_TARGETTYPE_NO_TENANT = "com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT";
+   public final static String SEL_SCHED_BY_TARGETTYPE = "com.logitags.cibet.actuator.common.Controllable.SEL_SCHED_BY_TARGETTYPE";
+   public final static String SEL_SCHED_BY_TARGETTYPE_NO_TENANT = "com.logitags.cibet.actuator.common.Controllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT";
 
-   public final static String SEL_SCHED_BY_DATE = "com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED_BY_DATE";
-   public final static String SEL_BY_GROUPID = "com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_GROUPID";
+   public final static String SEL_SCHED_BY_DATE = "com.logitags.cibet.actuator.common.Controllable.SEL_SCHED_BY_DATE";
+   public final static String SEL_BY_GROUPID = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_GROUPID";
 
-   public final static String SEL_LOCKED_BY_TARGETTYPE = "com.logitags.cibet.actuator.dc.DcControllable.SEL_LOCKED_BY_TARGETTYPE";
-   public final static String SEL_LOCKED_BY_TARGETTYPE_METHOD = "com.logitags.cibet.actuator.dc.DcControllable.SEL_LOCKED_BY_TARGETTYPE_METHOD";
-   public final static String SEL_LOCKED_ALL = "com.logitags.cibet.actuator.dc.DcControllable.SEL_LOCKED_ALL";
-   public final static String SEL_LOCKED_BY_USER = "com.logitags.cibet.actuator.dc.DcControllable.SEL_LOCKED_BY_USER";
+   public final static String SEL_LOCKED_BY_TARGETTYPE = "com.logitags.cibet.actuator.common.Controllable.SEL_LOCKED_BY_TARGETTYPE";
+   public final static String SEL_LOCKED_BY_TARGETTYPE_METHOD = "com.logitags.cibet.actuator.common.Controllable.SEL_LOCKED_BY_TARGETTYPE_METHOD";
+   public final static String SEL_LOCKED_ALL = "com.logitags.cibet.actuator.common.Controllable.SEL_LOCKED_ALL";
+   public final static String SEL_LOCKED_BY_USER = "com.logitags.cibet.actuator.common.Controllable.SEL_LOCKED_BY_USER";
 
    /**
     * unique ID
     */
    @Id
-   private String dcControllableId;
+   private String controllableId;
 
    /**
     * user ID who did the first approval in a 6-eyes process. The controlled object must be approved by a third person.
@@ -253,14 +255,14 @@ public class DcControllable implements Serializable {
       }
 
       createDate = new Date();
-      dcControllableId = UUID.randomUUID().toString();
+      controllableId = UUID.randomUUID().toString();
    }
 
    public String toString() {
       StringBuffer b = new StringBuffer();
       b.append(this.getClass().getName());
       b.append("\nid = ");
-      b.append(dcControllableId);
+      b.append(controllableId);
       b.append("\ncase id = ");
       b.append(caseId);
       b.append("\ncontrolEvent = ");
@@ -289,7 +291,7 @@ public class DcControllable implements Serializable {
 
    public void decrypt() {
       if (getResource().isEncrypted()) {
-         log.debug("decrypt DcControllable");
+         log.debug("decrypt Controllable");
          // OpenJPA workaround:
          getResource().getParameters().size();
          Context.internalRequestScope().getEntityManager().detach(this);
@@ -337,7 +339,7 @@ public class DcControllable implements Serializable {
    public Object release(String remark) throws ResourceApplyException {
       if (getControlEvent().isChildOf(ControlEvent.PERSIST)) {
          throw new IllegalArgumentException(
-               "This release method is not usable for DcControllable with ControlEvent PERSIST. "
+               "This release method is not usable for Controllable with ControlEvent PERSIST. "
                      + "Use the release method which takes an EntityManager as parameter");
       }
 
@@ -356,16 +358,16 @@ public class DcControllable implements Serializable {
    public void reject(String remark) throws ResourceApplyException {
       if (getControlEvent().isChildOf(ControlEvent.PERSIST)) {
          throw new IllegalArgumentException(
-               "This reject method is not usable for DcControllable with ControlEvent PERSIST. "
+               "This reject method is not usable for Controllable with ControlEvent PERSIST. "
                      + "Use the reject method which takes an EntityManager as parameter");
       }
       reject(null, remark);
    }
 
    /**
-    * rejects a controlled JPA entity. Rejects a postponed or scheduled DcControllable object if it is not yet released
-    * or executed by the scheduler batch process. This reject method must be called when the postponed or scheduled
-    * event is a PERSISTENCE event on an entity.
+    * rejects a controlled JPA entity. Rejects a postponed or scheduled Controllable object if it is not yet released or
+    * executed by the scheduler batch process. This reject method must be called when the postponed or scheduled event
+    * is a PERSISTENCE event on an entity.
     */
    @CibetContext
    public void reject(EntityManager entityManager, String remark) throws ResourceApplyException {
@@ -392,7 +394,7 @@ public class DcControllable implements Serializable {
    public void passBack(String remark) throws ResourceApplyException {
       if (getControlEvent().isChildOf(ControlEvent.PERSIST)) {
          throw new IllegalArgumentException(
-               "This passBack method is not usable for DcControllable with ControlEvent PERSIST. "
+               "This passBack method is not usable for Controllable with ControlEvent PERSIST. "
                      + "Use the passBack method which takes an EntityManager as parameter");
       }
 
@@ -423,8 +425,8 @@ public class DcControllable implements Serializable {
    }
 
    /**
-    * submits a DcControllable for release. Used by the user who created the DcControllable and to whom it is passed
-    * back (see passBack(DcControllable, String)). The ExecutionStatus will be set to POSTPONED or FIRST_POSTPONED.
+    * submits a Controllable for release. Used by the user who created the Controllable and to whom it is passed back
+    * (see passBack(Controllable, String)). The ExecutionStatus will be set to POSTPONED or FIRST_POSTPONED.
     * Notifications will be sent if configured.
     * 
     * @param remark
@@ -436,7 +438,7 @@ public class DcControllable implements Serializable {
    public void submit(String remark) throws ResourceApplyException {
       if (getControlEvent().isChildOf(ControlEvent.PERSIST)) {
          throw new IllegalArgumentException(
-               "This submit method is not usable for DcControllable with ControlEvent PERSIST. "
+               "This submit method is not usable for Controllable with ControlEvent PERSIST. "
                      + "Use the submit method which takes an EntityManager as parameter");
       }
 
@@ -444,8 +446,8 @@ public class DcControllable implements Serializable {
    }
 
    /**
-    * submits a DcControllable for release. Used by the user who created the DcControllable and to whom it is passed
-    * back (see passBack(DcControllable, String)). The ExecutionStatus will be set to POSTPONED or FIRST_POSTPONED.
+    * submits a Controllable for release. Used by the user who created the Controllable and to whom it is passed back
+    * (see passBack(Controllable, String)). The ExecutionStatus will be set to POSTPONED or FIRST_POSTPONED.
     * Notifications will be sent if configured.
     * 
     * @param entityManager
@@ -471,8 +473,8 @@ public class DcControllable implements Serializable {
     * @param objectId
     *           id the new value of unique ID
     */
-   public void setDcControllableId(String objectId) {
-      this.dcControllableId = objectId;
+   public void setControllableId(String objectId) {
+      this.controllableId = objectId;
    }
 
    /**
@@ -480,8 +482,8 @@ public class DcControllable implements Serializable {
     * 
     * @return String
     */
-   public String getDcControllableId() {
-      return this.dcControllableId;
+   public String getControllableId() {
+      return this.controllableId;
    }
 
    /**

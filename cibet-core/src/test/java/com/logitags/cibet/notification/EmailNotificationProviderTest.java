@@ -40,7 +40,7 @@ import org.junit.Test;
 import com.cibethelper.entities.TEntity;
 import com.dumbster.smtp.SimpleSmtpServer;
 import com.dumbster.smtp.SmtpMessage;
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -73,8 +73,8 @@ public class EmailNotificationProviderTest {
       NOW_5.add(Calendar.DATE, -5);
    }
 
-   protected DcControllable createDcControllable(ExecutionStatus status) {
-      DcControllable c = new DcControllable();
+   protected Controllable createControllable(ExecutionStatus status) {
+      Controllable c = new Controllable();
       c.setActuator("FOUR_EYES");
       c.setApprovalAddress("approv@test.de");
       c.setApprovalDate(NOW.getTime());
@@ -85,7 +85,7 @@ public class EmailNotificationProviderTest {
       c.setCreateAddress("create@test.de");
       c.setCreateDate(NOW_5.getTime());
       c.setCreateUser("userId");
-      c.setDcControllableId("123");
+      c.setControllableId("123");
       c.setFirstApprovalAddress("firstApp@test.de");
       c.setFirstApprovalDate(NOW_3.getTime());
       c.setFirstApprovalUser("firstApprovalUserId");
@@ -97,7 +97,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyAssign() {
       log.debug("start notifyAssign()");
-      DcControllable c = createDcControllable(ExecutionStatus.POSTPONED);
+      Controllable c = createControllable(ExecutionStatus.POSTPONED);
       JpaResource res = new JpaResource(new TEntity());
       c.setResource(res);
 
@@ -135,7 +135,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyAssign2() {
       log.debug("start notifyAssign2()");
-      DcControllable c = createDcControllable(ExecutionStatus.POSTPONED);
+      Controllable c = createControllable(ExecutionStatus.POSTPONED);
       JpaResource res = new JpaResource(new TEntity());
       c.setResource(res);
 
@@ -175,7 +175,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyAssign3() {
       log.debug("start notifyAssign3()");
-      DcControllable c = createDcControllable(ExecutionStatus.POSTPONED);
+      Controllable c = createControllable(ExecutionStatus.POSTPONED);
       MethodResource res = new MethodResource(new TEntity(), null, null);
       res.setMethod("executePay");
       c.setResource(res);
@@ -217,7 +217,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyAssign3WithRemarks() {
       log.debug("start notifyAssign3WithRemarks()");
-      DcControllable c = createDcControllable(ExecutionStatus.POSTPONED);
+      Controllable c = createControllable(ExecutionStatus.POSTPONED);
       EjbResource res = new EjbResource(new TEntity(), null, null);
       res.setMethod("executePay");
       c.setResource(res);
@@ -263,7 +263,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyFirstAssign() {
       log.debug("start notifyFirstAssign()");
-      DcControllable c = createDcControllable(ExecutionStatus.FIRST_POSTPONED);
+      Controllable c = createControllable(ExecutionStatus.FIRST_POSTPONED);
       JpaResource res = new JpaResource(new TEntity());
       c.setResource(res);
 
@@ -307,7 +307,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyFirstAssign2() {
       log.debug("start notifyFirstAssign2()");
-      DcControllable c = createDcControllable(ExecutionStatus.FIRST_POSTPONED);
+      Controllable c = createControllable(ExecutionStatus.FIRST_POSTPONED);
       MethodResource res = new MethodResource(new TEntity(), null, null);
       res.setMethod("executePay");
       c.setResource(res);
@@ -352,7 +352,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyFirstReleased() {
       log.debug("start notifyFirstReleased()");
-      DcControllable c = createDcControllable(ExecutionStatus.FIRST_RELEASED);
+      Controllable c = createControllable(ExecutionStatus.FIRST_RELEASED);
       JpaResource res = new JpaResource(new TEntity());
       c.setResource(res);
 
@@ -392,7 +392,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyFirstReleased2() {
       log.debug("start notifyFirstReleased2()");
-      DcControllable c = createDcControllable(ExecutionStatus.FIRST_RELEASED);
+      Controllable c = createControllable(ExecutionStatus.FIRST_RELEASED);
       EjbResource res = new EjbResource(new TEntity(), null, null);
       res.setMethod("executePay");
       c.setResource(res);
@@ -433,7 +433,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyRejected() {
       log.debug("start notifyRejected()");
-      DcControllable c = createDcControllable(ExecutionStatus.REJECTED);
+      Controllable c = createControllable(ExecutionStatus.REJECTED);
       JpaResource res = new JpaResource(new TEntity());
       c.setResource(res);
 
@@ -473,7 +473,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyRejected2() {
       log.debug("start notifyRejected2()");
-      DcControllable c = createDcControllable(ExecutionStatus.REJECTED);
+      Controllable c = createControllable(ExecutionStatus.REJECTED);
       MethodResource res = new MethodResource(new TEntity(), null, null);
       res.setMethod("executePay");
       c.setResource(res);
@@ -517,7 +517,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyReleased() {
       log.debug("start notifyReleased()");
-      DcControllable c = createDcControllable(ExecutionStatus.EXECUTED);
+      Controllable c = createControllable(ExecutionStatus.EXECUTED);
       JpaResource res = new JpaResource(new TEntity());
       c.setResource(res);
 
@@ -557,7 +557,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyReleased2() {
       log.debug("start notifyReleased2()");
-      DcControllable c = createDcControllable(ExecutionStatus.EXECUTED);
+      Controllable c = createControllable(ExecutionStatus.EXECUTED);
       EjbResource res = new EjbResource(new TEntity(), null, null);
       res.setMethod("executePay");
       c.setResource(res);
@@ -622,7 +622,7 @@ public class EmailNotificationProviderTest {
          Files.copy(f.toPath(), bodyPath);
          Files.copy(f2.toPath(), subjPath);
 
-         DcControllable c = createDcControllable(ExecutionStatus.POSTPONED);
+         Controllable c = createControllable(ExecutionStatus.POSTPONED);
          JpaResource res = new JpaResource(new TEntity());
          c.setResource(res);
 
@@ -655,7 +655,7 @@ public class EmailNotificationProviderTest {
    @Test
    public void notifyReleased2WithPassword() {
       log.debug("start notifyReleased2WithPassword()");
-      DcControllable c = createDcControllable(ExecutionStatus.EXECUTED);
+      Controllable c = createControllable(ExecutionStatus.EXECUTED);
       EjbResource res = new EjbResource(new TEntity(), null, null);
       res.setMethod("executePay");
       c.setResource(res);

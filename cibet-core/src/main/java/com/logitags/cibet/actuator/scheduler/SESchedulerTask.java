@@ -39,7 +39,7 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.logitags.cibet.actuator.dc.DcControllable;
+import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;
@@ -95,12 +95,12 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
          Context.sessionScope().setUser("SchedulerTask-" + timerConfig.getSchedulerName());
 
          EntityManager em = Context.internalRequestScope().getEntityManager();
-         TypedQuery<DcControllable> q = em.createNamedQuery(DcControllable.SEL_SCHED_BY_DATE, DcControllable.class);
+         TypedQuery<Controllable> q = em.createNamedQuery(Controllable.SEL_SCHED_BY_DATE, Controllable.class);
          q.setParameter("actuator", timerConfig.getSchedulerName());
          q.setParameter("currentDate", new Date(), TemporalType.TIMESTAMP);
-         List<DcControllable> list = q.getResultList();
+         List<Controllable> list = q.getResultList();
          log.info(list.size() + " due scheduled business cases found");
-         for (DcControllable co : list) {
+         for (Controllable co : list) {
             co.decrypt();
             process(co);
 
@@ -138,7 +138,7 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
     * 
     * @param co
     */
-   protected void process(DcControllable co) {
+   protected void process(Controllable co) {
       ExecutionStatus status = null;
       SchedulerTaskInterceptor interceptor = null;
       SchedulerActuator schedact = null;
@@ -151,7 +151,7 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
 
          Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLEVENT, controlEventForRelease(co));
          Context.requestScope().setCaseId(co.getCaseId());
-         Context.internalRequestScope().setProperty(InternalRequestScope.DCCONTROLLABLE, co);
+         Context.internalRequestScope().setProperty(InternalRequestScope.CONTROLLABLE, co);
          Context.sessionScope().setTenant(co.getTenant());
 
          try {
@@ -177,7 +177,7 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
       } finally {
          log.debug("finally");
          Context.internalRequestScope().removeProperty(InternalRequestScope.CONTROLEVENT);
-         Context.internalRequestScope().removeProperty(InternalRequestScope.DCCONTROLLABLE);
+         Context.internalRequestScope().removeProperty(InternalRequestScope.CONTROLLABLE);
          Context.requestScope().setCaseId(null);
          Context.sessionScope().setTenant(null);
 
@@ -206,7 +206,7 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
       }
    }
 
-   protected ControlEvent controlEventForRelease(DcControllable co) {
+   protected ControlEvent controlEventForRelease(Controllable co) {
       switch (co.getControlEvent()) {
       case INVOKE:
          return ControlEvent.RELEASE_INVOKE;
@@ -219,7 +219,7 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
       case SELECT:
          return ControlEvent.RELEASE_SELECT;
       default:
-         String msg = "Controlled object [" + co.getDcControllableId() + "] with control event " + co.getControlEvent()
+         String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be released";
          log.error(msg);
          throw new IllegalArgumentException(msg);

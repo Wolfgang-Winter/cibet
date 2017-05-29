@@ -155,7 +155,7 @@ public class Tutorial2 {
       String info = readResponseBody(response);
       Assert.assertEquals("/Tutorial2/changeConfig request executed with response info null", info);
 
-      // load and check DcControllable
+      // load and check Controllable
       get = new HttpGet(BASEURL + "/loadDc?expected=1");
       response = client.execute(get);
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
@@ -194,7 +194,7 @@ public class Tutorial2 {
       response = client.execute(get);
       Assert.assertEquals(HttpStatus.SC_ACCEPTED, response.getStatusLine().getStatusCode());
 
-      // load and check DcControllable
+      // load and check Controllable
       get = new HttpGet(BASEURL + "/loadDc?expected=1");
       response = client.execute(get);
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
