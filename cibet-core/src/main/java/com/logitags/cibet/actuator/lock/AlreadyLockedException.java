@@ -1,9 +1,9 @@
 package com.logitags.cibet.actuator.lock;
 
+import com.logitags.cibet.actuator.dc.DcControllable;
 
 /**
- * This exception is thrown when a lock operation fails because the item to lock
- * is already locked.
+ * This exception is thrown when a lock operation fails because the item to lock is already locked.
  */
 public class AlreadyLockedException extends Exception {
 
@@ -15,17 +15,17 @@ public class AlreadyLockedException extends Exception {
    /**
     * the already existing LockedObject
     */
-   private LockedObject lockedObject;
+   private DcControllable lockedControl;
 
-   public AlreadyLockedException(LockedObject lo) {
-      lockedObject = lo;
+   public AlreadyLockedException(DcControllable lo) {
+      lockedControl = lo;
    }
 
    /**
     * @return the lockedObject
     */
-   public LockedObject getLockedObject() {
-      return lockedObject;
+   public DcControllable getLockedControl() {
+      return lockedControl;
    }
 
 }

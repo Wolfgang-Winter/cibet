@@ -76,19 +76,19 @@ public class HttpRequestInvoker implements Invoker {
       HttpRequestBase request = null;
       if ("DELETE".equals(methodName.toUpperCase())) {
          request = new HttpDelete(url);
-      } else if ("GET".equals(methodName.toUpperCase())) {
+      } else if (HttpMethod.GET.name().equals(methodName.toUpperCase())) {
          request = new HttpGet(url);
-      } else if ("HEAD".equals(methodName.toUpperCase())) {
+      } else if (HttpMethod.HEAD.name().equals(methodName.toUpperCase())) {
          request = new HttpHead(url);
-      } else if ("OPTIONS".equals(methodName.toUpperCase())) {
+      } else if (HttpMethod.OPTIONS.name().equals(methodName.toUpperCase())) {
          request = new HttpOptions(url);
-      } else if ("POST".equals(methodName.toUpperCase())) {
+      } else if (HttpMethod.POST.name().equals(methodName.toUpperCase())) {
          request = new HttpPost(url);
          addBodyEntity((HttpEntityEnclosingRequestBase) request, parameters);
-      } else if ("PUT".equals(methodName.toUpperCase())) {
+      } else if (HttpMethod.PUT.name().equals(methodName.toUpperCase())) {
          request = new HttpPut(url);
          addBodyEntity((HttpEntityEnclosingRequestBase) request, parameters);
-      } else if ("TRACE".equals(methodName.toUpperCase())) {
+      } else if (HttpMethod.TRACE.name().equals(methodName.toUpperCase())) {
          request = new HttpTrace(url);
       } else {
          throw new IllegalArgumentException("Failed to invoke " + targetType

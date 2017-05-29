@@ -7,7 +7,6 @@
    <persistence-unit name="CibetLocal" transaction-type="RESOURCE_LOCAL">
    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
       <non-jta-data-source>java:comp/env/jdbc/CibetDS</non-jta-data-source>
-      <class>com.logitags.cibet.actuator.lock.LockedObject</class>
       <class>com.logitags.cibet.core.EventResult</class>
       <class>com.logitags.cibet.resource.Resource</class>
       <class>com.logitags.cibet.sensor.ejb.EjbResource</class>

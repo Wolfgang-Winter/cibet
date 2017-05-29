@@ -35,7 +35,6 @@ import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.archive.ArchiveLoader;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
-import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.resource.ResourceParameter;
@@ -132,11 +131,11 @@ public class TutorialServlet2 extends HttpServlet {
          Context.requestScope().getEntityManager().remove(dc);
       }
 
-      Query q5 = Context.requestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
-      Iterator<LockedObject> itLO = q5.getResultList().iterator();
-      while (itLO.hasNext()) {
-         Context.requestScope().getEntityManager().remove(itLO.next());
-      }
+      // Query q5 = Context.requestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
+      // Iterator<LockedObject> itLO = q5.getResultList().iterator();
+      // while (itLO.hasNext()) {
+      // Context.requestScope().getEntityManager().remove(itLO.next());
+      // }
 
       Query q6 = Context.requestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
       Iterator<EventResult> itEV = q6.getResultList().iterator();

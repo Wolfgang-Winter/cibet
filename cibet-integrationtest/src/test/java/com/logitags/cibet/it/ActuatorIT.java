@@ -72,7 +72,6 @@ import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.actuator.dc.SixEyesActuator;
 import com.logitags.cibet.actuator.dc.TwoManRuleActuator;
 import com.logitags.cibet.actuator.lock.LockActuator;
-import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.actuator.lock.Locker;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
@@ -84,6 +83,7 @@ import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.diff.Difference;
 import com.logitags.cibet.diff.DifferenceType;
+import com.logitags.cibet.sensor.jpa.JpaResource;
 
 /**
  * DcManagerImplIntegrationTest, ParallelDcEjbContainerTest, EnversActuatorIntegrationTest,
@@ -1268,16 +1268,16 @@ public class ActuatorIT extends AbstractArquillian {
       persist(te);
 
       ut.begin();
-      LockedObject lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
+      DcControllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
-      List<LockedObject> l2 = Locker.loadLockedObjects();
+      List<DcControllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
-      Assert.assertEquals("testremark", l2.get(0).getLockRemark());
-      Assert.assertEquals(USER, l2.get(0).getLockedBy());
-      Assert.assertEquals(TEntity.class.getName(), l2.get(0).getTargetType());
+      Assert.assertEquals("testremark", l2.get(0).getCreateRemark());
+      Assert.assertEquals(USER, l2.get(0).getCreateUser());
+      Assert.assertEquals(TEntity.class.getName(), ((JpaResource) l2.get(0).getResource()).getTargetType());
    }
 
    @Test
@@ -1298,7 +1298,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(1, res.size());
 
       ut.begin();
-      LockedObject lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
+      DcControllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1314,7 +1314,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertNull(list.get(0).getRemark());
       Assert.assertNotNull(list.get(0).getResource().getTarget());
 
-      List<LockedObject> l2 = Locker.loadLockedObjects();
+      List<DcControllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1338,7 +1338,7 @@ public class ActuatorIT extends AbstractArquillian {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       ut.begin();
-      LockedObject lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
+      DcControllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1350,7 +1350,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(0).getExecutionStatus());
 
-      List<LockedObject> l2 = Locker.loadLockedObjects();
+      List<DcControllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1374,7 +1374,7 @@ public class ActuatorIT extends AbstractArquillian {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       ut.begin();
-      LockedObject lo = Locker.lock(TEntity.class, ControlEvent.DELETE, "testremark");
+      DcControllable lo = Locker.lock(TEntity.class, ControlEvent.DELETE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1386,7 +1386,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(0).getExecutionStatus());
 
-      List<LockedObject> l2 = Locker.loadLockedObjects();
+      List<DcControllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1405,16 +1405,16 @@ public class ActuatorIT extends AbstractArquillian {
       persist(te);
 
       ut.begin();
-      LockedObject lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
+      DcControllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
-      List<LockedObject> l2 = Locker.loadLockedObjects();
+      List<DcControllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
-      Assert.assertEquals("testremark", l2.get(0).getLockRemark());
-      Assert.assertEquals(USER, l2.get(0).getLockedBy());
-      Assert.assertEquals(TEntity.class.getName(), l2.get(0).getTargetType());
+      Assert.assertEquals("testremark", l2.get(0).getCreateRemark());
+      Assert.assertEquals(USER, l2.get(0).getCreateUser());
+      Assert.assertEquals(TEntity.class.getName(), ((JpaResource) l2.get(0).getResource()).getTargetType());
    }
 
    @Test
@@ -1437,7 +1437,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(1, res.size());
 
       ut.begin();
-      LockedObject lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
+      DcControllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1454,7 +1454,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertNull(list.get(0).getRemark());
       Assert.assertNotNull(list.get(0).getResource().getTarget());
 
-      List<LockedObject> l2 = Locker.loadLockedObjects();
+      List<DcControllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1479,7 +1479,7 @@ public class ActuatorIT extends AbstractArquillian {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       ut.begin();
-      LockedObject lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
+      DcControllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1493,7 +1493,7 @@ public class ActuatorIT extends AbstractArquillian {
       List<Archive> list = ArchiveLoader.loadArchives(TEntity.class.getName());
       Assert.assertEquals(1, list.size());
 
-      List<LockedObject> l2 = Locker.loadLockedObjects();
+      List<DcControllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1518,7 +1518,7 @@ public class ActuatorIT extends AbstractArquillian {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       ut.begin();
-      LockedObject lo = Locker.lock(TEntity.class, ControlEvent.INSERT, "testremark");
+      DcControllable lo = Locker.lock(TEntity.class, ControlEvent.INSERT, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1533,7 +1533,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(0).getExecutionStatus());
 
-      List<LockedObject> l2 = Locker.loadLockedObjects();
+      List<DcControllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
@@ -1556,7 +1556,7 @@ public class ActuatorIT extends AbstractArquillian {
 
       Context.sessionScope().setUser("user1");
       ut.begin();
-      LockedObject lo = Locker.lock(TEntity.class, ControlEvent.RELEASE, "testremark");
+      DcControllable lo = Locker.lock(TEntity.class, ControlEvent.RELEASE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
       Context.sessionScope().setUser(USER);
@@ -1616,7 +1616,7 @@ public class ActuatorIT extends AbstractArquillian {
 
       Context.sessionScope().setUser("user1");
       ut.begin();
-      LockedObject lo = Locker.lock(te, ControlEvent.RELEASE, "testremark");
+      DcControllable lo = Locker.lock(te, ControlEvent.RELEASE, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 
@@ -1658,7 +1658,7 @@ public class ActuatorIT extends AbstractArquillian {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       ut.begin();
-      LockedObject lo = Locker.lock(te, ControlEvent.SELECT, "testremark");
+      DcControllable lo = Locker.lock(te, ControlEvent.SELECT, "testremark");
       ut.commit();
       Assert.assertNotNull(lo);
 

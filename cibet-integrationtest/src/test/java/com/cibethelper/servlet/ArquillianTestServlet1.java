@@ -80,7 +80,6 @@ import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.dc.DcControllable;
-import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ProxyConfig;
 import com.logitags.cibet.config.ProxyConfig.ProxyMode;
@@ -559,11 +558,11 @@ public class ArquillianTestServlet1 extends HttpServlet {
          Context.internalRequestScope().getEntityManager().remove(dc);
       }
 
-      Query q5 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
-      Iterator<LockedObject> itLO = q5.getResultList().iterator();
-      while (itLO.hasNext()) {
-         Context.internalRequestScope().getEntityManager().remove(itLO.next());
-      }
+      // Query q5 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
+      // Iterator<LockedObject> itLO = q5.getResultList().iterator();
+      // while (itLO.hasNext()) {
+      // Context.internalRequestScope().getEntityManager().remove(itLO.next());
+      // }
 
       Query q6 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
       Iterator<EventResult> itEV = q6.getResultList().iterator();

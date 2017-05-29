@@ -43,6 +43,10 @@ Version 2.0 ()
       
   * Invoker control made less strict: emthod declaration could end with or without (). 
   
+  * ResourceHandler removed, new table Resource, new Resource class model
+  
+  * LockedObject removed, moved to DcControllable + Resource
+  
   
 Version 1.9 (9.10.2016)
 

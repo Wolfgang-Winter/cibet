@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -46,10 +45,9 @@ import com.cibethelper.entities.TComplexEntity2;
 import com.cibethelper.entities.TEntity;
 import com.cibethelper.servlet.ArquillianTestServlet1;
 import com.logitags.cibet.actuator.common.Actuator;
+import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.lock.AlreadyLockedException;
 import com.logitags.cibet.actuator.lock.LockActuator;
-import com.logitags.cibet.actuator.lock.LockState;
-import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.actuator.lock.Locker;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
@@ -113,7 +111,7 @@ public class LockerIT extends AbstractArquillian {
       schemes.add(LockActuator.DEFAULTNAME);
       registerSetpoint(CibetTestEJB.class, schemes, "testInvoke", ControlEvent.INVOKE, ControlEvent.RELEASE_INVOKE);
 
-      LockedObject lo = ejb.lockMethodFromClass();
+      DcControllable lo = ejb.lockMethodFromClass();
       Assert.assertNotNull(lo);
 
       TEntity entity = createTEntity(5, "valuexx");
@@ -127,7 +125,7 @@ public class LockerIT extends AbstractArquillian {
    @Test(expected = AlreadyLockedException.class)
    public void lockTwice() throws Exception {
       log.info("start lockTwice()");
-      LockedObject lo = ejb.lockMethodFromClass();
+      DcControllable lo = ejb.lockMethodFromClass();
       Assert.assertNotNull(lo);
       lo = ejb.lockMethodFromClass();
    }
@@ -139,7 +137,7 @@ public class LockerIT extends AbstractArquillian {
       schemes.add(LockActuator.DEFAULTNAME);
       registerSetpoint(CibetTestEJB.class, schemes, "testInvoke", ControlEvent.INVOKE, ControlEvent.RELEASE_INVOKE);
 
-      LockedObject lo = ejb.lockMethodFromClass();
+      DcControllable lo = ejb.lockMethodFromClass();
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("Hans");
@@ -160,18 +158,18 @@ public class LockerIT extends AbstractArquillian {
    }
 
    @Test
-   public void lockAutomaticRemove() throws Exception {
-      log.info("start lockAutomaticRemove()");
+   public void lockAutomaticUnlock() throws Exception {
+      log.info("start lockAutomaticUnlock()");
       LockActuator la = (LockActuator) Configuration.instance().getActuator(LockActuator.DEFAULTNAME);
-      la.setAutomaticLockRemoval(true);
+      la.setAutomaticUnlock(true);
 
       List<String> schemes = new ArrayList<String>();
       schemes.add(LockActuator.DEFAULTNAME);
       registerSetpoint(CibetTestEJB.class, schemes, "testInvoke", ControlEvent.INVOKE, ControlEvent.RELEASE_INVOKE);
 
-      LockedObject lo = ejb.lockMethodFromClass();
+      DcControllable lo = ejb.lockMethodFromClass();
       Assert.assertNotNull(lo);
-      List<LockedObject> l2 = Locker.loadLockedObjects();
+      List<DcControllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
 
       TEntity entity = createTEntity(5, "valuexx");
@@ -183,37 +181,6 @@ public class LockerIT extends AbstractArquillian {
 
       l2 = Locker.loadLockedObjects();
       Assert.assertEquals(0, l2.size());
-   }
-
-   @Test
-   public void lockAutomaticUnlock() throws Exception {
-      log.info("start lockAutomaticUnlock()");
-
-      LockActuator la = (LockActuator) Configuration.instance().getActuator(LockActuator.DEFAULTNAME);
-      la.setAutomaticUnlock(true);
-
-      List<String> schemes = new ArrayList<String>();
-      schemes.add(LockActuator.DEFAULTNAME);
-      registerSetpoint(CibetTestEJB.class, schemes, "testInvoke", ControlEvent.INVOKE, ControlEvent.RELEASE_INVOKE);
-
-      LockedObject lo = ejb.lockMethodFromClass();
-      Assert.assertNotNull(lo);
-      List<LockedObject> l2 = Locker.loadLockedObjects();
-      Assert.assertEquals(1, l2.size());
-      Assert.assertEquals(LockState.LOCKED, l2.get(0).getLockState());
-
-      TEntity entity = createTEntity(5, "valuexx");
-      byte[] bytes = "Pausenclown".getBytes();
-      List<Object> list = ejb.testInvoke("Hals", -34, 456, bytes, entity, new Long(43));
-      Assert.assertNotNull(list);
-      Assert.assertEquals(ExecutionStatus.EXECUTED,
-            Context.requestScope().getExecutedEventResult().getExecutionStatus());
-
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(LockedObject.SEL_ALL);
-      q.setParameter("tenant", TENANT);
-      l2 = q.getResultList();
-      Assert.assertEquals(1, l2.size());
-      Assert.assertEquals(LockState.UNLOCKED, l2.get(0).getLockState());
    }
 
 }

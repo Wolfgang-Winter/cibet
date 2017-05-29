@@ -42,7 +42,6 @@ import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.actuator.dc.SixEyesActuator;
 import com.logitags.cibet.actuator.dc.TwoManRuleActuator;
 import com.logitags.cibet.actuator.lock.LockActuator;
-import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.actuator.lock.Locker;
 import com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator;
 import com.logitags.cibet.config.Configuration;
@@ -911,7 +910,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
             + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", 1);
       ResultSet rs = query("select namevalue, counter from cib_testentity where id = 5");
       Assert.assertTrue(rs.next());
-      LockedObject lo = Locker.lock("cib_testentity", "5", ControlEvent.UPDATE, "testremark");
+      DcControllable lo = Locker.lock("cib_testentity", "5", ControlEvent.UPDATE, "testremark");
       Assert.assertNotNull(lo);
 
       log.debug("now update");
@@ -933,7 +932,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertNull(list.get(0).getRemark());
       Assert.assertNotNull(list.get(0).getResource().getTarget());
 
-      List<LockedObject> l2 = Locker.loadLockedObjects();
+      List<DcControllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
    }
@@ -950,7 +949,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       sp = registerSetpoint("cib_testentity", schemes, ControlEvent.PERSIST);
 
-      LockedObject lo = Locker.lock("cib_testentity", ControlEvent.UPDATE, "testremark");
+      DcControllable lo = Locker.lock("cib_testentity", (String) null, ControlEvent.UPDATE, "testremark");
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("otherUser");
@@ -964,7 +963,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(0).getExecutionStatus());
 
-      List<LockedObject> l2 = Locker.loadLockedObjects();
+      List<DcControllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
    }

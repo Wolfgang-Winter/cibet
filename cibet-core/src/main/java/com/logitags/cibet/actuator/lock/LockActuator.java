@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.common.AbstractActuator;
 import com.logitags.cibet.actuator.common.DeniedException;
+import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.ExecutionStatus;
@@ -32,43 +33,12 @@ public class LockActuator extends AbstractActuator {
 
    private boolean throwDeniedException = false;
 
-   private boolean automaticLockRemoval = false;
-
    private boolean automaticUnlock = false;
 
    private Class<? extends DeniedException> deniedExceptionType;
 
    public LockActuator() {
       setName(DEFAULTNAME);
-   }
-
-   /**
-    * Checks if the target object is locked by the given LockedObject. If the locked object has no objectId set (this is
-    * the case when Release of an Insert event is locked) then the target class must implement the equals() method in
-    * order to unambiguously identify the locked object and the target as identical.
-    * 
-    * @param target
-    * @param objectId
-    *           primary key of target
-    * @param lo
-    * @return
-    */
-   public static boolean isLocked(Object target, String objectId, LockedObject lo) {
-      if (CLASSLOCK.equals(lo.getObjectId()))
-         return true;
-      if (lo.getObjectId() == null || lo.getObjectId().equals("0")) {
-         // this is a release of an insert: has no primary key.
-         Object obj = lo.getDecodedObject();
-         if (obj == null) {
-            String msg = "System error: If the object to lock has no primary key the object must be "
-                  + "encoded into LockedObject and the equals() method must be implemented";
-            throw new RuntimeException(msg);
-         }
-         return obj.equals(target);
-
-      } else {
-         return lo.getObjectId().equals(objectId);
-      }
    }
 
    public LockActuator(String name) {
@@ -104,11 +74,12 @@ public class LockActuator extends AbstractActuator {
    }
 
    private void checkBeforeInvoke(EventMetadata ctx) {
-      List<LockedObject> list = Locker.loadLockedObjects(ctx.getResource().getTargetType());
+      List<DcControllable> list = Locker.loadLockedObjects(ctx.getResource().getTargetType());
 
-      for (LockedObject lo : list) {
-         if (isLocked(lo, ctx.getResource()) && ctx.getControlEvent().isChildOf(lo.getLockedEvent())) {
-            if (!lo.getLockedBy().equals(Context.internalSessionScope().getUser())) {
+      for (DcControllable lo : list) {
+
+         if (isLocked(lo.getResource(), ctx.getResource()) && ctx.getControlEvent().isChildOf(lo.getControlEvent())) {
+            if (!lo.getCreateUser().equals(Context.internalSessionScope().getUser())) {
                if (log.isDebugEnabled()) {
                   log.debug(ctx.getControlEvent() + " of resource " + ctx.getResource() + " is locked by: " + lo);
                }
@@ -118,19 +89,18 @@ public class LockActuator extends AbstractActuator {
             } else {
                if (!Context.requestScope().isPlaying()) {
                   // this is the user who set the lock
-                  if (automaticLockRemoval) {
-                     Locker.removeLock(lo);
-                  } else if (automaticUnlock) {
+                  if (automaticUnlock) {
                      Locker.unlock(lo, "automatic unlock by LockActuator");
                   }
                }
             }
+
          }
       }
    }
 
    private void checkBeforePersist(EventMetadata ctx) {
-      List<LockedObject> list = Locker.loadLockedObjects(ctx.getResource().getTargetType());
+      List<DcControllable> list = Locker.loadLockedObjects(ctx.getResource().getTargetType());
       if (list.isEmpty()) {
          return;
       }
@@ -141,24 +111,24 @@ public class LockActuator extends AbstractActuator {
 
       JpaResource jpar = (JpaResource) ctx.getResource();
       String objectId = jpar.getPrimaryKeyObject().toString();
-      for (LockedObject lo : list) {
-         if (isLocked(ctx.getResource().getObject(), objectId, lo)
-               && ctx.getControlEvent().isChildOf(lo.getLockedEvent())) {
-            if (!lo.getLockedBy().equals(Context.internalSessionScope().getUser())) {
-               if (log.isDebugEnabled()) {
-                  log.debug(ctx.getControlEvent() + " of " + ctx.getResource().getTargetType() + " with ID " + objectId
-                        + " is locked by: " + lo);
-               }
-               ctx.setExecutionStatus(ExecutionStatus.DENIED);
-               initDeniedException(ctx);
-               break;
-            } else {
-               if (!Context.requestScope().isPlaying()) {
-                  // this is the user who set the lock
-                  if (automaticLockRemoval) {
-                     Locker.removeLock(lo);
-                  } else if (automaticUnlock) {
-                     Locker.unlock(lo, "automatic unlock by LockActuator");
+      for (DcControllable lo : list) {
+         if (lo.getResource() instanceof JpaResource) {
+            if (((JpaResource) lo.getResource()).isLocked(ctx.getResource().getObject(), objectId)
+                  && ctx.getControlEvent().isChildOf(lo.getControlEvent())) {
+               if (!lo.getCreateUser().equals(Context.internalSessionScope().getUser())) {
+                  if (log.isDebugEnabled()) {
+                     log.debug(ctx.getControlEvent() + " of " + ctx.getResource().getTargetType() + " with ID "
+                           + objectId + " is locked by: " + lo);
+                  }
+                  ctx.setExecutionStatus(ExecutionStatus.DENIED);
+                  initDeniedException(ctx);
+                  break;
+               } else {
+                  if (!Context.requestScope().isPlaying()) {
+                     // this is the user who set the lock
+                     if (automaticUnlock) {
+                        Locker.unlock(lo, "automatic unlock by LockActuator");
+                     }
                   }
                }
             }
@@ -204,42 +174,36 @@ public class LockActuator extends AbstractActuator {
       }
    }
 
-   private boolean isLocked(LockedObject lo, Resource resource) {
-      if (lo.getMethod() == null) {
-         // this is invoke of a url
-         return true;
+   private boolean isLocked(Resource dcResource, Resource ctxResource) {
+      String ctxMethod;
+      if (ctxResource instanceof HttpRequestResource) {
+         ctxMethod = ((HttpRequestResource) ctxResource).getMethod();
+      } else if (ctxResource instanceof MethodResource) {
+         ctxMethod = ((MethodResource) ctxResource).getMethod();
       } else {
-         String method;
-         if (resource instanceof HttpRequestResource) {
-            method = ((HttpRequestResource) resource).getMethod();
-         } else if (resource instanceof MethodResource) {
-            method = ((MethodResource) resource).getMethod();
-         } else {
-            return false;
-         }
-
-         if (method.equals(lo.getMethod())) {
-            // method invocation
-            return true;
-         }
-
          return false;
       }
-   }
 
-   /**
-    * @return the automaticLockRemoval
-    */
-   public boolean isAutomaticLockRemoval() {
-      return automaticLockRemoval;
-   }
+      String dcMethod;
+      if (dcResource instanceof HttpRequestResource) {
+         dcMethod = ((HttpRequestResource) dcResource).getMethod();
+      } else if (dcResource instanceof MethodResource) {
+         dcMethod = ((MethodResource) dcResource).getMethod();
+      } else {
+         return false;
+      }
 
-   /**
-    * @param automaticL
-    *           the automaticLockRemoval to set
-    */
-   public void setAutomaticLockRemoval(boolean automaticL) {
-      this.automaticLockRemoval = automaticL;
+      if (ctxMethod == null) {
+         // this is invoke of a url
+         return true;
+      }
+
+      if (ctxMethod.equals(dcMethod)) {
+         // method invocation
+         return true;
+      }
+
+      return false;
    }
 
    /**

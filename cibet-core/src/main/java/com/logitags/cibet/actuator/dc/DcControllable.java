@@ -64,7 +64,11 @@ import com.logitags.cibet.resource.Resource;
       @NamedQuery(name = DcControllable.SEL_SCHED, query = "SELECT a FROM DcControllable a WHERE a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
       @NamedQuery(name = DcControllable.SEL_SCHED_BY_TARGETTYPE, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :oclass AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
       @NamedQuery(name = DcControllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT, query = "SELECT a FROM DcControllable a WHERE a.resource.targetType = :oclass AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
-      @NamedQuery(name = DcControllable.SEL_SCHED_BY_DATE, query = "SELECT a FROM DcControllable a WHERE a.actuator = :actuator AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED AND a.scheduledDate <= :currentDate") })
+      @NamedQuery(name = DcControllable.SEL_SCHED_BY_DATE, query = "SELECT a FROM DcControllable a WHERE a.actuator = :actuator AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED AND a.scheduledDate <= :currentDate"),
+      @NamedQuery(name = DcControllable.SEL_LOCKED_BY_TARGETTYPE, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :targettype AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
+      @NamedQuery(name = DcControllable.SEL_LOCKED_BY_TARGETTYPE_METHOD, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :targettype AND a.resource.method = :method AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
+      @NamedQuery(name = DcControllable.SEL_LOCKED_ALL, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
+      @NamedQuery(name = DcControllable.SEL_LOCKED_BY_USER, query = "SELECT a FROM DcControllable a WHERE a.tenant LIKE :tenant AND a.createUser = :user AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED") })
 public class DcControllable implements Serializable {
 
    /**
@@ -103,6 +107,12 @@ public class DcControllable implements Serializable {
 
    public final static String SEL_SCHED_BY_DATE = "com.logitags.cibet.actuator.dc.DcControllable.SEL_SCHED_BY_DATE";
    public final static String SEL_BY_GROUPID = "com.logitags.cibet.actuator.dc.DcControllable.SEL_BY_GROUPID";
+
+   public final static String SEL_LOCKED_BY_TARGETTYPE = "com.logitags.cibet.actuator.dc.DcControllable.SEL_LOCKED_BY_TARGETTYPE";
+   public final static String SEL_LOCKED_BY_TARGETTYPE_METHOD = "com.logitags.cibet.actuator.dc.DcControllable.SEL_LOCKED_BY_TARGETTYPE_METHOD";
+   public final static String SEL_LOCKED_ALL = "com.logitags.cibet.actuator.dc.DcControllable.SEL_LOCKED_ALL";
+   public final static String SEL_LOCKED_BY_USER = "com.logitags.cibet.actuator.dc.DcControllable.SEL_LOCKED_BY_USER";
+
    /**
     * unique ID
     */

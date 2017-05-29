@@ -116,6 +116,22 @@ public class DcControllableDefinition extends ResourceDefinition {
 
       queries.put(DcControllable.SEL_SCHED,
             "SELECT " + DCCONTROLLABLE + " FROM cib_dccontrollable d WHERE d.executionstatus = 'SCHEDULED'");
+
+      queries.put(DcControllable.SEL_LOCKED_BY_TARGETTYPE,
+            "SELECT " + DCCONTROLLABLE
+                  + " FROM cib_dccontrollable d, cib_resource r WHERE d.resourceid = r.resourceid and "
+                  + "d.tenant LIKE ? AND r.targetType = ? AND d.executionstatus = 'LOCKED'");
+
+      queries.put(DcControllable.SEL_LOCKED_BY_TARGETTYPE_METHOD,
+            "SELECT " + DCCONTROLLABLE
+                  + " FROM cib_dccontrollable d, cib_resource r WHERE d.resourceid = r.resourceid and "
+                  + "d.tenant LIKE ? AND r.targetType = ? AND r.method = ? AND d.executionstatus = 'LOCKED'");
+
+      queries.put(DcControllable.SEL_LOCKED_ALL, "SELECT " + DCCONTROLLABLE
+            + " FROM cib_dccontrollable d WHERE d.tenant LIKE ? AND d.executionstatus = 'LOCKED'");
+
+      queries.put(DcControllable.SEL_LOCKED_BY_USER, "SELECT " + DCCONTROLLABLE
+            + " FROM cib_dccontrollable d WHERE d.tenant LIKE ? AND d.createuser = ? AND d.executionstatus = 'LOCKED'");
    }
 
    @Override

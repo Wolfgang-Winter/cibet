@@ -58,7 +58,6 @@ import com.cibethelper.entities.TComplexEntity;
 import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.dc.DcControllable;
-import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.EventResult;
@@ -150,12 +149,12 @@ public abstract class AbstractArquillian extends CoreTestBase {
       }
       log.info(erlist.size() + " EventResults removed");
 
-      q = cibetEman.createQuery("SELECT e FROM LockedObject e");
-      List<LockedObject> llist = q.getResultList();
-      for (LockedObject er : llist) {
-         cibetEman.remove(er);
-      }
-      log.info(llist.size() + " LockedObjects removed");
+      // q = cibetEman.createQuery("SELECT e FROM LockedObject e");
+      // List<LockedObject> llist = q.getResultList();
+      // for (LockedObject er : llist) {
+      // cibetEman.remove(er);
+      // }
+      // log.info(llist.size() + " LockedObjects removed");
 
       q = cibetEman.createQuery("SELECT a FROM Resource a");
       List<com.logitags.cibet.resource.Resource> rlist = q.getResultList();

@@ -65,6 +65,8 @@ public class JpaResource extends Resource {
 
    private static Log log = LogFactory.getLog(JpaResource.class);
 
+   public final static String CLASSLOCK = "CLASSLOCK";
+
    /**
     * the primary key of a JPA or JDBC resource in String format.
     */
@@ -296,6 +298,35 @@ public class JpaResource extends Resource {
 
       } else if (getPrimaryKeyId() != null) {
          setGroupId(getTargetType() + "-" + getPrimaryKeyId());
+      }
+   }
+
+   /**
+    * Checks if the target object is locked by the given LockedObject. If the locked object has no objectId set (this is
+    * the case when Release of an Insert event is locked) then the target class must implement the equals() method in
+    * order to unambiguously identify the locked object and the target as identical.
+    * 
+    * @param target
+    * @param objectId
+    *           primary key of target
+    * @param lo
+    * @return
+    */
+   public boolean isLocked(Object target, String objectId) {
+      if (CLASSLOCK.equals(primaryKeyId))
+         return true;
+      if (primaryKeyId == null || primaryKeyId.equals("0")) {
+         // this is a release of an insert: has no primary key.
+         Object obj = getObject();
+         if (obj == null) {
+            String msg = "System error: If the object to lock has no primary key the object must be "
+                  + "encoded into LockedObject and the equals() method must be implemented";
+            throw new RuntimeException(msg);
+         }
+         return obj.equals(target);
+
+      } else {
+         return primaryKeyId.equals(objectId);
       }
    }
 

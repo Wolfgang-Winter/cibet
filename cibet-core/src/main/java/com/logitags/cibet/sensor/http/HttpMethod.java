@@ -7,7 +7,7 @@
  *
  * All rights reserved
  *
- * Copyright 2014 Dr. Wolfgang Winter
+ * Copyright 2016 Dr. Wolfgang Winter
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,29 +22,22 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.cibethelper.ejb;
+package com.logitags.cibet.sensor.http;
 
-import java.util.List;
+public enum HttpMethod {
 
-import com.cibethelper.entities.TEntity;
-import com.logitags.cibet.actuator.dc.DcControllable;
-import com.logitags.cibet.actuator.lock.AlreadyLockedException;
-import com.logitags.cibet.core.EventResult;
+   DELETE,
 
-public interface RemoteEJB {
+   GET,
 
-   <T> T update(T entity) throws Exception;
+   HEAD,
 
-   <T> T persist(T entity);
+   OPTIONS,
 
-   TEntity storeTEntityParallel(TEntity te);
+   POST,
 
-   EventResult callTransitiveEjb(TEntity te);
+   PUT,
 
-   EventResult executeUpdateQuery(String qn, Object... objects);
-
-   DcControllable lock(String targetType) throws AlreadyLockedException;
-
-   List<Object> testInvoke(String str1, int int1, int int2, byte[] bytes1, TEntity entity, Long long1);
+   TRACE,
 
 }

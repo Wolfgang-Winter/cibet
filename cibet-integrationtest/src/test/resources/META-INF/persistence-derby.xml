@@ -6,7 +6,6 @@
   
    <persistence-unit name="CibetLocal" transaction-type="RESOURCE_LOCAL">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
-      <class>com.logitags.cibet.actuator.lock.LockedObject</class>
       <class>com.logitags.cibet.core.EventResult</class>
       <class>com.logitags.cibet.resource.Resource</class>
       <class>com.logitags.cibet.sensor.ejb.EjbResource</class>
@@ -33,7 +32,6 @@
 
    <persistence-unit name="jdbc-CibetLocal" transaction-type="RESOURCE_LOCAL">
       <provider>com.logitags.cibet.sensor.jdbc.bridge.JdbcBridgeProvider</provider>
-      <class>com.logitags.cibet.actuator.lock.LockedObject</class>
       <class>com.logitags.cibet.core.EventResult</class>
       <class>com.logitags.cibet.resource.Resource</class>
       <class>com.logitags.cibet.sensor.ejb.EjbResource</class>

@@ -43,9 +43,9 @@ import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.core.ControlEvent;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ParameterSequenceComparator;
 import com.logitags.cibet.resource.ParameterType;
+import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 import com.logitags.cibet.sensor.common.Invoker;
 
@@ -97,13 +97,12 @@ public class HttpRequestResource extends Resource {
    /**
     * constructor used for http proxy resources
     * 
-    * @param rh
-    * @param targ
+    * @param url
     * @param meth
     * @param r
     */
-   public HttpRequestResource(String targ, String meth, HttpRequestData r) {
-      setTargetType(targ);
+   public HttpRequestResource(String url, String meth, HttpRequestData r) {
+      setTargetType(url);
       method = meth;
       httpRequestData = r;
    }
@@ -111,15 +110,15 @@ public class HttpRequestResource extends Resource {
    /**
     * constructor used for http ServletFilter resources
     * 
-    * @param rh
-    * @param targ
+    * @param url
     * @param meth
-    * @param r
+    * @param request
+    * @param response
     */
-   public HttpRequestResource(String targ, String meth, HttpServletRequest r, HttpServletResponse response) {
-      setTargetType(targ);
+   public HttpRequestResource(String url, String meth, HttpServletRequest request, HttpServletResponse response) {
+      setTargetType(url);
       method = meth;
-      httpRequest = r;
+      httpRequest = request;
       httpResponse = response;
    }
 

@@ -42,7 +42,6 @@ import com.logitags.cibet.actuator.common.DeniedEjbException;
 import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.lock.AlreadyLockedException;
-import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.actuator.lock.Locker;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
@@ -142,11 +141,11 @@ public class TutorialServlet1 extends HttpServlet {
          Context.requestScope().getEntityManager().remove(dc);
       }
 
-      Query q5 = Context.requestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
-      Iterator<LockedObject> itLO = q5.getResultList().iterator();
-      while (itLO.hasNext()) {
-         Context.requestScope().getEntityManager().remove(itLO.next());
-      }
+      // Query q5 = Context.requestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
+      // Iterator<LockedObject> itLO = q5.getResultList().iterator();
+      // while (itLO.hasNext()) {
+      // Context.requestScope().getEntityManager().remove(itLO.next());
+      // }
 
       Query q6 = Context.requestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
       Iterator<EventResult> itEV = q6.getResultList().iterator();
@@ -277,12 +276,12 @@ public class TutorialServlet1 extends HttpServlet {
          Context.sessionScope().setUser("batch");
          Context.sessionScope().setTenant("LockTest");
          ut.begin();
-         LockedObject lock1 = Locker.lock(Person.class, ControlEvent.SELECT, null);
-         LockedObject lock2 = Locker.lock(this.getClass(), "persist", ControlEvent.INVOKE, null);
+         DcControllable lock1 = Locker.lock(Person.class, ControlEvent.SELECT, null);
+         DcControllable lock2 = Locker.lock(this.getClass(), "persist", ControlEvent.INVOKE, null);
          ut.commit();
 
          PrintWriter writer = resp.getWriter();
-         writer.print(lock1.getLockedObjectId() + ":" + lock2.getLockedObjectId());
+         writer.print(lock1.getDcControllableId() + ":" + lock2.getDcControllableId());
          writer.close();
       } catch (AlreadyLockedException e) {
          log.error(e.getMessage(), e);
@@ -298,10 +297,10 @@ public class TutorialServlet1 extends HttpServlet {
       String lock2Id = req.getParameter("LOCK2");
 
       ut.begin();
-      LockedObject lock1 = Context.requestScope().getEntityManager().find(LockedObject.class, lock1Id);
+      DcControllable lock1 = Context.requestScope().getEntityManager().find(DcControllable.class, lock1Id);
       Locker.unlock(lock1, null);
 
-      LockedObject lock2 = Context.requestScope().getEntityManager().find(LockedObject.class, lock2Id);
+      DcControllable lock2 = Context.requestScope().getEntityManager().find(DcControllable.class, lock2Id);
       Locker.unlock(lock2, null);
       ut.commit();
 

@@ -41,7 +41,6 @@ import com.logitags.cibet.actuator.dc.DcControllable;
 import com.logitags.cibet.actuator.dc.DcLoader;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.actuator.lock.AlreadyLockedException;
-import com.logitags.cibet.actuator.lock.LockedObject;
 import com.logitags.cibet.actuator.lock.Locker;
 import com.logitags.cibet.actuator.scheduler.SchedulerLoader;
 import com.logitags.cibet.config.Configuration;
@@ -377,11 +376,11 @@ public class CibetTestEJB {
       return q.getResultList();
    }
 
-   public LockedObject lockMethodFromClass() throws AlreadyLockedException, SecurityException, NoSuchMethodException {
+   public DcControllable lockMethodFromClass() throws AlreadyLockedException, SecurityException, NoSuchMethodException {
       Method m = CibetTestEJB.class.getMethod("testInvoke", String.class, int.class, int.class, byte[].class,
             TEntity.class, Long.class);
       log.debug("method='" + m.toString() + "'");
-      LockedObject lo = Locker.lock(CibetTestEJB.class, "testInvoke", ControlEvent.INVOKE, "testremark");
+      DcControllable lo = Locker.lock(CibetTestEJB.class, "testInvoke", ControlEvent.INVOKE, "testremark");
       return lo;
    }
 
