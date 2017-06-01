@@ -63,16 +63,16 @@ public class HttpRequestInvoker implements Invoker {
    }
 
    @Override
-   public Object execute(String parameter, String targetType, String methodName, Set<ResourceParameter> parameters)
+   public Object execute(String parameter, String target, String methodName, Set<ResourceParameter> parameters)
          throws Exception {
-      if (targetType == null) {
-         throw new IllegalArgumentException("targetType must not be null");
+      if (target == null) {
+         throw new IllegalArgumentException("target must not be null");
       }
       if (methodName == null) {
          throw new IllegalArgumentException("methodName must not be null");
       }
 
-      String url = createQuerystringURL(targetType, parameters);
+      String url = createQuerystringURL(target, parameters);
       HttpRequestBase request = null;
       if ("DELETE".equals(methodName.toUpperCase())) {
          request = new HttpDelete(url);
@@ -91,7 +91,7 @@ public class HttpRequestInvoker implements Invoker {
       } else if (HttpMethod.TRACE.name().equals(methodName.toUpperCase())) {
          request = new HttpTrace(url);
       } else {
-         throw new IllegalArgumentException("Failed to invoke " + targetType
+         throw new IllegalArgumentException("Failed to invoke " + target
                + ": methodName must be one of DELETE, GET, HEAD, " + "OPTIONS, POST, PUT or TRACE");
       }
 
@@ -160,10 +160,10 @@ public class HttpRequestInvoker implements Invoker {
          }
       }
 
-      return sendHttpRequest(request, targetType, methodName, proxyConfig);
+      return sendHttpRequest(request, target, methodName, proxyConfig);
    }
 
-   private HttpResponse sendHttpRequest(HttpRequestBase request, String targetType, String methodName,
+   private HttpResponse sendHttpRequest(HttpRequestBase request, String target, String methodName,
          ProxyConfig proxyConfig) throws ClientProtocolException, IOException {
       HttpClient client = null;
 
@@ -188,7 +188,7 @@ public class HttpRequestInvoker implements Invoker {
          Context.internalRequestScope().registerEventResult(new EventResult(remoteResult));
       } else {
          log.debug("create new local EventResult");
-         HttpRequestResource resource = new HttpRequestResource(targetType, methodName, null);
+         HttpRequestResource resource = new HttpRequestResource(target, methodName, null);
          EventMetadata metadata = new EventMetadata(
                (ControlEvent) Context.internalRequestScope().getProperty(InternalRequestScope.CONTROLEVENT), resource);
          EventResult thisResult = Context.internalRequestScope()

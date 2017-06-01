@@ -58,80 +58,80 @@ public class SqlParserTest {
    @Test
    public void parseTargetInsert() throws Exception {
       SqlParser parser = new SqlParser(null, "INSERT INTO Prod Values(2) ");
-      Assert.assertEquals("Prod", parser.getTargetType());
+      Assert.assertEquals("Prod", parser.getTarget());
 
       parser = new SqlParser(null, " INseRT  InTO Prod2 (asd,fgh)Values(4,6) ");
-      Assert.assertEquals("Prod2", parser.getTargetType());
+      Assert.assertEquals("Prod2", parser.getTarget());
 
       parser = new SqlParser(null, "INSERT INTO\n Prod3 (asd,fgh)\nValues\n('',2) ");
-      Assert.assertEquals("Prod3", parser.getTargetType());
+      Assert.assertEquals("Prod3", parser.getTarget());
 
       parser = new SqlParser(null, "INSERT INTO\n Prod4\t (asd,fgh)Values\n('',234) ");
-      Assert.assertEquals("Prod4", parser.getTargetType());
+      Assert.assertEquals("Prod4", parser.getTarget());
 
       parser = new SqlParser(null, "INSERT INTO\n wasser.Prod5   Values\n('',234) ");
-      Assert.assertEquals("Prod5", parser.getTargetType());
+      Assert.assertEquals("Prod5", parser.getTarget());
 
       parser = new SqlParser(null, "INSERT  INTO\n wasser.Prod6   Values\n('',234) ");
-      Assert.assertEquals("Prod6", parser.getTargetType());
+      Assert.assertEquals("Prod6", parser.getTarget());
 
       parser = new SqlParser(null, "INSERT\nINTO\n wasser.Prod7   Values\n('',234) ");
-      Assert.assertEquals("Prod7", parser.getTargetType());
+      Assert.assertEquals("Prod7", parser.getTarget());
 
       parser = new SqlParser(null, "INSERT\n\n  INTO\n wasser.Prod8    Values\n('',234) ");
-      Assert.assertEquals("Prod8", parser.getTargetType());
+      Assert.assertEquals("Prod8", parser.getTarget());
    }
 
    @Test
    public void parseTargetUpdate() throws Exception {
       SqlParser parser = new SqlParser(null, "UPDATE Prod SET Vacation = Vacation * 1.25; ");
-      Assert.assertEquals("Prod", parser.getTargetType());
+      Assert.assertEquals("Prod", parser.getTarget());
 
       parser = new SqlParser(null, " UpdATE\n\nProd  SET Vacation = Vacation * 1.25; ");
-      Assert.assertEquals("Prod", parser.getTargetType());
+      Assert.assertEquals("Prod", parser.getTarget());
 
       parser = new SqlParser(null, " UpdATE\n\nProd\nSET Vacation = Vacation * 1.25; ");
-      Assert.assertEquals("Prod", parser.getTargetType());
+      Assert.assertEquals("Prod", parser.getTarget());
 
       parser = new SqlParser(null, "UpdATE \n\nw.Prod\n SET Vacation = Vacation * 1.25; ");
-      Assert.assertEquals("Prod", parser.getTargetType());
+      Assert.assertEquals("Prod", parser.getTarget());
    }
 
    @Test
    public void parseTargetDelete() throws Exception {
       SqlParser parser = new SqlParser(null, "DELETE FROM Prod  ");
-      Assert.assertEquals("Prod", parser.getTargetType());
+      Assert.assertEquals("Prod", parser.getTarget());
 
       parser = new SqlParser(null, "DELETE FROM\n wasser.Prod   \n ");
-      Assert.assertEquals("Prod", parser.getTargetType());
+      Assert.assertEquals("Prod", parser.getTarget());
 
       parser = new SqlParser(null, "DELETE FROM Prode Where x=8 ");
-      Assert.assertEquals("Prode", parser.getTargetType());
+      Assert.assertEquals("Prode", parser.getTarget());
 
       parser = new SqlParser(null, "xDELETE FROM Prod Values() ");
       try {
-         parser.getTargetType();
+         parser.getTarget();
          Assert.fail();
       } catch (CibetJdbcException e) {
       }
 
       parser = new SqlParser(null, " DeleTE FROM Proda where xx=77 ");
-      Assert.assertEquals("Proda", parser.getTargetType());
+      Assert.assertEquals("Proda", parser.getTarget());
 
       parser = new SqlParser(null, "DELETE FROM\n Prod1 \nwhere 6=7 ");
-      Assert.assertEquals("Prod1", parser.getTargetType());
+      Assert.assertEquals("Prod1", parser.getTarget());
 
       parser = new SqlParser(null, "DELETE FROM\n Prod2\t \n ");
-      Assert.assertEquals("Prod2", parser.getTargetType());
+      Assert.assertEquals("Prod2", parser.getTarget());
 
       parser = new SqlParser(null, "DELETE  FROM\n wasser.Prod3   \nWhere gh='asddfa' ");
-      Assert.assertEquals("Prod3", parser.getTargetType());
+      Assert.assertEquals("Prod3", parser.getTarget());
 
       parser = new SqlParser(null, "DELETE\nFROM\n wasser.Prod   \n ");
-      Assert.assertEquals("Prod", parser.getTargetType());
+      Assert.assertEquals("Prod", parser.getTarget());
 
       parser = new SqlParser(null, "DELETE\n \n  FROM\n wasser.Prods   \n ");
-      Assert.assertEquals("Prods", parser.getTargetType());
+      Assert.assertEquals("Prods", parser.getTarget());
    }
 
    @Test

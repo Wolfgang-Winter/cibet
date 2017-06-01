@@ -95,11 +95,11 @@ public class MethodResource extends Resource {
     */
    public MethodResource(Object invokedObject, Method m, Set<ResourceParameter> params) {
       setMethodObject(m);
-      object = invokedObject;
+      unencodedTargetObject = invokedObject;
       if (params != null) {
          setParameters(params);
       }
-      resolveTargetType(invokedObject);
+      resolveTarget(invokedObject);
    }
 
    /**
@@ -127,8 +127,8 @@ public class MethodResource extends Resource {
 
    @Override
    public void fillContext(ScriptEngine engine) {
-      engine.put("$TARGETTYPE", getTargetType());
-      engine.put("$TARGET", getObject());
+      engine.put("$TARGET", getTarget());
+      engine.put("$TARGETOBJECT", getUnencodedTargetObject());
       for (ResourceParameter param : getParameters()) {
          if (param.getParameterType() == ParameterType.METHOD_PARAMETER) {
             engine.put("$" + param.getName(), param.getUnencodedValue());
@@ -139,7 +139,7 @@ public class MethodResource extends Resource {
    @Override
    public Map<String, Object> getNotificationAttributes() {
       Map<String, Object> map = new HashMap<>();
-      map.put("targetType", getTargetType());
+      map.put("target", getTarget());
       map.put("method", getMethod());
       map.put("resultObject", getResultObject());
       return map;
@@ -153,7 +153,7 @@ public class MethodResource extends Resource {
          Class<? extends Invoker> facClass = (Class<? extends Invoker>) Class.forName(getInvokerClass());
          Method createMethod = facClass.getMethod("createInstance");
          Invoker fac = (Invoker) createMethod.invoke(null);
-         return fac.execute(getInvokerParam(), getTargetType(), getMethod(), paramList);
+         return fac.execute(getInvokerParam(), getTarget(), getMethod(), paramList);
 
       } catch (CibetException e) {
          throw e;
@@ -275,7 +275,7 @@ public class MethodResource extends Resource {
    public String createUniqueId() {
       Base64 b64 = new Base64();
       StringBuffer b = new StringBuffer();
-      b.append(getTargetType());
+      b.append(getTarget());
       b.append(getMethod());
 
       for (ResourceParameter param : getParameters()) {

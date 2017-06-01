@@ -164,13 +164,13 @@ public class JdbcStatementIT extends DBHelper {
       conn.commit();
 
       rs = query(
-            "select a.*, r.primarykeyid, r.targettype, r.target from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createDate");
+            "select a.*, r.primarykeyid, r.target, r.targetobject from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createDate");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
       Assert.assertEquals("insert into cib_testentity (id, nameValue, counter, userid, owner) "
-            + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", CibetUtil.decode(rs.getBytes("TARGET")));
+            + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", CibetUtil.decode(rs.getBytes("TARGETOBJECT")));
    }
 
    @Test

@@ -258,8 +258,7 @@ public class HttpGeneralIT extends AbstractArquillian {
       body = executeGET(getBaseURL() + "/persist.cibet");
       Assert.assertEquals("TEntity persist with ID: 0", body);
 
-      q = localcibet
-            .createQuery("select a from Archive a where a.resource.targetType ='" + TEntity.class.getName() + "'");
+      q = localcibet.createQuery("select a from Archive a where a.resource.target ='" + TEntity.class.getName() + "'");
       list = q.getResultList();
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ExecutionStatus.POSTPONED, list.get(0).getExecutionStatus());
@@ -298,8 +297,7 @@ public class HttpGeneralIT extends AbstractArquillian {
       tentList = (List<TEntity>) dbHelper.select("SELECT e FROM TEntity e");
       Assert.assertEquals(0, tentList.size());
 
-      q = localcibet
-            .createQuery("select a from Archive a where a.resource.targetType ='" + TEntity.class.getName() + "'");
+      q = localcibet.createQuery("select a from Archive a where a.resource.target ='" + TEntity.class.getName() + "'");
       list = q.getResultList();
       Assert.assertEquals(2, list.size());
       Assert.assertEquals(ExecutionStatus.DENIED, list.get(1).getExecutionStatus());
@@ -334,8 +332,8 @@ public class HttpGeneralIT extends AbstractArquillian {
       Assert.assertEquals("good!", dcList.get(0).getApprovalRemark());
       Assert.assertEquals("Fluppi", dcList.get(0).getApprovalUser());
 
-      q = localcibet.createQuery("select a from Archive a where a.resource.targetType ='" + TEntity.class.getName()
-            + "' ORDER BY a.createDate");
+      q = localcibet.createQuery(
+            "select a from Archive a where a.resource.target ='" + TEntity.class.getName() + "' ORDER BY a.createDate");
       list = (List<Archive>) q.getResultList();
       Assert.assertEquals(3, list.size());
 

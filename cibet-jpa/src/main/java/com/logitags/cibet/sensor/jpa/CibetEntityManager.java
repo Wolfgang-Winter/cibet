@@ -371,7 +371,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
 
                   // refresh the object into the resource:
                   nativeEntityManager.flush();
-                  res.setObject(ret);
+                  res.setUnencodedTargetObject(ret);
                } else {
                   if (nativeEntityManager.isOpen()) {
                      nativeEntityManager.detach(obj);
@@ -390,7 +390,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
             actuator.afterEvent(metadata);
          }
 
-         return (T) res.getObject();
+         return (T) res.getUnencodedTargetObject();
       } finally {
          doFinally(startManaging, metadata, thisResult);
       }
@@ -430,7 +430,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
                   // refresh the object into the resource:
                   nativeEntityManager.flush();
                   res.setPrimaryKeyObject(AnnotationUtil.primaryKeyAsObject(obj));
-                  res.setObject(obj);
+                  res.setUnencodedTargetObject(obj);
                   res.setUniqueId(res.createUniqueId());
                }
             }

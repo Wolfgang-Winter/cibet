@@ -140,7 +140,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
       Controllable ar = list.get(count - 1);
       HttpRequestResource res = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
-      Assert.assertEquals(target, res.getTargetType());
+      Assert.assertEquals(target, res.getTarget());
       Assert.assertEquals(method, res.getMethod());
       return ar;
    }

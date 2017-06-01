@@ -47,8 +47,8 @@ import org.apache.commons.logging.LogFactory;
 import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.core.ControlEvent;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ParameterType;
+import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 
 @Entity
@@ -73,8 +73,7 @@ public class JpaQueryResource extends Resource {
     * @param params
     */
    public JpaQueryResource(String queryToken, Set<ResourceParameter> params) {
-      setObject(queryToken);
-      setTargetType(queryToken);
+      setTarget(queryToken);
       if (params != null) {
          setParameters(params);
       }
@@ -91,13 +90,13 @@ public class JpaQueryResource extends Resource {
 
    @Override
    public void fillContext(ScriptEngine engine) {
-      engine.put("$TARGETTYPE", getTargetType());
+      engine.put("$TARGET", getTarget());
    }
 
    @Override
    public Map<String, Object> getNotificationAttributes() {
       Map<String, Object> map = new HashMap<>();
-      map.put("targetType", getTargetType());
+      map.put("target", getTarget());
       return map;
    }
 
@@ -135,25 +134,25 @@ public class JpaQueryResource extends Resource {
       Query query = null;
       switch (queryType) {
       case NAMED_QUERY:
-         query = em.createNamedQuery((String) getObject());
+         query = em.createNamedQuery(getTarget());
          break;
       case NATIVE_MAPPED_QUERY:
-         query = em.createNativeQuery((String) getObject(), (String) addValue);
+         query = em.createNativeQuery(getTarget(), (String) addValue);
          break;
       case NATIVE_QUERY:
-         query = em.createNativeQuery((String) getObject());
+         query = em.createNativeQuery(getTarget());
          break;
       case NAMED_TYPED_QUERY:
-         query = em.createNamedQuery((String) getObject(), (Class<?>) addValue);
+         query = em.createNamedQuery(getTarget(), (Class<?>) addValue);
          break;
       case NATIVE_TYPED_QUERY:
-         query = em.createNativeQuery((String) getObject(), (Class<?>) addValue);
+         query = em.createNativeQuery(getTarget(), (Class<?>) addValue);
          break;
       case QUERY:
-         query = em.createQuery((String) getObject());
+         query = em.createQuery(getTarget());
          break;
       case TYPED_QUERY:
-         query = em.createQuery((String) getObject(), (Class<?>) addValue);
+         query = em.createQuery(getTarget(), (Class<?>) addValue);
          break;
       case CRITERIA_QUERY:
          String err = "<T> TypedQuery<T> createQuery(CriteriaQuery<T> arg0) is not controlled by Cibet";
@@ -194,7 +193,7 @@ public class JpaQueryResource extends Resource {
    public String createUniqueId() {
       Base64 b64 = new Base64();
       StringBuffer b = new StringBuffer();
-      b.append(getTargetType());
+      b.append(getTarget());
 
       for (ResourceParameter param : getParameters()) {
          b.append(b64.encodeToString(param.getEncodedValue()));

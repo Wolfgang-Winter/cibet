@@ -531,7 +531,7 @@ public class CibetQuery implements Query {
 
    private EventMetadata before(QueryExecutionType executionType) {
       entityManager.entityManagerIntoContext();
-      ControlEvent controlEvent = entityManager.controlEvent(ControlEvent.INVOKE);
+      ControlEvent controlEvent = entityManager.controlEvent(ControlEvent.IMPLICIT);
 
       Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       params.addAll(parameters.values());

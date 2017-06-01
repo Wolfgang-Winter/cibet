@@ -36,7 +36,7 @@ public class JdbcResourceHandlerTest {
    @Test
    public void getNotificationAttributesJdbcResourceHandler() {
       JdbcResource r = new JdbcResource();
-      r.setTargetType("tt");
+      r.setTarget("tt");
       Map<String, Object> formparams = r.getNotificationAttributes();
       Assert.assertEquals(3, formparams.size());
    }

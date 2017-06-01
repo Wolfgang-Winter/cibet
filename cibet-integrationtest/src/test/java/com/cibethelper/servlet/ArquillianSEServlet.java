@@ -209,13 +209,13 @@ public class ArquillianSEServlet extends HttpServlet {
       List<Archive> list = q.getResultList();
       log.info(list.size() + " Archives loaded");
       Resource res1 = list.get(0).getResource();
-      TComplexEntity2 tc4 = (TComplexEntity2) res1.getObject();
+      TComplexEntity2 tc4 = (TComplexEntity2) res1.getUnencodedTargetObject();
       CibetUtil.isLoaded(cibet2, tc4);
 
       if (list.size() > 1) {
          Resource res = list.get(1).getResource();
          log.debug("lazy Resource: " + res);
-         TComplexEntity2 tc5 = (TComplexEntity2) res.getObject();
+         TComplexEntity2 tc5 = (TComplexEntity2) res.getUnencodedTargetObject();
          CibetUtil.isLoaded(cibet2, tc5);
          log.debug("lazy size: " + tc5.getLazyList().size());
          if (tc5.getLazyList().size() > 0) {

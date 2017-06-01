@@ -176,7 +176,7 @@ public class ChainedActuatorIT extends AbstractArquillian {
       log.debug(childs.get(4).getResource());
       Assert.assertTrue(childs.get(4).getResource().startsWith("[JpaResource] "));
       Assert.assertTrue(childs.get(4).getResource().indexOf("; primaryKeyId: 0") > 0);
-      Assert.assertTrue(childs.get(4).getResource().indexOf("targetType: com.cibethelper.entities.TComplexEntity") > 0);
+      Assert.assertTrue(childs.get(4).getResource().indexOf("target: com.cibethelper.entities.TComplexEntity") > 0);
 
       Assert.assertEquals(ControlEvent.INSERT, childs.get(4).getEvent());
       Assert.assertTrue(childs.get(5).getResource().indexOf("getId") > 0);
@@ -190,14 +190,14 @@ public class ChainedActuatorIT extends AbstractArquillian {
       Archive ar = list1.get(0);
       log.debug(ar);
       MethodResource res = (MethodResource) ar.getResource();
-      Assert.assertEquals(TComplexEntity.class.getName(), res.getTargetType());
+      Assert.assertEquals(TComplexEntity.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals("setStatValue", res.getMethod());
 
       Archive ar2 = list1.get(1);
       MethodResource res2 = (MethodResource) ar2.getResource();
       log.debug(ar2);
-      Assert.assertEquals(CibetTestEJB.class.getName(), res2.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res2.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, ar2.getControlEvent());
       Assert.assertEquals("insertTComplexEntity", res2.getMethod());
 
@@ -296,20 +296,20 @@ public class ChainedActuatorIT extends AbstractArquillian {
       Archive ar = list1.get(0);
       log.debug(ar);
       MethodResource res = (MethodResource) ar.getResource();
-      Assert.assertEquals(TComplexEntity.class.getName(), res.getTargetType());
+      Assert.assertEquals(TComplexEntity.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals("setStatValue", res.getMethod());
 
       Archive ar2 = list1.get(1);
       log.debug(ar2);
       JpaResource res2 = (JpaResource) ar2.getResource();
-      Assert.assertEquals(TComplexEntity.class.getName(), res2.getTargetType());
+      Assert.assertEquals(TComplexEntity.class.getName(), res2.getTarget());
       Assert.assertEquals(ControlEvent.INSERT, ar2.getControlEvent());
 
       Archive ar3 = list1.get(2);
       log.debug(ar3);
       MethodResource res3 = (MethodResource) ar3.getResource();
-      Assert.assertEquals(CibetTestEJB.class.getName(), res3.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res3.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, ar3.getControlEvent());
       Assert.assertEquals("insertTComplexEntity", res3.getMethod());
 

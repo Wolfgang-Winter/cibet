@@ -186,12 +186,12 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(5L, rs.getLong(1));
 
       rs = query(
-            "select a.*, r.primarykeyid, r.targettype from cib_archive a, cib_resource r where a.resourceid = r.resourceid");
+            "select a.*, r.primarykeyid, r.target from cib_archive a, cib_resource r where a.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
 
       int count = 0;
       rs = query("select * from cib_resourceparameter where resourceid = '" + rs.getString("resourceid") + "'");
@@ -227,18 +227,18 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(99, rs.getInt(3));
 
       rs = query(
-            "select a.*, r.primarykeyid, r.targettype, r.target from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createdate");
+            "select a.*, r.primarykeyid, r.target, r.targetobject from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createdate");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
-      Assert.assertEquals(INSERT, CibetUtil.decode(rs.getBytes("TARGET")));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
+      Assert.assertEquals(INSERT, CibetUtil.decode(rs.getBytes("TARGETOBJECT")));
 
       Assert.assertTrue(rs.next());
       Assert.assertEquals("UPDATE", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
-      Assert.assertEquals(UPDATE, CibetUtil.decode(rs.getBytes("TARGET")));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
+      Assert.assertEquals(UPDATE, CibetUtil.decode(rs.getBytes("TARGETOBJECT")));
 
       Configuration.instance().unregisterSetpoint(sp.getId());
    }
@@ -261,18 +261,18 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertTrue(!rs.next());
 
       rs = query(
-            "select a.*, r.primarykeyid, r.targettype, r.target from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createdate");
+            "select a.*, r.primarykeyid, r.target, r.targetobject from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createdate");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
-      Assert.assertEquals(INSERT, CibetUtil.decode(rs.getBytes("TARGET")));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
+      Assert.assertEquals(INSERT, CibetUtil.decode(rs.getBytes("TARGETOBJECT")));
 
       Assert.assertTrue(rs.next());
       Assert.assertEquals("DELETE", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
-      Assert.assertEquals(DELETE, CibetUtil.decode(rs.getBytes("TARGET")));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
+      Assert.assertEquals(DELETE, CibetUtil.decode(rs.getBytes("TARGETOBJECT")));
 
       Configuration.instance().unregisterSetpoint(sp.getId());
    }
@@ -293,11 +293,11 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertTrue(!rs.next());
 
       rs = query(
-            "select d.*, r.primarykeyid, r.targettype from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
+            "select d.*, r.primarykeyid, r.target from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
 
       log.debug("now release");
       List<Controllable> l = DcLoader.findUnreleased();
@@ -342,13 +342,13 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(255, rs.getInt(3));
 
       rs = query(
-            "select d.*, r.primarykeyid, r.targettype, r.target from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
+            "select d.*, r.primarykeyid, r.target, r.targetobject from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
 
       Assert.assertEquals("UPDATE", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
-      Assert.assertEquals(UPDATE, CibetUtil.decode(rs.getBytes("TARGET")));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
+      Assert.assertEquals(UPDATE, CibetUtil.decode(rs.getBytes("TARGETOBJECT")));
 
       log.debug("now release");
       List<Controllable> l = DcLoader.findUnreleased();
@@ -391,12 +391,12 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertTrue(rs.next());
 
       rs = query(
-            "select d.*, r.primarykeyid, r.targettype, r.target from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
+            "select d.*, r.primarykeyid, r.target, r.targetobject from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("DELETE", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
-      Assert.assertEquals(DELETE, CibetUtil.decode(rs.getBytes("TARGET")));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
+      Assert.assertEquals(DELETE, CibetUtil.decode(rs.getBytes("TARGETOBJECT")));
 
       log.debug("now release");
       List<Controllable> l = DcLoader.findUnreleased();
@@ -1019,7 +1019,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(ControlEvent.UPDATE, list.get(0).getControlEvent());
       Assert.assertEquals(USER, list.get(0).getCreateUser());
       Assert.assertNull(list.get(0).getRemark());
-      Assert.assertNotNull(list.get(0).getResource().getTarget());
+      Assert.assertNotNull(list.get(0).getResource().getTargetObject());
 
       List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
@@ -1149,12 +1149,12 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Context.start();
 
       rs = query(
-            "select a.*, r.primarykeyid, r.targettype from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createdate");
+            "select a.*, r.primarykeyid, r.target from cib_archive a, cib_resource r where a.resourceid = r.resourceid order by a.createdate");
       Assert.assertTrue(rs.next());
       String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("6", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
 
       int count2 = 0;
       ResultSet rs2 = query(
@@ -1179,7 +1179,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("7", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
 
       count2 = 0;
       rs2 = query("select * from cib_resourceparameter where resourceid = '" + rs.getString("resourceid") + "'");
@@ -1353,12 +1353,11 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Context.end();
       Context.start();
 
-      ResultSet rs = query(
-            "select a.*, r.targettype from cib_archive a, cib_resource r where a.resourceid = r.resourceid");
+      ResultSet rs = query("select a.*, r.target from cib_archive a, cib_resource r where a.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
       Assert.assertEquals(ExecutionStatus.ERROR.name(), rs.getString("EXECUTIONSTATUS"));
 
       int count = 0;
@@ -1396,12 +1395,11 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Context.end();
       Context.start();
 
-      ResultSet rs = query(
-            "select a.*, r.targettype from cib_archive a, cib_resource r where a.resourceid = r.resourceid");
+      ResultSet rs = query("select a.*, r.target from cib_archive a, cib_resource r where a.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       String archiveId = rs.getString("ARCHIVEID");
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
-      Assert.assertEquals("cib_testentity", rs.getString("TARGETTYPE"));
+      Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
       Assert.assertEquals(ExecutionStatus.ERROR.name(), rs.getString("EXECUTIONSTATUS"));
 
       int count = 0;

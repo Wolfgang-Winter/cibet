@@ -49,7 +49,7 @@ public class RemoteEJBInvoker extends MethodInvoker implements Invoker {
    protected RemoteEJBInvoker() {
    }
 
-   public Object execute(String parameter, String targetType, String methodName, Set<ResourceParameter> parameters)
+   public Object execute(String parameter, String target, String methodName, Set<ResourceParameter> parameters)
          throws Exception {
       try {
          Set<ResourceParameter> methodParams = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());

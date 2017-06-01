@@ -198,7 +198,7 @@ public class TutorialServlet1 extends HttpServlet {
 
       String response = "no Person Archive found";
       if (expected > 0) {
-         Person person = (Person) archives.get(0).getResource().getObject();
+         Person person = (Person) archives.get(0).getResource().getUnencodedTargetObject();
          response = person.toString().replaceAll("\n", " ; ");
          log.info(person);
       }

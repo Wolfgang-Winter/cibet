@@ -200,10 +200,10 @@ public class HttpNotificationProviderIT {
          Assert.assertEquals("notificationType=POSTPONED", iter.next());
          Assert.assertEquals("nottype=approv", iter.next());
          Assert.assertEquals("primaryKeyId=0", iter.next());
+         Assert.assertEquals("target=com.cibethelper.entities.TEntity", iter.next());
          String s = iter.next();
          log.debug("sss:" + s);
-         Assert.assertEquals("target=TEntity id: 0, counter: 0, owner: null, xCaltimestamp: null", s);
-         Assert.assertEquals("targetType=com.cibethelper.entities.TEntity", iter.next());
+         Assert.assertEquals("targetObject=TEntity id: 0, counter: 0, owner: null, xCaltimestamp: null", s);
          Assert.assertEquals("tenant=tenant", iter.next());
       } finally {
          if (file != null && file.exists()) {

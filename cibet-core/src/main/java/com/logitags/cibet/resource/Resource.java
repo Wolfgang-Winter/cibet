@@ -85,26 +85,26 @@ public abstract class Resource implements Serializable {
    private String resourceId;
 
    /**
-    * A unique identifier for this resource. The resource-specific ResourceHandler classes define how this Id is created
+    * A unique identifier for this resource. The resource-specific classes define how this Id is created
     */
    private String uniqueId;
 
    /**
     * the type of the target of the resource. Could be a class name, a URL, a table name, an entity name etc.
     */
-   private String targetType;
+   private String target;
 
    /**
     * Encoded concrete object of this resource. In case of JPA, this is the encoded persisted object.
     */
    @Lob
-   private byte[] target;
+   private byte[] targetObject;
 
    /**
     * Concrete object of this resource. In case of JPA, this is the unencoded persisted object.
     */
    @Transient
-   protected transient Object object;
+   protected transient Object unencodedTargetObject;
 
    /**
     * Encoded result of the event execution. In case of a method invocation it is either null, if the invoked method
@@ -139,7 +139,7 @@ public abstract class Resource implements Serializable {
 
    /**
     * Resources in archives and Controllables can be grouped. For JPA resources the group id is per default
-    * 'targetType'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
+    * 'target'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
     * scope context.
     */
    private String groupId;
@@ -157,11 +157,11 @@ public abstract class Resource implements Serializable {
     */
    public Resource(Resource copy) {
       setUniqueId(copy.uniqueId);
-      object = copy.getObject();
+      unencodedTargetObject = copy.getUnencodedTargetObject();
       setResult(copy.getResult());
       resultObject = copy.getResultObject();
-      setTargetType(copy.getTargetType());
       setTarget(copy.getTarget());
+      setTargetObject(copy.getTargetObject());
       setEncrypted(copy.encrypted);
       setKeyReference(copy.getKeyReference());
       Set<ResourceParameter> clonedList = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
@@ -218,13 +218,13 @@ public abstract class Resource implements Serializable {
     */
    public abstract Map<String, Object> getNotificationAttributes();
 
-   protected void resolveTargetType(Object o) {
+   protected void resolveTarget(Object o) {
       if (o instanceof Class<?>) {
-         setTargetType(((Class<?>) o).getName());
+         setTarget(((Class<?>) o).getName());
       } else if (o != null) {
-         setTargetType(o.getClass().getName());
+         setTarget(o.getClass().getName());
       } else {
-         setTargetType(null);
+         setTarget(null);
       }
    }
 
@@ -235,8 +235,8 @@ public abstract class Resource implements Serializable {
       Base64 b64 = new Base64();
 
       StringBuffer b = new StringBuffer();
-      b.append(targetType == null ? "" : targetType);
-      b.append(target == null ? "" : b64.encodeToString(target));
+      b.append(target == null ? "" : target);
+      b.append(targetObject == null ? "" : b64.encodeToString(targetObject));
       b.append(result == null ? "" : b64.encodeToString(result));
       b.append(encrypted);
       b.append(keyReference == null ? "" : keyReference);
@@ -253,8 +253,8 @@ public abstract class Resource implements Serializable {
       StringBuffer b = new StringBuffer();
       b.append("id: ");
       b.append(resourceId);
-      b.append(", targetType: ");
-      b.append(targetType);
+      b.append(", target: ");
+      b.append(target);
       b.append(", encrypted: ");
       b.append(encrypted);
       // do not log ResourceParameter, if they are encrypted, they cannot be displayed.
@@ -268,39 +268,39 @@ public abstract class Resource implements Serializable {
    /**
     * the type of the target of the resource. Could be a class name, a URL, a table name, an entity name etc.
     * 
-    * @return the targetType
+    * @return the target
     */
-   public String getTargetType() {
-      return targetType;
+   public String getTarget() {
+      return target;
    }
 
    /**
     * the type of the target of the resource. Could be a class name, a URL, a table name, an entity name etc.
     * 
-    * @param targetType
-    *           the targetType to set
-    */
-   public void setTargetType(String targetType) {
-      this.targetType = targetType;
-   }
-
-   /**
-    * Encoded concrete object of this resource. In case of JPA, this is the encoded persisted object.
-    * 
-    * @return the target
-    */
-   public byte[] getTarget() {
-      return target;
-   }
-
-   /**
-    * Encoded concrete object of this resource. In case of JPA, this is the encoded persisted object.
-    * 
     * @param target
     *           the target to set
     */
-   public void setTarget(byte[] target) {
+   public void setTarget(String target) {
       this.target = target;
+   }
+
+   /**
+    * Encoded concrete object of this resource. In case of JPA, this is the encoded persisted object.
+    *
+    * @return the target
+    */
+   public byte[] getTargetObject() {
+      return targetObject;
+   }
+
+   /**
+    * Encoded concrete object of this resource. In case of JPA, this is the encoded persisted object.
+    *
+    * @param target
+    *           the target to set
+    */
+   public void setTargetObject(byte[] target) {
+      this.targetObject = target;
    }
 
    /**
@@ -414,26 +414,26 @@ public abstract class Resource implements Serializable {
 
    /**
     * Concrete object of this resource. In case of JPA, this is the unencoded persisted object.
-    * 
+    *
     * @return the object
     */
-   public Object getObject() {
-      if (object == null) {
-         object = CibetUtil.decode(target);
+   public Object getUnencodedTargetObject() {
+      if (unencodedTargetObject == null) {
+         unencodedTargetObject = CibetUtil.decode(targetObject);
       }
-      return object;
+      return unencodedTargetObject;
    }
 
    /**
     * Concrete object of this resource. In case of JPA, this is the unencoded persisted object.
-    * 
+    *
     * @param o
     *           the object to set
     */
-   public void setObject(Object o) {
-      this.object = o;
+   public void setUnencodedTargetObject(Object o) {
+      this.unencodedTargetObject = o;
       try {
-         target = CibetUtil.encode(o);
+         targetObject = CibetUtil.encode(o);
       } catch (IOException e) {
          log.error(e.getMessage(), e);
          throw new IllegalArgumentException(e);
@@ -446,11 +446,11 @@ public abstract class Resource implements Serializable {
     */
    public void encrypt() {
       if (!encrypted) {
-         log.debug("encrypt resource " + getTargetType());
+         log.debug("encrypt resource " + getTarget());
          SecurityProvider secProvider = Configuration.instance().getSecurityProvider();
          setKeyReference(secProvider.getCurrentSecretKey());
          setEncrypted(true);
-         setTarget(secProvider.encrypt(getTarget()));
+         setTargetObject(secProvider.encrypt(getTargetObject()));
          setResult(secProvider.encrypt(getResult()));
          for (ResourceParameter param : parameters) {
             param.setEncodedValue(secProvider.encrypt(param.getEncodedValue()));
@@ -466,7 +466,7 @@ public abstract class Resource implements Serializable {
       if (!isEncrypted())
          return false;
       SecurityProvider secProvider = Configuration.instance().getSecurityProvider();
-      setTarget(secProvider.decrypt(getTarget(), getKeyReference()));
+      setTargetObject(secProvider.decrypt(getTargetObject(), getKeyReference()));
       setResult(secProvider.decrypt(getResult(), getKeyReference()));
       if (parameters != null) {
          for (ResourceParameter param : parameters) {
@@ -474,7 +474,7 @@ public abstract class Resource implements Serializable {
             param.setEncodedValue(secProvider.decrypt(param.getEncodedValue(), getKeyReference()));
          }
       }
-      log.debug("decrypted resource " + getTargetType());
+      log.debug("decrypted resource " + getTarget());
       return true;
    }
 

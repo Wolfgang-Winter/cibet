@@ -140,7 +140,7 @@ public class ArchiveActuator extends AbstractActuator {
       JpaResource jpaRes = (JpaResource) res;
 
       if (jpaRes.getPrimaryKeyObject() == null) {
-         String msg = "no value for primary key found in persisted object " + jpaRes.getObject();
+         String msg = "no value for primary key found in persisted object " + jpaRes.getUnencodedTargetObject();
          log.warn(msg);
          return;
       }
@@ -155,10 +155,10 @@ public class ArchiveActuator extends AbstractActuator {
          resource.decrypt();
 
          resource.setPrimaryKeyObject(jpaRes.getPrimaryKeyObject());
-         if (!(resource.getObject() instanceof String)) {
-            Object o = resource.getObject();
+         if (!(resource.getUnencodedTargetObject() instanceof String)) {
+            Object o = resource.getUnencodedTargetObject();
             AnnotationUtil.setValueFromAnnotation(o, Id.class, jpaRes.getPrimaryKeyObject());
-            resource.setObject(o);
+            resource.setUnencodedTargetObject(o);
          }
          resource.setUniqueId(jpaRes.getUniqueId());
          update(arch);

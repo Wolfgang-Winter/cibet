@@ -347,7 +347,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          case PASSEDBACK:
          case POSTPONED:
             String msg = "An unreleased Dual Control business case with ID " + dc.getControllableId() + " and status "
-                  + dc.getExecutionStatus() + " exists already for this resource of type " + resource.getTargetType()
+                  + dc.getExecutionStatus() + " exists already for this resource of type " + resource.getTarget()
                   + ". This Dual Control business case must be approved or rejected first.";
             log.info(msg);
             throw new UnapprovedResourceException(msg, dc);

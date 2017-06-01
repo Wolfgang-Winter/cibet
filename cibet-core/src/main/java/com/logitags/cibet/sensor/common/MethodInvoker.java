@@ -34,10 +34,10 @@ public abstract class MethodInvoker implements Invoker {
 
    private static Log log = LogFactory.getLog(MethodInvoker.class);
 
-   public Object execute(String parameter, String targetType, String methodName, Set<ResourceParameter> parameters)
+   public Object execute(String parameter, String target, String methodName, Set<ResourceParameter> parameters)
          throws Exception {
       try {
-         Class<?> objClass = Class.forName(targetType);
+         Class<?> objClass = Class.forName(target);
          Class<?>[] params = getParamTypes(parameters);
          Method method = objClass.getMethod(methodName, params);
          if (Modifier.isStatic(method.getModifiers())) {

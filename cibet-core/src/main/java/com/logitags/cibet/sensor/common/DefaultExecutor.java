@@ -279,7 +279,7 @@ public class DefaultExecutor implements SensorExecutor {
    public void jpaMerge(EventMetadata metadata, EntityManager entityManager, Object obj) {
       Object ret = entityManager.merge(obj);
       // refresh the object into the resource:
-      metadata.getResource().setObject(ret);
+      metadata.getResource().setUnencodedTargetObject(ret);
    }
 
    /*
@@ -295,7 +295,7 @@ public class DefaultExecutor implements SensorExecutor {
          // refresh the object into the resource:
          entityManager.flush();
          ((JpaResource) metadata.getResource()).setPrimaryKeyObject(AnnotationUtil.primaryKeyAsObject(obj));
-         metadata.getResource().setObject(obj);
+         metadata.getResource().setUnencodedTargetObject(obj);
       }
    }
 

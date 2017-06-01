@@ -158,6 +158,12 @@ public enum ControlEvent {
 
    RESTORE_UPDATE(RESTORE),
 
+   /**
+    * the event is implicitly given through the context. For example a JPA query has an implicit event type as it is
+    * given by the sql itself. EventControl will be ignored if the business case is of IMPLICIT event type.
+    */
+   IMPLICIT(ALL),
+
    ;
 
    private ControlEvent parent;

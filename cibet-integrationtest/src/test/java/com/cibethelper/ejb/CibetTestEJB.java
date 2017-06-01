@@ -216,7 +216,7 @@ public class CibetTestEJB {
       List<Controllable> l = DcLoader.findUnreleased();
       for (Controllable co : l) {
          co.getResource().getParameters().size();
-         co.getResource().getObject();
+         co.getResource().getUnencodedTargetObject();
       }
 
       return l;

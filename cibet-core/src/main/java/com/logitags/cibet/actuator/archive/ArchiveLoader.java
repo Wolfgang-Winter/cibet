@@ -77,14 +77,14 @@ public abstract class ArchiveLoader {
     * loads all Archive records for the given target type of the current tenant. Target type could be e.g. the name of a
     * class or a table name.
     * 
-    * @param targetType
-    *           targetType
+    * @param target
+    *           target
     * @return list of Archives
     */
-   public static List<Archive> loadArchives(String targetType) {
+   public static List<Archive> loadArchives(String target) {
       Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_CLASS);
       query.setParameter("tenant", Context.internalSessionScope().getTenant());
-      query.setParameter("targetType", targetType);
+      query.setParameter("targetType", target);
       List<Archive> list = (List<Archive>) query.getResultList();
       decrypt(list);
       return list;
@@ -94,14 +94,14 @@ public abstract class ArchiveLoader {
     * loads all Archive records for the given target type. Tenant is not taken into account. Target type could be e.g.
     * the name of a class or a table name.
     * 
-    * @param targetType
-    *           targetType
+    * @param target
+    *           target
     * @return list of Archives
     */
-   public static List<Archive> loadAllArchives(String targetType) {
+   public static List<Archive> loadAllArchives(String target) {
       Query query = Context.internalRequestScope().getEntityManager()
             .createNamedQuery(Archive.SEL_ALL_BY_CLASS_NO_TENANT);
-      query.setParameter("targetType", targetType);
+      query.setParameter("targetType", target);
       List<Archive> list = (List<Archive>) query.getResultList();
       decrypt(list);
       return list;
@@ -193,15 +193,15 @@ public abstract class ArchiveLoader {
     * load all archives with a resource of type JpaResource that have the given object ID and target type. Tenant is not
     * taken into account.
     * 
-    * @param targetType
-    *           target type
+    * @param target
+    *           target
     * @param primaryKeyId
     *           primary key
     * @return list of Archives
     */
-   public static List<Archive> loadArchivesByPrimaryKeyId(String targetType, Object primaryKeyId) {
+   public static List<Archive> loadArchivesByPrimaryKeyId(String target, Object primaryKeyId) {
       Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
-      query.setParameter("targetType", targetType);
+      query.setParameter("targetType", target);
       if (primaryKeyId == null) {
          query.setParameter("primaryKeyId", null);
       } else {
@@ -313,7 +313,7 @@ public abstract class ArchiveLoader {
       params.add(entityClass.getName());
       StringBuffer sql = new StringBuffer();
       sql.append(
-            "SELECT a.* FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and a.TENANT = ? AND r.TARGETTYPE = ?");
+            "SELECT a.* FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and a.TENANT = ? AND r.TARGET = ?");
 
       if (properties != null) {
          for (Entry<String, Object> entry : properties.entrySet()) {
@@ -361,7 +361,7 @@ public abstract class ArchiveLoader {
       List<Object> params = new ArrayList<>();
       params.add(entityClass.getName());
       StringBuffer sql = new StringBuffer();
-      sql.append("SELECT a.* FROM CIB_ARCHIVE a WHERE a.TARGETTYPE = ?");
+      sql.append("SELECT a.* FROM CIB_ARCHIVE a WHERE a.TARGET = ?");
 
       if (properties != null) {
          for (Entry<String, Object> entry : properties.entrySet()) {

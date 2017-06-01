@@ -66,15 +66,15 @@ import com.logitags.cibet.sensor.jpa.JpaResource;
 @Entity
 @Table(name = "CIB_ARCHIVE")
 @NamedQueries({ @NamedQuery(name = Archive.SEL_ALL, query = "SELECT a FROM Archive a ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_BY_PRIMARYKEYID, query = "SELECT a FROM Archive a WHERE a.resource.targetType = :targetType AND a.resource.primaryKeyId = :primaryKeyId ORDER BY a.createDate"),
+      @NamedQuery(name = Archive.SEL_BY_PRIMARYKEYID, query = "SELECT a FROM Archive a WHERE a.resource.target = :targetType AND a.resource.primaryKeyId = :primaryKeyId ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_BY_GROUPID, query = "SELECT a FROM Archive a WHERE a.resource.groupId = :groupId ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_TENANT, query = "SELECT a FROM Archive a WHERE a.tenant LIKE :tenant ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CASEID, query = "SELECT a FROM Archive a WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CASEID_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.caseId = :caseId ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_BY_METHODNAME, query = "SELECT a FROM Archive a WHERE a.tenant = :tenant AND a.resource.targetType = :objectClass AND a.resource.method = :methodName ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_BY_METHODNAME_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.resource.targetType = :objectClass AND a.resource.method = :methodName ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_ALL_BY_CLASS, query = "SELECT a FROM Archive a WHERE a.tenant LIKE :tenant AND a.resource.targetType = :targetType ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_ALL_BY_CLASS_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.resource.targetType = :targetType ORDER BY a.createDate") })
+      @NamedQuery(name = Archive.SEL_BY_METHODNAME, query = "SELECT a FROM Archive a WHERE a.tenant = :tenant AND a.resource.target = :objectClass AND a.resource.method = :methodName ORDER BY a.createDate"),
+      @NamedQuery(name = Archive.SEL_BY_METHODNAME_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.resource.target = :objectClass AND a.resource.method = :methodName ORDER BY a.createDate"),
+      @NamedQuery(name = Archive.SEL_ALL_BY_CLASS, query = "SELECT a FROM Archive a WHERE a.tenant LIKE :tenant AND a.resource.target = :targetType ORDER BY a.createDate"),
+      @NamedQuery(name = Archive.SEL_ALL_BY_CLASS_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.resource.target = :targetType ORDER BY a.createDate") })
 public class Archive implements Serializable {
 
    private static final long serialVersionUID = 1L;
@@ -323,7 +323,7 @@ public class Archive implements Serializable {
     */
    @CibetContext
    public Object restore(EntityManager entityManager, String remark) {
-      Object obj = getResource().getObject();
+      Object obj = getResource().getUnencodedTargetObject();
       if (obj == null || !obj.getClass().isAnnotationPresent(Entity.class)) {
          String msg = "Failed to restore. Archive does not contain an archived JPA entity";
          log.error(msg);

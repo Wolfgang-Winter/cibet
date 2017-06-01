@@ -134,8 +134,8 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals(2, archList.size());
       Resource res0 = archList.get(0).getResource();
       Resource res1 = archList.get(1).getResource();
-      TComplexEntity ar1 = (TComplexEntity) res0.getObject();
-      TComplexEntity ar2 = (TComplexEntity) res1.getObject();
+      TComplexEntity ar1 = (TComplexEntity) res0.getUnencodedTargetObject();
+      TComplexEntity ar2 = (TComplexEntity) res1.getUnencodedTargetObject();
       Assert.assertEquals(122, ar1.getCompValue());
       Assert.assertEquals(122, ar2.getCompValue());
       Assert.assertEquals(ControlEvent.UPDATE, archList.get(0).getControlEvent());
@@ -144,10 +144,10 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
 
    private void insertNativeArchive(Archive a, EntityManager eman) {
       Query rq = eman.createNativeQuery("INSERT INTO CIB_RESOURCE "
-            + "(RESOURCEID, TARGETTYPE, PRIMARYKEYID, RESOURCETYPE, ENCRYPTED, KEYREFERENCE, UNIQUEID"
+            + "(RESOURCEID, TARGET, PRIMARYKEYID, RESOURCETYPE, ENCRYPTED, KEYREFERENCE, UNIQUEID"
             + ") VALUES (?, ?, ?, 'JpaResource', 1,?,?)");
       rq.setParameter(1, a.getResource().getResourceId());
-      rq.setParameter(2, a.getResource().getTargetType());
+      rq.setParameter(2, a.getResource().getTarget());
       rq.setParameter(3, ((JpaResource) a.getResource()).getPrimaryKeyId());
       rq.setParameter(4, a.getResource().getKeyReference());
       rq.setParameter(5, a.getResource().getUniqueId());
@@ -186,7 +186,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       JpaResource res = new JpaResource();
       res.setResourceId("R-" + archiveId);
       res.setPrimaryKeyId(String.valueOf(archiveId + 10));
-      res.setTargetType(TEntity.class.getName());
+      res.setTarget(TEntity.class.getName());
       res.setEncrypted(true);
       res.setKeyReference(secProvider.getCurrentSecretKey());
       a.setResource(res);
@@ -309,13 +309,13 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals(USER, list.get(0).getCreateUser());
       Assert.assertEquals(null, list.get(0).getRemark());
       Resource res0 = list.get(0).getResource();
-      Assert.assertNotNull(res0.getTarget());
+      Assert.assertNotNull(res0.getTargetObject());
 
       Assert.assertEquals(ControlEvent.FIRST_RELEASE_DELETE, list.get(1).getControlEvent());
       Assert.assertEquals("tester2", list.get(1).getCreateUser());
       Assert.assertEquals("blabla1", list.get(1).getRemark());
       Resource res1 = list.get(1).getResource();
-      Assert.assertNotNull(res1.getTarget());
+      Assert.assertNotNull(res1.getTargetObject());
 
       // 2. release
       Context.sessionScope().setUser("tester3");
@@ -324,8 +324,8 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       list = ArchiveLoader.loadArchives(TComplexEntity.class.getName());
       Assert.assertEquals(3, list.size());
       Resource res2 = list.get(2).getResource();
-      Assert.assertNotNull(res2.getTarget());
-      Object obj = res2.getObject();
+      Assert.assertNotNull(res2.getTargetObject());
+      Object obj = res2.getUnencodedTargetObject();
       Assert.assertNotNull(obj);
       Assert.assertTrue(obj instanceof TComplexEntity);
       Assert.assertEquals(ControlEvent.RELEASE_DELETE, list.get(2).getControlEvent());
@@ -372,13 +372,13 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals(USER, list.get(0).getCreateUser());
       Assert.assertEquals(null, list.get(0).getRemark());
       Resource res0 = list.get(0).getResource();
-      Assert.assertNotNull(res0.getTarget());
+      Assert.assertNotNull(res0.getTargetObject());
 
       Assert.assertEquals(ControlEvent.REJECT_DELETE, list.get(1).getControlEvent());
       Assert.assertEquals(USER, list.get(1).getCreateUser());
       Assert.assertEquals("blabla1", list.get(1).getRemark());
       Resource res1 = list.get(1).getResource();
-      Assert.assertNotNull(res1.getTarget());
+      Assert.assertNotNull(res1.getTargetObject());
    }
 
    @Test
@@ -425,13 +425,13 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals(USER, list.get(0).getCreateUser());
       Assert.assertEquals(null, list.get(0).getRemark());
       Resource res0 = list.get(0).getResource();
-      Assert.assertNotNull(res0.getTarget());
+      Assert.assertNotNull(res0.getTargetObject());
 
       Assert.assertEquals(ControlEvent.FIRST_RELEASE_INSERT, list.get(1).getControlEvent());
       Assert.assertEquals("tester2", list.get(1).getCreateUser());
       Assert.assertEquals("blabla1", list.get(1).getRemark());
       Resource res1 = list.get(1).getResource();
-      Assert.assertNotNull(res1.getTarget());
+      Assert.assertNotNull(res1.getTargetObject());
 
       Context.sessionScope().setUser(USER);
       co.reject(Context.internalRequestScope().getApplicationEntityManager(), "blabla2");
@@ -449,7 +449,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals(USER, list.get(2).getCreateUser());
       Assert.assertEquals("blabla2", list.get(2).getRemark());
       Resource res2 = list.get(2).getResource();
-      Assert.assertNotNull(res2.getTarget());
+      Assert.assertNotNull(res2.getTargetObject());
    }
 
    @Test
@@ -481,7 +481,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals(USER, list.get(0).getCreateUser());
       Assert.assertEquals(null, list.get(0).getRemark());
       Resource res0 = list.get(0).getResource();
-      Assert.assertNotNull(res0.getTarget());
+      Assert.assertNotNull(res0.getTargetObject());
    }
 
    @Test
@@ -544,18 +544,18 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Resource res0 = archives.get(0).getResource();
       Resource res1 = archives.get(1).getResource();
       Resource res2 = archives.get(2).getResource();
-      log.debug("res0 Object: " + res0.getObject().getClass());
-      log.debug("res1: " + res1.getObject().getClass());
-      log.debug("res2: " + res2.getObject().getClass());
+      log.debug("res0 Object: " + res0.getUnencodedTargetObject().getClass());
+      log.debug("res1: " + res1.getUnencodedTargetObject().getClass());
+      log.debug("res2: " + res2.getUnencodedTargetObject().getClass());
 
       List<Difference> comps = CibetUtil.compare(res2, res0);
       testDifference(comps);
 
-      comps = CibetUtil.compare(selEnt, res0.getObject());
+      comps = CibetUtil.compare(selEnt, res0.getUnencodedTargetObject());
       testDifference(comps);
 
-      Object ar1Obj = res0.getObject();
-      Object ar2Obj = res2.getObject();
+      Object ar1Obj = res0.getUnencodedTargetObject();
+      Object ar2Obj = res2.getUnencodedTargetObject();
       comps = CibetUtil.compare(ar2Obj, ar1Obj);
       testDifference(comps);
    }
@@ -629,7 +629,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.RESTORE_INSERT, list2.get(1).getControlEvent());
 
       Resource res1 = list2.get(1).getResource();
-      TComplexEntity restored = (TComplexEntity) res1.getObject();
+      TComplexEntity restored = (TComplexEntity) res1.getUnencodedTargetObject();
       Assert.assertEquals(12, restored.getCompValue());
 
       selEnt = applEman.find(TComplexEntity.class, selEnt2.getId());
@@ -717,7 +717,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.RESTORE_INSERT, list2.get(1).getControlEvent());
 
       Resource res0 = list.get(0).getResource();
-      Object primaryKey = ((TComplexEntity) res0.getObject()).getId();
+      Object primaryKey = ((TComplexEntity) res0.getUnencodedTargetObject()).getId();
       selEnt = applEman.find(TComplexEntity.class, primaryKey);
       Assert.assertNull(selEnt);
 
@@ -891,11 +891,11 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
          Assert.assertEquals(2, list1.size());
          Archive ar = list1.get(0);
          Assert.assertEquals("1", ar.getResource().getKeyReference());
-         Assert.assertEquals(5, ((TEntity) ar.getResource().getObject()).getCounter());
+         Assert.assertEquals(5, ((TEntity) ar.getResource().getUnencodedTargetObject()).getCounter());
 
          Archive ar2 = list1.get(1);
          Assert.assertEquals("l3", ar2.getResource().getKeyReference());
-         Assert.assertEquals(5, ((TEntity) ar2.getResource().getObject()).getCounter());
+         Assert.assertEquals(5, ((TEntity) ar2.getResource().getUnencodedTargetObject()).getCounter());
 
          List<Archive> checklist = ArchiveLoader.checkIntegrity();
          Assert.assertEquals(0, checklist.size());

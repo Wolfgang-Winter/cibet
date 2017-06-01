@@ -24,7 +24,7 @@ public class CibetStatementTest {
 
    private void testMatch(String sql, String expectedTableName) throws Exception {
       SqlParser parser = new SqlParser(null, sql);
-      Assert.assertEquals(expectedTableName, parser.getTargetType());
+      Assert.assertEquals(expectedTableName, parser.getTarget());
    }
 
    private void testparseUpdateColumns(String sql, String[] cols, String[] vals) throws Exception {
@@ -65,9 +65,9 @@ public class CibetStatementTest {
    @Test
    public void parseTargetDelete() throws Exception {
       SqlParser parser = new SqlParser(null, "DELETE FROM Prod  ");
-      Assert.assertEquals("Prod", parser.getTargetType());
+      Assert.assertEquals("Prod", parser.getTarget());
       parser = new SqlParser(null, "DELETE FROM\n wasser.Prod   \n ");
-      Assert.assertEquals("Prod", parser.getTargetType());
+      Assert.assertEquals("Prod", parser.getTarget());
 
       testMatch("DELETE FROM Prod ", "Prod");
       // testMatch("xDELETE FROM Prod Values() ", null);

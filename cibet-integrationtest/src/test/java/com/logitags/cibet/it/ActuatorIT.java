@@ -1277,7 +1277,7 @@ public class ActuatorIT extends AbstractArquillian {
       log.debug("LOCKEDOBJECT: " + l2.get(0));
       Assert.assertEquals("testremark", l2.get(0).getCreateRemark());
       Assert.assertEquals(USER, l2.get(0).getCreateUser());
-      Assert.assertEquals(TEntity.class.getName(), ((JpaResource) l2.get(0).getResource()).getTargetType());
+      Assert.assertEquals(TEntity.class.getName(), ((JpaResource) l2.get(0).getResource()).getTarget());
    }
 
    @Test
@@ -1312,7 +1312,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(ControlEvent.DELETE, list.get(0).getControlEvent());
       Assert.assertEquals(USER, list.get(0).getCreateUser());
       Assert.assertNull(list.get(0).getRemark());
-      Assert.assertNotNull(list.get(0).getResource().getTarget());
+      Assert.assertNotNull(list.get(0).getResource().getTargetObject());
 
       List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());
@@ -1414,7 +1414,7 @@ public class ActuatorIT extends AbstractArquillian {
       log.debug("LOCKEDOBJECT: " + l2.get(0));
       Assert.assertEquals("testremark", l2.get(0).getCreateRemark());
       Assert.assertEquals(USER, l2.get(0).getCreateUser());
-      Assert.assertEquals(TEntity.class.getName(), ((JpaResource) l2.get(0).getResource()).getTargetType());
+      Assert.assertEquals(TEntity.class.getName(), ((JpaResource) l2.get(0).getResource()).getTarget());
    }
 
    @Test
@@ -1452,7 +1452,7 @@ public class ActuatorIT extends AbstractArquillian {
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
       Assert.assertEquals(USER, list.get(0).getCreateUser());
       Assert.assertNull(list.get(0).getRemark());
-      Assert.assertNotNull(list.get(0).getResource().getTarget());
+      Assert.assertNotNull(list.get(0).getResource().getTargetObject());
 
       List<Controllable> l2 = Locker.loadLockedObjects();
       Assert.assertEquals(1, l2.size());

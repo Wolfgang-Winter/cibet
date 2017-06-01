@@ -95,7 +95,7 @@ public class ArchiveLoaderTest {
 
       HttpRequestResource r1 = new HttpRequestResource();
       r1.setGroupId("Hase");
-      r1.setObject("URL");
+      r1.setUnencodedTargetObject("URL");
 
       Archive a1 = new Archive();
       a1.setArchiveId("5");
@@ -106,7 +106,7 @@ public class ArchiveLoaderTest {
 
       HttpRequestResource r2 = new HttpRequestResource();
       r2.setGroupId("Hase");
-      r2.setObject("URL2");
+      r2.setUnencodedTargetObject("URL2");
 
       Archive a2 = new Archive();
       a2.setArchiveId("6");
@@ -126,7 +126,7 @@ public class ArchiveLoaderTest {
          List<Difference> difs = map.get(a);
          b.append(a.getExecutionStatus());
          b.append(" ");
-         b.append(a.getResource().getObject());
+         b.append(a.getResource().getUnencodedTargetObject());
          b.append("\nList size: ");
          b.append(difs.size());
          b.append(": ");
@@ -169,7 +169,7 @@ public class ArchiveLoaderTest {
 
       HttpRequestResource r1 = new HttpRequestResource();
       r1.setGroupId("Hase");
-      r1.setObject("URL");
+      r1.setUnencodedTargetObject("URL");
 
       Archive a1 = new Archive();
       a1.setArchiveId("1");
@@ -180,7 +180,7 @@ public class ArchiveLoaderTest {
 
       HttpRequestResource r2 = new HttpRequestResource();
       r2.setGroupId("Hase");
-      r2.setObject("URL2");
+      r2.setUnencodedTargetObject("URL2");
 
       Archive a2 = new Archive();
       a2.setArchiveId("2");
@@ -203,7 +203,7 @@ public class ArchiveLoaderTest {
          List<Difference> difs = map.get(a);
          b.append(a.getExecutionStatus());
          b.append(" ");
-         b.append(a.getResource().getObject());
+         b.append(a.getResource().getUnencodedTargetObject());
          b.append("\nList size: ");
          b.append(difs.size());
          b.append(": ");
@@ -246,7 +246,7 @@ public class ArchiveLoaderTest {
 
       JpaResource r1 = new JpaResource();
       r1.setGroupId("Hase");
-      r1.setObject(t1);
+      r1.setUnencodedTargetObject(t1);
 
       Archive a1 = new Archive();
       a1.setArchiveId(archiveId);

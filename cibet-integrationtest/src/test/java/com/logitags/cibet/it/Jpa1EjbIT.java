@@ -615,7 +615,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
       List<Archive> list = ejb.queryArchive(TENANT, TComplexEntity.class.getName(), String.valueOf(ce.getId()));
       Assert.assertEquals(1, list.size());
       JpaResource res = (JpaResource) list.get(0).getResource();
-      TComplexEntity decObj = (TComplexEntity) res.getObject();
+      TComplexEntity decObj = (TComplexEntity) res.getUnencodedTargetObject();
       Assert.assertEquals(2, decObj.getEagerList().size());
       Assert.assertEquals(3, decObj.getLazyList().size());
       Assert.assertNotNull(decObj.getTen());
@@ -629,8 +629,8 @@ public class Jpa1EjbIT extends AbstractArquillian {
       Assert.assertEquals(2, list.size());
       JpaResource res1 = (JpaResource) list.get(0).getResource();
       JpaResource res2 = (JpaResource) list.get(1).getResource();
-      TComplexEntity decObj1 = (TComplexEntity) res1.getObject();
-      TComplexEntity decObj2 = (TComplexEntity) res2.getObject();
+      TComplexEntity decObj1 = (TComplexEntity) res1.getUnencodedTargetObject();
+      TComplexEntity decObj2 = (TComplexEntity) res2.getUnencodedTargetObject();
       Assert.assertEquals(2, decObj1.getEagerList().size());
       Assert.assertEquals(3, decObj1.getLazyList().size());
       Assert.assertNotNull(decObj1.getTen());

@@ -70,10 +70,10 @@ public class ArchiveDefinitionTest extends JdbcHelper {
       sa.setCreateUser(USER);
       r.setPrimaryKeyId("25");
       sa.setRemark("no");
-      r.setTargetType("class");
+      r.setTarget("class");
       sa.setTenant(TENANT);
       byte[] r1 = CibetUtil.encode(sa);
-      r.setTarget(r1);
+      r.setTargetObject(r1);
       byte[] r2 = CibetUtil.encode(sa);
       r.setResult(r2);
       sa.setVersion(1);
@@ -90,7 +90,7 @@ public class ArchiveDefinitionTest extends JdbcHelper {
       sa.setCreateDate(new Date());
       sa.setCreateUser(USER);
       sa.setRemark("no");
-      r.setTargetType("class");
+      r.setTarget("class");
       sa.setTenant(TENANT);
       r.setMethod("methodname");
       r.setInvokerClass(EJBInvoker.class.getName());
@@ -108,7 +108,7 @@ public class ArchiveDefinitionTest extends JdbcHelper {
 
       byte[] r1 = CibetUtil.encode(sa);
       log.debug("byte array length=" + r1.length);
-      r.setTarget(r1);
+      r.setTargetObject(r1);
       byte[] r2 = CibetUtil.encode(sa);
       r.setResult(r2);
       return sa;
@@ -198,8 +198,8 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          Archive ar2 = jdbcEM.find(Archive.class, sa.getArchiveId());
          Assert.assertNotNull(ar2);
          Assert.assertEquals("caseisxx", ar2.getCaseId());
-         Assert.assertNotNull(ar2.getResource().getTarget());
-         Object obj = CibetUtil.decode(ar2.getResource().getTarget());
+         Assert.assertNotNull(ar2.getResource().getTargetObject());
+         Object obj = CibetUtil.decode(ar2.getResource().getTargetObject());
          Assert.assertEquals(Archive.class, obj.getClass());
 
          connection.commit();
@@ -229,8 +229,8 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          Assert.assertNotNull(ar2);
          Assert.assertEquals("caseisxx", ar2.getCaseId());
          Assert.assertEquals("methodname", ((MethodResource) ar2.getResource()).getMethod());
-         Assert.assertNotNull(ar2.getResource().getTarget());
-         Object obj = CibetUtil.decode(ar2.getResource().getTarget());
+         Assert.assertNotNull(ar2.getResource().getTargetObject());
+         Object obj = CibetUtil.decode(ar2.getResource().getTargetObject());
          Assert.assertEquals(Archive.class, obj.getClass());
 
          connection.commit();
@@ -266,8 +266,8 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          Assert.assertNotNull(ar2);
          Assert.assertNull(ar2.getCaseId());
          Assert.assertEquals("WilliBert", ar2.getRemark());
-         Assert.assertNotNull(ar2.getResource().getTarget());
-         Object obj = CibetUtil.decode(ar2.getResource().getTarget());
+         Assert.assertNotNull(ar2.getResource().getTargetObject());
+         Object obj = CibetUtil.decode(ar2.getResource().getTargetObject());
          Assert.assertEquals(Archive.class, obj.getClass());
 
          connection.commit();
@@ -304,8 +304,8 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          Assert.assertEquals("WilliBert", ar2.getRemark());
          // JdbcResource can not be updated
          // Assert.assertEquals("Halleluja", ((MethodResource) ar2.getResource()).getMethod());
-         Assert.assertNotNull(ar2.getResource().getTarget());
-         Object obj = CibetUtil.decode(ar2.getResource().getTarget());
+         Assert.assertNotNull(ar2.getResource().getTargetObject());
+         Object obj = CibetUtil.decode(ar2.getResource().getTargetObject());
          Assert.assertEquals(Archive.class, obj.getClass());
          Assert.assertEquals(3, ((Archive) obj).getResource().getParameters().size());
 

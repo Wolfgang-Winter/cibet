@@ -194,17 +194,17 @@ public abstract class AbstractActuator implements Actuator, Serializable {
     */
    protected void loadEager(EventMetadata metadata) {
       if (metadata.getResource() instanceof JpaResource && !(metadata.getResource() instanceof JdbcResource)
-            && !(metadata.getResource().getObject() instanceof Class)) {
+            && !(metadata.getResource().getUnencodedTargetObject() instanceof Class)) {
 
          JpaResource jpar = (JpaResource) metadata.getResource();
          if (!jpar.isEagerLoadedAndDetached()) {
             log.debug("start loadEager");
-            Object resourceObject = jpar.getObject();
+            Object resourceObject = jpar.getUnencodedTargetObject();
             CibetUtil.loadLazyEntities(resourceObject, resourceObject.getClass());
             List<Object> references = new ArrayList<Object>();
             references.add(resourceObject);
             CibetUtil.deepDetach(resourceObject, references);
-            jpar.setObject(resourceObject);
+            jpar.setUnencodedTargetObject(resourceObject);
             jpar.setEagerLoadedAndDetached(true);
             log.debug("end loadEager");
          }
@@ -214,13 +214,13 @@ public abstract class AbstractActuator implements Actuator, Serializable {
    protected void addStoredProperties(Resource resource, Collection<String> storedProperties) {
       if (storedProperties != null) {
          Object target = null;
-         if (resource.getObject() instanceof Class) {
+         if (resource.getUnencodedTargetObject() instanceof Class) {
             if (resource.getResultObject() != null) {
                target = resource.getResultObject();
             }
 
          } else {
-            target = resource.getObject();
+            target = resource.getUnencodedTargetObject();
          }
 
          if (target != null) {

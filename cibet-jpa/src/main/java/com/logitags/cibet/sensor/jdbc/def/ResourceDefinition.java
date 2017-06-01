@@ -50,7 +50,7 @@ public class ResourceDefinition extends AbstractEntityDefinition {
    private static final long serialVersionUID = 1L;
 
    private static final String RESOURCEPARAMETER = "parameterid, name, classname, encodedvalue, sequence, parametertype, stringvalue, resourceid";
-   private static final String RESOURCE = "resourcetype, resourceid, result, targettype, target, primarykeyid, method, invokerclass, invokerparam, "
+   private static final String RESOURCE = "resourcetype, resourceid, result, target, targetobject, primarykeyid, method, invokerclass, invokerparam, "
          + "encrypted, keyreference, uniqueid, groupid";
 
    private static final String SEL_RESOURCE = "SELECT " + RESOURCE + " FROM CIB_RESOURCE WHERE resourceid = ?";
@@ -134,8 +134,8 @@ public class ResourceDefinition extends AbstractEntityDefinition {
 
          r.setResourceId(resRs.getString(2));
          r.setResult(getBlob(resRs, 3));
-         r.setTargetType(resRs.getString(4));
-         r.setTarget(getBlob(resRs, 5));
+         r.setTarget(resRs.getString(4));
+         r.setTargetObject(getBlob(resRs, 5));
          r.setEncrypted(resRs.getBoolean(10));
          r.setKeyReference(resRs.getString(11));
          r.setUniqueId(resRs.getString(12));
@@ -224,8 +224,8 @@ public class ResourceDefinition extends AbstractEntityDefinition {
          ps.setString(1, r.getClass().getSimpleName());
          ps.setString(2, r.getResourceId());
          setBlob(ps, r.getResult(), 3);
-         ps.setString(4, r.getTargetType());
-         setBlob(ps, r.getTarget(), 5);
+         ps.setString(4, r.getTarget());
+         setBlob(ps, r.getTargetObject(), 5);
 
          ps.setBoolean(10, r.isEncrypted());
          ps.setString(11, r.getKeyReference());

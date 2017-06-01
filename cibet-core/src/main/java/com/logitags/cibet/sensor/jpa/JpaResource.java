@@ -92,9 +92,9 @@ public class JpaResource extends Resource {
     * @param entity
     */
    public JpaResource(Object entity) {
-      setObject(entity);
+      setUnencodedTargetObject(entity);
       setPrimaryKeyObject(AnnotationUtil.primaryKeyAsObject(entity));
-      resolveTargetType(entity);
+      resolveTarget(entity);
    }
 
    /**
@@ -105,8 +105,8 @@ public class JpaResource extends Resource {
     * @param primaryKey
     */
    public JpaResource(Class<?> target, Object primaryKey) {
-      setObject(target);
-      resolveTargetType(target);
+      setUnencodedTargetObject(target);
+      resolveTarget(target);
       setPrimaryKeyObject(primaryKey);
    }
 
@@ -152,12 +152,12 @@ public class JpaResource extends Resource {
 
    @Override
    public void fillContext(ScriptEngine engine) {
-      engine.put("$TARGETTYPE", getTargetType());
-      engine.put("$TARGET", getObject());
+      engine.put("$TARGET", getTarget());
+      engine.put("$TARGETOBJECT", getUnencodedTargetObject());
 
       // put object target also with simple classname
-      if (!(getObject() instanceof String) && getObject() != null) {
-         engine.put("$" + getObject().getClass().getSimpleName(), getObject());
+      if (!(getUnencodedTargetObject() instanceof String) && getUnencodedTargetObject() != null) {
+         engine.put("$" + getUnencodedTargetObject().getClass().getSimpleName(), getUnencodedTargetObject());
       }
       engine.put("$PRIMARYKEY", getPrimaryKeyId());
    }
@@ -165,8 +165,8 @@ public class JpaResource extends Resource {
    @Override
    public Map<String, Object> getNotificationAttributes() {
       Map<String, Object> map = new HashMap<>();
-      map.put("targetType", getTargetType());
-      map.put("target", getObject());
+      map.put("target", getTarget());
+      map.put("targetObject", getUnencodedTargetObject());
       map.put("primaryKeyId", getPrimaryKeyId());
       return map;
    }
@@ -181,7 +181,7 @@ public class JpaResource extends Resource {
 
       try {
          EntityManager em = Context.internalRequestScope().getApplicationEntityManager();
-         Object obj = getObject();
+         Object obj = getUnencodedTargetObject();
 
          switch (event) {
          case DELETE:
@@ -211,15 +211,15 @@ public class JpaResource extends Resource {
 
             if (lockMode == null) {
                if (props.isEmpty()) {
-                  obj = em.find((Class<?>) getObject(), getPrimaryKeyObject());
+                  obj = em.find((Class<?>) getUnencodedTargetObject(), getPrimaryKeyObject());
                } else {
-                  obj = em.find((Class<?>) getObject(), getPrimaryKeyObject(), props);
+                  obj = em.find((Class<?>) getUnencodedTargetObject(), getPrimaryKeyObject(), props);
                }
             } else {
                if (props.isEmpty()) {
-                  obj = em.find((Class<?>) getObject(), getPrimaryKeyObject(), lockMode);
+                  obj = em.find((Class<?>) getUnencodedTargetObject(), getPrimaryKeyObject(), lockMode);
                } else {
-                  obj = em.find((Class<?>) getObject(), getPrimaryKeyObject(), lockMode, props);
+                  obj = em.find((Class<?>) getUnencodedTargetObject(), getPrimaryKeyObject(), lockMode, props);
                }
             }
 
@@ -241,9 +241,9 @@ public class JpaResource extends Resource {
       EntityManager appEM = Context.internalRequestScope().getApplicationEntityManager();
       Class<?> clazz;
       try {
-         clazz = Class.forName(getTargetType());
+         clazz = Class.forName(getTarget());
       } catch (Exception e) {
-         String err = "Failed to apply scheduled update of class " + getTargetType() + ": " + e.getMessage();
+         String err = "Failed to apply scheduled update of class " + getTarget() + ": " + e.getMessage();
          throw new ResourceApplyException(err, e);
       }
 
@@ -270,7 +270,7 @@ public class JpaResource extends Resource {
             log.debug("base: " + cleanResourceParam.getUnencodedValue());
             log.debug("head: " + head);
          }
-         head = merger.merge(getObject(), cleanResourceParam.getUnencodedValue(), head);
+         head = merger.merge(getUnencodedTargetObject(), cleanResourceParam.getUnencodedValue(), head);
          if (log.isDebugEnabled()) {
             log.debug("end merging");
             log.debug("head: " + head);
@@ -286,18 +286,18 @@ public class JpaResource extends Resource {
    }
 
    /**
-    * constructs the Resource- specific group id. Concatenates targetType and primary key
+    * constructs the Resource- specific group id. Concatenates target and primary key
     */
    @Override
    public void createGroupId() {
-      if (getGroupId() != null && getGroupId().startsWith(getTargetType() + "-") && getPrimaryKeyId() != null) {
-         setGroupId(getTargetType() + "-" + getPrimaryKeyId());
+      if (getGroupId() != null && getGroupId().startsWith(getTarget() + "-") && getPrimaryKeyId() != null) {
+         setGroupId(getTarget() + "-" + getPrimaryKeyId());
 
       } else if (Context.requestScope().getGroupId() != null) {
          setGroupId(Context.requestScope().getGroupId());
 
       } else if (getPrimaryKeyId() != null) {
-         setGroupId(getTargetType() + "-" + getPrimaryKeyId());
+         setGroupId(getTarget() + "-" + getPrimaryKeyId());
       }
    }
 
@@ -317,7 +317,7 @@ public class JpaResource extends Resource {
          return true;
       if (primaryKeyId == null || primaryKeyId.equals("0")) {
          // this is a release of an insert: has no primary key.
-         Object obj = getObject();
+         Object obj = getUnencodedTargetObject();
          if (obj == null) {
             String msg = "System error: If the object to lock has no primary key the object must be "
                   + "encoded into LockedObject and the equals() method must be implemented";
@@ -345,7 +345,7 @@ public class JpaResource extends Resource {
 
    @Override
    public String createUniqueId() {
-      return DigestUtils.sha256Hex(getTargetType() + getPrimaryKeyId());
+      return DigestUtils.sha256Hex(getTarget() + getPrimaryKeyId());
    }
 
    /**
@@ -355,12 +355,12 @@ public class JpaResource extends Resource {
     */
    public Object getPrimaryKeyObject() {
       if (primaryKeyObject == null) {
-         if (getObject() instanceof Class<?>) {
-            Class<?> pkTypeClass = AnnotationUtil.typeFromAnnotation((Class<?>) getObject(), Id.class);
+         if (getUnencodedTargetObject() instanceof Class<?>) {
+            Class<?> pkTypeClass = AnnotationUtil.typeFromAnnotation((Class<?>) getUnencodedTargetObject(), Id.class);
             primaryKeyObject = cast(pkTypeClass, getPrimaryKeyId());
 
-         } else if (!(getObject() instanceof String)) {
-            primaryKeyObject = AnnotationUtil.primaryKeyAsObject(getObject());
+         } else if (!(getUnencodedTargetObject() instanceof String)) {
+            primaryKeyObject = AnnotationUtil.primaryKeyAsObject(getUnencodedTargetObject());
          }
       }
       return primaryKeyObject;

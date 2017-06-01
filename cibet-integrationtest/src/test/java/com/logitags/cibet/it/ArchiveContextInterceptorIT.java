@@ -196,8 +196,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(2, archList.size());
       JpaResource res0 = (JpaResource) archList.get(0).getResource();
       JpaResource res1 = (JpaResource) archList.get(1).getResource();
-      TComplexEntity ar1 = (TComplexEntity) res0.getObject();
-      TComplexEntity ar2 = (TComplexEntity) res1.getObject();
+      TComplexEntity ar1 = (TComplexEntity) res0.getUnencodedTargetObject();
+      TComplexEntity ar2 = (TComplexEntity) res1.getUnencodedTargetObject();
       Assert.assertEquals(122, ar1.getCompValue());
       Assert.assertEquals(122, ar2.getCompValue());
       Assert.assertEquals(ControlEvent.UPDATE, archList.get(0).getControlEvent());
@@ -239,13 +239,13 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(USER, list.get(0).getCreateUser());
       Assert.assertEquals(null, list.get(0).getRemark());
       Resource res0 = list.get(0).getResource();
-      Assert.assertNotNull(res0.getTarget());
+      Assert.assertNotNull(res0.getTargetObject());
 
       Assert.assertEquals(event2, list.get(1).getControlEvent());
       Assert.assertEquals("tester2", list.get(1).getCreateUser());
       Assert.assertEquals("blabla1", list.get(1).getRemark());
       Resource res1 = list.get(1).getResource();
-      Assert.assertNotNull(res1.getTarget());
+      Assert.assertNotNull(res1.getTargetObject());
 
       ut.begin();
       l1 = DcLoader.findUnreleased();
@@ -268,7 +268,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(USER, list.get(2).getCreateUser());
       Assert.assertEquals("blabla2", list.get(2).getRemark());
       Resource res2 = list.get(2).getResource();
-      Assert.assertNotNull(res2.getTarget());
+      Assert.assertNotNull(res2.getTargetObject());
    }
 
    @Test
@@ -404,13 +404,13 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(USER, list.get(0).getCreateUser());
       Assert.assertEquals(null, list.get(0).getRemark());
       Resource res0 = list.get(0).getResource();
-      Assert.assertNotNull(res0.getTarget());
+      Assert.assertNotNull(res0.getTargetObject());
 
       Assert.assertEquals(ControlEvent.FIRST_RELEASE_DELETE, list.get(1).getControlEvent());
       Assert.assertEquals("tester2", list.get(1).getCreateUser());
       Assert.assertEquals("blabla1", list.get(1).getRemark());
       Resource res1 = list.get(1).getResource();
-      Assert.assertNotNull(res1.getTarget());
+      Assert.assertNotNull(res1.getTargetObject());
 
       // 2. release
       l1 = DcLoader.findUnreleased();
@@ -424,8 +424,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       list = ArchiveLoader.loadArchives(TComplexEntity.class.getName());
       Assert.assertEquals(3, list.size());
       Resource res2 = list.get(2).getResource();
-      Assert.assertNotNull(res2.getTarget());
-      Object obj = res2.getObject();
+      Assert.assertNotNull(res2.getTargetObject());
+      Object obj = res2.getUnencodedTargetObject();
       Assert.assertNotNull(obj);
       Assert.assertTrue(obj instanceof TComplexEntity);
       Assert.assertEquals(ControlEvent.RELEASE_DELETE, list.get(2).getControlEvent());
@@ -471,13 +471,13 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(USER, list.get(0).getCreateUser());
       Assert.assertEquals(null, list.get(0).getRemark());
       Resource res0 = list.get(0).getResource();
-      Assert.assertNotNull(res0.getTarget());
+      Assert.assertNotNull(res0.getTargetObject());
 
       Assert.assertEquals(ControlEvent.REJECT_DELETE, list.get(1).getControlEvent());
       Assert.assertEquals(USER, list.get(1).getCreateUser());
       Assert.assertEquals("blabla1", list.get(1).getRemark());
       Resource res1 = list.get(1).getResource();
-      Assert.assertNotNull(res1.getTarget());
+      Assert.assertNotNull(res1.getTargetObject());
    }
 
    @Test
@@ -559,7 +559,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(USER, list.get(0).getCreateUser());
       Assert.assertEquals(null, list.get(0).getRemark());
       Resource res0 = list.get(0).getResource();
-      Assert.assertNotNull(res0.getTarget());
+      Assert.assertNotNull(res0.getTargetObject());
    }
 
    @Test
@@ -602,9 +602,9 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Resource res0 = archives.get(0).getResource();
       Resource res1 = archives.get(1).getResource();
       Resource res2 = archives.get(2).getResource();
-      log.debug("res0 Object: " + res0.getObject().getClass());
-      log.debug("res1: " + res1.getObject().getClass());
-      log.debug("res2: " + res2.getObject().getClass());
+      log.debug("res0 Object: " + res0.getUnencodedTargetObject().getClass());
+      log.debug("res1: " + res1.getUnencodedTargetObject().getClass());
+      log.debug("res2: " + res2.getUnencodedTargetObject().getClass());
 
       log.debug("HERE 222");
 
@@ -613,11 +613,11 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       // ut.commit();
       testDifference(comps);
 
-      comps = CibetUtil.compare(selEnt, res0.getObject());
+      comps = CibetUtil.compare(selEnt, res0.getUnencodedTargetObject());
       testDifference(comps);
 
-      Object ar1Obj = res0.getObject();
-      Object ar2Obj = res2.getObject();
+      Object ar1Obj = res0.getUnencodedTargetObject();
+      Object ar2Obj = res2.getUnencodedTargetObject();
       comps = CibetUtil.compare(ar2Obj, ar1Obj);
       testDifference(comps);
       ut.commit();
@@ -700,7 +700,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Assert.assertEquals(ControlEvent.RESTORE_INSERT, list2.get(1).getControlEvent());
 
       Resource res1 = list2.get(1).getResource();
-      TComplexEntity restored = (TComplexEntity) res1.getObject();
+      TComplexEntity restored = (TComplexEntity) res1.getUnencodedTargetObject();
       Assert.assertEquals(12, restored.getCompValue());
 
       selEnt = applEman.find(TComplexEntity.class, selEnt2.getId());
@@ -733,7 +733,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
             String.valueOf(selEnt.getId()));
       Assert.assertEquals(3, list.size());
 
-      Assert.assertEquals(14, ((TComplexEntity) list.get(1).getResource().getObject()).getCompValue());
+      Assert.assertEquals(14, ((TComplexEntity) list.get(1).getResource().getUnencodedTargetObject()).getCompValue());
 
       ut.begin();
       TComplexEntity selEnt2 = (TComplexEntity) list.get(1).restore(applEman, "Soll: 14");
@@ -796,7 +796,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
          Assert.assertEquals(ControlEvent.RESTORE_INSERT, list2.get(1).getControlEvent());
 
          Resource res0 = list.get(0).getResource();
-         Object primaryKey = ((TComplexEntity) res0.getObject()).getId();
+         Object primaryKey = ((TComplexEntity) res0.getUnencodedTargetObject()).getId();
          selEnt = applEman.find(TComplexEntity.class, primaryKey);
          Assert.assertNull(selEnt);
 
@@ -956,11 +956,11 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
          Assert.assertEquals(2, list1.size());
          Archive ar = list1.get(0);
          Assert.assertEquals("1", ar.getResource().getKeyReference());
-         Assert.assertEquals(33, ((TEntity) ar.getResource().getObject()).getCounter());
+         Assert.assertEquals(33, ((TEntity) ar.getResource().getUnencodedTargetObject()).getCounter());
 
          Archive ar2 = list1.get(1);
          Assert.assertEquals("l3", ar2.getResource().getKeyReference());
-         Assert.assertEquals(34, ((TEntity) ar2.getResource().getObject()).getCounter());
+         Assert.assertEquals(34, ((TEntity) ar2.getResource().getUnencodedTargetObject()).getCounter());
 
       } finally {
          secp.setCurrentSecretKey("1");

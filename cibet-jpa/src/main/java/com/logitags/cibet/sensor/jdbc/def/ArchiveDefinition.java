@@ -72,24 +72,24 @@ public class ArchiveDefinition extends ResourceDefinition {
       queries.put(Archive.SEL_ALL_BY_CLASS,
             "SELECT " + ARCHIVE
                   + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and a.tenant LIKE ? "
-                  + "AND r.targettype = ? ORDER BY a.createdate");
+                  + "AND r.target = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_ALL_BY_CLASS_NO_TENANT, "SELECT " + ARCHIVE
-            + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and r.targettype = ? ORDER BY a.createdate");
+            + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and r.target = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_ALL_BY_CASEID, "SELECT " + ARCHIVE + " FROM cib_archive a WHERE a.tenant LIKE ? "
             + "AND a.caseid = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_ALL_BY_CASEID_NO_TENANT,
             "SELECT " + ARCHIVE + " FROM cib_archive a WHERE a.caseid = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_BY_METHODNAME,
             "SELECT " + ARCHIVE
-                  + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and a.tenant = ? AND r.targettype = ? "
+                  + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and a.tenant = ? AND r.target = ? "
                   + "AND r.method = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_BY_METHODNAME_NO_TENANT,
             "SELECT " + ARCHIVE
-                  + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and r.targettype = ? "
+                  + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and r.target = ? "
                   + "AND r.method = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_BY_PRIMARYKEYID,
             "SELECT " + ARCHIVE + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and "
-                  + "r.targettype = ? AND r.primarykeyid = ? ORDER BY a.createdate");
+                  + "r.target = ? AND r.primarykeyid = ? ORDER BY a.createdate");
    }
 
    @Override

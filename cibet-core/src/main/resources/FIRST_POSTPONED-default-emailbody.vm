@@ -9,7 +9,7 @@ The dual controlled business case is registered under id: $controllableId (case 
 
 control event:             $controlEvent
 
-controlled target:         $targetType 
+controlled target:         $target 
 #if( $method && $method.length() > 0 )
 ($method)
 #end

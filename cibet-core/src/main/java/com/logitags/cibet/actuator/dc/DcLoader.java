@@ -58,14 +58,14 @@ public abstract class DcLoader {
    /**
     * convenient method that returns all unreleased Controllable for the given tenant and the given target type.
     * 
-    * @param targetType
-    *           target type
+    * @param target
+    *           target
     * @return list of Controllable
     */
-   public static List<Controllable> findUnreleased(String targetType) {
+   public static List<Controllable> findUnreleased(String target) {
       Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT_CLASS);
       q.setParameter("tenant", Context.internalSessionScope().getTenant());
-      q.setParameter("oclass", targetType);
+      q.setParameter("oclass", target);
       List<Controllable> list = q.getResultList();
       decrypt(list);
       return list;
@@ -74,13 +74,13 @@ public abstract class DcLoader {
    /**
     * convenient method that returns all unreleased Controllable for all tenants and the given target type.
     * 
-    * @param targetType
-    *           target type
+    * @param target
+    *           target
     * @return list of Controllable
     */
-   public static List<Controllable> findAllUnreleased(String targetType) {
+   public static List<Controllable> findAllUnreleased(String target) {
       Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_CLASS);
-      q.setParameter("oclass", targetType);
+      q.setParameter("oclass", target);
       List<Controllable> list = q.getResultList();
       decrypt(list);
       return list;
@@ -203,7 +203,7 @@ public abstract class DcLoader {
       params.add(entityClass.getName());
       StringBuffer sql = new StringBuffer();
       sql.append(
-            "SELECT a.* FROM CIB_CONTROLLABLE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and a.TENANT = ? AND r.TARGETTYPE = ?");
+            "SELECT a.* FROM CIB_CONTROLLABLE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and a.TENANT = ? AND r.TARGET = ?");
 
       if (properties != null) {
          for (Entry<String, Object> entry : properties.entrySet()) {
@@ -253,7 +253,7 @@ public abstract class DcLoader {
       params.add(entityClass.getName());
       StringBuffer sql = new StringBuffer();
       sql.append(
-            "SELECT a.* FROM CIB_CONTROLLABLE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and r.TARGETTYPE = ?");
+            "SELECT a.* FROM CIB_CONTROLLABLE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and r.TARGET = ?");
 
       if (properties != null) {
          for (Entry<String, Object> entry : properties.entrySet()) {
@@ -328,7 +328,7 @@ public abstract class DcLoader {
       ResourceParameter rp = dc.getResource().getParameter(FourEyesActuator.CLEANOBJECT);
       if (rp != null) {
          // scheduled Dc
-         return CibetUtil.compare(dc.getResource().getObject(), rp.getUnencodedValue());
+         return CibetUtil.compare(dc.getResource().getUnencodedTargetObject(), rp.getUnencodedValue());
       }
 
       rp = dc.getResource().getParameter(FourEyesActuator.DIFFERENCES);

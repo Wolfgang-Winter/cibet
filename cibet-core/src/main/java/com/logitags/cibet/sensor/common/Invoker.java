@@ -25,8 +25,8 @@ public interface Invoker {
     * 
     * @param parameter
     *           parameter which is necessary for construction of the object, e.g. constructor parameters. Optional
-    * @param targetType
-    *           target type
+    * @param target
+    *           target
     * @param methodName
     *           method name
     * @param parameters
@@ -35,7 +35,7 @@ public interface Invoker {
     * @throws Exception
     *            in case of error
     */
-   Object execute(String parameter, String targetType, String methodName, Set<ResourceParameter> parameters)
+   Object execute(String parameter, String target, String methodName, Set<ResourceParameter> parameters)
          throws Exception;
 
 }

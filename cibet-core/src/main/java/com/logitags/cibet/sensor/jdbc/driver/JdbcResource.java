@@ -80,20 +80,19 @@ public class JdbcResource extends JpaResource {
    /**
     * constructor used for JDBC resources
     * 
-    * @param rh
     * @param sql
-    * @param targetType
+    * @param target
     * @param pk
     * @param params
     */
-   public JdbcResource(String sql, String targetType, SqlParameter pk, Set<ResourceParameter> params) {
+   public JdbcResource(String sql, String target, SqlParameter pk, Set<ResourceParameter> params) {
       try {
-         setTarget(CibetUtil.encode(sql));
+         setTargetObject(CibetUtil.encode(sql));
       } catch (IOException e) {
          log.error(e.getMessage(), e);
          throw new IllegalArgumentException(e);
       }
-      setTargetType(targetType);
+      setTarget(target);
       setPrimaryKeyObject(pk);
       if (params != null) {
          setParameters(params);
@@ -111,11 +110,11 @@ public class JdbcResource extends JpaResource {
 
    @Override
    public void fillContext(ScriptEngine engine) {
-      engine.put("$TARGETTYPE", getTargetType());
-      engine.put("$TARGET", getObject());
+      engine.put("$TARGET", getTarget());
+      engine.put("$TARGETOBJECT", getUnencodedTargetObject());
       engine.put("$PRIMARYKEY", getPrimaryKeyId());
 
-      SqlParser parser = new SqlParser(null, (String) getObject());
+      SqlParser parser = new SqlParser(null, (String) getUnencodedTargetObject());
       List<SqlParameter> setColumns = parser.getInsertUpdateColumns();
       engine.put("$COLUMNS", setColumns);
    }
@@ -170,7 +169,7 @@ public class JdbcResource extends JpaResource {
          }
 
          if (log.isDebugEnabled()) {
-            log.debug(getObject() + ": result: " + result);
+            log.debug(getUnencodedTargetObject() + ": result: " + result);
          }
          return result;
 
@@ -209,16 +208,17 @@ public class JdbcResource extends JpaResource {
          stmt = conn.createStatement();
 
          if (addValue == null) {
-            return stmt.execute((String) getObject());
+            return stmt.execute((String) getUnencodedTargetObject());
          } else if (addValue instanceof Integer) {
-            return stmt.execute((String) getObject(), (int) addValue);
+            return stmt.execute((String) getUnencodedTargetObject(), (int) addValue);
          } else if (addValue instanceof int[]) {
-            return stmt.execute((String) getObject(), (int[]) addValue);
+            return stmt.execute((String) getUnencodedTargetObject(), (int[]) addValue);
          } else if (addValue instanceof String[]) {
-            return stmt.execute((String) getObject(), (String[]) addValue);
+            return stmt.execute((String) getUnencodedTargetObject(), (String[]) addValue);
          } else {
-            throw new RuntimeException("Failed to execute Statement " + (String) getObject() + " with additional value "
-                  + addValue + ": Type " + addValue.getClass().getName() + " is not supported");
+            throw new RuntimeException(
+                  "Failed to execute Statement " + (String) getUnencodedTargetObject() + " with additional value "
+                        + addValue + ": Type " + addValue.getClass().getName() + " is not supported");
          }
       } finally {
          if (stmt != null)
@@ -232,17 +232,17 @@ public class JdbcResource extends JpaResource {
          stmt = conn.createStatement();
 
          if (addValue == null) {
-            return stmt.executeUpdate((String) getObject());
+            return stmt.executeUpdate((String) getUnencodedTargetObject());
          } else if (addValue instanceof Integer) {
-            return stmt.executeUpdate((String) getObject(), (int) addValue);
+            return stmt.executeUpdate((String) getUnencodedTargetObject(), (int) addValue);
          } else if (addValue instanceof int[]) {
-            return stmt.executeUpdate((String) getObject(), (int[]) addValue);
+            return stmt.executeUpdate((String) getUnencodedTargetObject(), (int[]) addValue);
          } else if (addValue instanceof String[]) {
-            return stmt.executeUpdate((String) getObject(), (String[]) addValue);
+            return stmt.executeUpdate((String) getUnencodedTargetObject(), (String[]) addValue);
          } else {
             throw new RuntimeException(
-                  "Failed to executeUpdate Statement " + (String) getObject() + " with additional value " + addValue
-                        + ": Type " + addValue.getClass().getName() + " is not supported");
+                  "Failed to executeUpdate Statement " + (String) getUnencodedTargetObject() + " with additional value "
+                        + addValue + ": Type " + addValue.getClass().getName() + " is not supported");
          }
       } finally {
          if (stmt != null)
@@ -253,7 +253,7 @@ public class JdbcResource extends JpaResource {
    private boolean executePreparedStatement(Connection conn) throws SQLException {
       PreparedStatement stmt = null;
       try {
-         stmt = conn.prepareStatement((String) getObject());
+         stmt = conn.prepareStatement((String) getUnencodedTargetObject());
          for (ResourceParameter par : getParameters()) {
             setParameter(stmt, par);
          }
@@ -267,7 +267,7 @@ public class JdbcResource extends JpaResource {
    private int executeUpdatePreparedStatement(Connection conn) throws SQLException {
       PreparedStatement stmt = null;
       try {
-         stmt = conn.prepareStatement((String) getObject());
+         stmt = conn.prepareStatement((String) getUnencodedTargetObject());
          for (ResourceParameter par : getParameters()) {
             setParameter(stmt, par);
          }
@@ -539,7 +539,7 @@ public class JdbcResource extends JpaResource {
       StringBuffer b = new StringBuffer(super.toString());
 
       b.append(" ; SQL: ");
-      b.append(getObject());
+      b.append(getUnencodedTargetObject());
 
       return b.toString();
    }

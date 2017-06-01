@@ -176,7 +176,7 @@ public interface RequestScope extends ApplicationScope {
 
    /**
     * Resources in archives and Controllables can be grouped. For JPA resources the group id is per default
-    * 'targetType'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
+    * 'target'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
     * scope context before one of the Archive-, Dc- or Scheduler actuators are applied.
     * 
     * @return
@@ -185,7 +185,7 @@ public interface RequestScope extends ApplicationScope {
 
    /**
     * Resources in archives and Controllables can be grouped. For JPA resources the group id is per default
-    * 'targetType'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
+    * 'target'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
     * scope context before one of the Archive-, Dc- or Scheduler actuators are applied.
     * 
     * @param groupId

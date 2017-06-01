@@ -25,7 +25,8 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 
 /**
- * evaluates the current event against configured setpoints.
+ * evaluates the current event against configured setpoints. If the sensor/metadata contains IMPLICIT ControlEvent the
+ * configuration in the setpoint is ignored.
  */
 public class EventControl extends AbstractControl {
 
@@ -37,11 +38,18 @@ public class EventControl extends AbstractControl {
 
    public static final String NAME = "event";
 
+   /**
+    * returns true if metadata.getControlEvent() == ControlEvent.IMPLICIT
+    */
    public boolean evaluate(Object controlValue, EventMetadata metadata) {
       if (metadata == null || metadata.getControlEvent() == null) {
          String msg = "failed to execute event evaluation: metadata or event in metadata is null";
          log.error(msg);
          throw new IllegalArgumentException(msg);
+      }
+
+      if (metadata.getControlEvent() == ControlEvent.IMPLICIT) {
+         return true;
       }
 
       List<String> eventList = (List<String>) controlValue;
@@ -68,7 +76,8 @@ public class EventControl extends AbstractControl {
    public Object resolve(String configValue) {
       log.debug("resolve " + getName() + " config value: " + configValue);
       List<String> valueList = new ArrayList<String>();
-      if (configValue == null) return valueList;
+      if (configValue == null)
+         return valueList;
       if (configValue.length() == 0) {
          valueList.add("");
       } else {

@@ -131,7 +131,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       Controllable ar = list.get(0);
       HttpRequestResource resource = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
-      Assert.assertEquals(target, resource.getTargetType());
+      Assert.assertEquals(target, resource.getTarget());
       Assert.assertEquals(method, resource.getMethod());
       return ar;
    }
@@ -158,7 +158,7 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       Assert.assertEquals(expected, list.size());
       for (Archive ar : list) {
          HttpRequestResource res = (HttpRequestResource) ar.getResource();
-         Assert.assertEquals(url, res.getTargetType());
+         Assert.assertEquals(url, res.getTarget());
       }
       return list;
    }

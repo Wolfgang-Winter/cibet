@@ -198,7 +198,7 @@ public class CibetProxy extends HttpFiltersAdapter {
          throw new RuntimeException(err);
       }
 
-      log.info(metadata.getResource().getTargetType() + ": --> " + httpStatus);
+      log.info(metadata.getResource().getTarget() + ": --> " + httpStatus);
       HttpResponse response = new DefaultHttpResponse(request.getProtocolVersion(), httpStatus);
       response.headers().set(Names.CONNECTION, Values.CLOSE);
       return response;

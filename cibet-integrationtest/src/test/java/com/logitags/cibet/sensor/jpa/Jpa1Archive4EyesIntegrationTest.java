@@ -147,8 +147,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Archive ar = list.get(0);
       JpaResource res = (JpaResource) ar.getResource();
 
-      Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
-      TEntity en = (TEntity) res.getObject();
+      Assert.assertEquals(TEntity.class.getName(), res.getTarget());
+      TEntity en = (TEntity) res.getUnencodedTargetObject();
       Assert.assertTrue("expected: " + entity.getId() + ", actual: " + en.getId(), en.getId() == entity.getId());
    }
 
@@ -168,8 +168,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
       JpaResource res = (JpaResource) ar.getResource();
-      Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
-      TEntity en = (TEntity) res.getObject();
+      Assert.assertEquals(TEntity.class.getName(), res.getTarget());
+      TEntity en = (TEntity) res.getUnencodedTargetObject();
       Assert.assertTrue("expected: " + entity.getId() + ", actual: " + en.getId(), en.getId() == entity.getId());
    }
 
@@ -189,8 +189,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
       JpaResource res = (JpaResource) ar.getResource();
-      Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
-      TEntity en = (TEntity) res.getObject();
+      Assert.assertEquals(TEntity.class.getName(), res.getTarget());
+      TEntity en = (TEntity) res.getUnencodedTargetObject();
       Assert.assertTrue("expected: " + entity.getId() + ", actual: " + en.getId(), en.getId() == entity.getId());
    }
 
@@ -257,7 +257,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaResource res = (JpaResource) ar.getResource();
-      Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
+      Assert.assertEquals(TEntity.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INSERT, ar.getControlEvent());
 
       Thread.sleep(60);
@@ -337,7 +337,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
             String.valueOf(entity.getId()));
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(TEntity.class.getName(), ar.getResource().getTargetType());
+      Assert.assertEquals(TEntity.class.getName(), ar.getResource().getTarget());
       Assert.assertEquals(ControlEvent.UPDATE, ar.getControlEvent());
    }
 
@@ -369,7 +369,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(ControlEvent.UPDATE, list.get(0).getControlEvent());
       JpaResource res = (JpaResource) list.get(0).getResource();
-      TEntity tent = (TEntity) res.getObject();
+      TEntity tent = (TEntity) res.getUnencodedTargetObject();
       Assert.assertEquals(12, tent.getCounter());
 
       List<Controllable> list1 = DcLoader.findUnreleased(TEntity.class.getName());
@@ -406,7 +406,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       List<Archive> list = q.getResultList();
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
-      Assert.assertEquals(TEntity.class.getName(), ar.getResource().getTargetType());
+      Assert.assertEquals(TEntity.class.getName(), ar.getResource().getTarget());
    }
 
    @Test
@@ -541,9 +541,9 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       JpaResource res = (JpaResource) list.get(0).getResource();
       JpaResource res1 = (JpaResource) list.get(1).getResource();
 
-      Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
-      Assert.assertEquals(5, ((TEntity) res.getObject()).getCounter());
-      Assert.assertEquals(13, ((TEntity) res1.getObject()).getCounter());
+      Assert.assertEquals(TEntity.class.getName(), res.getTarget());
+      Assert.assertEquals(5, ((TEntity) res.getUnencodedTargetObject()).getCounter());
+      Assert.assertEquals(13, ((TEntity) res1.getUnencodedTargetObject()).getCounter());
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
       Assert.assertEquals(ControlEvent.UPDATE, list.get(1).getControlEvent());
    }
@@ -712,7 +712,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(2, list.size());
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
       Assert.assertEquals(ControlEvent.DELETE, list.get(1).getControlEvent());
-      Assert.assertEquals(TEntity.class.getName(), list.get(0).getResource().getTargetType());
+      Assert.assertEquals(TEntity.class.getName(), list.get(0).getResource().getTarget());
    }
 
    /**
@@ -774,8 +774,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Archive ar = list.get(0);
       JpaResource res = (JpaResource) ar.getResource();
 
-      Assert.assertEquals(TComplexEntity.class.getName(), res.getTargetType());
-      TComplexEntity decObj = (TComplexEntity) res.getObject();
+      Assert.assertEquals(TComplexEntity.class.getName(), res.getTarget());
+      TComplexEntity decObj = (TComplexEntity) res.getUnencodedTargetObject();
       Assert.assertEquals(2, decObj.getEagerList().size());
       Assert.assertEquals(3, decObj.getLazyList().size());
       Assert.assertNotNull(decObj.getTen());
@@ -804,8 +804,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       JpaResource res1 = (JpaResource) ar1.getResource();
       JpaResource res2 = (JpaResource) ar2.getResource();
 
-      TComplexEntity decObj1 = (TComplexEntity) res1.getObject();
-      TComplexEntity decObj2 = (TComplexEntity) res2.getObject();
+      TComplexEntity decObj1 = (TComplexEntity) res1.getUnencodedTargetObject();
+      TComplexEntity decObj2 = (TComplexEntity) res2.getUnencodedTargetObject();
       Assert.assertEquals(2, decObj1.getEagerList().size());
       Assert.assertEquals(3, decObj1.getLazyList().size());
       Assert.assertNotNull(decObj1.getTen());
@@ -830,7 +830,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Archive ar3 = list.get(2);
       res = (JpaResource) ar3.getResource();
 
-      TComplexEntity decObj3 = (TComplexEntity) res.getObject();
+      TComplexEntity decObj3 = (TComplexEntity) res.getUnencodedTargetObject();
       Assert.assertEquals(122, decObj3.getCompValue());
       Assert.assertEquals(0, decObj3.getEagerList().size());
    }
@@ -953,7 +953,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertNotNull(dcOb);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
       JpaResource res1 = (JpaResource) dcOb.getResource();
-      selEnt = (TComplexEntity) res1.getObject();
+      selEnt = (TComplexEntity) res1.getUnencodedTargetObject();
       Assert.assertEquals(3, selEnt.getEagerList().size());
       Assert.assertEquals(3, selEnt.getLazyList().size());
       Assert.assertNotNull(selEnt.getTen());
@@ -979,8 +979,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.SELECT, ar.getControlEvent());
       JpaResource res = (JpaResource) ar.getResource();
 
-      Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
-      Assert.assertEquals(TEntity.class, res.getObject());
+      Assert.assertEquals(TEntity.class.getName(), res.getTarget());
+      Assert.assertEquals(TEntity.class, res.getUnencodedTargetObject());
       Assert.assertEquals(String.valueOf(entity.getId()), res.getPrimaryKeyId());
       Assert.assertEquals(entity.getId(), res.getPrimaryKeyObject());
    }
@@ -1014,8 +1014,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertEquals(2, list.size());
       Archive ar = list.get(0);
       JpaResource res = (JpaResource) ar.getResource();
-      Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
-      TEntity en = (TEntity) res.getObject();
+      Assert.assertEquals(TEntity.class.getName(), res.getTarget());
+      TEntity en = (TEntity) res.getUnencodedTargetObject();
       Assert.assertTrue("expected: " + entity.getId() + ", actual: " + en.getId(), en.getId() == entity.getId());
    }
 
@@ -1234,8 +1234,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
 
       JpaResource res = (JpaResource) ar.getResource();
 
-      Assert.assertEquals(TEntity.class.getName(), res.getTargetType());
-      Assert.assertEquals(TEntity.class, res.getObject());
+      Assert.assertEquals(TEntity.class.getName(), res.getTarget());
+      Assert.assertEquals(TEntity.class, res.getUnencodedTargetObject());
       log.debug("res.getPrimaryKeyObject():" + res.getPrimaryKeyObject().getClass().getName());
       Assert.assertEquals(-5L, res.getPrimaryKeyObject());
    }

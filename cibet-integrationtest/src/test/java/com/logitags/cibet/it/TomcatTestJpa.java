@@ -293,7 +293,7 @@ public class TomcatTestJpa extends DBHelper {
          cibetEman.getTransaction().commit();
          cibetEman.getTransaction().begin();
 
-         q = cibetEman.createQuery("select a from Archive a where a.resource.targetType ='" + TEntity.class.getName()
+         q = cibetEman.createQuery("select a from Archive a where a.resource.target ='" + TEntity.class.getName()
                + "' order by a.createDate");
          list = q.getResultList();
          Assert.assertEquals(2, list.size());
@@ -338,7 +338,7 @@ public class TomcatTestJpa extends DBHelper {
          cibetEman.getTransaction().commit();
          cibetEman.getTransaction().begin();
 
-         q = cibetEman.createQuery("select a from Archive a where a.resource.targetType ='" + TEntity.class.getName()
+         q = cibetEman.createQuery("select a from Archive a where a.resource.target ='" + TEntity.class.getName()
                + "' order by a.createDate");
          list = q.getResultList();
          Assert.assertEquals(3, list.size());
@@ -383,7 +383,7 @@ public class TomcatTestJpa extends DBHelper {
          Assert.assertEquals("good!", dcList.get(0).getApprovalRemark());
          Assert.assertEquals("Fluppi", dcList.get(0).getApprovalUser());
 
-         q = cibetEman.createQuery("select a from Archive a where a.resource.targetType ='" + TEntity.class.getName()
+         q = cibetEman.createQuery("select a from Archive a where a.resource.target ='" + TEntity.class.getName()
                + "' ORDER BY a.createDate");
          list = q.getResultList();
          Assert.assertEquals(4, list.size());

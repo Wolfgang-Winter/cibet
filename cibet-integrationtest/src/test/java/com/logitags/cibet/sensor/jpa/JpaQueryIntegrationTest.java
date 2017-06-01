@@ -82,7 +82,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(TEntity.SEL_BY_OWNER, r.getTargetType());
+      Assert.assertEquals(TEntity.SEL_BY_OWNER, r.getTarget());
       Assert.assertEquals(3, r.getParameters().size());
       log.debug("now redo");
       List<TEntity> tlist2 = (List<TEntity>) ar.redo("do it");
@@ -117,7 +117,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
 
       log.debug("now redo");
@@ -157,7 +157,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
 
       log.debug("now redo");
@@ -196,7 +196,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq1, r.getTargetType());
+      Assert.assertEquals(qq1, r.getTarget());
       Assert.assertEquals(7, r.getParameters().size());
 
       log.debug("now redo");
@@ -242,7 +242,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq1, r.getTargetType());
+      Assert.assertEquals(qq1, r.getTarget());
       Assert.assertEquals(6, r.getParameters().size());
 
       log.debug("queryLockDate() now redo");
@@ -277,7 +277,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
 
       log.debug("now redo");
@@ -313,7 +313,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
 
       log.debug("now redo");
@@ -349,7 +349,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
 
       log.debug("now redo");
@@ -386,7 +386,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
 
       log.debug("now redo");
@@ -423,7 +423,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
 
       log.debug("now redo");
@@ -457,7 +457,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(TEntity.SEL_BY_OWNER, r.getTargetType());
+      Assert.assertEquals(TEntity.SEL_BY_OWNER, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
       log.debug("now redo");
       List<TEntity> tlist2 = (List<TEntity>) ar.redo("do it");
@@ -497,7 +497,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(3, r.getParameters().size());
       log.debug("now redo");
       List<?> tlist2 = (List<?>) ar.redo("do it");
@@ -542,7 +542,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
       log.debug("now redo");
       List<TEntity> tlist2 = (List<TEntity>) ar.redo("do it");
@@ -587,7 +587,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
       log.debug("now redo");
       List<Object[]> tlist2 = (List<Object[]>) ar.redo("do it");
@@ -636,7 +636,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
       log.debug("now redo");
       List<TEntity> tlist2 = (List<TEntity>) ar.redo("do it");
@@ -670,7 +670,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Controllable ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
 
       log.debug("now release");
@@ -703,7 +703,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Controllable ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
 
       log.debug("now release");
@@ -734,7 +734,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Controllable ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
 
       log.debug("now release");
@@ -767,7 +767,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Assert.assertEquals(1, list.size());
       Controllable ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(4, r.getParameters().size());
 
       log.debug("now release");
@@ -798,7 +798,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Archive ar = list.get(0);
       Assert.assertEquals(ExecutionStatus.ERROR, ar.getExecutionStatus());
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(3, r.getParameters().size());
 
       log.debug("now redo");
@@ -833,7 +833,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       Archive ar = list.get(0);
       Assert.assertEquals(ExecutionStatus.EXECUTED, ar.getExecutionStatus());
       JpaQueryResource r = (JpaQueryResource) ar.getResource();
-      Assert.assertEquals(qq, r.getTargetType());
+      Assert.assertEquals(qq, r.getTarget());
       Assert.assertEquals(3, r.getParameters().size());
 
       log.debug("now redo");

@@ -102,12 +102,12 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
       Context.start();
 
       rs = query(
-            "select d.*, r.primarykeyid, r.targettype, r.target from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
+            "select d.*, r.primarykeyid, r.target, r.targetobject from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("5", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("tpsentity", rs.getString("TARGETTYPE"));
-      Assert.assertEquals(sql, CibetUtil.decode(rs.getBytes("TARGET")));
+      Assert.assertEquals("tpsentity", rs.getString("TARGET"));
+      Assert.assertEquals(sql, CibetUtil.decode(rs.getBytes("TARGETOBJECT")));
 
       log.debug("now release");
       List<Controllable> l = DcLoader.findUnreleased();
@@ -134,12 +134,12 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
       Context.start();
 
       rs = query(
-            "select d.*, r.primarykeyid, r.targettype, r.target from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
+            "select d.*, r.primarykeyid, r.target, r.targetobject from cib_controllable d, cib_resource r where d.resourceid = r.resourceid");
       Assert.assertTrue(rs.next());
       Assert.assertEquals("INSERT", rs.getString("CONTROLEVENT"));
       Assert.assertEquals("8", rs.getString("PRIMARYKEYID"));
-      Assert.assertEquals("tpsentity", rs.getString("TARGETTYPE"));
-      Assert.assertEquals(INSERT, CibetUtil.decode(rs.getBytes("TARGET")));
+      Assert.assertEquals("tpsentity", rs.getString("TARGET"));
+      Assert.assertEquals(INSERT, CibetUtil.decode(rs.getBytes("TARGETOBJECT")));
 
       log.debug("now release");
       List<Controllable> l = DcLoader.findUnreleased();

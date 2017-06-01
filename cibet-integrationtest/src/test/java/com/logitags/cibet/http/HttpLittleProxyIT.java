@@ -233,7 +233,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
          Archive ar = list.get(0);
          HttpRequestResource res = (HttpRequestResource) ar.getResource();
          Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
-         Assert.assertEquals(url, res.getTargetType());
+         Assert.assertEquals(url, res.getTarget());
          Assert.assertEquals(method, res.getMethod());
       }
       return list;
@@ -263,7 +263,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Controllable ar = list.get(count - 1);
       HttpRequestResource res = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
-      Assert.assertEquals(target, res.getTargetType());
+      Assert.assertEquals(target, res.getTarget());
       Assert.assertEquals(method, res.getMethod());
       return ar;
    }
@@ -651,7 +651,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Controllable dc = loadControllable(1);
       Assert.assertEquals(FourEyesActuator.DEFAULTNAME, dc.getActuator());
       Assert.assertEquals("Olbert", dc.getCreateUser());
-      Assert.assertEquals(getBaseURL() + "/test/setuser", dc.getResource().getTargetType());
+      Assert.assertEquals(getBaseURL() + "/test/setuser", dc.getResource().getTarget());
 
       log.debug("now release");
       // EntityManager em = emf.createEntityManager();
@@ -740,7 +740,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Assert.assertEquals(ExecutionStatus.SCHEDULED, dc.getExecutionStatus());
       Assert.assertEquals("sm1", dc.getActuator());
       Assert.assertEquals("Olbert", dc.getCreateUser());
-      Assert.assertEquals(getBaseURL() + "/test/setuser", dc.getResource().getTargetType());
+      Assert.assertEquals(getBaseURL() + "/test/setuser", dc.getResource().getTarget());
 
       Context.end();
 
@@ -1030,7 +1030,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       log.debug(a2);
       Assert.assertEquals(ExecutionStatus.EXECUTED, a2.getExecutionStatus());
       Assert.assertEquals(HttpStatus.SC_OK, a2.getResource().getResultObject());
-      Assert.assertEquals(url, a2.getResource().getTargetType());
+      Assert.assertEquals(url, a2.getResource().getTarget());
       Assert.assertEquals("Wolfgang", a2.getCreateUser());
       Assert.assertEquals("GET", ((HttpRequestResource) a2.getResource()).getMethod());
    }

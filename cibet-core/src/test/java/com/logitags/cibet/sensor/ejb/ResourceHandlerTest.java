@@ -34,7 +34,7 @@ public class ResourceHandlerTest {
    @Test
    public void getNotificationAttributesEjbResourceHandler() {
       EjbResource r = new EjbResource();
-      r.setTargetType("tt");
+      r.setTarget("tt");
       Map<String, Object> formparams = r.getNotificationAttributes();
       Assert.assertEquals(3, formparams.size());
    }

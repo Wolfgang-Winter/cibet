@@ -381,17 +381,17 @@ public class CibetFilter extends CibetContextFilter implements Filter {
       try {
          if (!response.isCommitted()) {
             if (metadata.getExecutionStatus() == ExecutionStatus.DENIED) {
-               log.info("Request to URL " + metadata.getResource().getTargetType() + " is in status "
+               log.info("Request to URL " + metadata.getResource().getTarget() + " is in status "
                      + metadata.getExecutionStatus().name() + " and has been intercepted");
                // response.reset();
                response.sendError(HttpServletResponse.SC_FORBIDDEN);
             } else if (metadata.getExecutionStatus() == ExecutionStatus.POSTPONED) {
-               log.info("Request to URL " + metadata.getResource().getTargetType() + " is in status "
+               log.info("Request to URL " + metadata.getResource().getTarget() + " is in status "
                      + metadata.getExecutionStatus().name() + " and has been intercepted");
                // response.reset();
                response.sendError(HttpServletResponse.SC_ACCEPTED);
             } else if (metadata.getExecutionStatus() == ExecutionStatus.SHED) {
-               log.info("Request to URL " + metadata.getResource().getTargetType() + " is in status "
+               log.info("Request to URL " + metadata.getResource().getTarget() + " is in status "
                      + metadata.getExecutionStatus().name() + " and has been shed");
                response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             } else {

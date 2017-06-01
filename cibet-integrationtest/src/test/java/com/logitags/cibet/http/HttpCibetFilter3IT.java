@@ -119,7 +119,7 @@ public class HttpCibetFilter3IT extends AbstractArquillian {
       Controllable ar = list.get(0);
       HttpRequestResource res = (HttpRequestResource) ar.getResource();
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
-      Assert.assertEquals(getBaseURL() + "/othereee", res.getTargetType());
+      Assert.assertEquals(getBaseURL() + "/othereee", res.getTarget());
       Assert.assertEquals(method, res.getMethod());
       return ar;
    }

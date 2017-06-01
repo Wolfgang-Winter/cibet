@@ -45,15 +45,15 @@ public class EventMetadataTest implements Serializable {
    @Test
    public void getTargetType() {
       JpaResource res = new JpaResource(EventMetadataTest.class, null);
-      String targetType = res.getTargetType();
+      String targetType = res.getTarget();
       Assert.assertEquals(EventMetadataTest.class.getName(), targetType);
 
       res = new JpaResource(new TEntity());
-      targetType = res.getTargetType();
+      targetType = res.getTarget();
       Assert.assertEquals(TEntity.class.getName(), targetType);
 
       res = new JpaResource(null, null);
-      targetType = res.getTargetType();
+      targetType = res.getTarget();
       Assert.assertEquals(null, targetType);
    }
 

@@ -163,7 +163,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
       List<Archive> list1 = ejb.queryArchiveByTenant();
       Assert.assertEquals(1, list1.size());
       Archive ar = list1.get(0);
-      Assert.assertEquals(CibetTestEJB.class.getName(), ar.getResource().getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), ar.getResource().getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals("testInvoke", ((EjbResource) ar.getResource()).getMethod());
       Assert.assertEquals(6, ar.getResource().getParameters().size());
@@ -215,7 +215,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
       Assert.assertEquals(1, list1.size());
       Archive ar = list1.get(0);
       EjbResource res = (EjbResource) list1.get(0).getResource();
-      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertTrue("testInvoke".equals(res.getMethod()));
       Assert.assertTrue(res.getParameters().size() == 6);
@@ -305,7 +305,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
 
       EjbResource res = (EjbResource) list.get(0).getResource();
 
-      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, list.get(0).getControlEvent());
       Assert.assertTrue("persist".equals(res.getMethod()));
       Assert.assertTrue(res.getParameters().size() == 1);
@@ -339,7 +339,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
       Assert.assertEquals(1, list.size());
       EjbResource res = (EjbResource) list.get(0).getResource();
 
-      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, list.get(0).getControlEvent());
       Assert.assertTrue("persist".equals(res.getMethod()));
       Assert.assertEquals(1, res.getParameters().size());
@@ -350,7 +350,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
       Assert.assertEquals(1, list2.size());
       res = (EjbResource) list2.get(0).getResource();
 
-      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, list2.get(0).getControlEvent());
       Assert.assertEquals("persist", res.getMethod());
       Assert.assertEquals(1, res.getParameters().size());
@@ -387,7 +387,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
       boolean isencrypt = res.decrypt();
       Assert.assertEquals(true, isencrypt);
 
-      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, list1.get(0).getControlEvent());
       Assert.assertEquals("testInvoke", res.getMethod());
       Assert.assertEquals(6, res.getParameters().size());
@@ -471,7 +471,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
       boolean isencrypt = res.decrypt();
       Assert.assertEquals(true, isencrypt);
 
-      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, list1.get(0).getControlEvent());
       Assert.assertEquals("testInvoke", res.getMethod());
       Assert.assertEquals(6, res.getParameters().size());
@@ -522,7 +522,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
       Assert.assertEquals(1, list1.size());
       EjbResource res = (EjbResource) list1.get(0).getResource();
 
-      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, list1.get(0).getControlEvent());
       Assert.assertEquals("testInvoke", res.getMethod());
       Assert.assertEquals(6, res.getParameters().size());
@@ -568,7 +568,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
       Archive ar = list1.get(0);
       EjbResource res = (EjbResource) list1.get(0).getResource();
 
-      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertTrue("testInvoke".equals(res.getMethod()));
       Assert.assertTrue(res.getParameters().size() == 6);
@@ -633,7 +633,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
       Assert.assertEquals(1, list1.size());
       EjbResource res = (EjbResource) list1.get(0).getResource();
 
-      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, list1.get(0).getControlEvent());
       Assert.assertEquals("testInvoke2", res.getMethod());
       Assert.assertEquals(1, res.getParameters().size());
@@ -721,7 +721,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
       Archive ar = list1.get(0);
       EjbResource res = (EjbResource) list1.get(0).getResource();
 
-      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), res.getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals("testInvoke", res.getMethod());
       Assert.assertEquals(6, res.getParameters().size());
@@ -825,7 +825,7 @@ public class CibetInterceptorEncryptIT extends AbstractArquillian {
       list1 = ejb.queryArchiveByTenant();
       Assert.assertEquals(1, list1.size());
       Archive ar = list1.get(0);
-      Assert.assertEquals(CibetTestEJB.class.getName(), ar.getResource().getTargetType());
+      Assert.assertEquals(CibetTestEJB.class.getName(), ar.getResource().getTarget());
       Assert.assertEquals(ControlEvent.INVOKE, ar.getControlEvent());
       Assert.assertEquals("testInvoke", ((EjbResource) ar.getResource()).getMethod());
       Assert.assertEquals(6, ar.getResource().getParameters().size());

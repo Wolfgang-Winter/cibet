@@ -137,7 +137,7 @@ public class SqlParser implements StatementVisitor {
     * 
     * @return
     */
-   public String getTargetType() {
+   public String getTarget() {
       if (!targetMap.containsKey(sql)) {
          getStatement().accept(this);
          log();
@@ -180,7 +180,7 @@ public class SqlParser implements StatementVisitor {
       if (connection == null) return;
       List<SqlParameter> list = insUpdColumnsMap.get(sql);
       if (list.get(0).getColumn().equals("?1")) {
-         String tableName = getTargetType();
+         String tableName = getTarget();
          log.debug("load column names of table " + tableName
                + " from resultset metadata");
          ResultSet rs = null;
@@ -219,7 +219,7 @@ public class SqlParser implements StatementVisitor {
             ResultSet mdRs = null;
             java.sql.Statement stmt = null;
             try {
-               String dummy = "select * from " + getTargetType()
+               String dummy = "select * from " + getTarget()
                      + " where 1 = 0";
                log.debug(dummy);
                stmt = connection.createStatement();
@@ -273,7 +273,7 @@ public class SqlParser implements StatementVisitor {
                DatabaseMetaData md = connection.getMetaData();
                log.debug(md.getUserName());
 
-               String tableName = getTargetType();
+               String tableName = getTarget();
                String tableCatalog = null;
                String tableSchema = null;
                ResultSet resultSet = md.getTables(null, null, "%",

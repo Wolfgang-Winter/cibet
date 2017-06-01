@@ -55,7 +55,7 @@ public class TargetControl extends AbstractControl {
 
    @Override
    public boolean evaluate(Object controlValue, EventMetadata metadata) {
-      if (metadata.getResource().getTargetType() == null) {
+      if (metadata.getResource().getTarget() == null) {
          return true;
       }
 
@@ -116,7 +116,7 @@ public class TargetControl extends AbstractControl {
       }
       list.addAll(added);
       if (log.isDebugEnabled()) {
-         log.debug("Target control of " + metadata.getResource().getTargetType() + " against:");
+         log.debug("Target control of " + metadata.getResource().getTarget() + " against:");
          for (String cl : list) {
             log.debug(cl);
          }
@@ -124,12 +124,12 @@ public class TargetControl extends AbstractControl {
 
       for (String cl : list) {
          // log.debug(metadata.getResource().getTargetType() + " : " + cl);
-         if (cl.length() == 0 || metadata.getResource().getTargetType().equals(cl)) {
+         if (cl.length() == 0 || metadata.getResource().getTarget().equals(cl)) {
             return true;
 
          } else if (cl.endsWith("*")) {
             String pack = cl.substring(0, cl.length() - 1);
-            if (metadata.getResource().getTargetType().startsWith(pack)) {
+            if (metadata.getResource().getTarget().startsWith(pack)) {
                return true;
             }
          }

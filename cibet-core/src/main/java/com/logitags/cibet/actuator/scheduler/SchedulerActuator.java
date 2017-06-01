@@ -309,7 +309,7 @@ public class SchedulerActuator extends FourEyesActuator {
          case PASSEDBACK:
          case POSTPONED:
             String msg = "An unreleased business case with ID " + dc.getControllableId() + " and status "
-                  + dc.getExecutionStatus() + " exists already for this resource of type " + resource.getTargetType()
+                  + dc.getExecutionStatus() + " exists already for this resource of type " + resource.getTarget()
                   + ". This business case must be released or rejected first.";
             log.info(msg);
             throw new UnapprovedResourceException(msg, dc);
@@ -324,7 +324,7 @@ public class SchedulerActuator extends FourEyesActuator {
                      log.error(err);
                      throw new RuntimeException(err);
                   }
-                  difList = CibetUtil.compare(dc.getResource().getObject(), rp.getUnencodedValue());
+                  difList = CibetUtil.compare(dc.getResource().getUnencodedTargetObject(), rp.getUnencodedValue());
                }
                scheduledResources.put(dc, difList);
             }

@@ -707,7 +707,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertNotNull(ar);
       MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("callWithAspect", res.getMethod());
-      Assert.assertEquals(AspectInvokeTestClass.class.getName(), res.getTargetType());
+      Assert.assertEquals(AspectInvokeTestClass.class.getName(), res.getTarget());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
    }
 
@@ -768,7 +768,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Archive ar = (Archive) q.getSingleResult();
       MethodResource res = (MethodResource) ar.getResource();
       Assert.assertEquals("callWithException", res.getMethod());
-      Assert.assertEquals(AspectInvokeTestClass.class.getName(), res.getTargetType());
+      Assert.assertEquals(AspectInvokeTestClass.class.getName(), res.getTarget());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals(ExecutionStatus.ERROR, ar.getExecutionStatus());
    }

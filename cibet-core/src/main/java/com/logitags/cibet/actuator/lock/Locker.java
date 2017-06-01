@@ -101,7 +101,7 @@ public abstract class Locker {
 
       isLocked(cl, method, event);
       MethodResource resource = new MethodResource();
-      resource.setTargetType(cl.getName());
+      resource.setTarget(cl.getName());
       resource.setMethod(method);
       Context.internalRequestScope().getEntityManager().persist(resource);
 
@@ -111,8 +111,7 @@ public abstract class Locker {
    }
 
    /**
-    * locks the targetType for control event like INVOKE or REDO. Only the actual user can access the targetType when
-    * locked.
+    * locks the target for control event like INVOKE or REDO. Only the actual user can access the target when locked.
     * 
     * @param url
     *           URL
@@ -128,7 +127,7 @@ public abstract class Locker {
       isLocked(url, event);
 
       HttpRequestResource resource = new HttpRequestResource();
-      resource.setTargetType(url);
+      resource.setTarget(url);
       resource.setMethod(method == null ? null : method.name());
       Context.internalRequestScope().getEntityManager().persist(resource);
 
@@ -138,8 +137,8 @@ public abstract class Locker {
    }
 
    /**
-    * locks the targetType for control event like INVOKE or REDO. Only the actual user can access the targetType when
-    * locked. targetType is a table name.
+    * locks the target for control event like INVOKE or REDO. Only the actual user can access the target when locked.
+    * target is a table name.
     * 
     * @param tableName
     * @param id
@@ -155,7 +154,7 @@ public abstract class Locker {
          throws AlreadyLockedException {
       isLocked(tableName, id, event);
       JdbcResource resource = new JdbcResource();
-      resource.setTargetType(tableName);
+      resource.setTarget(tableName);
       resource.setPrimaryKeyId(id == null ? JpaResource.CLASSLOCK : id);
       Context.internalRequestScope().getEntityManager().persist(resource);
 
@@ -220,16 +219,16 @@ public abstract class Locker {
    }
 
    /**
-    * returns all LockedObjects in state LOCKED of the actual tenant and the given targetType.
+    * returns all LockedObjects in state LOCKED of the actual tenant and the given target.
     * 
-    * @param targetType
+    * @param target
     * @return
     */
-   public static List<Controllable> loadLockedObjects(String targetType) {
+   public static List<Controllable> loadLockedObjects(String target) {
       TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
             .createNamedQuery(Controllable.SEL_LOCKED_BY_TARGETTYPE, Controllable.class);
       query.setParameter("tenant", Context.internalSessionScope().getTenant());
-      query.setParameter("targettype", targetType);
+      query.setParameter("targettype", target);
       return query.getResultList();
    }
 
@@ -294,18 +293,18 @@ public abstract class Locker {
       }
    }
 
-   protected static void isLocked(String targetType, ControlEvent event) throws AlreadyLockedException {
-      if (targetType == null) {
-         throw new IllegalArgumentException("parameter targetType in method LockerImpl.isLocked() cannot be null");
+   protected static void isLocked(String target, ControlEvent event) throws AlreadyLockedException {
+      if (target == null) {
+         throw new IllegalArgumentException("parameter target in method LockerImpl.isLocked() cannot be null");
       }
-      List<Controllable> list = loadLockedObjects(targetType);
+      List<Controllable> list = loadLockedObjects(target);
       if (list.isEmpty()) {
          return;
       }
       for (Controllable lo : list) {
          if ((event.isChildOf(lo.getControlEvent()) || lo.getControlEvent().isChildOf(event))) {
             if (log.isDebugEnabled()) {
-               log.debug("targetType " + targetType + " is already locked for event " + event + " by: " + lo);
+               log.debug("target " + target + " is already locked for event " + event + " by: " + lo);
             }
             throw new AlreadyLockedException(lo);
          }

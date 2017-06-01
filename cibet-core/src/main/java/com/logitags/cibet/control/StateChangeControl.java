@@ -88,7 +88,7 @@ public class StateChangeControl extends AbstractControl {
          return true;
       }
 
-      if (metadata.getResource().getObject() == null) {
+      if (metadata.getResource().getUnencodedTargetObject() == null) {
          String msg = "failed to execute StateChange evaluation: Object is null";
          log.error(msg);
          throw new IllegalArgumentException(msg);

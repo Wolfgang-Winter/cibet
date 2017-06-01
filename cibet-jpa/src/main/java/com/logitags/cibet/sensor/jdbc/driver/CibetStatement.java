@@ -270,7 +270,7 @@ public class CibetStatement implements Statement {
          event = originalEvent;
       }
 
-      Resource res = new JdbcResource(parser.getSql(), parser.getTargetType(), pk, parameters);
+      Resource res = new JdbcResource(parser.getSql(), parser.getTarget(), pk, parameters);
       EventMetadata md = new EventMetadata(event, res);
 
       return md;

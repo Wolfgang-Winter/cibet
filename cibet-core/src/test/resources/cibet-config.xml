@@ -137,11 +137,11 @@
               var DATE = new java.util.Date();
               print(DATE);
               print($PARAM2);
-              $TARGET.getCounter() == 7
+              $TARGETOBJECT.getCounter() == 7
               &amp;&amp; $PARAM0 == 2
               &amp;&amp; $PARAM2.before(DATE)
               &amp;&amp; $PARAM3 == null
-              &amp;&amp; $TARGET.getCounter() == 7
+              &amp;&amp; $TARGETOBJECT.getCounter() == 7
          </condition>
       </controls>
       <actuator name="ARCHIVE"/>
@@ -155,7 +155,7 @@
          <method>hasenmethode()</method>
          <invoker exclude="true">com.logitags.cibet.*</invoker>
          <stateChange>nixxi</stateChange>
-         <condition>"Sting".equals($TARGET.getOwner())</condition>
+         <condition>"Sting".equals($TARGETOBJECT.getOwner())</condition>
       </controls>
       <actuator name="ARCHIVE"/>
    </setpoint>

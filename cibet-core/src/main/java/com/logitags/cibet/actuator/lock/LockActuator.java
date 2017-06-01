@@ -74,7 +74,7 @@ public class LockActuator extends AbstractActuator {
    }
 
    private void checkBeforeInvoke(EventMetadata ctx) {
-      List<Controllable> list = Locker.loadLockedObjects(ctx.getResource().getTargetType());
+      List<Controllable> list = Locker.loadLockedObjects(ctx.getResource().getTarget());
 
       for (Controllable lo : list) {
 
@@ -100,7 +100,7 @@ public class LockActuator extends AbstractActuator {
    }
 
    private void checkBeforePersist(EventMetadata ctx) {
-      List<Controllable> list = Locker.loadLockedObjects(ctx.getResource().getTargetType());
+      List<Controllable> list = Locker.loadLockedObjects(ctx.getResource().getTarget());
       if (list.isEmpty()) {
          return;
       }
@@ -113,11 +113,11 @@ public class LockActuator extends AbstractActuator {
       String objectId = jpar.getPrimaryKeyObject().toString();
       for (Controllable lo : list) {
          if (lo.getResource() instanceof JpaResource) {
-            if (((JpaResource) lo.getResource()).isLocked(ctx.getResource().getObject(), objectId)
+            if (((JpaResource) lo.getResource()).isLocked(ctx.getResource().getUnencodedTargetObject(), objectId)
                   && ctx.getControlEvent().isChildOf(lo.getControlEvent())) {
                if (!lo.getCreateUser().equals(Context.internalSessionScope().getUser())) {
                   if (log.isDebugEnabled()) {
-                     log.debug(ctx.getControlEvent() + " of " + ctx.getResource().getTargetType() + " with ID "
+                     log.debug(ctx.getControlEvent() + " of " + ctx.getResource().getTarget() + " with ID "
                            + objectId + " is locked by: " + lo);
                   }
                   ctx.setExecutionStatus(ExecutionStatus.DENIED);

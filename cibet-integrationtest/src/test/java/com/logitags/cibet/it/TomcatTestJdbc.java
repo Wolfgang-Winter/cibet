@@ -193,7 +193,7 @@ public class TomcatTestJdbc extends DBHelper {
       Query q = cibetEman.createQuery("select a from Archive a");
       List<Archive> list = q.getResultList();
       Assert.assertEquals(1, list.size());
-      Assert.assertEquals(OutService.class.getName(), list.get(0).getResource().getTargetType());
+      Assert.assertEquals(OutService.class.getName(), list.get(0).getResource().getTarget());
       Assert.assertEquals(ExecutionStatus.EXECUTED, list.get(0).getExecutionStatus());
 
       log.info("************** now persist ...");
@@ -209,11 +209,11 @@ public class TomcatTestJdbc extends DBHelper {
       cibetEman.getTransaction().begin();
 
       q = cibetEman
-            .createQuery("select a from Archive a where a.resource.targetType='cib_testentity' order by a.createDate");
+            .createQuery("select a from Archive a where a.resource.target='cib_testentity' order by a.createDate");
       list = q.getResultList();
       Assert.assertEquals(1, list.size());
       Assert.assertEquals(5, list.get(0).getResource().getParameters().size());
-      Assert.assertEquals("cib_testentity", list.get(0).getResource().getTargetType());
+      Assert.assertEquals("cib_testentity", list.get(0).getResource().getTarget());
       cibetEman.getTransaction().commit();
       cibetEman.getTransaction().begin();
    }

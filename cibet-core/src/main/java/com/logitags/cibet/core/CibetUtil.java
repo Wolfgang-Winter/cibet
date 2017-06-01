@@ -545,7 +545,7 @@ public class CibetUtil {
       if (newResource == null || oldResource == null) {
          throw new IllegalArgumentException("parameters must not be null");
       }
-      return compare(newResource.getObject(), oldResource.getObject());
+      return compare(newResource.getUnencodedTargetObject(), oldResource.getUnencodedTargetObject());
    }
 
    /**

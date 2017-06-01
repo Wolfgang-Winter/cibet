@@ -50,14 +50,14 @@ public abstract class SchedulerLoader extends DcLoader {
    /**
     * convenient method that returns all scheduled Controllables for the given tenant and target type.
     * 
-    * @param targetType
+    * @param target
     * @return
     */
-   public static List<Controllable> findScheduled(String targetType) {
+   public static List<Controllable> findScheduled(String target) {
       Query q = Context.internalRequestScope().getEntityManager()
             .createNamedQuery(Controllable.SEL_SCHED_BY_TARGETTYPE);
       q.setParameter("tenant", Context.internalSessionScope().getTenant());
-      q.setParameter("oclass", targetType);
+      q.setParameter("oclass", target);
       List<Controllable> list = q.getResultList();
       for (Controllable dc : list) {
          dc.decrypt();
@@ -69,13 +69,13 @@ public abstract class SchedulerLoader extends DcLoader {
    /**
     * convenient method that returns all scheduled Controllables for all tenants and the given target type.
     * 
-    * @param targetType
+    * @param target
     * @return
     */
-   public static List<Controllable> findAllScheduled(String targetType) {
+   public static List<Controllable> findAllScheduled(String target) {
       Query q = Context.internalRequestScope().getEntityManager()
             .createNamedQuery(Controllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT);
-      q.setParameter("oclass", targetType);
+      q.setParameter("oclass", target);
       List<Controllable> list = q.getResultList();
       for (Controllable dc : list) {
          dc.decrypt();
@@ -189,7 +189,7 @@ public abstract class SchedulerLoader extends DcLoader {
                log.error(err);
                throw new RuntimeException(err);
             }
-            List<Difference> difList = CibetUtil.compare(dc.getResource().getObject(), rp.getUnencodedValue());
+            List<Difference> difList = CibetUtil.compare(dc.getResource().getUnencodedTargetObject(), rp.getUnencodedValue());
             map.put(dc, difList);
          } else {
             map.put(dc, null);

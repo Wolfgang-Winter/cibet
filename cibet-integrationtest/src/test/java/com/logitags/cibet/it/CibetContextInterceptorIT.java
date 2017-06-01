@@ -269,7 +269,7 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       List<Archive> list = ArchiveLoader.loadArchives(TEntity.class.getName());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("Ernst", list.get(0).getCreateUser());
-      Assert.assertEquals(46, ((TEntity) list.get(0).getResource().getObject()).getCounter());
+      Assert.assertEquals(46, ((TEntity) list.get(0).getResource().getUnencodedTargetObject()).getCounter());
       Context.end();
       interc.setActive(false);
    }

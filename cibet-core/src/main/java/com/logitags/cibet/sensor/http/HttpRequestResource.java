@@ -102,7 +102,7 @@ public class HttpRequestResource extends Resource {
     * @param r
     */
    public HttpRequestResource(String url, String meth, HttpRequestData r) {
-      setTargetType(url);
+      setTarget(url);
       method = meth;
       httpRequestData = r;
    }
@@ -116,7 +116,7 @@ public class HttpRequestResource extends Resource {
     * @param response
     */
    public HttpRequestResource(String url, String meth, HttpServletRequest request, HttpServletResponse response) {
-      setTargetType(url);
+      setTarget(url);
       method = meth;
       httpRequest = request;
       httpResponse = response;
@@ -136,7 +136,7 @@ public class HttpRequestResource extends Resource {
    public String createUniqueId() {
       Base64 b64 = new Base64();
       StringBuffer b = new StringBuffer();
-      b.append(getTargetType());
+      b.append(getTarget());
       b.append(getMethod());
 
       for (ResourceParameter param : getParameters()) {
@@ -150,7 +150,7 @@ public class HttpRequestResource extends Resource {
 
    @Override
    public void fillContext(ScriptEngine engine) {
-      engine.put("$TARGETTYPE", getTargetType());
+      engine.put("$TARGET", getTarget());
 
       Map<String, Object> httpHeaders = new HashMap<String, Object>();
       Map<String, Object> httpAttributes = new HashMap<String, Object>();
@@ -172,7 +172,7 @@ public class HttpRequestResource extends Resource {
    @Override
    public Map<String, Object> getNotificationAttributes() {
       Map<String, Object> map = new HashMap<>();
-      map.put("targetType", getTargetType());
+      map.put("target", getTarget());
       map.put("method", getMethod());
       return map;
    }
@@ -183,7 +183,7 @@ public class HttpRequestResource extends Resource {
          Set<ResourceParameter> paramList = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
          paramList.addAll(getParameters());
          Invoker invoker = HttpRequestInvoker.createInstance();
-         return invoker.execute(null, getTargetType(), getMethod(), paramList);
+         return invoker.execute(null, getTarget(), getMethod(), paramList);
       } catch (Exception e) {
          log.error(e.getMessage());
          throw new ResourceApplyException("Release of Method Invocation failed:\n" + toString(), e);

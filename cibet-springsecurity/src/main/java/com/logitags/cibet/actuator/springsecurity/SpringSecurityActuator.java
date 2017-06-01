@@ -129,8 +129,8 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
             method = ((MethodResource) ctx.getResource()).getMethodObject();
          }
 
-         CibetMethodInvocation methodInv = new CibetMethodInvocation(ctx.getResource().getObject(), method, arguments,
-               ctx.getSetpointIds() + this.getName(), null);
+         CibetMethodInvocation methodInv = new CibetMethodInvocation(ctx.getResource().getUnencodedTargetObject(),
+               method, arguments, ctx.getSetpointIds() + this.getName(), null);
          before(ctx, methodInv);
       }
    }
@@ -186,8 +186,8 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
          method = ((MethodResource) ctx.getResource()).getMethodObject();
       }
 
-      CibetMethodInvocation methodInv = new CibetMethodInvocation(ctx.getResource().getTarget(), method, arguments,
-            ctx.getSetpointIds() + this.getName(), ctx.getResource().getResultObject());
+      CibetMethodInvocation methodInv = new CibetMethodInvocation(ctx.getResource().getUnencodedTargetObject(), method,
+            arguments, ctx.getSetpointIds() + this.getName(), ctx.getResource().getResultObject());
 
       // 2.c set pre- and post access roles
       if (preAuthorize != null)
