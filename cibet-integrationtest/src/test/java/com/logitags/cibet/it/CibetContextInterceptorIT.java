@@ -361,7 +361,7 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       dlist = DcLoader.loadByUser("klaus");
       Assert.assertEquals(1, dlist.size());
       Assert.assertEquals(ExecutionStatus.EXECUTED, dlist.get(0).getExecutionStatus());
-      Assert.assertEquals("Rele", dlist.get(0).getApprovalUser());
+      Assert.assertEquals("Rele", dlist.get(0).getReleaseUser());
 
       HttpGet method = new HttpGet(getBaseURL() + "/execute.cibet?query="
             + URLEncoder.encode("SELECT a FROM TEntity a WHERE a.owner = 'winter'", "UTF-8"));

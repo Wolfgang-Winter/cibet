@@ -219,8 +219,12 @@ public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
 
       Statement st = conn.createStatement();
       int count = st.executeUpdate(
-            "INSERT INTO cib_archive (archiveid, caseid, controlevent, executionstatus, createuser, tenant, version)"
-                  + " VALUES ('5', null, 'UPDATE', 'EXECUTED', 'ichtest', 'tenich', 1)");
+            "INSERT into cib_resource(resourceid, resourcetype, encrypted) VALUES ('X1', 'JpaResource', 0)");
+      Assert.assertEquals(1, count);
+
+      count = st.executeUpdate(
+            "INSERT INTO cib_archive (archiveid, caseid, controlevent, executionstatus, createuser, tenant, version, resourceid)"
+                  + " VALUES ('5', null, 'UPDATE', 'EXECUTED', 'ichtest', 'tenich', 1, 'X1')");
       Assert.assertEquals(1, count);
 
       JdbcBridgeEntityManager em = new JdbcBridgeEntityManager(conn);
@@ -320,15 +324,21 @@ public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
 
    @Test
    public void executeUpdateNull() throws SQLException {
-      String sql = "INSERT INTO cib_archive (archiveid, caseid, controlevent, executionstatus, createuser, tenant, version)"
-            + " VALUES ('5', ?, 'UPDATE', 'EXECUTED', 'ichtest', 'tenich', 1)";
+      String sql2 = "INSERT into cib_resource(resourceid, resourcetype, encrypted) VALUES ('X1', 'JpaResource', 0)";
+      String sql = "INSERT INTO cib_archive (archiveid, caseid, controlevent, executionstatus, createuser, tenant, version, resourceid)"
+            + " VALUES ('5', ?, 'UPDATE', 'EXECUTED', 'ichtest', 'tenich', 1, 'X1')";
       JdbcBridgeEntityManager.registerEntityDefinition(this.getClass(), new PseudoEntityDefinition(sql));
+      JdbcBridgeEntityManager.registerEntityDefinition(this.getClass(), new PseudoEntityDefinition(sql2));
 
       Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
       JdbcBridgeEntityManager em = new JdbcBridgeEntityManager(conn);
-      Query q1 = em.createNativeQuery(sql);
-      q1.setParameter("1", null);
+      Query q1 = em.createNativeQuery(sql2);
       int count = q1.executeUpdate();
+      Assert.assertEquals(1, count);
+
+      q1 = em.createNativeQuery(sql);
+      q1.setParameter("1", null);
+      count = q1.executeUpdate();
       Assert.assertEquals(1, count);
 
       Query q = em.createNamedQuery(Archive.SEL_ALL_BY_CASEID);

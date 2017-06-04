@@ -42,11 +42,11 @@ public class ControllableDefinition extends ResourceDefinition {
 
    protected static final String CONTROLLABLE = "d.controllableid, d.caseid, d.controlevent, d.createuser, d.createdate, "
          + "d.createaddress, d.createremark, d.tenant, d.actuator, d.firstapprovuser, d.firstapprovaldate, d.firstapprovaddr, "
-         + "d.firstapprovremark, d.approvaluser, d.approvaldate, d.approvaladdress, d.approvalremark, d.executionstatus, d.version"
+         + "d.firstapprovremark, d.releaseuser, d.releasedate, d.releaseaddress, d.releaseremark, d.executionstatus, d.version"
          + ", d.scheduleddate, d.executiondate, d.resourceid";
    protected static final String CONTROLLABLE2 = "controllableid, caseid, controlevent, createuser, createdate, "
          + "createaddress, createremark, tenant, actuator, firstapprovuser, firstapprovaldate, firstapprovaddr, "
-         + "firstapprovremark, approvaluser, approvaldate, approvaladdress, approvalremark, executionstatus, version"
+         + "firstapprovremark, releaseuser, releasedate, releaseaddress, releaseremark, executionstatus, version"
          + ", scheduleddate, executiondate, resourceid";
 
    private static final String INSERT_CONTROLLABLE = "INSERT INTO cib_controllable (" + CONTROLLABLE2
@@ -54,7 +54,7 @@ public class ControllableDefinition extends ResourceDefinition {
 
    private static final String UPDATE_CONTROLLABLE = "UPDATE cib_controllable SET "
          + "caseid=?, controlevent=?, actuator=?, firstapprovuser=?, firstapprovaldate=?, firstapprovremark=?, "
-         + "version=version+1, approvaluser=?, approvaldate=?, approvaladdress=?, approvalremark=?,  executionstatus=?, "
+         + "version=version+1, releaseuser=?, releasedate=?, releaseaddress=?, releaseremark=?,  executionstatus=?, "
          + "scheduleddate=?, executiondate=? WHERE controllableid=? AND version = ?";
 
    private static final String DELETE_CONTROLLABLE = "DELETE FROM cib_controllable WHERE controllableid=?";
@@ -160,10 +160,10 @@ public class ControllableDefinition extends ResourceDefinition {
          dc.setFirstApprovalDate(rs.getTimestamp(11));
          dc.setFirstApprovalAddress(rs.getString(12));
          dc.setFirstApprovalRemark(rs.getString(13));
-         dc.setApprovalUser(rs.getString(14));
-         dc.setApprovalDate(rs.getTimestamp(15));
-         dc.setApprovalAddress(rs.getString(16));
-         dc.setApprovalRemark(rs.getString(17));
+         dc.setReleaseUser(rs.getString(14));
+         dc.setReleaseDate(rs.getTimestamp(15));
+         dc.setReleaseAddress(rs.getString(16));
+         dc.setReleaseRemark(rs.getString(17));
          dc.setExecutionStatus(ExecutionStatus.valueOf(rs.getString(18)));
          dc.setVersion(rs.getInt(19));
          dc.setScheduledDate(rs.getTimestamp(20));
@@ -207,14 +207,14 @@ public class ControllableDefinition extends ResourceDefinition {
 
          ps.setString(12, dc.getFirstApprovalAddress());
          ps.setString(13, dc.getFirstApprovalRemark());
-         ps.setString(14, dc.getApprovalUser());
-         if (dc.getApprovalDate() != null) {
-            ps.setTimestamp(15, new Timestamp(dc.getApprovalDate().getTime()));
+         ps.setString(14, dc.getReleaseUser());
+         if (dc.getReleaseDate() != null) {
+            ps.setTimestamp(15, new Timestamp(dc.getReleaseDate().getTime()));
          } else {
             ps.setNull(15, Types.TIMESTAMP);
          }
-         ps.setString(16, dc.getApprovalAddress());
-         ps.setString(17, dc.getApprovalRemark());
+         ps.setString(16, dc.getReleaseAddress());
+         ps.setString(17, dc.getReleaseRemark());
          ps.setString(18, dc.getExecutionStatus().name());
          ps.setInt(19, dc.getVersion());
          if (dc.getScheduledDate() != null) {
@@ -251,14 +251,14 @@ public class ControllableDefinition extends ResourceDefinition {
             ps.setNull(5, Types.TIMESTAMP);
          }
          ps.setString(6, dc.getFirstApprovalRemark());
-         ps.setString(7, dc.getApprovalUser());
-         if (dc.getApprovalDate() != null) {
-            ps.setTimestamp(8, new Timestamp(dc.getApprovalDate().getTime()));
+         ps.setString(7, dc.getReleaseUser());
+         if (dc.getReleaseDate() != null) {
+            ps.setTimestamp(8, new Timestamp(dc.getReleaseDate().getTime()));
          } else {
             ps.setNull(8, Types.TIMESTAMP);
          }
-         ps.setString(9, dc.getApprovalAddress());
-         ps.setString(10, dc.getApprovalRemark());
+         ps.setString(9, dc.getReleaseAddress());
+         ps.setString(10, dc.getReleaseRemark());
          ps.setString(11, dc.getExecutionStatus().name());
          if (dc.getScheduledDate() != null) {
             ps.setTimestamp(12, new Timestamp(dc.getScheduledDate().getTime()));

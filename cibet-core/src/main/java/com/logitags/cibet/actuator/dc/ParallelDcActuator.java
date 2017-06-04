@@ -94,6 +94,7 @@ public class ParallelDcActuator extends FourEyesActuator {
 
       switch (ctx.getControlEvent()) {
       case INVOKE:
+      case IMPLICIT:
          checkUnapprovedResource(ctx);
 
          if (timelag > 0 || differentUsers) {
@@ -179,6 +180,7 @@ public class ParallelDcActuator extends FourEyesActuator {
          ctx.setExecutionStatus(ExecutionStatus.POSTPONED);
          break;
 
+      case IMPLICIT:
       case INVOKE:
          ctx.setExecutionStatus(ExecutionStatus.POSTPONED);
          Controllable dcObj = createControlledObject(ControlEvent.INVOKE, ctx);
@@ -293,9 +295,9 @@ public class ParallelDcActuator extends FourEyesActuator {
                   co.setExecutionStatus(ExecutionStatus.EXECUTED);
                }
 
-               co.setApprovalDate(new Date());
-               co.setApprovalUser(Context.internalSessionScope().getUser());
-               co.setApprovalRemark(Context.internalRequestScope().getRemark());
+               co.setReleaseDate(new Date());
+               co.setReleaseUser(Context.internalSessionScope().getUser());
+               co.setReleaseRemark(Context.internalRequestScope().getRemark());
 
                // if (isEncrypt()) {
                // co.encrypt();
@@ -308,9 +310,9 @@ public class ParallelDcActuator extends FourEyesActuator {
                for (Controllable dcElement : copyList) {
                   if (dcElement.getControllableId() != co.getControllableId()) {
                      dcElement.setExecutionStatus(ExecutionStatus.REJECTED);
-                     dcElement.setApprovalDate(co.getApprovalDate());
-                     dcElement.setApprovalUser(Context.internalSessionScope().getUser());
-                     dcElement.setApprovalRemark(Context.internalRequestScope().getRemark());
+                     dcElement.setReleaseDate(co.getReleaseDate());
+                     dcElement.setReleaseUser(Context.internalSessionScope().getUser());
+                     dcElement.setReleaseRemark(Context.internalRequestScope().getRemark());
 
                      // if (isEncrypt()) {
                      // dcElement.encrypt();

@@ -176,9 +176,9 @@ public abstract class Locker {
          throw new IllegalArgumentException("Controllable must not be null");
       }
       lo.setExecutionStatus(ExecutionStatus.UNLOCKED);
-      lo.setApprovalDate(new Date());
-      lo.setApprovalUser(Context.internalSessionScope().getUser());
-      lo.setApprovalRemark(remark);
+      lo.setReleaseDate(new Date());
+      lo.setReleaseUser(Context.internalSessionScope().getUser());
+      lo.setReleaseRemark(remark);
       lo = Context.internalRequestScope().getEntityManager().merge(lo);
       log.debug("unlocked: " + lo);
    }
@@ -342,6 +342,7 @@ public abstract class Locker {
       lo.setExecutionStatus(ExecutionStatus.LOCKED);
       lo.setResource(resource);
       lo.setTenant(Context.internalSessionScope().getTenant());
+      lo.setActuator(LockActuator.DEFAULTNAME);
       return lo;
    }
 

@@ -73,7 +73,7 @@ public class DcControllableDefinitionTest extends JdbcHelper {
       r.setTarget("class");
       sa.setTenant(TENANT);
       sa.setActuator("actuator");
-      sa.setApprovalAddress("testaddress");
+      sa.setReleaseAddress("testaddress");
       sa.setExecutionStatus(ExecutionStatus.POSTPONED);
       byte[] r1 = CibetUtil.encode(sa);
       r.setTargetObject(r1);
@@ -95,8 +95,8 @@ public class DcControllableDefinitionTest extends JdbcHelper {
       r.setMethod("methodname");
       r.setInvokerClass(EJBInvoker.class.getName());
       sa.setActuator("actuator");
-      sa.setApprovalUser("testaddress");
-      sa.setApprovalDate(new Date());
+      sa.setReleaseUser("testaddress");
+      sa.setReleaseDate(new Date());
       sa.setExecutionStatus(ExecutionStatus.POSTPONED);
 
       for (int i = 1; i < 4; i++) {

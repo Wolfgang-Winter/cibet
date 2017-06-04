@@ -48,14 +48,15 @@ public class EventControl extends AbstractControl {
          throw new IllegalArgumentException(msg);
       }
 
-      if (metadata.getControlEvent() == ControlEvent.IMPLICIT) {
-         return true;
-      }
-
       List<String> eventList = (List<String>) controlValue;
 
       for (String cv : eventList) {
          ControlEvent curEvent = metadata.getControlEvent();
+
+         if (ControlEvent.valueOf(cv).isChildOf(curEvent)) {
+            return true;
+         }
+
          while (curEvent != null) {
             if (cv.equals(curEvent.name())) {
                return true;

@@ -111,7 +111,7 @@ public class EmailNotificationProvider implements NotificationProvider, Serializ
 
          switch (status) {
          case POSTPONED:
-            msg.setRecipients(Message.RecipientType.TO, controllable.getApprovalAddress());
+            msg.setRecipients(Message.RecipientType.TO, controllable.getReleaseAddress());
             break;
          case FIRST_POSTPONED:
             msg.setRecipients(Message.RecipientType.TO, controllable.getFirstApprovalAddress());
@@ -244,10 +244,10 @@ public class EmailNotificationProvider implements NotificationProvider, Serializ
       ctx.put("firstApprovalDate", c.getFirstApprovalDate());
       ctx.put("firstApprovalAddress", c.getFirstApprovalAddress());
       ctx.put("firstApprovalRemark", c.getFirstApprovalRemark());
-      ctx.put("approvalUser", c.getApprovalUser());
-      ctx.put("approvalAddress", c.getApprovalAddress());
-      ctx.put("approvalDate", c.getApprovalDate());
-      ctx.put("approvalRemark", c.getApprovalRemark());
+      ctx.put("releaseUser", c.getReleaseUser());
+      ctx.put("releaseAddress", c.getReleaseAddress());
+      ctx.put("releaseDate", c.getReleaseDate());
+      ctx.put("releaseRemark", c.getReleaseRemark());
       ctx.put("actuator", c.getActuator());
       ctx.put("controlEvent", c.getControlEvent().name());
       ctx.put("createUser", c.getCreateUser());

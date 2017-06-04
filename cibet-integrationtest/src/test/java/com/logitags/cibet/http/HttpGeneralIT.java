@@ -329,8 +329,8 @@ public class HttpGeneralIT extends AbstractArquillian {
       Assert.assertEquals(1, dcList.size());
       log.debug(dcList.get(0));
       Assert.assertEquals(ExecutionStatus.EXECUTED, dcList.get(0).getExecutionStatus());
-      Assert.assertEquals("good!", dcList.get(0).getApprovalRemark());
-      Assert.assertEquals("Fluppi", dcList.get(0).getApprovalUser());
+      Assert.assertEquals("good!", dcList.get(0).getReleaseRemark());
+      Assert.assertEquals("Fluppi", dcList.get(0).getReleaseUser());
 
       q = localcibet.createQuery(
             "select a from Archive a where a.resource.target ='" + TEntity.class.getName() + "' ORDER BY a.createDate");

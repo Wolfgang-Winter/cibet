@@ -80,7 +80,7 @@ public class SixEyesActuator extends FourEyesActuator {
          if (notifProvider != null) {
             notifProvider.notify(ExecutionStatus.FIRST_POSTPONED, dc);
          }
-      } else if (status == ExecutionStatus.FIRST_RELEASED && dc.getApprovalAddress() != null) {
+      } else if (status == ExecutionStatus.FIRST_RELEASED && dc.getReleaseAddress() != null) {
          NotificationProvider notifProvider = Configuration.instance().getNotificationProvider();
          if (notifProvider != null) {
             notifProvider.notify(ExecutionStatus.POSTPONED, dc);
@@ -105,6 +105,8 @@ public class SixEyesActuator extends FourEyesActuator {
          return ControlEvent.FIRST_RELEASE_UPDATE;
       case SELECT:
          return ControlEvent.FIRST_RELEASE_SELECT;
+      case IMPLICIT:
+         return ControlEvent.FIRST_RELEASE;
       default:
          String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be first released";
@@ -145,8 +147,8 @@ public class SixEyesActuator extends FourEyesActuator {
             throw new InvalidUserException(msg);
          }
 
-         if (co.getApprovalUser() != null && !co.getApprovalUser().equals(approvalUserId)) {
-            String msg = "release failed: Only user" + co.getApprovalUser()
+         if (co.getReleaseUser() != null && !co.getReleaseUser().equals(approvalUserId)) {
+            String msg = "release failed: Only user" + co.getReleaseUser()
                   + " is allowed to release/reject Controllable with ID " + co.getControllableId();
             log.error(msg);
             throw new InvalidUserException(msg);
@@ -187,8 +189,8 @@ public class SixEyesActuator extends FourEyesActuator {
 
       } else {
          // final release
-         if (co.getApprovalUser() != null && !co.getApprovalUser().equals(rejectUserId)) {
-            String msg = "reject/pass back failed: Only user" + co.getApprovalUser()
+         if (co.getReleaseUser() != null && !co.getReleaseUser().equals(rejectUserId)) {
+            String msg = "reject/pass back failed: Only user" + co.getReleaseUser()
                   + " is allowed to reject/pass back Controllable with ID " + co.getControllableId();
             log.error(msg);
             throw new InvalidUserException(msg);
@@ -270,8 +272,8 @@ public class SixEyesActuator extends FourEyesActuator {
                   co.setFirstApprovalDate(new Date());
                   co.setFirstApprovalUser(Context.internalSessionScope().getUser());
                   co.setFirstApprovalRemark(Context.internalRequestScope().getRemark());
-                  co.setApprovalUser(Context.internalSessionScope().getApprovalUser());
-                  co.setApprovalAddress(Context.internalSessionScope().getApprovalAddress());
+                  co.setReleaseUser(Context.internalSessionScope().getApprovalUser());
+                  co.setReleaseAddress(Context.internalSessionScope().getApprovalAddress());
 
                   if (isSendReleaseNotification()) {
                      log.debug("co.getCreateAddress(): " + co.getCreateAddress());
@@ -283,9 +285,9 @@ public class SixEyesActuator extends FourEyesActuator {
                   if (status == ExecutionStatus.EXECUTED) {
                      co.setExecutionStatus(ExecutionStatus.EXECUTED);
                   }
-                  co.setApprovalDate(new Date());
-                  co.setApprovalUser(Context.internalSessionScope().getUser());
-                  co.setApprovalRemark(Context.internalRequestScope().getRemark());
+                  co.setReleaseDate(new Date());
+                  co.setReleaseUser(Context.internalSessionScope().getUser());
+                  co.setReleaseRemark(Context.internalRequestScope().getRemark());
                   if (isSendReleaseNotification()) {
                      notifyApproval(co);
                   }

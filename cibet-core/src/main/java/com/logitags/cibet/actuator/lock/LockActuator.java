@@ -59,6 +59,7 @@ public class LockActuator extends AbstractActuator {
 
       switch (ctx.getControlEvent()) {
       case INVOKE:
+      case IMPLICIT:
       case RELEASE_INVOKE:
       case FIRST_RELEASE_INVOKE:
       case REJECT_INVOKE:
@@ -117,8 +118,8 @@ public class LockActuator extends AbstractActuator {
                   && ctx.getControlEvent().isChildOf(lo.getControlEvent())) {
                if (!lo.getCreateUser().equals(Context.internalSessionScope().getUser())) {
                   if (log.isDebugEnabled()) {
-                     log.debug(ctx.getControlEvent() + " of " + ctx.getResource().getTarget() + " with ID "
-                           + objectId + " is locked by: " + lo);
+                     log.debug(ctx.getControlEvent() + " of " + ctx.getResource().getTarget() + " with ID " + objectId
+                           + " is locked by: " + lo);
                   }
                   ctx.setExecutionStatus(ExecutionStatus.DENIED);
                   initDeniedException(ctx);

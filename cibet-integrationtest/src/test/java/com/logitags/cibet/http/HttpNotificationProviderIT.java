@@ -129,10 +129,10 @@ public class HttpNotificationProviderIT {
    protected Controllable createControllable(ExecutionStatus status) throws IOException {
       Controllable c = new Controllable();
       c.setActuator("FOUR_EYES");
-      c.setApprovalAddress(getBaseURL() + "/notif?nottype=approv");
-      c.setApprovalDate(NOW.getTime());
+      c.setReleaseAddress(getBaseURL() + "/notif?nottype=approv");
+      c.setReleaseDate(NOW.getTime());
       c.setExecutionStatus(status);
-      c.setApprovalUser("approvalUser");
+      c.setReleaseUser("approvalUser");
       c.setCaseId("test-caseid");
       c.setControlEvent(ControlEvent.DELETE);
       c.setCreateAddress(getBaseURL() + "/notif?nottype=create");
@@ -182,10 +182,6 @@ public class HttpNotificationProviderIT {
          Assert.assertEquals(22, list.size());
          Iterator<String> iter = list.iterator();
          Assert.assertEquals("actuator=FOUR_EYES", iter.next());
-         Assert.assertEquals("approvalAddress=" + getBaseURL() + "/notif?nottype=approv", iter.next());
-         Assert.assertEquals("approvalDate=2013-09-25 16:13:22.000", iter.next());
-         Assert.assertEquals("approvalRemark=", iter.next());
-         Assert.assertEquals("approvalUser=approvalUser", iter.next());
          Assert.assertEquals("caseId=test-caseid", iter.next());
          Assert.assertEquals("controlEvent=DELETE", iter.next());
          Assert.assertEquals("controllableId=123", iter.next());
@@ -200,6 +196,10 @@ public class HttpNotificationProviderIT {
          Assert.assertEquals("notificationType=POSTPONED", iter.next());
          Assert.assertEquals("nottype=approv", iter.next());
          Assert.assertEquals("primaryKeyId=0", iter.next());
+         Assert.assertEquals("releaseAddress=" + getBaseURL() + "/notif?nottype=approv", iter.next());
+         Assert.assertEquals("releaseDate=2013-09-25 16:13:22.000", iter.next());
+         Assert.assertEquals("releaseRemark=", iter.next());
+         Assert.assertEquals("releaseUser=approvalUser", iter.next());
          Assert.assertEquals("target=com.cibethelper.entities.TEntity", iter.next());
          String s = iter.next();
          log.debug("sss:" + s);

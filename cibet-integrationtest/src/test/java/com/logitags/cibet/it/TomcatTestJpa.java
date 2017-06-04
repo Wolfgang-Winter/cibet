@@ -380,8 +380,8 @@ public class TomcatTestJpa extends DBHelper {
          cibetEman.refresh(dcList.get(0));
          log.debug(dcList.get(0));
          Assert.assertEquals(ExecutionStatus.EXECUTED, dcList.get(0).getExecutionStatus());
-         Assert.assertEquals("good!", dcList.get(0).getApprovalRemark());
-         Assert.assertEquals("Fluppi", dcList.get(0).getApprovalUser());
+         Assert.assertEquals("good!", dcList.get(0).getReleaseRemark());
+         Assert.assertEquals("Fluppi", dcList.get(0).getReleaseUser());
 
          q = cibetEman.createQuery("select a from Archive a where a.resource.target ='" + TEntity.class.getName()
                + "' ORDER BY a.createDate");

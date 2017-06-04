@@ -153,6 +153,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       case DELETE:
       case RESTORE_UPDATE:
       case INVOKE:
+      case IMPLICIT:
       case REDO:
          if (ctx.getExecutionStatus() == ExecutionStatus.EXECUTING) {
             checkUnapprovedResource(ctx);
@@ -237,6 +238,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          dcObj = createControlledObject(ControlEvent.UPDATE, ctx);
          break;
 
+      case IMPLICIT:
       case INVOKE:
       case REDO:
          dcObj = createControlledObject(ControlEvent.INVOKE, ctx);
@@ -266,7 +268,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
    }
 
    protected void notifyAssigned(ExecutionStatus status, Controllable dc) {
-      if (sendAssignNotification && status == ExecutionStatus.POSTPONED && dc.getApprovalAddress() != null) {
+      if (sendAssignNotification && status == ExecutionStatus.POSTPONED && dc.getReleaseAddress() != null) {
          NotificationProvider notifProvider = Configuration.instance().getNotificationProvider();
          if (notifProvider != null) {
             notifProvider.notify(status, dc);
@@ -364,8 +366,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
     *           Controllable object
     */
    protected void setActuatorSpecificProperties(Controllable dc) {
-      dc.setApprovalUser(Context.internalSessionScope().getApprovalUser());
-      dc.setApprovalAddress(Context.internalSessionScope().getApprovalAddress());
+      dc.setReleaseUser(Context.internalSessionScope().getApprovalUser());
+      dc.setReleaseAddress(Context.internalSessionScope().getApprovalAddress());
    }
 
    /**
@@ -414,6 +416,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          return ControlEvent.RELEASE_UPDATE;
       case SELECT:
          return ControlEvent.RELEASE_SELECT;
+      case IMPLICIT:
+         return ControlEvent.RELEASE;
       default:
          String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be released";
@@ -434,6 +438,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          return ControlEvent.REJECT_UPDATE;
       case SELECT:
          return ControlEvent.REJECT_SELECT;
+      case IMPLICIT:
+         return ControlEvent.REJECT;
       default:
          String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be rejected";
@@ -454,6 +460,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          return ControlEvent.PASSBACK_UPDATE;
       case SELECT:
          return ControlEvent.PASSBACK_SELECT;
+      case IMPLICIT:
+         return ControlEvent.PASSBACK;
       default:
          String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be passed back";
@@ -474,6 +482,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          return ControlEvent.SUBMIT_UPDATE;
       case SELECT:
          return ControlEvent.SUBMIT_SELECT;
+      case IMPLICIT:
+         return ControlEvent.SUBMIT;
       default:
          String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be submitted";
@@ -503,8 +513,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          throw new InvalidUserException(msg);
       }
 
-      if (co.getApprovalUser() != null && !co.getApprovalUser().equals(approvalUserId)) {
-         String msg = "release failed: Only user " + co.getApprovalUser()
+      if (co.getReleaseUser() != null && !co.getReleaseUser().equals(approvalUserId)) {
+         String msg = "release failed: Only user " + co.getReleaseUser()
                + " is allowed to release Controllable with ID " + co.getControllableId();
          log.error(msg);
          throw new InvalidUserException(msg);
@@ -532,8 +542,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          return;
       }
 
-      if (co.getApprovalUser() != null && !co.getApprovalUser().equals(userId)) {
-         String msg = "reject/pass back failed: Only user" + co.getApprovalUser()
+      if (co.getReleaseUser() != null && !co.getReleaseUser().equals(userId)) {
+         String msg = "reject/pass back failed: Only user" + co.getReleaseUser()
                + " is allowed to reject/pass back Controllable with ID " + co.getControllableId();
          log.error(msg);
          throw new InvalidUserException(msg);
@@ -614,13 +624,9 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          if (status == ExecutionStatus.EXECUTED) {
             co.setExecutionStatus(ExecutionStatus.EXECUTED);
          }
-         co.setApprovalDate(new Date());
-         co.setApprovalUser(Context.internalSessionScope().getUser());
-         co.setApprovalRemark(Context.internalRequestScope().getRemark());
-
-         // if (encrypt) {
-         // co.encrypt();
-         // }
+         co.setReleaseDate(new Date());
+         co.setReleaseUser(Context.internalSessionScope().getUser());
+         co.setReleaseRemark(Context.internalRequestScope().getRemark());
          co = Context.internalRequestScope().getEntityManager().merge(co);
          if (sendReleaseNotification) {
             notifyApproval(co);
@@ -676,9 +682,9 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
             }
             if (eventResult.getExecutionStatus() != ExecutionStatus.DENIED) {
                co.setExecutionStatus(ExecutionStatus.REJECTED);
-               co.setApprovalDate(new Date());
-               co.setApprovalUser(Context.internalSessionScope().getUser());
-               co.setApprovalRemark(Context.internalRequestScope().getRemark());
+               co.setReleaseDate(new Date());
+               co.setReleaseUser(Context.internalSessionScope().getUser());
+               co.setReleaseRemark(Context.internalRequestScope().getRemark());
 
                // if (encrypt) {
                // co.encrypt();
@@ -726,9 +732,9 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
             }
             if (eventResult.getExecutionStatus() != ExecutionStatus.DENIED) {
                co.setExecutionStatus(ExecutionStatus.PASSEDBACK);
-               co.setApprovalDate(new Date());
-               co.setApprovalUser(Context.internalSessionScope().getUser());
-               co.setApprovalRemark(Context.internalRequestScope().getRemark());
+               co.setReleaseDate(new Date());
+               co.setReleaseUser(Context.internalSessionScope().getUser());
+               co.setReleaseRemark(Context.internalRequestScope().getRemark());
 
                // if (encrypt) {
                // co.encrypt();

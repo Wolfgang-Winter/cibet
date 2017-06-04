@@ -86,6 +86,19 @@ public class EventControlTest extends CoreTestBase {
       for (Setpoint sB : list) {
          Assert.assertTrue(sB.getId().startsWith("A"));
       }
+
+      md = new EventMetadata(ControlEvent.IMPLICIT, null);
+      list.clear();
+      for (Setpoint sp : spB) {
+         if (!eval.hasControlValue(sp.getControlValue("event"))) {
+            continue;
+         }
+         boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+         if (okay) {
+            list.add(sp);
+         }
+      }
+      Assert.assertTrue(list.size() == 7);
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -129,4 +142,108 @@ public class EventControlTest extends CoreTestBase {
       Assert.assertEquals(2, list.size());
    }
 
+   @Test
+   public void evaluateImplicit() {
+      log.info("start evaluateImplicit()");
+
+      Setpoint sp = new Setpoint("conditionParams");
+      sp.setEvent(ControlEvent.FIRST_RELEASE_INSERT.name());
+
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
+      EventMetadata md = new EventMetadata(ControlEvent.FIRST_RELEASE, res);
+
+      Control eval = new EventControl();
+      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      Assert.assertTrue(okay);
+   }
+
+   @Test
+   public void evaluateImplicitNok() {
+      log.info("start evaluateImplicitNok()");
+
+      Setpoint sp = new Setpoint("conditionParams");
+      sp.setEvent(ControlEvent.FIRST_RELEASE_INSERT.name());
+
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
+      EventMetadata md = new EventMetadata(ControlEvent.IMPLICIT, res);
+
+      Control eval = new EventControl();
+      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      Assert.assertFalse(okay);
+   }
+
+   @Test
+   public void evaluateImplicitOk() {
+      log.info("start evaluateImplicitOk()");
+
+      Setpoint sp = new Setpoint("conditionParams");
+      sp.setEvent(ControlEvent.INSERT.name());
+
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
+      EventMetadata md = new EventMetadata(ControlEvent.IMPLICIT, res);
+
+      Control eval = new EventControl();
+      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      Assert.assertTrue(okay);
+   }
+
+   @Test
+   public void evaluateImplicitOk2() {
+      log.info("start evaluateImplicitOk2()");
+
+      Setpoint sp = new Setpoint("conditionParams");
+      sp.setEvent(ControlEvent.INVOKE.name());
+
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
+      EventMetadata md = new EventMetadata(ControlEvent.IMPLICIT, res);
+
+      Control eval = new EventControl();
+      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      Assert.assertTrue(okay);
+   }
+
+   @Test
+   public void evaluateHierarchy() {
+      log.info("start evaluateHierarchy()");
+
+      Setpoint sp = new Setpoint("conditionParams");
+      sp.setEvent(ControlEvent.FIRST_RELEASE.name());
+
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
+      EventMetadata md = new EventMetadata(ControlEvent.FIRST_RELEASE_INSERT, res);
+
+      Control eval = new EventControl();
+      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      Assert.assertTrue(okay);
+   }
+
+   @Test
+   public void evaluateHierarchyAll() {
+      log.info("start evaluateHierarchyAll()");
+
+      Setpoint sp = new Setpoint("conditionParams");
+      sp.setEvent(ControlEvent.ALL.name());
+
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
+      EventMetadata md = new EventMetadata(ControlEvent.FIRST_RELEASE_INSERT, res);
+
+      Control eval = new EventControl();
+      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      Assert.assertTrue(okay);
+   }
+
+   @Test
+   public void evaluateHierarchyNot() {
+      log.info("start evaluateHierarchyNot()");
+
+      Setpoint sp = new Setpoint("conditionParams");
+      sp.setEvent(ControlEvent.RELEASE_INVOKE.name());
+
+      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
+      EventMetadata md = new EventMetadata(ControlEvent.FIRST_RELEASE, res);
+
+      Control eval = new EventControl();
+      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      Assert.assertFalse(okay);
+   }
 }

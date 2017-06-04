@@ -16,8 +16,8 @@ import java.sql.Connection;
 import com.logitags.cibet.sensor.jdbc.driver.CibetJdbcException;
 
 /**
- * A definition that can be used for anonymous updates, inserts and deletes. The
- * entity must not be known. Has only on native query registered.
+ * A definition that can be used for anonymous updates, inserts and deletes. The entity must not be known. Has only on
+ * native query registered.
  * 
  */
 public class PseudoEntityDefinition extends AbstractEntityDefinition {
@@ -32,8 +32,7 @@ public class PseudoEntityDefinition extends AbstractEntityDefinition {
    }
 
    @Override
-   public <T> T find(Connection jdbcConnection, Class<T> clazz,
-         Object primaryKey) {
+   public <T> T find(Connection jdbcConnection, Class<T> clazz, Object primaryKey) {
       throw new CibetJdbcException("find() method not implemented");
    }
 

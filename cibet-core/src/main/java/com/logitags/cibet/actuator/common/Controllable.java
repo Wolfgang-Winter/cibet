@@ -151,23 +151,23 @@ public class Controllable implements Serializable {
     * user ID who did the final approval (release or reject) of a DC process.
     */
    @Column(length = 50)
-   private String approvalUser;
+   private String releaseUser;
 
    /**
     * the address data of the user who did the final approval in a DC process. Could be email address or sms number etc.
     */
-   private String approvalAddress;
+   private String releaseAddress;
 
    /**
     * Date when a user did the final approval in a DC process.
     */
    @Temporal(TemporalType.TIMESTAMP)
-   private Date approvalDate;
+   private Date releaseDate;
 
    /**
     * remark of the approving/releasing user
     */
-   private String approvalRemark;
+   private String releaseRemark;
 
    /**
     * applied dc Actuator
@@ -276,11 +276,11 @@ public class Controllable implements Serializable {
       b.append("\nversion = ");
       b.append(version);
       b.append("\napprovalUser = ");
-      b.append(approvalUser);
+      b.append(releaseUser);
       b.append("\nexecutionStatus = ");
       b.append(executionStatus);
       b.append("\napprovalDate = ");
-      b.append(approvalDate);
+      b.append(releaseDate);
       b.append("\nscheduledDate = ");
       b.append(scheduledDate);
       b.append("\nactuator = ");
@@ -675,48 +675,48 @@ public class Controllable implements Serializable {
    }
 
    /**
-    * @return the approvalUser
+    * @return the releaseUser
     */
-   public String getApprovalUser() {
-      return approvalUser;
+   public String getReleaseUser() {
+      return releaseUser;
    }
 
    /**
-    * @param approvalUser
+    * @param releaseUser
     *           the approvalUser to set
     */
-   public void setApprovalUser(String approvalUser) {
-      this.approvalUser = approvalUser;
+   public void setReleaseUser(String approvalUser) {
+      this.releaseUser = approvalUser;
    }
 
    /**
-    * @return the approvalAddress
+    * @return the releaseAddress
     */
-   public String getApprovalAddress() {
-      return approvalAddress;
+   public String getReleaseAddress() {
+      return releaseAddress;
    }
 
    /**
-    * @param approvalAddress
+    * @param releaseAddress
     *           the approvalAddress to set
     */
-   public void setApprovalAddress(String approvalAddress) {
-      this.approvalAddress = approvalAddress;
+   public void setReleaseAddress(String approvalAddress) {
+      this.releaseAddress = approvalAddress;
    }
 
    /**
-    * @return the approvalDate
+    * @return the releaseDate
     */
-   public Date getApprovalDate() {
-      return approvalDate;
+   public Date getReleaseDate() {
+      return releaseDate;
    }
 
    /**
-    * @param approvalDate
+    * @param releaseDate
     *           the approvalDate to set
     */
-   public void setApprovalDate(Date approvalDate) {
-      this.approvalDate = approvalDate;
+   public void setReleaseDate(Date approvalDate) {
+      this.releaseDate = approvalDate;
    }
 
    /**
@@ -765,18 +765,18 @@ public class Controllable implements Serializable {
    }
 
    /**
-    * @return the approvalRemark
+    * @return the releaseRemark
     */
-   public String getApprovalRemark() {
-      return approvalRemark;
+   public String getReleaseRemark() {
+      return releaseRemark;
    }
 
    /**
-    * @param approvalRemark
+    * @param releaseRemark
     *           the approvalRemark to set
     */
-   public void setApprovalRemark(String approvalRemark) {
-      this.approvalRemark = approvalRemark;
+   public void setReleaseRemark(String approvalRemark) {
+      this.releaseRemark = approvalRemark;
    }
 
    /**

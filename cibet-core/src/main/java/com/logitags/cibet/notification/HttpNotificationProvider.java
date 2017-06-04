@@ -72,7 +72,7 @@ public class HttpNotificationProvider implements NotificationProvider, Serializa
       String address = null;
       switch (c.getExecutionStatus()) {
       case POSTPONED:
-         address = c.getApprovalAddress();
+         address = c.getReleaseAddress();
          break;
       case FIRST_POSTPONED:
          address = c.getFirstApprovalAddress();
@@ -122,12 +122,12 @@ public class HttpNotificationProvider implements NotificationProvider, Serializa
       formparams.add(new BasicNameValuePair("firstApprovalAddress", c.getFirstApprovalAddress()));
       formparams.add(new BasicNameValuePair("firstApprovalRemark", c.getFirstApprovalRemark()));
 
-      formparams.add(new BasicNameValuePair("approvalUser", c.getApprovalUser()));
-      formparams.add(new BasicNameValuePair("approvalAddress", c.getApprovalAddress()));
-      if (c.getApprovalDate() != null) {
-         formparams.add(new BasicNameValuePair("approvalDate", dateFormat.format(c.getApprovalDate())));
+      formparams.add(new BasicNameValuePair("releaseUser", c.getReleaseUser()));
+      formparams.add(new BasicNameValuePair("releaseAddress", c.getReleaseAddress()));
+      if (c.getReleaseDate() != null) {
+         formparams.add(new BasicNameValuePair("releaseDate", dateFormat.format(c.getReleaseDate())));
       }
-      formparams.add(new BasicNameValuePair("approvalRemark", c.getApprovalRemark()));
+      formparams.add(new BasicNameValuePair("releaseRemark", c.getReleaseRemark()));
 
       formparams.add(new BasicNameValuePair("actuator", c.getActuator()));
       formparams.add(new BasicNameValuePair("controlEvent", c.getControlEvent().name()));

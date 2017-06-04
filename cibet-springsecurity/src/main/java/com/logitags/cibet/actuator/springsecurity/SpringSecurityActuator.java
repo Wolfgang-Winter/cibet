@@ -149,6 +149,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
 
       switch (ctx.getControlEvent()) {
       case INVOKE:
+      case IMPLICIT:
       case RELEASE_INVOKE:
       case FIRST_RELEASE_INVOKE:
       case REJECT_INVOKE:

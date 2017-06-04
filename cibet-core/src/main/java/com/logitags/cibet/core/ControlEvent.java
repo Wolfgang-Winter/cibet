@@ -23,9 +23,15 @@ public enum ControlEvent {
    ALL(null),
 
    /**
+    * the event is implicitly given through the context. For example a JPA query has an implicit event type as it is
+    * given by the sql itself. EventControl will be ignored if the business case is of IMPLICIT event type.
+    */
+   IMPLICIT(ALL),
+
+   /**
     * all INSERT, UPDATE, DELETE, RESTORE events
     */
-   PERSIST(ALL),
+   PERSIST(IMPLICIT),
 
    /**
     * new instantiation (no dc, only audit)
@@ -46,7 +52,7 @@ public enum ControlEvent {
    /**
     * method execution (no dc, only audit)
     */
-   INVOKE(ALL),
+   INVOKE(IMPLICIT),
 
    /**
     * summary of RELEASE, FIRST_RELEASE and REJECT
@@ -152,17 +158,11 @@ public enum ControlEvent {
    /**
     * restore of an object state
     */
-   RESTORE(PERSIST),
+   RESTORE(ALL),
 
    RESTORE_INSERT(RESTORE),
 
    RESTORE_UPDATE(RESTORE),
-
-   /**
-    * the event is implicitly given through the context. For example a JPA query has an implicit event type as it is
-    * given by the sql itself. EventControl will be ignored if the business case is of IMPLICIT event type.
-    */
-   IMPLICIT(ALL),
 
    ;
 

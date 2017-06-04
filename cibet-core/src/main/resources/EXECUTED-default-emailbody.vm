@@ -23,10 +23,10 @@ first released by:         $firstApprovalUser on $firstApprovalDate
 remark:                    $firstApprovalRemark
 #end
 
-released by:               $approvalUser on $approvalDate
-#if( $approvalRemark )
+released by:               $releaseUser on $releaseDate
+#if( $releaseRemark )
 
-remark:                    $approvalRemark
+remark:                    $releaseRemark
 #end
 
 

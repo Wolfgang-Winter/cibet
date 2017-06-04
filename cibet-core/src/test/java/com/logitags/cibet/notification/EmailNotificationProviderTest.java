@@ -76,10 +76,10 @@ public class EmailNotificationProviderTest {
    protected Controllable createControllable(ExecutionStatus status) {
       Controllable c = new Controllable();
       c.setActuator("FOUR_EYES");
-      c.setApprovalAddress("approv@test.de");
-      c.setApprovalDate(NOW.getTime());
+      c.setReleaseAddress("approv@test.de");
+      c.setReleaseDate(NOW.getTime());
       c.setExecutionStatus(status);
-      c.setApprovalUser("approvalUser");
+      c.setReleaseUser("approvalUser");
       c.setCaseId("test-caseid");
       c.setControlEvent(ControlEvent.DELETE);
       c.setCreateAddress("create@test.de");

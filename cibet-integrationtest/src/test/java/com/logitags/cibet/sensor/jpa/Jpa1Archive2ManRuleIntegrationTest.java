@@ -199,7 +199,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
       log.debug("***: " + list1.get(0));
-      Assert.assertEquals("Fizzi", list1.get(0).getApprovalUser());
+      Assert.assertEquals("Fizzi", list1.get(0).getReleaseUser());
       Assert.assertEquals(ExecutionStatus.POSTPONED, list1.get(0).getExecutionStatus());
 
       Context.sessionScope().setApprovalUser(null);

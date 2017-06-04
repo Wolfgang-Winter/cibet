@@ -225,7 +225,7 @@ public class ActuatorIT extends AbstractArquillian {
       List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
       Controllable co = l.get(0);
-      Assert.assertEquals("fizz", co.getApprovalUser());
+      Assert.assertEquals("fizz", co.getReleaseUser());
 
       Context.sessionScope().setUser("test2");
       ut.begin();
@@ -1011,7 +1011,7 @@ public class ActuatorIT extends AbstractArquillian {
       l = DcLoader.loadByUser(USER);
       Assert.assertEquals(1, l.size());
       Assert.assertEquals(ExecutionStatus.PASSEDBACK, l.get(0).getExecutionStatus());
-      Assert.assertEquals("test2", l.get(0).getApprovalUser());
+      Assert.assertEquals("test2", l.get(0).getReleaseUser());
 
       Context.sessionScope().setUser("test3");
       try {

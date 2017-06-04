@@ -148,6 +148,7 @@ public class SchedulerActuator extends FourEyesActuator {
       case DELETE:
       case RESTORE_UPDATE:
       case INVOKE:
+      case IMPLICIT:
       case REDO:
          if (Context.requestScope().getScheduledDate() != null) {
             checkScheduledResource(ctx);
@@ -223,6 +224,7 @@ public class SchedulerActuator extends FourEyesActuator {
          break;
 
       case INVOKE:
+      case IMPLICIT:
       case REDO:
          dcObj = createControlledObject(ControlEvent.INVOKE, ctx);
          break;
@@ -349,14 +351,10 @@ public class SchedulerActuator extends FourEyesActuator {
       ExecutionStatus status = eventResult.getExecutionStatus();
       if (status == ExecutionStatus.EXECUTED || status == ExecutionStatus.SCHEDULED) {
          co.setExecutionStatus(ExecutionStatus.EXECUTED);
-         co.setApprovalDate(new Date());
-         co.setApprovalUser(Context.internalSessionScope().getUser());
-         co.setApprovalRemark(Context.internalRequestScope().getRemark());
-         co.setExecutionDate(co.getApprovalDate());
-         //
-         // if (isEncrypt()) {
-         // co.encrypt();
-         // }
+         co.setReleaseDate(new Date());
+         co.setReleaseUser(Context.internalSessionScope().getUser());
+         co.setReleaseRemark(Context.internalRequestScope().getRemark());
+         co.setExecutionDate(co.getReleaseDate());
          Context.internalRequestScope().getEntityManager().merge(co);
       }
    }
@@ -503,8 +501,8 @@ public class SchedulerActuator extends FourEyesActuator {
          throw new InvalidUserException(msg);
       }
 
-      if (co.getApprovalUser() != null && !co.getApprovalUser().equals(approvalUserId)) {
-         String msg = "release failed: Only user " + co.getApprovalUser()
+      if (co.getReleaseUser() != null && !co.getReleaseUser().equals(approvalUserId)) {
+         String msg = "release failed: Only user " + co.getReleaseUser()
                + " is allowed to release Controllable with ID " + co.getControllableId();
          log.error(msg);
          throw new InvalidUserException(msg);

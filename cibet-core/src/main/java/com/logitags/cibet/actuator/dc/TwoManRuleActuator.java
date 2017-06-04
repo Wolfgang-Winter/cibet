@@ -107,6 +107,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
       case DELETE:
       case RESTORE_UPDATE:
       case INVOKE:
+      case IMPLICIT:
       case REDO:
          checkUnapprovedResource(ctx);
          // no break, fall through
@@ -215,6 +216,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
          break;
 
       case INVOKE:
+      case IMPLICIT:
       case REDO:
          dcObj = createControlledObject(ControlEvent.INVOKE, ctx);
          break;
@@ -317,9 +319,9 @@ public class TwoManRuleActuator extends FourEyesActuator {
                if (status == ExecutionStatus.EXECUTED) {
                   co.setExecutionStatus(ExecutionStatus.EXECUTED);
                }
-               co.setApprovalDate(new Date());
-               co.setApprovalUser(Context.internalSessionScope().getSecondUser());
-               co.setApprovalRemark(Context.internalRequestScope().getRemark());
+               co.setReleaseDate(new Date());
+               co.setReleaseUser(Context.internalSessionScope().getSecondUser());
+               co.setReleaseRemark(Context.internalRequestScope().getRemark());
 
                if (co.getControllableId() != null) {
                   // if (isEncrypt()) {
@@ -395,8 +397,8 @@ public class TwoManRuleActuator extends FourEyesActuator {
          throw new InvalidUserException(msg);
       }
 
-      if (co.getApprovalUser() != null && !co.getApprovalUser().equals(approvalUserId)) {
-         String msg = "release failed: Only user" + co.getApprovalUser()
+      if (co.getReleaseUser() != null && !co.getReleaseUser().equals(approvalUserId)) {
+         String msg = "release failed: Only user" + co.getReleaseUser()
                + " is allowed to release/reject Controllable with ID " + co.getControllableId();
          log.error(msg);
          throw new InvalidUserException(msg);
