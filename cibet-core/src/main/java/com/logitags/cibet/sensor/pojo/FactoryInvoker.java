@@ -77,7 +77,10 @@ public class FactoryInvoker extends PojoInvoker {
          for (Method method : methods) {
             if (method.getReturnType().isAssignableFrom(clazz) && method.getParameterTypes().length == 0
                   && Modifier.isStatic(method.getModifiers())) {
-               return (T) method.invoke(null, (Object[]) null);
+               T t = (T) method.invoke(null, (Object[]) null);
+               if (t != null && clazz.isInstance(t)) {
+                  return t;
+               }
             }
          }
 
@@ -87,7 +90,10 @@ public class FactoryInvoker extends PojoInvoker {
          if (factoryClassMethod[1] != null) {
             Method method = facClass.getMethod(factoryClassMethod[1], (Class[]) null);
             if (method.getReturnType().isAssignableFrom(clazz) && method.getParameterTypes().length == 0) {
-               return (T) method.invoke(factory, (Object[]) null);
+               T t = (T) method.invoke(factory, (Object[]) null);
+               if (t != null && clazz.isInstance(t)) {
+                  return t;
+               }
             }
          }
 
@@ -95,7 +101,9 @@ public class FactoryInvoker extends PojoInvoker {
          for (Method method : methods) {
             if (method.getReturnType().isAssignableFrom(clazz) && method.getParameterTypes().length == 0) {
                T t = (T) method.invoke(factory, (Object[]) null);
-               return t;
+               if (t != null && clazz.isInstance(t)) {
+                  return t;
+               }
             }
          }
 

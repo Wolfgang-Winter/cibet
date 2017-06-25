@@ -66,13 +66,10 @@ import com.logitags.cibet.sensor.jpa.JpaResource;
 @Entity
 @Table(name = "CIB_ARCHIVE")
 @NamedQueries({ @NamedQuery(name = Archive.SEL_ALL, query = "SELECT a FROM Archive a ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_BY_PRIMARYKEYID, query = "SELECT a FROM Archive a WHERE a.resource.target = :targetType AND a.resource.primaryKeyId = :primaryKeyId ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_BY_GROUPID, query = "SELECT a FROM Archive a WHERE a.resource.groupId = :groupId ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_TENANT, query = "SELECT a FROM Archive a WHERE a.tenant LIKE :tenant ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CASEID, query = "SELECT a FROM Archive a WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CASEID_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.caseId = :caseId ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_BY_METHODNAME, query = "SELECT a FROM Archive a WHERE a.tenant = :tenant AND a.resource.target = :objectClass AND a.resource.method = :methodName ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_BY_METHODNAME_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.resource.target = :objectClass AND a.resource.method = :methodName ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CLASS, query = "SELECT a FROM Archive a WHERE a.tenant LIKE :tenant AND a.resource.target = :targetType ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CLASS_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.resource.target = :targetType ORDER BY a.createDate") })
 public class Archive implements Serializable {
@@ -80,6 +77,9 @@ public class Archive implements Serializable {
    private static final long serialVersionUID = 1L;
 
    private static Log log = LogFactory.getLog(Archive.class);
+
+   public static final String ARCHIVE = "a.archiveid, a.remark, a.checksum, a.controlevent, a.createuser, a.createdate, a.tenant, a.caseid, "
+         + "a.executionstatus, a.version, a.resourceid";
 
    /**
     * named query
@@ -106,13 +106,16 @@ public class Archive implements Serializable {
    /**
     * named query
     */
-   public final static String SEL_BY_METHODNAME = "ARCHIVE_SEL_BY_METHODNAME";
-   public final static String SEL_BY_METHODNAME_NO_TENANT = "ARCHIVE_SEL_BY_METHODNAME_NO_TENANT";
+   public final static String SEL_BY_METHODNAME = "SELECT " + ARCHIVE
+         + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND a.TENANT = ? AND r.TARGET = ? AND r.METHOD = ? ORDER BY a.CREATEDATE";
+   public final static String SEL_BY_METHODNAME_NO_TENANT = "SELECT " + ARCHIVE
+         + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND r.TARGET = ? AND r.METHOD = ? ORDER BY a.CREATEDATE";
 
    /**
     * named query
     */
-   public static final String SEL_BY_PRIMARYKEYID = "ARCHIVE_SEL_BY_PRIMARYKEYID";
+   public static final String SEL_BY_PRIMARYKEYID = "SELECT " + ARCHIVE
+         + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND r.TARGET = ? AND r.PRIMARYKEYID = ? ORDER BY a.CREATEDATE";
    public final static String SEL_BY_GROUPID = "com.logitags.cibet.actuator.archive.Archive.SEL_BY_GROUPID";
 
    /**

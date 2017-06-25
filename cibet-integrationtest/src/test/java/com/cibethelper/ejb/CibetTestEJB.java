@@ -338,9 +338,9 @@ public class CibetTestEJB {
    public List<Archive> queryArchive(String tenant, String targetType, String objectId) {
       EntityManager em = Context.requestScope().getEntityManager();
       em.clear();
-      Query q = em.createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
-      q.setParameter("targetType", targetType);
-      q.setParameter("primaryKeyId", objectId);
+      Query q = em.createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      q.setParameter(1, targetType);
+      q.setParameter(2, objectId);
       return q.getResultList();
    }
 

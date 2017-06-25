@@ -3,10 +3,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
         version="2.0">
+
   
    <persistence-unit name="CibetLocal" transaction-type="RESOURCE_LOCAL">
       <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
-      <mapping-file>orm-openjpa.xml</mapping-file>
       <class>com.logitags.cibet.core.EventResult</class>
       <class>com.logitags.cibet.resource.Resource</class>
       <class>com.logitags.cibet.sensor.ejb.EjbResource</class>
@@ -20,14 +20,15 @@
       <class>com.logitags.cibet.actuator.common.Controllable</class>
       
       <properties>
-<!--          <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/> -->
-         <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
-         <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
-         <property name="javax.persistence.jdbc.user" value="APP"/>
-         <property name="javax.persistence.jdbc.password" value="x"/>
+         <property name="openjpa.jdbc.SchemaFactory" value="native(ForeignKeys=true)"/>
+         <property name="openjpa.Log" value="log4j"/>
+         <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+         <property name="openjpa.jdbc.DBDictionary" value="SupportsMultipleNontransactionalResultSets=false"/>
+         <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@192.168.1.64:1521:xe"/>
+         <property name="javax.persistence.jdbc.user" value="cibet"/>
+         <property name="javax.persistence.jdbc.password" value="cibet"/>
 
-         <property name="hibernate.format_sql" value="true" />
-<!--          <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
       </properties>
    </persistence-unit>
 
@@ -38,17 +39,23 @@
       <class>com.logitags.cibet.resource.ResourceParameter</class>
       <class>com.logitags.cibet.actuator.archive.Archive</class>
       <class>com.logitags.cibet.actuator.common.Controllable</class>
+      <class>com.logitags.cibet.sensor.ejb.EjbResource</class>
+      <class>com.logitags.cibet.sensor.http.HttpRequestResource</class>
+      <class>com.logitags.cibet.sensor.jdbc.driver.JdbcResource</class>
+      <class>com.logitags.cibet.sensor.jpa.JpaResource</class>
+      <class>com.logitags.cibet.sensor.jpa.JpaQueryResource</class>
+      <class>com.logitags.cibet.sensor.pojo.MethodResource</class>
       
       <properties>
-<!--          <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/> -->
-         <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
-         <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
-         <property name="javax.persistence.jdbc.user" value="APP"/>
-         <property name="javax.persistence.jdbc.password" value="x"/>
+         <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@192.168.1.64:1521:xe"/>
+         <property name="javax.persistence.jdbc.user" value="cibet"/>
+         <property name="javax.persistence.jdbc.password" value="cibet"/>
       </properties>
    </persistence-unit>
 
    <persistence-unit name="localTest" transaction-type="RESOURCE_LOCAL">
+<!--       <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider> -->
       <provider>com.logitags.cibet.sensor.jpa.Provider</provider>
       <class>com.cibethelper.entities.TEntity</class>
       <class>com.cibethelper.entities.TComplexEntity</class>
@@ -62,19 +69,17 @@
       <properties>
          <property name="com.logitags.cibet.persistence.provider" value="org.apache.openjpa.persistence.PersistenceProviderImpl"/>
          
-<!--          <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/> -->
-         <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
-         <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
-         <property name="javax.persistence.jdbc.user" value="APP"/>
-         <property name="javax.persistence.jdbc.password" value="x"/>
+         <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@192.168.1.64:1521:xe"/>
+         <property name="javax.persistence.jdbc.user" value="cibet"/>
+         <property name="javax.persistence.jdbc.password" value="cibet"/>
 
-<!--         <property name="hibernate.show_sql" value="true" /> -->
-         <property name="hibernate.format_sql" value="true" />
-<!--          <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
-         <property name="hibernate.listeners.envers.autoRegister" value="false"/>
-         <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
+<!--          <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" /> -->
+         <property name="openjpa.jdbc.SchemaFactory" value="native(ForeignKeys=true)"/>
          <property name="openjpa.Log" value="log4j"/>
          <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+      <!-- Bug: https://issues.apache.org/jira/browse/OPENJPA-1955?jql=text%20~%20%22TemporalType%22 -->
+         <property name="openjpa.jdbc.QuerySQLCache" value="false"/>
       </properties>
    </persistence-unit>
 

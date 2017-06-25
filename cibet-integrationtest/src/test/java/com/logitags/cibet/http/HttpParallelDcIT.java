@@ -125,6 +125,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
 
    private Controllable checkDc(String target, String method, int count) throws Exception {
       log.debug("now check");
+      Context.requestScope().getEntityManager().clear();
 
       List<Controllable> list = null;
       for (int i = 1; i < 6; i++) {

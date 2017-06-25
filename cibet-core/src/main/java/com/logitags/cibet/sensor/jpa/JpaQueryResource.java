@@ -204,8 +204,8 @@ public class JpaQueryResource extends Resource {
    private void setParameter(Query query, ResourceParameter par) {
       switch (par.getParameterType()) {
       case JPA_INDEXED_CALENDAR_PARAMETER:
-         query.setParameter(par.getSequence(), (Calendar) par.getUnencodedValue(),
-               TemporalType.valueOf(par.getClassname()));
+         TemporalType tt = TemporalType.valueOf(par.getClassname());
+         query.setParameter(par.getSequence(), (Calendar) par.getUnencodedValue(), tt);
          break;
       case JPA_INDEXED_PARAMETER:
          query.setParameter(par.getSequence(), par.getUnencodedValue());

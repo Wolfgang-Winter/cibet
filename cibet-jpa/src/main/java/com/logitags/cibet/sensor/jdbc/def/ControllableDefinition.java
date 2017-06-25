@@ -40,10 +40,6 @@ public class ControllableDefinition extends ResourceDefinition {
 
    public static final String SEL_BY_PRIMARYKEY = "CONTROLLABLE.SEL_BY_PRIMARYKEY";
 
-   protected static final String CONTROLLABLE = "d.controllableid, d.caseid, d.controlevent, d.createuser, d.createdate, "
-         + "d.createaddress, d.createremark, d.tenant, d.actuator, d.firstapprovuser, d.firstapprovaldate, d.firstapprovaddr, "
-         + "d.firstapprovremark, d.releaseuser, d.releasedate, d.releaseaddress, d.releaseremark, d.executionstatus, d.version"
-         + ", d.scheduleddate, d.executiondate, d.resourceid";
    protected static final String CONTROLLABLE2 = "controllableid, caseid, controlevent, createuser, createdate, "
          + "createaddress, createremark, tenant, actuator, firstapprovuser, firstapprovaldate, firstapprovaddr, "
          + "firstapprovremark, releaseuser, releasedate, releaseaddress, releaseremark, executionstatus, version"
@@ -69,65 +65,63 @@ public class ControllableDefinition extends ResourceDefinition {
    }
 
    public ControllableDefinition() {
-      queries.put(SEL_BY_PRIMARYKEY, "SELECT " + CONTROLLABLE + " FROM cib_controllable d WHERE d.controllableid = ?");
+      queries.put(SEL_BY_PRIMARYKEY,
+            "SELECT " + Controllable.CONTROLLABLE + " FROM cib_controllable d WHERE d.controllableid = ?");
 
-      queries.put(Controllable.SEL_BY_TENANT, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_BY_TENANT, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d WHERE d.tenant LIKE ? AND (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
 
-      queries.put(Controllable.SEL_ALL, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_ALL, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d WHERE (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
 
-      queries.put(Controllable.SEL_BY_TENANT_CLASS, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_BY_TENANT_CLASS, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and d.tenant LIKE ? AND r.target = ? AND (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
 
-      queries.put(Controllable.SEL_BY_CLASS, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_BY_CLASS, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and r.target = ? AND (d.executionstatus = 'POSTPONED' OR d.executionStatus = 'FIRST_POSTPONED' OR d.executionStatus = 'FIRST_RELEASED')");
 
-      queries.put(Controllable.SEL_BY_ID_CLASS, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_BY_ID_CLASS, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and r.primarykeyid = ? AND r.target = ? AND (d.executionstatus = 'POSTPONED' OR d.executionstatus = 'FIRST_POSTPONED' OR d.executionstatus = 'FIRST_RELEASED')");
 
-      queries.put(Controllable.SEL_BY_CASEID, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_BY_CASEID, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d WHERE d.tenant LIKE ? AND d.caseid = ? ORDER BY d.createdate");
 
-      queries.put(Controllable.SEL_BY_CASEID_NO_TENANT,
-            "SELECT " + CONTROLLABLE + " FROM cib_controllable d WHERE d.caseid = ? ORDER BY d.createdate");
+      queries.put(Controllable.SEL_BY_CASEID_NO_TENANT, "SELECT " + Controllable.CONTROLLABLE
+            + " FROM cib_controllable d WHERE d.caseid = ? ORDER BY d.createdate");
 
-      queries.put(Controllable.SEL_BY_UNIQUEID, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_BY_UNIQUEID, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and r.uniqueid = ? ORDER BY d.createdate");
 
       queries.put(Controllable.SEL_BY_USER,
-            "SELECT " + CONTROLLABLE + " FROM cib_controllable d WHERE d.createuser = ? AND d.tenant = ?");
+            "SELECT " + Controllable.CONTROLLABLE + " FROM cib_controllable d WHERE d.createuser = ? AND d.tenant = ?");
 
       queries.put(Controllable.SEL_BY_USER_NO_TENANT,
-            "SELECT " + CONTROLLABLE + " FROM cib_controllable d WHERE d.createuser = ?");
+            "SELECT " + Controllable.CONTROLLABLE + " FROM cib_controllable d WHERE d.createuser = ?");
 
-      queries.put(Controllable.SEL_SCHED_BY_DATE, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_SCHED_BY_DATE, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d WHERE d.actuator = ? AND d.executionstatus = 'SCHEDULED' AND d.scheduleddate <= ?");
 
-      queries.put(Controllable.SEL_SCHED_BY_TARGETTYPE, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_SCHED_BY_TARGETTYPE, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and d.tenant LIKE ? AND r.target = ? AND d.executionstatus = 'SCHEDULED'");
 
-      queries.put(Controllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and r.target = ? AND d.executionstatus = 'SCHEDULED'");
 
-      queries.put(Controllable.SEL_SCHED_BY_TENANT, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_SCHED_BY_TENANT, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d WHERE d.tenant LIKE ? AND d.executionstatus = 'SCHEDULED'");
 
       queries.put(Controllable.SEL_SCHED,
-            "SELECT " + CONTROLLABLE + " FROM cib_controllable d WHERE d.executionstatus = 'SCHEDULED'");
+            "SELECT " + Controllable.CONTROLLABLE + " FROM cib_controllable d WHERE d.executionstatus = 'SCHEDULED'");
 
       queries.put(Controllable.SEL_LOCKED_BY_TARGETTYPE,
-            "SELECT " + CONTROLLABLE + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and "
+            "SELECT " + Controllable.CONTROLLABLE
+                  + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and "
                   + "d.tenant LIKE ? AND r.target = ? AND d.executionstatus = 'LOCKED'");
 
-      queries.put(Controllable.SEL_LOCKED_BY_TARGETTYPE_METHOD,
-            "SELECT " + CONTROLLABLE + " FROM cib_controllable d, cib_resource r WHERE d.resourceid = r.resourceid and "
-                  + "d.tenant LIKE ? AND r.target = ? AND r.method = ? AND d.executionstatus = 'LOCKED'");
-
-      queries.put(Controllable.SEL_LOCKED_ALL, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_LOCKED_ALL, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d WHERE d.tenant LIKE ? AND d.executionstatus = 'LOCKED'");
 
-      queries.put(Controllable.SEL_LOCKED_BY_USER, "SELECT " + CONTROLLABLE
+      queries.put(Controllable.SEL_LOCKED_BY_USER, "SELECT " + Controllable.CONTROLLABLE
             + " FROM cib_controllable d WHERE d.tenant LIKE ? AND d.createuser = ? AND d.executionstatus = 'LOCKED'");
    }
 

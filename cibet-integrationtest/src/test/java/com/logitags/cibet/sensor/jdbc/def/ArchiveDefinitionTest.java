@@ -403,9 +403,9 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          Assert.assertEquals(sa.getArchiveId(), list.get(0).getArchiveId());
          Assert.assertEquals(sa2.getArchiveId(), list.get(1).getArchiveId());
 
-         q = jdbcEM.createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
-         q.setParameter("c", "class");
-         q.setParameter("c", 25);
+         q = jdbcEM.createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+         q.setParameter(1, "class");
+         q.setParameter(2, 25);
          list = q.getResultList();
          Assert.assertEquals(2, list.size());
          Assert.assertEquals(sa.getArchiveId(), list.get(0).getArchiveId());

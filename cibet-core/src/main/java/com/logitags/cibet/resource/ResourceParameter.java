@@ -26,6 +26,9 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.logitags.cibet.core.CibetUtil;
 
 /**
@@ -40,6 +43,8 @@ public class ResourceParameter implements Serializable {
     * 
     */
    private static final long serialVersionUID = 881896023854621131L;
+
+   private static Log log = LogFactory.getLog(ResourceParameter.class);
 
    /**
     * unique internal ID
@@ -122,6 +127,7 @@ public class ResourceParameter implements Serializable {
 
       if (parameterId == null) {
          parameterId = UUID.randomUUID().toString();
+         log.debug("PREPERSIST: " + parameterId);
       }
    }
 

@@ -6,6 +6,7 @@
   
    <persistence-unit name="CibetLocal" transaction-type="RESOURCE_LOCAL">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
+<!--       <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider> -->
       <class>com.logitags.cibet.core.EventResult</class>
       <class>com.logitags.cibet.resource.Resource</class>
       <class>com.logitags.cibet.sensor.ejb.EjbResource</class>
@@ -25,6 +26,10 @@
          <property name="javax.persistence.jdbc.user" value="root"/>
          <property name="javax.persistence.jdbc.password" value="salute"/>
 
+         <property name="eclipselink.logging.level.sql" value="FINE"/>
+         <property name="eclipselink.logging.parameters" value="true"/>
+         <property name="eclipselink.logging.file" value="d:/temp/ELoutput.log"/>
+         <property name="eclipselink.logging.logger" value="DefaultLogger"/>
          <property name="hibernate.format_sql" value="true" />
       </properties>
    </persistence-unit>
@@ -40,6 +45,7 @@
       
       <properties>
          <property name="com.logitags.cibet.persistence.provider" value="org.hibernate.ejb.HibernatePersistence"/>
+<!--          <property name="com.logitags.cibet.persistence.provider" value="org.eclipse.persistence.jpa.PersistenceProvider"/> -->
          
          <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
          <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
@@ -47,6 +53,10 @@
          <property name="javax.persistence.jdbc.user" value="root"/>
          <property name="javax.persistence.jdbc.password" value="salute"/>
 
+         <property name="eclipselink.logging.level.sql" value="FINE"/>
+         <property name="eclipselink.logging.parameters" value="true"/>
+         <property name="eclipselink.logging.file" value="d:/temp/ELoutput.log"/>
+         <property name="eclipselink.logging.logger" value="DefaultLogger"/>
          <property name="hibernate.format_sql" value="true" />
          <property name="hibernate.listeners.envers.autoRegister" value="false"/>
       </properties>

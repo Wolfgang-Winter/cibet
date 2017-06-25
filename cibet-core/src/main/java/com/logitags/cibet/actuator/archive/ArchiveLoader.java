@@ -155,14 +155,31 @@ public abstract class ArchiveLoader {
          log.error(msg);
          throw new RuntimeException(msg);
       }
-      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_METHODNAME);
-      query.setParameter("tenant", Context.internalSessionScope().getTenant());
-      query.setParameter("objectClass", objectClass.getName());
-      query.setParameter("methodName", methodName);
+      Query query = Context.internalRequestScope().getEntityManager().createNativeQuery(Archive.SEL_BY_METHODNAME,
+            Archive.class);
+      query.setParameter(1, Context.internalSessionScope().getTenant());
+      query.setParameter(2, objectClass.getName());
+      query.setParameter(3, methodName);
       List<Archive> list = (List<Archive>) query.getResultList();
       decrypt(list);
       return list;
    }
+
+   // public static List<Archive> old_loadArchivesByMethodName(Class<?> objectClass, String methodName) {
+   // if (objectClass == null) {
+   // String msg = "parameter objectClass may not be null! "
+   // + "Call method loadArchivesByMethodName() with a Class object";
+   // log.error(msg);
+   // throw new RuntimeException(msg);
+   // }
+   // Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_METHODNAME);
+   // query.setParameter("tenant", Context.internalSessionScope().getTenant());
+   // query.setParameter("objectClass", objectClass.getName());
+   // query.setParameter("methodName", methodName);
+   // List<Archive> list = (List<Archive>) query.getResultList();
+   // decrypt(list);
+   // return list;
+   // }
 
    /**
     * loads all archives that reference a method call in the given class. Tenant is not taken into account.
@@ -181,9 +198,9 @@ public abstract class ArchiveLoader {
          throw new RuntimeException(msg);
       }
       Query query = Context.internalRequestScope().getEntityManager()
-            .createNamedQuery(Archive.SEL_BY_METHODNAME_NO_TENANT);
-      query.setParameter("objectClass", objectClass.getName());
-      query.setParameter("methodName", methodName);
+            .createNativeQuery(Archive.SEL_BY_METHODNAME_NO_TENANT, Archive.class);
+      query.setParameter(1, objectClass.getName());
+      query.setParameter(2, methodName);
       List<Archive> list = (List<Archive>) query.getResultList();
       decrypt(list);
       return list;
@@ -200,12 +217,13 @@ public abstract class ArchiveLoader {
     * @return list of Archives
     */
    public static List<Archive> loadArchivesByPrimaryKeyId(String target, Object primaryKeyId) {
-      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
-      query.setParameter("targetType", target);
+      Query query = Context.internalRequestScope().getEntityManager().createNativeQuery(Archive.SEL_BY_PRIMARYKEYID,
+            Archive.class);
+      query.setParameter(1, target);
       if (primaryKeyId == null) {
-         query.setParameter("primaryKeyId", null);
+         query.setParameter(2, null);
       } else {
-         query.setParameter("primaryKeyId", primaryKeyId.toString());
+         query.setParameter(2, primaryKeyId.toString());
       }
       List<Archive> list = (List<Archive>) query.getResultList();
       decrypt(list);

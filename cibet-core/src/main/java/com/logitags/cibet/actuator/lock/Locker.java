@@ -1,6 +1,7 @@
 package com.logitags.cibet.actuator.lock;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.TypedQuery;
@@ -255,11 +256,29 @@ public abstract class Locker {
     */
    public static List<Controllable> loadLockedObjects(Class<?> cl, String method) {
       TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
-            .createNamedQuery(Controllable.SEL_LOCKED_BY_TARGETTYPE_METHOD, Controllable.class);
+            .createNamedQuery(Controllable.SEL_LOCKED_BY_TARGETTYPE, Controllable.class);
       query.setParameter("tenant", Context.internalSessionScope().getTenant());
       query.setParameter("targettype", cl.getName());
-      query.setParameter("method", method);
-      return query.getResultList();
+      List<Controllable> list = query.getResultList();
+      Iterator<Controllable> iter = list.iterator();
+      while (iter.hasNext()) {
+         Controllable co = iter.next();
+         if (co.getResource() instanceof MethodResource) {
+            String resMethod = ((MethodResource) co.getResource()).getMethod();
+            if ((method == null && resMethod != null) || (method != null && !method.equals(resMethod))) {
+               iter.remove();
+            }
+         } else if (co.getResource() instanceof HttpRequestResource) {
+            String resMethod = ((HttpRequestResource) co.getResource()).getMethod();
+            if ((method == null && resMethod != null) || (method != null && !method.equals(resMethod))) {
+               iter.remove();
+            }
+
+         } else {
+            iter.remove();
+         }
+      }
+      return list;
    }
 
    protected static void isLocked(Object obj, ControlEvent event) throws AlreadyLockedException {

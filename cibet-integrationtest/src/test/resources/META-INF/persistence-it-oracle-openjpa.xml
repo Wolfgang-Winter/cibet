@@ -5,7 +5,7 @@
 	version="2.0">
 
 	<persistence-unit name="Cibet" transaction-type="JTA">
-		<provider>com.logitags.cibet.sensor.jdbc.bridge.JdbcBridgeProvider</provider>
+      <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
 		<jta-data-source>java:/CibetDS</jta-data-source>
 		<class>com.logitags.cibet.actuator.archive.Archive</class>
 		<class>com.logitags.cibet.actuator.common.Controllable</class>
@@ -20,6 +20,10 @@
       <class>com.logitags.cibet.sensor.pojo.MethodResource</class>
 
 		<properties>
+         <property name="openjpa.Log" value="log4j"/>
+         <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+         <property name="openjpa.jdbc.SchemaFactory" value="native(ForeignKeys=true)"/>
+<!--          <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" /> -->
 		</properties>
 	</persistence-unit>
 
@@ -33,7 +37,25 @@
 			<property name="com.logitags.cibet.persistence.provider" value="org.apache.openjpa.persistence.PersistenceProviderImpl" />
          <property name="openjpa.Log" value="log4j"/>
          <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+         <property name="openjpa.jdbc.SchemaFactory" value="native(ForeignKeys=true)"/>
+<!--          <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" /> -->
 		</properties>
 	</persistence-unit>
+
+   <persistence-unit name="APPL-UNIT-EAGER" transaction-type="JTA">
+      <provider>com.logitags.cibet.sensor.jpa.Provider</provider>
+      <jta-data-source>java:/CibetDS</jta-data-source>
+      <class>com.cibethelper.entities.TEntity</class>
+      <class>com.cibethelper.entities.TComplexEntity</class>
+      <class>com.cibethelper.entities.TComplexEntity2</class>
+      <properties>
+         <property name="com.logitags.cibet.persistence.provider" value="org.apache.openjpa.persistence.PersistenceProviderImpl" />
+         <property name="com.logitags.cibet.persistence.loadEager" value="true"/>
+         <property name="openjpa.Log" value="log4j"/>
+         <property name="openjpa.ConnectionFactoryProperties" value="PrintParameters=true" />
+         <property name="openjpa.jdbc.SchemaFactory" value="native(ForeignKeys=true)"/>
+<!--          <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" /> -->
+      </properties>
+   </persistence-unit>
 
 </persistence>

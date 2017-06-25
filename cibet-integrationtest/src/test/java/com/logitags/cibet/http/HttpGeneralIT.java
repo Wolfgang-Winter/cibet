@@ -323,8 +323,10 @@ public class HttpGeneralIT extends AbstractArquillian {
       Assert.assertEquals(1, tentList.size());
 
       localcibet.clear();
-      q = localcibet.createQuery("SELECT e FROM Controllable e WHERE e.resource.primaryKeyId = :id");
-      q.setParameter("id", id);
+      q = localcibet.createNativeQuery(
+            "SELECT e.* FROM CIB_CONTROLLABLE e, CIB_RESOURCE r WHERE e.resourceid = r.resourceid AND r.primaryKeyId = ?",
+            Controllable.class);
+      q.setParameter(1, id);
       dcList = q.getResultList();
       Assert.assertEquals(1, dcList.size());
       log.debug(dcList.get(0));

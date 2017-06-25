@@ -162,7 +162,7 @@ public class ArchiveActuator extends AbstractActuator {
          }
          resource.setUniqueId(jpaRes.getUniqueId());
          update(arch);
-         log.info(arch.getArchiveId() + " archive updated with objectId.");
+         log.info(arch.getArchiveId() + " archive primarykey updated with " + resource.getPrimaryKeyId());
       }
    }
 
@@ -207,8 +207,6 @@ public class ArchiveActuator extends AbstractActuator {
       EntityManager em = Context.internalRequestScope().getEntityManager();
       if (isEncrypt()) {
          ar.getResource().encrypt();
-         // } else {
-         // ar.getResource().setEncrypted(false);
       }
 
       ar.setResource(em.merge(ar.getResource()));

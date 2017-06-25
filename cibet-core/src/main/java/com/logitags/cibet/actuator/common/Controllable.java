@@ -56,7 +56,6 @@ import com.logitags.cibet.resource.Resource;
       @NamedQuery(name = Controllable.SEL_BY_TENANT, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
       @NamedQuery(name = Controllable.SEL_BY_GROUPID, query = "SELECT a FROM Controllable a WHERE a.resource.groupId = :groupId"),
       @NamedQuery(name = Controllable.SEL_ALL, query = "SELECT a FROM Controllable a WHERE (a.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR a.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
-      @NamedQuery(name = Controllable.SEL_BY_ID_CLASS, query = "SELECT ob FROM Controllable ob WHERE ob.resource.primaryKeyId = :objectId AND ob.resource.target = :objectClass AND (ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.POSTPONED OR ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_POSTPONED OR ob.executionStatus = com.logitags.cibet.core.ExecutionStatus.FIRST_RELEASED)"),
       @NamedQuery(name = Controllable.SEL_BY_UNIQUEID, query = "SELECT d FROM Controllable d WHERE d.resource.uniqueId = :uniqueId ORDER BY d.createDate"),
       @NamedQuery(name = Controllable.SEL_BY_USER, query = "SELECT d FROM Controllable d WHERE d.createUser = :user AND d.tenant=:tenant"),
       @NamedQuery(name = Controllable.SEL_BY_USER_NO_TENANT, query = "SELECT d FROM Controllable d WHERE d.createUser = :user"),
@@ -68,7 +67,6 @@ import com.logitags.cibet.resource.Resource;
       @NamedQuery(name = Controllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT, query = "SELECT a FROM Controllable a WHERE a.resource.target = :oclass AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED"),
       @NamedQuery(name = Controllable.SEL_SCHED_BY_DATE, query = "SELECT a FROM Controllable a WHERE a.actuator = :actuator AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.SCHEDULED AND a.scheduledDate <= :currentDate"),
       @NamedQuery(name = Controllable.SEL_LOCKED_BY_TARGETTYPE, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.resource.target = :targettype AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
-      @NamedQuery(name = Controllable.SEL_LOCKED_BY_TARGETTYPE_METHOD, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.resource.target = :targettype AND a.resource.method = :method AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
       @NamedQuery(name = Controllable.SEL_LOCKED_ALL, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED"),
       @NamedQuery(name = Controllable.SEL_LOCKED_BY_USER, query = "SELECT a FROM Controllable a WHERE a.tenant LIKE :tenant AND a.createUser = :user AND a.executionStatus = com.logitags.cibet.core.ExecutionStatus.LOCKED") })
 public class Controllable implements Serializable {
@@ -79,6 +77,11 @@ public class Controllable implements Serializable {
    private static final long serialVersionUID = 1L;
 
    private static Log log = LogFactory.getLog(Controllable.class);
+
+   public static final String CONTROLLABLE = "d.controllableid, d.caseid, d.controlevent, d.createuser, d.createdate, "
+         + "d.createaddress, d.createremark, d.tenant, d.actuator, d.firstapprovuser, d.firstapprovaldate, d.firstapprovaddr, "
+         + "d.firstapprovremark, d.releaseuser, d.releasedate, d.releaseaddress, d.releaseremark, d.executionstatus, d.version"
+         + ", d.scheduleddate, d.executiondate, d.resourceid";
 
    /**
     * named query
@@ -91,7 +94,8 @@ public class Controllable implements Serializable {
    public final static String SEL_BY_TENANT = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_TENANT";
    public final static String SEL_ALL = "com.logitags.cibet.actuator.common.Controllable.SEL_ALL";
 
-   public final static String SEL_BY_ID_CLASS = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_ID_CLASS";
+   public final static String SEL_BY_ID_CLASS = "SELECT " + CONTROLLABLE
+         + " FROM CIB_CONTROLLABLE d, CIB_RESOURCE r WHERE d.RESOURCEID = r.RESOURCEID AND r.PRIMARYKEYID = ? AND r.TARGET = ? AND (d.EXECUTIONSTATUS = 'POSTPONED' OR d.EXECUTIONSTATUS = 'FIRST_POSTPONED' OR d.EXECUTIONSTATUS = 'FIRST_RELEASED')";
 
    public final static String SEL_BY_CASEID = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_CASEID";
    public final static String SEL_BY_CASEID_NO_TENANT = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_CASEID_NO_TENANT";
@@ -111,7 +115,6 @@ public class Controllable implements Serializable {
    public final static String SEL_BY_GROUPID = "com.logitags.cibet.actuator.common.Controllable.SEL_BY_GROUPID";
 
    public final static String SEL_LOCKED_BY_TARGETTYPE = "com.logitags.cibet.actuator.common.Controllable.SEL_LOCKED_BY_TARGETTYPE";
-   public final static String SEL_LOCKED_BY_TARGETTYPE_METHOD = "com.logitags.cibet.actuator.common.Controllable.SEL_LOCKED_BY_TARGETTYPE_METHOD";
    public final static String SEL_LOCKED_ALL = "com.logitags.cibet.actuator.common.Controllable.SEL_LOCKED_ALL";
    public final static String SEL_LOCKED_BY_USER = "com.logitags.cibet.actuator.common.Controllable.SEL_LOCKED_BY_USER";
 

@@ -248,7 +248,8 @@ public class ChainedActuatorIT extends AbstractArquillian {
       log.debug(childs.get(4).getResource());
       Assert.assertTrue(childs.get(4).getResource().startsWith("[JpaResource] "));
       Assert.assertTrue(childs.get(4).getResource().indexOf("; primaryKeyId: 0") > 0);
-      Assert.assertTrue(childs.get(4).getResource().indexOf("targetType: com.cibethelper.entities.TComplexEntity") > 0);
+      log.debug("###" + childs.get(4).getResource());
+      Assert.assertTrue(childs.get(4).getResource().indexOf("target: com.cibethelper.entities.TComplexEntity") > 0);
 
       Assert.assertEquals(ControlEvent.INSERT, childs.get(4).getEvent());
       Assert.assertTrue(childs.get(5).getResource().indexOf("getId") > 0);
@@ -277,7 +278,7 @@ public class ChainedActuatorIT extends AbstractArquillian {
       log.debug(childs.get(4).getResource());
       Assert.assertTrue(childs.get(4).getResource().startsWith("[JpaResource] "));
       Assert.assertTrue(childs.get(4).getResource().indexOf("; primaryKeyId: 0") > 0);
-      Assert.assertTrue(childs.get(4).getResource().indexOf("targetType: com.cibethelper.entities.TComplexEntity") > 0);
+      Assert.assertTrue(childs.get(4).getResource().indexOf("target: com.cibethelper.entities.TComplexEntity") > 0);
 
       Assert.assertEquals(ControlEvent.INSERT, childs.get(4).getEvent());
       Assert.assertTrue(childs.get(5).getResource().indexOf("getId") > 0);

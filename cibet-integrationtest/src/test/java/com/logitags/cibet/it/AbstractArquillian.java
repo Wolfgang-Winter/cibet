@@ -192,6 +192,14 @@ public abstract class AbstractArquillian extends CoreTestBase {
       }
    }
 
+   protected void resetContext() {
+      Context.end();
+      Context.start();
+      Context.sessionScope().setUser(USER);
+      Context.sessionScope().setTenant(TENANT);
+
+   }
+
    private static void loadHTTPURL() {
       URL url = Thread.currentThread().getContextClassLoader().getResource("jndi_.properties");
       Properties properties = new Properties();

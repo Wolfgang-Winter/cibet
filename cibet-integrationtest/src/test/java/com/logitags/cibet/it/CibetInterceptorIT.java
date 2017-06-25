@@ -518,6 +518,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
 
       List<Archive> alist = ArchiveLoader.loadArchivesByMethodName(CibetTestEJB.class, "testInvoke");
       Assert.assertEquals(2, alist.size());
+      log.debug(alist.get(0));
    }
 
    @Test

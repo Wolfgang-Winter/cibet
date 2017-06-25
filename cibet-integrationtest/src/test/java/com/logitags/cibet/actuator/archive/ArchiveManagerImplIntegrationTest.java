@@ -64,25 +64,6 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       initConfiguration("cibet-config.xml");
    }
 
-   private List<Archive> persistSomeArchives(int difference, EntityManager eman) {
-      int nbr = 20;
-      Archive a = null;
-      for (int i = 0; i < nbr; i++) {
-         a = createArchive("A" + i);
-         insertNativeArchive(a, eman);
-      }
-      eman.clear();
-
-      log.info("checking ...");
-      // Query q = eman
-      // .createQuery("SELECT a FROM StateArchive a ORDER BY a.archiveId");
-      Query q = eman.createNamedQuery(Archive.SEL_ALL);
-      List<Archive> list = q.getResultList();
-      Assert.assertTrue(!list.isEmpty());
-      Assert.assertEquals("list size = " + list.size(), nbr + 1, list.size());
-      return list;
-   }
-
    private void doReleaseUpdate(List<String> schemes) throws Exception {
       registerSetpoint(TComplexEntity.class.getName(), schemes, ControlEvent.UPDATE, ControlEvent.RELEASE_UPDATE);
       Context.internalRequestScope().setApplicationEntityManager2(fac.createEntityManager());
@@ -577,6 +558,8 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       applEman.flush();
       applEman.clear();
 
+      resetContext();
+
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TEntity.class.getName(),
             String.valueOf(selEnt.getId()));
       Assert.assertEquals(3, list.size());
@@ -613,6 +596,8 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       applEman.remove(selEnt);
       applEman.flush();
       applEman.clear();
+
+      resetContext();
 
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity.class.getName(),
             String.valueOf(selEnt.getId()));
@@ -680,6 +665,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       registerSetpoint(TComplexEntity.class, ArchiveActuator.DEFAULTNAME, ControlEvent.INSERT, ControlEvent.UPDATE,
             ControlEvent.DELETE, ControlEvent.RESTORE);
 
+      // ((ArchiveActuator) Configuration.instance().getActuator(ArchiveActuator.DEFAULTNAME)).setLoadEager(false);
       TComplexEntity ce = createTComplexEntity();
       applEman.persist(ce);
       applEman.flush();
@@ -711,6 +697,8 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       log.debug("restore result=" + obj);
       Assert.assertNull(obj);
 
+      resetContext();
+
       List<Archive> list2 = ArchiveLoader.loadArchivesByCaseId(list.get(0).getCaseId());
       Assert.assertEquals(2, list2.size());
       Assert.assertEquals("Soll: 12", list2.get(1).getRemark());
@@ -724,6 +712,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       List<Controllable> dcList = DcLoader.findUnreleased(TComplexEntity.class.getName());
       Assert.assertEquals(1, dcList.size());
       Controllable dcObj = dcList.get(0);
+      log.debug("****: " + dcObj.getResource().getUnencodedTargetObject());
       Assert.assertEquals(list.get(0).getCaseId(), dcObj.getCaseId());
       Assert.assertEquals(ControlEvent.INSERT, dcObj.getControlEvent());
 
@@ -736,6 +725,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals(3, result.getLazyList().size());
       Assert.assertEquals(12, result.getCompValue());
 
+      applEman.clear();
       selEnt = applEman.find(TComplexEntity.class, result.getId());
       Assert.assertNotNull(selEnt);
       Assert.assertEquals(3, selEnt.getLazyList().size());
@@ -766,6 +756,8 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       selEnt = applEman.merge(selEnt);
       applEman.flush();
 
+      resetContext();
+
       List<String> schemes = new ArrayList<String>();
       schemes.add(ArchiveActuator.DEFAULTNAME);
       schemes.add(FourEyesActuator.DEFAULTNAME);
@@ -776,8 +768,11 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
             String.valueOf(selEnt.getId()));
       Assert.assertEquals(3, list.size());
 
+      // log.debug("***: " + list.get(2).getResource().getUnencodedTargetObject());
       TComplexEntity selEnt2 = (TComplexEntity) list.get(2).restore(applEman, "Soll: 14");
       Assert.assertNull(selEnt2);
+
+      resetContext();
 
       List<Archive> list2 = ArchiveLoader.loadArchivesByCaseId(list.get(2).getCaseId());
       Assert.assertEquals(2, list2.size());
@@ -931,6 +926,8 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       applEman.flush();
       applEman.clear();
 
+      resetContext();
+
       TComplexEntity selEnt3 = applEman.find(TComplexEntity.class, ce.getId());
       selEnt3.setOwner("Klaus");
       selEnt3.setCompValue(552);
@@ -941,12 +938,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       applEman.remove(selEnt3);
       applEman.flush();
       applEman.clear();
-      ((CibetEntityManager) applEman).setLoadEager(false);
 
-      Context.requestScope().getEntityManager().getTransaction().commit();
-      Context.requestScope().getEntityManager().getTransaction().begin();
-      applEman.getTransaction().commit();
-      applEman.getTransaction().begin();
+      resetContext();
+      ((CibetEntityManager) applEman).setLoadEager(false);
 
       log.debug("now check differences");
       List<Archive> ali = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity.class.getName(), id);

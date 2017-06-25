@@ -173,6 +173,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Assert.assertNull(er.getParentResult());
       Assert.assertEquals(ControlEvent.UPDATE, er.getEvent());
 
+      resetContext();
+
       List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
       Controllable co = l1.get(0);
@@ -247,6 +249,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       Resource res1 = list.get(1).getResource();
       Assert.assertNotNull(res1.getTargetObject());
 
+      resetContext();
+
       ut.begin();
       l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
@@ -315,6 +319,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       List<Archive> alist = ArchiveLoader.loadArchives();
       Assert.assertTrue(alist.size() == 1);
       String caseId = alist.get(0).getCaseId();
+
+      resetContext();
 
       List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
@@ -388,6 +394,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       applEman.remove(tce);
       ut.commit();
 
+      resetContext();
+
       // first release
       List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
@@ -450,6 +458,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       applEman.remove(tce);
       ut.commit();
 
+      resetContext();
+
       List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
       Controllable co = l1.get(0);
@@ -496,7 +506,6 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       release6Eyes(ControlEvent.INSERT, ControlEvent.FIRST_RELEASE_INSERT, ControlEvent.REJECT_INSERT, 0);
    }
 
-   // this
    @Test
    public void rejectMerge6Eyes() throws Exception {
       log.info("start rejectMerge6Eyes()");
@@ -545,6 +554,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       TComplexEntity ce = createTComplexEntity();
       persist(ce);
       remove(ce);
+
+      resetContext();
 
       List<Controllable> l1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, l1.size());
@@ -641,6 +652,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       remove(selEnt);
       applEman.clear();
 
+      resetContext();
+
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TEntity.class.getName(),
             String.valueOf(selEnt.getId()));
       Assert.assertEquals(3, list.size());
@@ -683,6 +696,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       applEman.flush();
       applEman.remove(selEnt);
       ut.commit();
+
+      resetContext();
 
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity.class.getName(),
             String.valueOf(selEnt.getId()));
@@ -728,6 +743,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       selEnt = applEman.merge(selEnt);
       ut.commit();
       Context.internalRequestScope().getEntityManager().clear();
+
+      resetContext();
 
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity.class.getName(),
             String.valueOf(selEnt.getId()));
@@ -799,6 +816,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
          Object primaryKey = ((TComplexEntity) res0.getUnencodedTargetObject()).getId();
          selEnt = applEman.find(TComplexEntity.class, primaryKey);
          Assert.assertNull(selEnt);
+
+         resetContext();
 
          List<Controllable> dcList = DcLoader.findUnreleased(TComplexEntity.class.getName());
          Assert.assertEquals(1, dcList.size());
@@ -1003,6 +1022,8 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       applEman.clear();
 
       remove(selEnt3);
+
+      resetContext();
 
       long id = selEnt.getId();
       log.debug("HERE 111");

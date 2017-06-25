@@ -38,8 +38,6 @@ import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditQuery;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -68,11 +66,6 @@ public class EnversActuatorIntegrationTest extends DBHelper {
       }
 
       initConfiguration("config_envers1.xml");
-   }
-
-   @Before
-   public void before() {
-      Assume.assumeTrue(JBOSS.equals(APPSERVER));
    }
 
    @After
@@ -115,6 +108,10 @@ public class EnversActuatorIntegrationTest extends DBHelper {
    }
 
    private void deleteAud() {
+      if (!JBOSS.equals(APPSERVER)) {
+         return;
+      }
+
       Query q = applEman.createNativeQuery("DELETE FROM CIB_COMPLEXTESTENTITY_AUD");
       q.executeUpdate();
       q = applEman.createNativeQuery("DELETE FROM CIB_TCOMPLEXENTITY_EAGER_AUD");
@@ -132,6 +129,9 @@ public class EnversActuatorIntegrationTest extends DBHelper {
 
    @Test
    public void persist1() throws Exception {
+      if (!JBOSS.equals(APPSERVER)) {
+         return;
+      }
       log.info("start persist1()");
 
       AuditedTComplexEntity ce = createAuditedTComplexEntity();
@@ -159,6 +159,9 @@ public class EnversActuatorIntegrationTest extends DBHelper {
 
    @Test
    public void persist2() throws Exception {
+      if (!JBOSS.equals(APPSERVER)) {
+         return;
+      }
       log.info("start persist2()");
       AuditedTComplexEntity ce = createAuditedTComplexEntity();
       applEman.persist(ce);
@@ -177,6 +180,9 @@ public class EnversActuatorIntegrationTest extends DBHelper {
 
    @Test
    public void delete1() throws Exception {
+      if (!JBOSS.equals(APPSERVER)) {
+         return;
+      }
       log.info("start delete1()");
       AuditedTComplexEntity ce = createAuditedTComplexEntity();
       applEman.persist(ce);
@@ -198,6 +204,9 @@ public class EnversActuatorIntegrationTest extends DBHelper {
 
    @Test
    public void update1() throws Exception {
+      if (!JBOSS.equals(APPSERVER)) {
+         return;
+      }
       log.info("start update1()");
       AuditedTComplexEntity ce = createAuditedTComplexEntity();
       applEman.persist(ce);

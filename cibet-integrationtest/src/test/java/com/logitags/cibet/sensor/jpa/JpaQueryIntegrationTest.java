@@ -365,13 +365,14 @@ public class JpaQueryIntegrationTest extends DBHelper {
    }
 
    @Test
-   public void queryNamedCalDate() throws ResourceApplyException {
+   public void queryNamedCalDate() throws Exception {
       log.info("start queryNamedCalDate()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = ?1 AND a.xCaldate = ?2";
       sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE);
 
       Date now = new Date();
       Calendar cal = Calendar.getInstance();
+      log.debug(cal);
       persistTEntity(5, now, cal);
 
       Query q = applEman.createQuery(qq);
@@ -393,6 +394,10 @@ public class JpaQueryIntegrationTest extends DBHelper {
       List<TEntity> tlist2 = (List<TEntity>) ar.redo("do it");
       Assert.assertEquals(1, tlist2.size());
       Assert.assertEquals(tlist.get(0).getId(), tlist2.get(0).getId());
+
+      q = applEman.createQuery(qq);
+      q.setParameter(1, TENANT);
+      q.setParameter(2, cal, TemporalType.DATE);
 
       TEntity te2 = (TEntity) q.getSingleResult();
       Assert.assertNotNull(te2);

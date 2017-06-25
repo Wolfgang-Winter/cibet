@@ -66,9 +66,15 @@ public class DBHelper extends CoreTestBase {
 
    @BeforeClass
    public static void beforeClass() throws Exception {
-      log.debug("beforeClass");
-      fac = Persistence.createEntityManagerFactory("localTest");
-      applEman = fac.createEntityManager();
+      try {
+         log.debug("beforeClass");
+         fac = Persistence.createEntityManagerFactory("localTest");
+         log.debug("now create EntityManager");
+         applEman = fac.createEntityManager();
+      } catch (Exception e) {
+         log.error(e.getMessage(), e);
+      }
+      log.debug("end beforeClass");
    }
 
    @Before
@@ -108,6 +114,7 @@ public class DBHelper extends CoreTestBase {
       // if (1 == 1)
       // return;
 
+      Context.internalRequestScope().getEntityManager().clear();
       applEman.clear();
       applEman.getTransaction().begin();
 
@@ -145,16 +152,29 @@ public class DBHelper extends CoreTestBase {
          Context.internalRequestScope().getEntityManager().remove(itEV.next());
       }
 
-      Query q7 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM Resource a");
-      Iterator<Resource> itR = q7.getResultList().iterator();
-      while (itR.hasNext()) {
-         Context.internalRequestScope().getEntityManager().remove(itR.next());
+      Query q8 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM Resource a");
+      List<Resource> ll = q8.getResultList();
+      log.debug("size::" + ll.size());
+
+      Iterator<Resource> itR2 = ll.iterator();
+      while (itR2.hasNext()) {
+         Context.internalRequestScope().getEntityManager().remove(itR2.next());
       }
 
       applEman.getTransaction().commit();
       // applEman.getTransaction().rollback();
 
       Context.end();
+   }
+
+   protected void resetContext() {
+      applEman.getTransaction().commit();
+      Context.end();
+      Context.start();
+      applEman.getTransaction().begin();
+      Context.sessionScope().setUser(USER);
+      Context.sessionScope().setTenant(TENANT);
+
    }
 
    protected TEntity persistTEntity() {
@@ -199,8 +219,10 @@ public class DBHelper extends CoreTestBase {
          applEman.persist(entity);
       } catch (PostponedException e) {
       }
+      log.debug("after persist");
       applEman.flush();
       applEman.clear();
+      log.debug("after persist");
       return entity;
    }
 

@@ -878,7 +878,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       sa.setAutoRemoveScheduledDate(false);
       sa.setBatchInterceptor(new SchedulerExceptionIntercept());
       Calendar cal = Calendar.getInstance();
-      cal.add(Calendar.SECOND, 4);
+      cal.add(Calendar.SECOND, 5);
       sa.setTimerStart(cal.getTime());
       Configuration.instance().registerActuator(sa);
 
@@ -926,14 +926,18 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       } catch (ScheduledException e) {
       }
 
+      resetContext();
+
       log.debug("-------------------- sleep");
       Thread.sleep(10000);
       log.debug("--------------- after TimerTask");
-      Context.internalRequestScope().getEntityManager().flush();
-      Context.internalRequestScope().getEntityManager().clear();
-      applEman.getTransaction().commit();
-      applEman.getTransaction().begin();
-      applEman.clear();
+
+      resetContext();
+      // Context.internalRequestScope().getEntityManager().flush();
+      // Context.internalRequestScope().getEntityManager().clear();
+      // applEman.getTransaction().commit();
+      // applEman.getTransaction().begin();
+      // applEman.clear();
 
       List<Controllable> sl = SchedulerLoader.loadByUser(USER);
       Assert.assertEquals(1, sl.size());

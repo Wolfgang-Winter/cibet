@@ -143,21 +143,6 @@
          <scope>test</scope>
 		</dependency>
 		
-      <!-- dependencies necessary for testing with hibernate -->
-      <dependency>
-         <groupId>org.hibernate</groupId>
-         <artifactId>hibernate-entitymanager</artifactId>
-         <version>4.2.15.Final</version>
-         <scope>test</scope>
-      </dependency>
-      
-      <dependency>
-         <groupId>org.apache.derby</groupId>
-         <artifactId>derbyclient</artifactId>
-         <version>10.10.2.0</version>
-         <scope>test</scope>
-      </dependency>
-      
       <dependency>
          <groupId>mysql</groupId>
          <artifactId>mysql-connector-java</artifactId>
@@ -166,22 +151,8 @@
          <scope>test</scope>
       </dependency>
 
-      <dependency>
-         <groupId>com.oracle</groupId>
-         <artifactId>ojdbc14</artifactId>
-         <version>10.2.0.4.0</version>
-         <scope>test</scope>
-      </dependency>
-      
       <!-- end dependencies necessary for testing with hibernate -->
 
-      <dependency>
-         <groupId>org.apache.openjpa</groupId>
-         <artifactId>openjpa</artifactId>
-         <version>2.4.0</version>
-         <scope>provided</scope>
-      </dependency>
-		
       <dependency>
          <groupId>org.apache.jmeter</groupId>
          <artifactId>ApacheJMeter_java</artifactId>
@@ -204,6 +175,14 @@
             <exclusion>
             	<artifactId>commons-pool2</artifactId>
             	<groupId>commons-pool2</groupId>
+            </exclusion>
+            <exclusion>
+            	<artifactId>xercesImpl</artifactId>
+            	<groupId>xerces</groupId>
+            </exclusion>
+            <exclusion>
+            	<artifactId>hsqldb</artifactId>
+            	<groupId>hsqldb</groupId>
             </exclusion>
          </exclusions>
       </dependency>
@@ -230,6 +209,10 @@
             <exclusion>
             	<artifactId>commons-pool2</artifactId>
             	<groupId>commons-pool2</groupId>
+            </exclusion>
+            <exclusion>
+            	<artifactId>xercesImpl</artifactId>
+            	<groupId>xerces</groupId>
             </exclusion>
          </exclusions>
       </dependency>
@@ -260,6 +243,10 @@
             	<artifactId>commons-pool2</artifactId>
             	<groupId>commons-pool2</groupId>
             </exclusion>
+            <exclusion>
+            	<artifactId>xercesImpl</artifactId>
+            	<groupId>xerces</groupId>
+            </exclusion>
          </exclusions>
       </dependency>
 		
@@ -276,6 +263,14 @@
          <version>2.3</version>
          <scope>test</scope>
       </dependency>
+
+      <dependency>
+         <groupId>com.oracle</groupId>
+         <artifactId>ojdbc14</artifactId>
+         <version>10.2.0.4.0</version>
+         <scope>test</scope>
+      </dependency>
+
       		
 	</dependencies>
 
@@ -421,6 +416,20 @@
 					<scope>test</scope>
 				</dependency>
 
+            <dependency>
+               <groupId>org.hibernate</groupId>
+               <artifactId>hibernate-entitymanager</artifactId>
+               <version>4.2.15.Final</version>
+               <scope>test</scope>
+            </dependency>
+      
+            <dependency>
+               <groupId>org.apache.derby</groupId>
+               <artifactId>derbyclient</artifactId>
+               <version>10.10.2.0</version>
+               <scope>test</scope>
+            </dependency>
+
 			</dependencies>
 
 			<build>
@@ -433,7 +442,7 @@
 <!-- 								<include>**/*IT.java</include> -->
 <!-- 								<include>**/*Test.java</include> -->
 <!--                         <include>com/logitags/cibet/sensor/jdbc/driver/*.java</include> -->
-                        <include>**/HttpNotificationProviderIT.java</include>
+                        <include>**/CibetInterceptorIT.java</include>
 							</includes>
 							<enableAssertions>false</enableAssertions>
 							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx1024m -Xms1024m</argLine>
@@ -472,6 +481,7 @@
 			<!-- must be started in Eclipse with Run Configuration VM argument: -javaagent:D:\Java\maven-repository\org\apache\openjpa\openjpa-all\2.4.2\openjpa-all-2.4.2.jar -->
 
 			<dependencies>
+			
 				<dependency>
 					<groupId>log4j</groupId>
 					<artifactId>log4j</artifactId>
@@ -495,6 +505,13 @@
 					<scope>test</scope>
 				</dependency>
 
+            <dependency>
+               <groupId>org.apache.derby</groupId>
+               <artifactId>derbyclient</artifactId>
+               <version>10.10.2.0</version>
+               <scope>test</scope>
+            </dependency>
+
 			</dependencies>
 
 			<build>
@@ -504,12 +521,13 @@
 						<version>2.16</version>
 						<configuration>
 							<includes>
-								<include>**/http/*IT.java</include>
-								<include>**/it/*IT.java</include>
-								<include>**/*Test.java</include>
+<!-- 								<include>**/http/*IT.java</include> -->
+<!-- 								<include>**/it/*IT.java</include> -->
+<!-- 								<include>**/*Test.java</include> -->
+                        <include>**/HttpParallelDcIT.java</include>
 							</includes>
 							<enableAssertions>false</enableAssertions>
-							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx1024m -Xms1024m</argLine>
+							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx1024m -Xms1024m -Duser.language=en</argLine>
 							<systemPropertyVariables>
 								<arquillian.launch>tomee</arquillian.launch>
 							</systemPropertyVariables>
@@ -519,7 +537,7 @@
 					<plugin>
 						<groupId>org.apache.openjpa</groupId>
 						<artifactId>openjpa-maven-plugin</artifactId>
-						<version>2.4.0</version>
+						<version>2.4.2</version>
 						<configuration>
 							<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
 							<persistenceXmlFile>${project.basedir}/src/test/resources/META-INF/openjpa-enhancer-persistence.xml</persistenceXmlFile>
@@ -537,12 +555,12 @@
 							</execution>
 						</executions>
 						<dependencies>
-							<dependency>
-								<groupId>org.apache.openjpa</groupId>
-								<artifactId>openjpa</artifactId>
-								<!-- set the version to be the same as the level in your runtime -->
-								<version>2.4.0</version>
-							</dependency>
+                        <!-- set the version to be the same as the level in your runtime -->
+<!-- 							<dependency> -->
+<!-- 								<groupId>org.apache.openjpa</groupId> -->
+<!-- 								<artifactId>openjpa</artifactId> -->
+<!-- 								<version>2.4.2</version> -->
+<!-- 							</dependency> -->
 						</dependencies>
 					</plugin>
 
@@ -649,6 +667,13 @@
 					<version>1.0.0.CR9</version>
 					<scope>test</scope>
 				</dependency>
+
+            <dependency>
+               <groupId>org.eclipse.persistence</groupId>
+               <artifactId>eclipselink</artifactId>
+               <version>2.4.2</version>
+               <scope>test</scope>
+            </dependency>
 
 			</dependencies>
 

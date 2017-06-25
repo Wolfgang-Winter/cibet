@@ -372,9 +372,14 @@ public class TomcatTestJpa extends DBHelper {
 
          cibetEman.getTransaction().commit();
          cibetEman.getTransaction().begin();
+         cibetEman.clear();
 
-         q = cibetEman.createQuery("SELECT e FROM Controllable e WHERE e.resource.primaryKeyId = :id");
-         q.setParameter("id", id);
+         // q = cibetEman.createQuery("SELECT e FROM Controllable e WHERE e.resource.primaryKeyId = :id");
+         q = cibetEman.createNativeQuery(
+               "SELECT e.* FROM CIB_CONTROLLABLE e, CIB_RESOURCE r WHERE e.RESOURCEID = r.RESOURCEID AND r.primaryKeyId = ?",
+               Controllable.class);
+         // q.setParameter("id", id);
+         q.setParameter(1, id);
          dcList = q.getResultList();
          Assert.assertEquals(1, dcList.size());
          cibetEman.refresh(dcList.get(0));
@@ -383,6 +388,7 @@ public class TomcatTestJpa extends DBHelper {
          Assert.assertEquals("good!", dcList.get(0).getReleaseRemark());
          Assert.assertEquals("Fluppi", dcList.get(0).getReleaseUser());
 
+         log.info("yyyy");
          q = cibetEman.createQuery("select a from Archive a where a.resource.target ='" + TEntity.class.getName()
                + "' ORDER BY a.createDate");
          list = q.getResultList();
@@ -393,7 +399,7 @@ public class TomcatTestJpa extends DBHelper {
          cibetEman.refresh(list.get(3));
          for (Archive a : list) {
             log.debug(":::" + a.getExecutionStatus() + a.getControlEvent() + " "
-                  + ((JpaResource) a.getResource()).getPrimaryKeyId());
+                  + ((JpaResource) a.getResource()).getPrimaryKeyId() + " " + a.getCaseId());
          }
 
          Assert.assertEquals(ExecutionStatus.EXECUTED, list.get(3).getExecutionStatus());

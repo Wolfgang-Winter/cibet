@@ -36,7 +36,26 @@ E. Execute external JMeter Performance test
 
 F. Arquillian Tests
 --------------------------------
-1. Glassfish/EclipseLink/Oracle: start Glassfish on Bugarach
+1. JBoss/Hibernate/Derby
+
+- start JBoss eap-6.4
+- run mvn clean install with profile jboss, skipTests=true, db=derby on project cibet
+- run mvn clean install with profile jboss, db=derby on project cibet-integration
+      VM args: -Dslf4j=false -Dlog4j.configuration=log4j.properties
+
+2. Tomcat/Eclipselink/MySQL/
+
+- start Tomcat 7.0.34
+- run mvn clean install with profile tomcat, skipTests=true, db=mysql on project cibet
+- run mvn clean install with profile tomcat, db=mysql on project cibet-integration
+      VM args: -Dslf4j=false -Dlog4j.configuration=log4j.properties
+       
+3. [Glassfish/EclipseLink/Oracle: start Glassfish on Bugarach]
+   (Glassfish 3 not working with java 1.8) 
+- run mvn clean install with profile glassfish3, skipTests=true, db=oracle on project cibet
+- run mvn clean install with profile glassfish3, db=oracle on project cibet-integration
+      VM args: -Dslf4j=false -Dlog4j.configuration=log4j.properties
+
    Execute mvn clean install with profile glassfishIT
    and VM args: -Dslf4j=false -Dlog4j.configuration=file:./target/test-classes/log4j.properties
    log files in c:/Java/glassfish3/glassfish/domains/cibet/logs
@@ -48,21 +67,17 @@ F. Arquillian Tests
    - redeploy local file / Force Redeploy   
    stop Glassfish on Bugarach
 
-1b. Glassfish 4.1.1 on Lenny
+3b. [Glassfish 4.1.1 on Lenny]
    (Glassfish 4 uses JPA 2.1, therefore AbstractMethodException CibetEntityManagerFactory.createEntityManager)
    - https://192.168.1.63:4848/
 
  
-2. Tomee/OpenJPA/Derby:
-   - start Tomee D:\appserver\apache-tomee-webprofile-1.6.0\bin
+2. Tomee/OpenJPA/Oracle:
+   - start Tomee D:\appserver\apache-tomee-webprofile-1.7.4\bin
    - execute clean test with profile tomeeIT 
+      VM args: -javaagent:D:\Java\maven-repository\org\apache\openjpa\openjpa-all\2.4.2\openjpa-all-2.4.2.jar
 
-3. Tomcat/OpenJPA/EclipseLink/MySQL: 
-   - execute clean test with profile tomcatIT
 
-4. JBoss/Hibernate/Derby:
-   execute clean test with profile jbossIT and 
-   VM args: -Dslf4j=false -Dlog4j.configuration=file:./target/test-classes/log4j.properties
 
 
 G. Run non-junit test in debug mode

@@ -177,6 +177,7 @@ public abstract class Resource implements Serializable {
    public void prePersist() {
       if (resourceId == null) {
          resourceId = UUID.randomUUID().toString();
+         log.debug("PREPERSIST: " + resourceId);
       }
    }
 

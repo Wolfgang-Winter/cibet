@@ -40,8 +40,6 @@ public class ArchiveDefinition extends ResourceDefinition {
 
    public static final String SEL_BY_PRIMARYKEY = "ARCHIVE.SEL_BY_PRIMARYKEY";
 
-   protected static final String ARCHIVE = "a.archiveid, a.remark, a.checksum, a.controlevent, a.createuser, a.createdate, a.tenant, a.caseid, "
-         + "a.executionstatus, a.version, a.resourceid";
    protected static final String ARCHIVE2 = "archiveid, remark, checksum, controlevent, createuser, createdate, tenant, caseid, "
          + "executionstatus, version, resourceid";
 
@@ -64,31 +62,31 @@ public class ArchiveDefinition extends ResourceDefinition {
    }
 
    protected ArchiveDefinition() {
-      queries.put(SEL_BY_PRIMARYKEY, "SELECT " + ARCHIVE + " FROM cib_archive a WHERE a.archiveid = ?");
+      queries.put(SEL_BY_PRIMARYKEY, "SELECT " + Archive.ARCHIVE + " FROM cib_archive a WHERE a.archiveid = ?");
 
-      queries.put(Archive.SEL_ALL, "SELECT " + ARCHIVE + " FROM cib_archive a ORDER BY a.createdate");
+      queries.put(Archive.SEL_ALL, "SELECT " + Archive.ARCHIVE + " FROM cib_archive a ORDER BY a.createdate");
       queries.put(Archive.SEL_ALL_BY_TENANT,
-            "SELECT " + ARCHIVE + " FROM cib_archive a WHERE a.tenant LIKE ? ORDER BY a.createdate");
+            "SELECT " + Archive.ARCHIVE + " FROM cib_archive a WHERE a.tenant LIKE ? ORDER BY a.createdate");
       queries.put(Archive.SEL_ALL_BY_CLASS,
-            "SELECT " + ARCHIVE
+            "SELECT " + Archive.ARCHIVE
                   + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and a.tenant LIKE ? "
                   + "AND r.target = ? ORDER BY a.createdate");
-      queries.put(Archive.SEL_ALL_BY_CLASS_NO_TENANT, "SELECT " + ARCHIVE
+      queries.put(Archive.SEL_ALL_BY_CLASS_NO_TENANT, "SELECT " + Archive.ARCHIVE
             + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and r.target = ? ORDER BY a.createdate");
-      queries.put(Archive.SEL_ALL_BY_CASEID, "SELECT " + ARCHIVE + " FROM cib_archive a WHERE a.tenant LIKE ? "
+      queries.put(Archive.SEL_ALL_BY_CASEID, "SELECT " + Archive.ARCHIVE + " FROM cib_archive a WHERE a.tenant LIKE ? "
             + "AND a.caseid = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_ALL_BY_CASEID_NO_TENANT,
-            "SELECT " + ARCHIVE + " FROM cib_archive a WHERE a.caseid = ? ORDER BY a.createdate");
+            "SELECT " + Archive.ARCHIVE + " FROM cib_archive a WHERE a.caseid = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_BY_METHODNAME,
-            "SELECT " + ARCHIVE
+            "SELECT " + Archive.ARCHIVE
                   + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and a.tenant = ? AND r.target = ? "
                   + "AND r.method = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_BY_METHODNAME_NO_TENANT,
-            "SELECT " + ARCHIVE
+            "SELECT " + Archive.ARCHIVE
                   + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and r.target = ? "
                   + "AND r.method = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_BY_PRIMARYKEYID,
-            "SELECT " + ARCHIVE + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and "
+            "SELECT " + Archive.ARCHIVE + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and "
                   + "r.target = ? AND r.primarykeyid = ? ORDER BY a.createdate");
    }
 

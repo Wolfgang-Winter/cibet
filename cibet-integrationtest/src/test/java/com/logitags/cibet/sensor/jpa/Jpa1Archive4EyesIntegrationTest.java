@@ -400,9 +400,9 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertNotNull(selEnt);
       Assert.assertEquals(5, selEnt.getCounter());
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
-      q.setParameter("targetType", TEntity.class.getName());
-      q.setParameter("primaryKeyId", String.valueOf(entity.getId()));
+      Query q = Context.requestScope().getEntityManager().createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      q.setParameter(1, TEntity.class.getName());
+      q.setParameter(2, String.valueOf(entity.getId()));
       List<Archive> list = q.getResultList();
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
@@ -533,9 +533,9 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Context.end();
       Context.start();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
-      q.setParameter("targetType", TEntity.class.getName());
-      q.setParameter("primaryKeyId", String.valueOf(entity.getId()));
+      Query q = Context.requestScope().getEntityManager().createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      q.setParameter(1, TEntity.class.getName());
+      q.setParameter(2, String.valueOf(entity.getId()));
       List<Archive> list = q.getResultList();
       Assert.assertEquals(2, list.size());
       JpaResource res = (JpaResource) list.get(0).getResource();
@@ -705,9 +705,9 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       TEntity selEnt = applEman.find(TEntity.class, entity.getId());
       Assert.assertNull("entity with id " + entity.getId() + " not deleted", selEnt);
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
-      q.setParameter("targetType", TEntity.class.getName());
-      q.setParameter("primaryKeyId", String.valueOf(entity.getId()));
+      Query q = Context.requestScope().getEntityManager().createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      q.setParameter(1, TEntity.class.getName());
+      q.setParameter(2, String.valueOf(entity.getId()));
       List<Archive> list = q.getResultList();
       Assert.assertEquals(2, list.size());
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
@@ -766,9 +766,9 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       TComplexEntity ce = createTComplexEntity();
       applEman.persist(ce);
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
-      q.setParameter("targetType", TComplexEntity.class.getName());
-      q.setParameter("primaryKeyId", String.valueOf(ce.getId()));
+      Query q = Context.requestScope().getEntityManager().createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      q.setParameter(1, TComplexEntity.class.getName());
+      q.setParameter(2, String.valueOf(ce.getId()));
       List<Archive> list = q.getResultList();
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
@@ -794,10 +794,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Context.end();
       Context.start();
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
-      q.setParameter("targetType", TComplexEntity.class.getName());
-      q.setParameter("primaryKeyId", String.valueOf(ce.getId()));
-      list = q.getResultList();
+      list = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity.class.getName(), String.valueOf(ce.getId()));
+      // q.getResultList();
       Assert.assertEquals(2, list.size());
       Archive ar1 = list.get(0);
       Archive ar2 = list.get(1);

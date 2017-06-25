@@ -203,7 +203,7 @@
 				<plugin>
 					<groupId>org.apache.openjpa</groupId>
 					<artifactId>openjpa-maven-plugin</artifactId>
-					<version>2.4.0</version>
+					<version>2.4.2</version>
 					<configuration>
 						<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
 						<persistenceXmlFile>${project.basedir}/src/test/resources/META-INF/persistence-derby-openjpa.xml</persistenceXmlFile>
@@ -230,7 +230,7 @@
 								<goal>test-enhance</goal>
 							</goals>
 							<configuration>
-								<includes>**/entities/*.class , **/loadcontrol/JMEntity.class</includes>
+								<includes>**/entities/*.class , **/loadcontrol/CoreJMEntity.class</includes>
 								<excludes>**/entities/TCompareEntity.class,
 									**/entities/ITComplexEntity.class,
 									**/entities/AbstractTEntity.class</excludes>
@@ -243,7 +243,7 @@
 							<groupId>org.apache.openjpa</groupId>
 							<artifactId>openjpa</artifactId>
 							<!-- set the version to be the same as the level in your runtime -->
-							<version>2.4.0</version>
+							<version>2.4.2</version>
 						</dependency>
 					</dependencies>
 				</plugin>
