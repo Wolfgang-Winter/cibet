@@ -100,10 +100,8 @@ public class EventResultDefinition extends AbstractEntityDefinition {
          er.setExecutionTime(rs.getTimestamp(11));
          er.setCaseId(rs.getString(12));
 
-         PreparedStatement ps = null;
          ResultSet childRS = null;
-         try {
-            ps = rs.getStatement().getConnection().prepareStatement(SEL_CHILDREN);
+         try (PreparedStatement ps = rs.getStatement().getConnection().prepareStatement(SEL_CHILDREN)) {
             ps.setString(1, er.getEventResultId());
             childRS = ps.executeQuery();
             List<EventResult> children = (List<EventResult>) createFromResultSet(childRS);
@@ -111,8 +109,6 @@ public class EventResultDefinition extends AbstractEntityDefinition {
          } finally {
             if (childRS != null)
                childRS.close();
-            if (ps != null)
-               ps.close();
          }
       }
       return list;
@@ -164,9 +160,7 @@ public class EventResultDefinition extends AbstractEntityDefinition {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.sensor.jdbc.def.AbstractEntityDefinition#remove(java
-    * .sql.Connection, java.lang.Object)
+    * @see com.logitags.cibet.sensor.jdbc.def.AbstractEntityDefinition#remove(java .sql.Connection, java.lang.Object)
     */
    @Override
    public void remove(Connection jdbcConnection, Object obj) throws SQLException {

@@ -146,11 +146,20 @@ public abstract class Context {
                   "no EntityManagerFactory for resource-local persistence unit " + LOCAL_PERSISTENCEUNIT + " created!");
          }
       } catch (Exception e) {
+         Throwable ex = e;
+         StringBuffer err = new StringBuffer(e.getMessage());
+         while (ex.getCause() != null) {
+            err.append(err);
+            err.append(" / ");
+            err.append(ex.getCause().getMessage());
+            ex = ex.getCause();
+         }
+
          EMF = null;
          log.info("\n-----------------------------\n" + "EntityManagerFactory for resource-local persistence unit "
                + LOCAL_PERSISTENCEUNIT + " could not be created. If this is a Java EE application this is NOT an error."
                + "\nWill try to create EntityManagerFactory for JTA persistence unit Cibet later\n[Original error message: "
-               + e.getMessage() + "]\n-----------------------------");
+               + err + "]\n-----------------------------");
       }
 
    }

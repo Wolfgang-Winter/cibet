@@ -299,24 +299,18 @@ public class ParallelDcActuator extends FourEyesActuator {
                co.setReleaseUser(Context.internalSessionScope().getUser());
                co.setReleaseRemark(Context.internalRequestScope().getRemark());
 
-               // if (isEncrypt()) {
-               // co.encrypt();
-               // }
                co = Context.internalRequestScope().getEntityManager().merge(co);
                if (isSendReleaseNotification()) {
                   notifyApproval(co);
                }
 
                for (Controllable dcElement : copyList) {
-                  if (dcElement.getControllableId() != co.getControllableId()) {
+                  if (!dcElement.getControllableId().equals(co.getControllableId())) {
                      dcElement.setExecutionStatus(ExecutionStatus.REJECTED);
                      dcElement.setReleaseDate(co.getReleaseDate());
                      dcElement.setReleaseUser(Context.internalSessionScope().getUser());
                      dcElement.setReleaseRemark(Context.internalRequestScope().getRemark());
 
-                     // if (isEncrypt()) {
-                     // dcElement.encrypt();
-                     // }
                      Context.internalRequestScope().getEntityManager().merge(dcElement);
                      if (isSendRejectNotification()) {
                         notifyApproval(dcElement);

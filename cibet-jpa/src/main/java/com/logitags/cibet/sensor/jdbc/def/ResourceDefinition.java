@@ -79,7 +79,7 @@ public class ResourceDefinition extends AbstractEntityDefinition {
 
    /**
     * 
-    * @param resRs
+    * @param rs
     * @param archiveId
     * @return
     * @throws SQLException
@@ -146,17 +146,18 @@ public class ResourceDefinition extends AbstractEntityDefinition {
 
          ps = rs.getStatement().getConnection().prepareStatement(SEL_RESOURCEPARAMETER);
          ps.setString(1, r.getResourceId());
-         ResultSet paramRS = ps.executeQuery();
-         while (paramRS.next()) {
-            ResourceParameter ap = new ResourceParameter();
-            r.addParameter(ap);
-            ap.setParameterId(paramRS.getString(1));
-            ap.setName(paramRS.getString(2));
-            ap.setClassname(paramRS.getString(3));
-            ap.setEncodedValue(getBlob(paramRS, 4));
-            ap.setSequence(paramRS.getInt(5));
-            ap.setParameterType(ParameterType.valueOf(paramRS.getString(6)));
-            ap.setStringValue(paramRS.getString(7));
+         try (ResultSet paramRS = ps.executeQuery()) {
+            while (paramRS.next()) {
+               ResourceParameter ap = new ResourceParameter();
+               r.addParameter(ap);
+               ap.setParameterId(paramRS.getString(1));
+               ap.setName(paramRS.getString(2));
+               ap.setClassname(paramRS.getString(3));
+               ap.setEncodedValue(getBlob(paramRS, 4));
+               ap.setSequence(paramRS.getInt(5));
+               ap.setParameterType(ParameterType.valueOf(paramRS.getString(6)));
+               ap.setStringValue(paramRS.getString(7));
+            }
          }
 
          return r;
@@ -169,7 +170,7 @@ public class ResourceDefinition extends AbstractEntityDefinition {
    /**
     * 
     * @param jdbcConnection
-    * @param ar
+    * @param obj
     * @throws SQLException
     */
    @Override

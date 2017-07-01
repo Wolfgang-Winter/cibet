@@ -42,7 +42,7 @@ public class CibetContextInterceptor implements Serializable {
     * 
     */
    private static final long serialVersionUID = 1L;
-   private Log log = LogFactory.getLog(CibetContextInterceptor.class);
+   private static Log log = LogFactory.getLog(CibetContextInterceptor.class);
 
    @AroundInvoke
    public Object controlInvoke(InvocationContext ctx) throws Exception {

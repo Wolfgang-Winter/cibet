@@ -59,7 +59,7 @@ public class ArchiveActuator extends AbstractActuator {
     * If set to true Cibet creates a message digest for each Archive entry in the database. Data integrity can be
     * checked this way.
     */
-   private static boolean integrityCheck = false;
+   private boolean integrityCheck = false;
 
    /**
     * flag to encrypt target, result and parameter values of Resource.

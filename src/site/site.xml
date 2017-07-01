@@ -26,8 +26,8 @@
     <menu name="Documentation">
       <item name="Introduction" href="introduction.html"/>
       <item name="Control Theory" href="controltheory.html" />
-      <item name="Cibet in 5 minutes" href="fiveminutes.html"/>
       <item name="User Guide" href="referenceGuide.html"/>
+      <item name="Tutorial" href="tutorial.html"/>
       <item name="cibet-config.xsd" href="xml-schema.html"/>
       <item name="Integration with Security Frameworks" href="springsecurity.html"/>
       <item name="Articles" href="articles.html"/>
@@ -39,11 +39,6 @@
       <item name="Release Notes" href="release-notes.html" />
       <item name="Download" href="download.html"/>
       <item name="Road Map" href="roadmap.html" />
-    </menu>
-
-    <menu name="Example Application">
-       <item name="Scenario I" href="scenario-domain.html"/>
-       <item name="Scenario II" href="scenario-usecase.html"/>
     </menu>
 
     <menu ref="reports" inherit="top"/>

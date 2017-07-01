@@ -149,6 +149,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          if (isLoadEager()) {
             loadEager(ctx);
          }
+         // no break, fall through
 
       case DELETE:
       case RESTORE_UPDATE:

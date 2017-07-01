@@ -29,8 +29,8 @@ import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.core.ExecutionStatus;
-import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ParameterType;
+import com.logitags.cibet.resource.Resource;
 import com.logitags.cibet.resource.ResourceParameter;
 
 /**
@@ -288,25 +288,25 @@ public class CibetStatement implements Statement {
 
    protected void finish(boolean startManaging, EventMetadata metadata, EventResult thisResult) throws SQLException {
       try {
-         for (Actuator actuator : metadata.getActuators()) {
-            actuator.afterEvent(metadata);
-         }
+         if (metadata != null) {
+            for (Actuator actuator : metadata.getActuators()) {
+               actuator.afterEvent(metadata);
+            }
 
-         metadata.evaluateEventExecuteStatus();
+            metadata.evaluateEventExecuteStatus();
+         }
 
       } catch (SQLException | RuntimeException e) {
          throw e;
       } catch (Throwable e) {
          throw new SQLException(e);
       } finally {
-         if (metadata.getExecutionStatus() == ExecutionStatus.ERROR) {
-            Context.requestScope().setRemark(null);
-         }
-
-         if (metadata.getExecutionStatus() == ExecutionStatus.EXECUTING) {
-            thisResult.setExecutionStatus(ExecutionStatus.EXECUTED);
-         } else {
-            thisResult.setExecutionStatus(metadata.getExecutionStatus());
+         if (thisResult != null && metadata != null) {
+            if (metadata.getExecutionStatus() == ExecutionStatus.EXECUTING) {
+               thisResult.setExecutionStatus(ExecutionStatus.EXECUTED);
+            } else {
+               thisResult.setExecutionStatus(metadata.getExecutionStatus());
+            }
          }
 
          if (startManaging) {

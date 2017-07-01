@@ -68,7 +68,6 @@ public class JpaQueryResource extends Resource {
    /**
     * constructor for JPA Query sensor
     * 
-    * @param rh
     * @param queryToken
     * @param params
     */

@@ -103,6 +103,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
          if (isLoadEager()) {
             loadEager(ctx);
          }
+         // no break, fall through
 
       case DELETE:
       case RESTORE_UPDATE:

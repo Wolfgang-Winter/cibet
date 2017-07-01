@@ -3,7 +3,8 @@ News
 * Release 2.0 ()
 
   Eventually a major release which restructures the project into several sub-projects. This has been done to better support different 
-  versions of integrated frameworks. Furthermore, the Cibet API has been streamlined, the integration tests have been completely migrated
+  versions of integrated frameworks. Furthermore, the Cibet API and the database model have been streamlined, the integration tests have 
+  been completely migrated
   to Arquillian and the project has been moved to {{{https://github.com/Wolfgang-Winter/cibet}Github}}. Thus, this release incorporates
   only few new features and bugfixes, but does change a lot behind the scenes which justifies an increase in the major release number.   
 

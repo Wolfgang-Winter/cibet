@@ -66,62 +66,61 @@ public class JdbcBridgeQuery implements Query {
    @Override
    public List getResultList() {
       ResultSet rs = null;
-      PreparedStatement pstmt = null;
       Connection conn = null;
+      log.debug(queryName);
+
+      EntityDefinition entityDef = JdbcBridgeEntityManager.getQueryDefinitions().get(queryName);
+      if (entityDef == null) {
+         String msg = "no EntityDefinition registered for name '" + queryName + "'";
+         log.error(msg);
+         throw new CibetJdbcException(msg);
+      }
+
+      final String sql = entityDef.getQueries().get(queryName);
+      if (sql == null) {
+         String msg = "no SQL query registered for name '" + queryName + "' in " + entityDef;
+         log.error(msg);
+         throw new CibetJdbcException(msg);
+      }
+
       try {
-         Map<String, EntityDefinition> map = JdbcBridgeEntityManager.getQueryDefinitions();
-         log.debug(queryName);
-
-         EntityDefinition entityDef = JdbcBridgeEntityManager.getQueryDefinitions().get(queryName);
-         if (entityDef == null) {
-            String msg = "no EntityDefinition registered for name '" + queryName + "'";
-            log.error(msg);
-            throw new CibetJdbcException(msg);
-         }
-
-         final String sql = entityDef.getQueries().get(queryName);
-         if (sql == null) {
-            String msg = "no SQL query registered for name '" + queryName + "' in " + entityDef;
-            log.error(msg);
-            throw new CibetJdbcException(msg);
-         }
-
          conn = entityManager.getNativeConnection();
-         pstmt = conn.prepareStatement(sql);
-         int count = 0;
-         for (Object param : parameters) {
-            count++;
-            if (param == null) {
-               pstmt.setNull(count, Types.VARCHAR);
+         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            int count = 0;
+            for (Object param : parameters) {
+               count++;
+               if (param == null) {
+                  pstmt.setNull(count, Types.VARCHAR);
 
-            } else if (param instanceof java.sql.Date) {
-               pstmt.setDate(count, (java.sql.Date) param);
+               } else if (param instanceof java.sql.Date) {
+                  pstmt.setDate(count, (java.sql.Date) param);
 
-            } else if (param instanceof java.sql.Time) {
-               pstmt.setTime(count, (java.sql.Time) param);
+               } else if (param instanceof java.sql.Time) {
+                  pstmt.setTime(count, (java.sql.Time) param);
 
-            } else if (param instanceof Date) {
-               Timestamp ts = new Timestamp(((Date) param).getTime());
-               pstmt.setTimestamp(count, ts);
-            } else if (param.getClass().isEnum()) {
-               Enum<?> ee = (Enum<?>) param;
-               pstmt.setString(count, ee.name());
+               } else if (param instanceof Date) {
+                  Timestamp ts = new Timestamp(((Date) param).getTime());
+                  pstmt.setTimestamp(count, ts);
+               } else if (param.getClass().isEnum()) {
+                  Enum<?> ee = (Enum<?>) param;
+                  pstmt.setString(count, ee.name());
 
-            } else {
-               pstmt.setObject(count, param);
+               } else {
+                  pstmt.setObject(count, param);
+               }
             }
+            rs = pstmt.executeQuery();
+            List<?> list = entityDef.createFromResultSet(rs);
+            log.debug(list.size() + " objects loaded from database");
+            return list;
          }
-         rs = pstmt.executeQuery();
-         List<?> list = entityDef.createFromResultSet(rs);
-         log.debug(list.size() + " objects loaded from database");
-         return list;
 
       } catch (SQLException e) {
          throw new CibetJdbcException(e.getMessage(), e);
       } finally {
          try {
-            if (rs != null) rs.close();
-            if (pstmt != null) pstmt.close();
+            if (rs != null)
+               rs.close();
             entityManager.finalizeConnection(conn);
          } catch (SQLException e) {
             log.error(e.getMessage(), e);
@@ -197,7 +196,8 @@ public class JdbcBridgeQuery implements Query {
          throw new CibetJdbcException(e.getMessage(), e);
       } finally {
          try {
-            if (stmt != null) stmt.close();
+            if (stmt != null)
+               stmt.close();
             entityManager.finalizeConnection(conn);
          } catch (SQLException e) {
             throw new CibetJdbcException(e.getMessage(), e);

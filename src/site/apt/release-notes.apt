@@ -1,4 +1,4 @@
-Version 2.0 ()
+Version 2.0 (2.7.2017)
 
   This is a major release that includes modifications of the database scheme. In cibet-core.jar!WEB-INF/classes/sql 
   migration scripts exist. If installing a fresh new database, the migration scripts are not required. 
@@ -48,6 +48,8 @@ Version 2.0 ()
   * LockedObject removed, moved to DcControllable + Resource
   
   * dc.DcControllable moved to common.Controllable
+  
+  * Attribute ArchiveActuator.integrityCheck changed to non-static
   
   
 Version 1.9 (9.10.2016)

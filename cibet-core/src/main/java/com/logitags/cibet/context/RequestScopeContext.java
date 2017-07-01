@@ -87,7 +87,7 @@ public class RequestScopeContext implements InternalRequestScope {
          if (session != null) {
             String rb = (String) session.getAttribute(ROLLBACKONLY);
             if (rb != null) {
-               return new Boolean(rb);
+               return Boolean.valueOf(rb);
             }
          }
       }
@@ -444,10 +444,6 @@ public class RequestScopeContext implements InternalRequestScope {
                   if (field == null) {
                      throw new IllegalArgumentException("http session attribute " + Headers.CIBET_SCHEDULEDFIELD
                            + " must not be null when " + Headers.CIBET_SCHEDULEDDATE + " is set");
-                  }
-                  if (!(field instanceof Integer)) {
-                     throw new IllegalArgumentException("http session attribute " + Headers.CIBET_SCHEDULEDFIELD
-                           + " must be of type Integer but is " + field.getClass());
                   }
 
                   Calendar cal = Calendar.getInstance();

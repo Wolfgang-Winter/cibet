@@ -194,10 +194,10 @@ public class Provider implements PersistenceProvider {
       if (log.isDebugEnabled()) {
          if (map != null && map.size() > 0) {
             log.debug(this + " properties: ---------------------");
-            Iterator<?> it = map.keySet().iterator();
+            Iterator<Map.Entry<?, ?>> it = map.entrySet().iterator();
             while (it.hasNext()) {
-               Object key = it.next();
-               log.debug(key + " = " + map.get(key));
+               Map.Entry<?, ?> entry = it.next();
+               log.debug(entry.getKey() + " = " + entry.getValue());
             }
          }
 

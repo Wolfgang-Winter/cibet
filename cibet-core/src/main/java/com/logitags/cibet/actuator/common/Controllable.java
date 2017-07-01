@@ -685,7 +685,7 @@ public class Controllable implements Serializable {
    }
 
    /**
-    * @param releaseUser
+    * @param approvalUser
     *           the approvalUser to set
     */
    public void setReleaseUser(String approvalUser) {
@@ -700,7 +700,7 @@ public class Controllable implements Serializable {
    }
 
    /**
-    * @param releaseAddress
+    * @param approvalAddress
     *           the approvalAddress to set
     */
    public void setReleaseAddress(String approvalAddress) {
@@ -715,7 +715,7 @@ public class Controllable implements Serializable {
    }
 
    /**
-    * @param releaseDate
+    * @param approvalDate
     *           the approvalDate to set
     */
    public void setReleaseDate(Date approvalDate) {
@@ -775,7 +775,7 @@ public class Controllable implements Serializable {
    }
 
    /**
-    * @param releaseRemark
+    * @param approvalRemark
     *           the approvalRemark to set
     */
    public void setReleaseRemark(String approvalRemark) {

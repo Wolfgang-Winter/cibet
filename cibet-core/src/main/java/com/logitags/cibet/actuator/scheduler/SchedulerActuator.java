@@ -144,6 +144,7 @@ public class SchedulerActuator extends FourEyesActuator {
          if (Context.requestScope().getScheduledDate() != null && isLoadEager()) {
             loadEager(ctx);
          }
+         // no break, fall through
 
       case DELETE:
       case RESTORE_UPDATE:

@@ -1,18 +1,18 @@
 A. Build cibet web site
 -----------------
-1. execute on parent project: mvn post-site with profile=sitegeneration
+1. execute on cibet parent project: mvn post-site with profile=sitegeneration
 
 
-D. Build cibet release
+B. Build cibet release
 --------------------------------
-1. in pom.xml of cibet-parent, cibet and ejbwar, site.xml: set correct version
-2. in release-notes.apt: set correct version date, in site.xml set correct version of reference guide
-3. copy reference guide pdf with correct version number from cibet-material to src/main/site/resources
-4. svn commit --> commit everything to svn
-5. set svn tag   
+1. in pom.xml of cibet-parent set correct version and execute mvn versions:update-child-modules
+2. in release-notes.apt: set correct version date
+3. copy reference guide pdf from cibet-material to src/site/resources
+4. git commit --> commit everything to git
+5. set git tag   
 6. execute A.
-7. copy target/site/cobertura to a temp dir
-8. execute install with profile sign (SIGN - install Cibet (no test))
+8. execute mvn install with profile sign
+   skipTests=true , db=derby
 9. execute assemble Cibet (goal: initialize) with profile assembly
 10. deploy bundle to Maven Central
     (see explanation on http://central.sonatype.org/pages/apache-maven.html)
@@ -28,13 +28,13 @@ D. Build cibet release
 17. Tell us about an update on Softpedia http://www.softpedia.com/get/Programming/Other-Programming-Files/Cibet.shtml
 
 
-E. Execute external JMeter Performance test
+C. Execute external JMeter Performance test
 --------------------------------
 1. mvn clean install jmetertest
 2. copy jmetertest-x.jar to C:\Java\jakarta-jmeter-2.5.1\lib\ext
 3. start jmeter, load tests and execute 
 
-F. Arquillian Tests
+D. Arquillian Tests
 --------------------------------
 1. JBoss/Hibernate/Derby
 
@@ -74,13 +74,14 @@ F. Arquillian Tests
  
 2. Tomee/OpenJPA/Oracle:
    - start Tomee D:\appserver\apache-tomee-webprofile-1.7.4\bin
-   - execute clean test with profile tomeeIT 
+   - run mvn clean install with profile tomee, skipTests=true, db=oracle-openjpa on project cibet
+   - run mvn clean install with profile tomee, db=oracle-openjpa on project cibet-integration   
       VM args: -javaagent:D:\Java\maven-repository\org\apache\openjpa\openjpa-all\2.4.2\openjpa-all-2.4.2.jar
 
 
 
 
-G. Run non-junit test in debug mode
+E. Run non-junit test in debug mode
 --------------------------------
 create mvn configuration task with 
 goals: -Dmaven.surefire.debug test
@@ -90,13 +91,13 @@ in profile tomcatIT: define surefire plugin with <include>**/TomcatAIT.java</inc
 start in Eclipse with Debug as ...
 
 
-H. Generate JAXB classes
+F. Generate JAXB classes
 --------------------------------
 1. Adapt schemaFiles cibet-config_??.xsd in cibet/pom.xml/jaxb2-maven-plugin
 2. Delete classes in bindings package in Windows Explorer 
 3. Execute Maven goal jaxb2:xjc on cibet
 
-I. Oracle XE Database
+G. Oracle XE Database
 --------------------------------
 - log in with system / sys at localhost:8080
 - log in to Windows as admin to use sqlplus console with
@@ -106,16 +107,26 @@ I. Oracle XE Database
    - open Dienste
    - start/stop OracleServiceXE
      
-J. Debug Arquillian JBoss JaCoCo Tests   
+H. Debug Arquillian JBoss JaCoCo Tests   
 --------------------------------
 - uncomment in arquillian.xml javaVmArguments property with agentlib:jdwp=transport=dt_socket,address=8787
 - execute mvn clean install with profile jbossITJacoco as usual
 - execute Remote Java Application 'Debug JBoss'   
 
-K. Build cibet web site with JaCoCo reports
+I. Build cibet web site with JaCoCo reports
 -----------------
 1. execute B.
 2. copy target/site/cobertura to a temp dir
 3. mvn clean install with profil jbossITJacoco (IT Test JBoss Jacoco)
 4. mvn post-site with profiles sitegeneration, jbossITJacoco (site jacoco)
 5. copy cobertura from temp to target/site
+
+J. Tutorial
+-----------------
+- start JBoss eap-6.4
+- run mvn clean install with profile jboss, skipTests=true, db=derby on project cibet
+- in cibet-integration/pom.xml profile tutorial set test class in surefire/include. One of Tutorial1.java .. Tutorial6.java 
+- run mvn clean install with profile tutorial, db=derby on project cibet-integration
+      VM args: -Dslf4j=false -Dlog4j.configuration=log4j.properties
+
+

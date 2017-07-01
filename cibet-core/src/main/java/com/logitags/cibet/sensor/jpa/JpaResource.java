@@ -88,7 +88,6 @@ public class JpaResource extends Resource {
    /**
     * constructor used for JPA resources.
     * 
-    * @param rh
     * @param entity
     */
    public JpaResource(Object entity) {
@@ -100,7 +99,6 @@ public class JpaResource extends Resource {
    /**
     * constructor for JPA SELECT resources
     * 
-    * @param rh
     * @param target
     * @param primaryKey
     */
@@ -309,7 +307,6 @@ public class JpaResource extends Resource {
     * @param target
     * @param objectId
     *           primary key of target
-    * @param lo
     * @return
     */
    public boolean isLocked(Object target, String objectId) {

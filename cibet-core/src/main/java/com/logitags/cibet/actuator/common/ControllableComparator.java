@@ -38,7 +38,7 @@ public class ControllableComparator implements Serializable, Comparator<Controll
    public int compare(Controllable d1, Controllable d2) {
       if (d1 == null || d2 == null)
          throw new IllegalArgumentException("Controllable is null");
-      return -(d1.getCreateDate().compareTo(d2.getCreateDate()));
+      return d2.getCreateDate().compareTo(d1.getCreateDate());
    }
 
 }
