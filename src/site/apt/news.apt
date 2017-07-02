@@ -1,6 +1,6 @@
 News
 
-* Release 2.0 ()
+* Release 2.0 (2.7.2017)
 
   Eventually a major release which restructures the project into several sub-projects. This has been done to better support different 
   versions of integrated frameworks. Furthermore, the Cibet API and the database model have been streamlined, the integration tests have 

@@ -1,132 +1,25 @@
-A. Build cibet web site
------------------
-1. execute on cibet parent project: mvn post-site with profile=sitegeneration
+Cibet is a framework for easily introducing cross-cutting functionality in a non-intrusive way. The framework is based on control 
+theory principles and allows adding numerous pre-defined cross-cutting functionality at various integration points of an application, e.g
+on methods, EJBs, http requests, database queries, JPA on client and server side.
+It integrates and extends frameworks like JPA, Spring Security, Apache Shiro, Hibernate.
+
+Pre-defined functionality includes topics as
+
+- archiving and historization
+- security
+- various dual control mechanisms like four-eyes control
+- monitoring
+- resilience patterns
+- scheduling
+- locking  
 
 
-B. Build cibet release
---------------------------------
-1. in pom.xml of cibet-parent set correct version and execute mvn versions:update-child-modules
-2. in release-notes.apt: set correct version date
-3. copy reference guide pdf from cibet-material to src/site/resources
-4. git commit --> commit everything to git
-5. set git tag   
-6. execute A.
-8. execute mvn install with profile sign
-   skipTests=true , db=derby
-9. execute assemble Cibet (goal: initialize) with profile assembly
-10. deploy bundle to Maven Central
-    (see explanation on http://central.sonatype.org/pages/apache-maven.html)
-    (https://oss.sonatype.org/index.html)
-    mvn deploy with profile sign
-11. Release Nexus staging repository: 
-    mvn nexus-staging:release 
-12. mvn clean install with profie jbossITJacoco (IT Test JBoss Jacoco)
-13. mvn post-site with profiles sitegeneration, jbossITJacoco (site jacoco)
-14. copy cobertura from temp to target/site
-15. ftp upload of site
-16. Upload zip to Sourceforge
-17. Tell us about an update on Softpedia http://www.softpedia.com/get/Programming/Other-Programming-Files/Cibet.shtml
+Please visit web site http://www.logitags.com/cibet for detailed information.
 
+Release 2.0 (2.7.2017)
 
-C. Execute external JMeter Performance test
---------------------------------
-1. mvn clean install jmetertest
-2. copy jmetertest-x.jar to C:\Java\jakarta-jmeter-2.5.1\lib\ext
-3. start jmeter, load tests and execute 
-
-D. Arquillian Tests
---------------------------------
-1. JBoss/Hibernate/Derby
-
-- start JBoss eap-6.4
-- run mvn clean install with profile jboss, skipTests=true, db=derby on project cibet
-- run mvn clean install with profile jboss, db=derby on project cibet-integration
-      VM args: -Dslf4j=false -Dlog4j.configuration=log4j.properties
-
-2. Tomcat/Eclipselink/MySQL/
-
-- start Tomcat 7.0.34
-- run mvn clean install with profile tomcat, skipTests=true, db=mysql on project cibet
-- run mvn clean install with profile tomcat, db=mysql on project cibet-integration
-      VM args: -Dslf4j=false -Dlog4j.configuration=log4j.properties
-       
-3. [Glassfish/EclipseLink/Oracle: start Glassfish on Bugarach]
-   (Glassfish 3 not working with java 1.8) 
-- run mvn clean install with profile glassfish3, skipTests=true, db=oracle on project cibet
-- run mvn clean install with profile glassfish3, db=oracle on project cibet-integration
-      VM args: -Dslf4j=false -Dlog4j.configuration=log4j.properties
-
-   Execute mvn clean install with profile glassfishIT
-   and VM args: -Dslf4j=false -Dlog4j.configuration=file:./target/test-classes/log4j.properties
-   log files in c:/Java/glassfish3/glassfish/domains/cibet/logs
-   If app is not redeployable due to message: Application with name ejbwar is already registered.
-   - http://192.168.1.64:4848/
-   - login with admin/x
-   - undeploy application
-   - copy ejbwar.war to Bugarach/c:/Java/glassfish3/glassfish/bin/
-   - redeploy local file / Force Redeploy   
-   stop Glassfish on Bugarach
-
-3b. [Glassfish 4.1.1 on Lenny]
-   (Glassfish 4 uses JPA 2.1, therefore AbstractMethodException CibetEntityManagerFactory.createEntityManager)
-   - https://192.168.1.63:4848/
-
- 
-2. Tomee/OpenJPA/Oracle:
-   - start Tomee D:\appserver\apache-tomee-webprofile-1.7.4\bin
-   - run mvn clean install with profile tomee, skipTests=true, db=oracle-openjpa on project cibet
-   - run mvn clean install with profile tomee, db=oracle-openjpa on project cibet-integration   
-      VM args: -javaagent:D:\Java\maven-repository\org\apache\openjpa\openjpa-all\2.4.2\openjpa-all-2.4.2.jar
-
-
-
-
-E. Run non-junit test in debug mode
---------------------------------
-create mvn configuration task with 
-goals: -Dmaven.surefire.debug test
-profiles: tomcatIT
-parameter: forkMode never
-in profile tomcatIT: define surefire plugin with <include>**/TomcatAIT.java</include>
-start in Eclipse with Debug as ...
-
-
-F. Generate JAXB classes
---------------------------------
-1. Adapt schemaFiles cibet-config_??.xsd in cibet/pom.xml/jaxb2-maven-plugin
-2. Delete classes in bindings package in Windows Explorer 
-3. Execute Maven goal jaxb2:xjc on cibet
-
-G. Oracle XE Database
---------------------------------
-- log in with system / sys at localhost:8080
-- log in to Windows as admin to use sqlplus console with
-  CONNECT /as sysdba
-- Start/Stop of Oracle: 
-   - login to bugarach as admin
-   - open Dienste
-   - start/stop OracleServiceXE
-     
-H. Debug Arquillian JBoss JaCoCo Tests   
---------------------------------
-- uncomment in arquillian.xml javaVmArguments property with agentlib:jdwp=transport=dt_socket,address=8787
-- execute mvn clean install with profile jbossITJacoco as usual
-- execute Remote Java Application 'Debug JBoss'   
-
-I. Build cibet web site with JaCoCo reports
------------------
-1. execute B.
-2. copy target/site/cobertura to a temp dir
-3. mvn clean install with profil jbossITJacoco (IT Test JBoss Jacoco)
-4. mvn post-site with profiles sitegeneration, jbossITJacoco (site jacoco)
-5. copy cobertura from temp to target/site
-
-J. Tutorial
------------------
-- start JBoss eap-6.4
-- run mvn clean install with profile jboss, skipTests=true, db=derby on project cibet
-- in cibet-integration/pom.xml profile tutorial set test class in surefire/include. One of Tutorial1.java .. Tutorial6.java 
-- run mvn clean install with profile tutorial, db=derby on project cibet-integration
-      VM args: -Dslf4j=false -Dlog4j.configuration=log4j.properties
-
-
+  Eventually a major release which restructures the project into several sub-projects. This has been done to better support different 
+  versions of integrated frameworks. Furthermore, the Cibet API and the database model have been streamlined, the integration tests have 
+  been completely migrated
+  to Arquillian and the project has been moved to {{{https://github.com/Wolfgang-Winter/cibet}Github}}. Thus, this release incorporates
+  only few new features and bugfixes, but does change a lot behind the scenes which justifies an increase in the major release number.   
