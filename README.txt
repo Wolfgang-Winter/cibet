@@ -9,7 +9,8 @@ B. Build cibet release
 2. in release-notes.apt: set correct version date
 3. copy reference guide pdf from cibet-material to src/site/resources
 4. git commit --> commit everything to git
-5. set git tag   
+5. set git tag
+   mvn clean install with db=derby , skipTests=true , profiles jboss , resolve Workspace artifacts=true   
 6. execute A.
 8. execute mvn install with profile sign
    skipTests=true , db=derby

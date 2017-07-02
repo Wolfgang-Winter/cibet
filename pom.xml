@@ -5,12 +5,6 @@
 	<artifactId>cibet</artifactId>
 	<version>2.0</version>
 	<packaging>pom</packaging>
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>9</version>
-		<relativePath />
-	</parent>
 
 	<name>Better control with cibet</name>
 
@@ -57,6 +51,7 @@
 
 	<scm>
 		<connection>scm:git:https://github.com/Wolfgang-Winter/cibet.git</connection>
+		<url>https://github.com/Wolfgang-Winter/cibet.git</url>
 	</scm>
 
 	<distributionManagement>
@@ -73,6 +68,20 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 	<mailingLists>
 		<mailingList>
@@ -352,6 +361,15 @@
 
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.0.2</version>
+            <configuration>
+               <encoding>UTF-8</encoding>
+            </configuration>
+         </plugin>
+      
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
             <version>3.0.1-CIBET</version>
             <executions>
@@ -417,7 +435,7 @@
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.7</version>
+				<version>1.6.8</version>
 				<extensions>true</extensions>
 				<configuration>
 					<serverId>sonatype-nexus-staging</serverId>
