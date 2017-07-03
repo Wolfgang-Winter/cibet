@@ -5,28 +5,22 @@ A. Build cibet web site
 
 B. Build cibet release
 --------------------------------
+    (see explanation on http://central.sonatype.org/pages/apache-maven.html)
+    Repository: https://oss.sonatype.org/index.html
+
 1. in pom.xml of cibet-parent set correct version and execute mvn versions:update-child-modules
 2. in release-notes.apt: set correct version date
 3. copy reference guide pdf from cibet-material to src/site/resources
 4. git commit --> commit everything to git
 5. set git tag
-   mvn clean install with db=derby , skipTests=true , profiles jboss , resolve Workspace artifacts=true   
-6. execute A.
-8. execute mvn install with profile sign
-   skipTests=true , db=derby
-9. execute assemble Cibet (goal: initialize) with profile assembly
-10. deploy bundle to Maven Central
-    (see explanation on http://central.sonatype.org/pages/apache-maven.html)
-    (https://oss.sonatype.org/index.html)
-    mvn deploy with profile sign
-11. Release Nexus staging repository: 
-    mvn nexus-staging:release 
-12. mvn clean install with profie jbossITJacoco (IT Test JBoss Jacoco)
-13. mvn post-site with profiles sitegeneration, jbossITJacoco (site jacoco)
-14. copy cobertura from temp to target/site
-15. ftp upload of site
-16. Upload zip to Sourceforge
-17. Tell us about an update on Softpedia http://www.softpedia.com/get/Programming/Other-Programming-Files/Cibet.shtml
+   mvn clean install with db=derby , skipTests=true , profiles jboss , resolve Workspace artifacts=true
+6. Deploy: mvn clean deploy with profile sign, db=derby , skipTests=true
+7. Release: mvn nexus-staging:release , db=derby , skipTests=true  
+
+8. execute A.
+9. ftp upload of site
+10. Upload zip to Sourceforge
+11. Tell us about an update on Softpedia http://www.softpedia.com/get/Programming/Other-Programming-Files/Cibet.shtml
 
 
 C. Execute external JMeter Performance test
