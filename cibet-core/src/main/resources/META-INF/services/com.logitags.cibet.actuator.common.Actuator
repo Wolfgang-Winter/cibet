@@ -9,3 +9,4 @@ com.logitags.cibet.actuator.info.TrackerActuator
 com.logitags.cibet.actuator.loadcontrol.LoadControlActuator
 com.logitags.cibet.actuator.lock.LockActuator
 com.logitags.cibet.actuator.scheduler.SchedulerActuator
+com.logitags.cibet.actuator.owner.OwnerCheckActuator

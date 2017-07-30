@@ -87,7 +87,7 @@ public class EventControlTest extends CoreTestBase {
          Assert.assertTrue(sB.getId().startsWith("A"));
       }
 
-      md = new EventMetadata(ControlEvent.IMPLICIT, null);
+      md = new EventMetadata(ControlEvent.UPDATEQUERY, null);
       list.clear();
       for (Setpoint sp : spB) {
          if (!eval.hasControlValue(sp.getControlValue("event"))) {
@@ -98,7 +98,7 @@ public class EventControlTest extends CoreTestBase {
             list.add(sp);
          }
       }
-      Assert.assertTrue(list.size() == 7);
+      Assert.assertEquals(1, list.size());
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -143,21 +143,6 @@ public class EventControlTest extends CoreTestBase {
    }
 
    @Test
-   public void evaluateImplicit() {
-      log.info("start evaluateImplicit()");
-
-      Setpoint sp = new Setpoint("conditionParams");
-      sp.setEvent(ControlEvent.FIRST_RELEASE_INSERT.name());
-
-      HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
-      EventMetadata md = new EventMetadata(ControlEvent.FIRST_RELEASE, res);
-
-      Control eval = new EventControl();
-      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
-      Assert.assertTrue(okay);
-   }
-
-   @Test
    public void evaluateImplicitNok() {
       log.info("start evaluateImplicitNok()");
 
@@ -165,7 +150,7 @@ public class EventControlTest extends CoreTestBase {
       sp.setEvent(ControlEvent.FIRST_RELEASE_INSERT.name());
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
-      EventMetadata md = new EventMetadata(ControlEvent.IMPLICIT, res);
+      EventMetadata md = new EventMetadata(ControlEvent.UPDATEQUERY, res);
 
       Control eval = new EventControl();
       boolean okay = eval.evaluate(sp.getControlValue("event"), md);
@@ -177,10 +162,10 @@ public class EventControlTest extends CoreTestBase {
       log.info("start evaluateImplicitOk()");
 
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setEvent(ControlEvent.INSERT.name());
+      sp.setEvent(ControlEvent.UPDATEQUERY.name());
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
-      EventMetadata md = new EventMetadata(ControlEvent.IMPLICIT, res);
+      EventMetadata md = new EventMetadata(ControlEvent.UPDATEQUERY, res);
 
       Control eval = new EventControl();
       boolean okay = eval.evaluate(sp.getControlValue("event"), md);
@@ -192,10 +177,10 @@ public class EventControlTest extends CoreTestBase {
       log.info("start evaluateImplicitOk2()");
 
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setEvent(ControlEvent.INVOKE.name());
+      sp.setEvent(ControlEvent.PERSIST.name());
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
-      EventMetadata md = new EventMetadata(ControlEvent.IMPLICIT, res);
+      EventMetadata md = new EventMetadata(ControlEvent.UPDATEQUERY, res);
 
       Control eval = new EventControl();
       boolean okay = eval.evaluate(sp.getControlValue("event"), md);

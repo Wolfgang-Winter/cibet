@@ -57,20 +57,10 @@ public class LockActuator extends AbstractActuator {
          return;
       }
 
-      switch (ctx.getControlEvent()) {
-      case INVOKE:
-      case IMPLICIT:
-      case RELEASE_INVOKE:
-      case FIRST_RELEASE_INVOKE:
-      case REJECT_INVOKE:
-      case REDO:
-      case SUBMIT_INVOKE:
-      case PASSBACK_INVOKE:
-         checkBeforeInvoke(ctx);
-         break;
-
-      default:
+      if (ctx.getResource() instanceof JpaResource) {
          checkBeforePersist(ctx);
+      } else {
+         checkBeforeInvoke(ctx);
       }
    }
 
@@ -101,12 +91,12 @@ public class LockActuator extends AbstractActuator {
    }
 
    private void checkBeforePersist(EventMetadata ctx) {
-      List<Controllable> list = Locker.loadLockedObjects(ctx.getResource().getTarget());
-      if (list.isEmpty()) {
+      if (!(ctx.getResource() instanceof JpaResource)) {
          return;
       }
 
-      if (!(ctx.getResource() instanceof JpaResource)) {
+      List<Controllable> list = Locker.loadLockedObjects(ctx.getResource().getTarget());
+      if (list.isEmpty()) {
          return;
       }
 

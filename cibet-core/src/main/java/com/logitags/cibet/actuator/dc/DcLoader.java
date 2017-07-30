@@ -64,7 +64,7 @@ public abstract class DcLoader {
     */
    public static List<Controllable> findUnreleased(String target) {
       Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT_CLASS);
-      q.setParameter("tenant", Context.internalSessionScope().getTenant());
+      q.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       q.setParameter("oclass", target);
       List<Controllable> list = q.getResultList();
       decrypt(list);
@@ -93,7 +93,7 @@ public abstract class DcLoader {
     */
    public static List<Controllable> findUnreleased() {
       Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
-      q.setParameter("tenant", Context.internalSessionScope().getTenant());
+      q.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       List<Controllable> list = q.getResultList();
 
       decrypt(list);
@@ -122,7 +122,7 @@ public abstract class DcLoader {
    public static List<Controllable> loadByCaseId(String caseId) {
       Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_CASEID);
       String tenant = Context.internalSessionScope().getTenant();
-      query.setParameter("tenant", tenant);
+      query.setParameter("tenant", tenant + "%");
       query.setParameter("caseId", caseId);
       List<Controllable> list = query.getResultList();
       decrypt(list);
@@ -156,7 +156,7 @@ public abstract class DcLoader {
       TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
             .createNamedQuery(Controllable.SEL_BY_USER, Controllable.class);
       query.setParameter("user", user);
-      query.setParameter("tenant", Context.internalSessionScope().getTenant());
+      query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       List<Controllable> list = query.getResultList();
       decrypt(list);
 
@@ -199,7 +199,7 @@ public abstract class DcLoader {
       }
 
       List<Object> params = new ArrayList<Object>();
-      params.add(Context.sessionScope().getTenant());
+      params.add(Context.sessionScope().getTenant() + "%");
       params.add(entityClass.getName());
       StringBuffer sql = new StringBuffer();
       sql.append(

@@ -157,7 +157,7 @@ public class ArchiveActuator extends AbstractActuator {
          resource.setPrimaryKeyObject(jpaRes.getPrimaryKeyObject());
          if (!(resource.getUnencodedTargetObject() instanceof String)) {
             Object o = resource.getUnencodedTargetObject();
-            AnnotationUtil.setValueFromAnnotation(o, Id.class, jpaRes.getPrimaryKeyObject());
+            AnnotationUtil.setValueToAnnotatedFieldOrSetter(o, Id.class, jpaRes.getPrimaryKeyObject());
             resource.setUnencodedTargetObject(o);
          }
          resource.setUniqueId(jpaRes.getUniqueId());

@@ -32,6 +32,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -72,6 +74,13 @@ import com.logitags.cibet.sensor.jpa.JpaResource;
       @NamedQuery(name = Archive.SEL_ALL_BY_CASEID_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.caseId = :caseId ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CLASS, query = "SELECT a FROM Archive a WHERE a.tenant LIKE :tenant AND a.resource.target = :targetType ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CLASS_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.resource.target = :targetType ORDER BY a.createDate") })
+@NamedNativeQueries({
+      @NamedNativeQuery(name = Archive.SEL_BY_PRIMARYKEYID, query = "SELECT " + Archive.ARCHIVE
+            + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND r.TARGET = ? AND r.PRIMARYKEYID = ? ORDER BY a.CREATEDATE", resultClass = Archive.class),
+      @NamedNativeQuery(name = Archive.SEL_BY_METHODNAME, query = "SELECT " + Archive.ARCHIVE
+            + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND a.TENANT LIKE ? AND r.TARGET = ? AND r.METHOD = ? ORDER BY a.CREATEDATE", resultClass = Archive.class),
+      @NamedNativeQuery(name = Archive.SEL_BY_METHODNAME_NO_TENANT, query = "SELECT " + Archive.ARCHIVE
+            + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND r.TARGET = ? AND r.METHOD = ? ORDER BY a.CREATEDATE", resultClass = Archive.class) })
 public class Archive implements Serializable {
 
    private static final long serialVersionUID = 1L;
@@ -106,16 +115,13 @@ public class Archive implements Serializable {
    /**
     * named query
     */
-   public final static String SEL_BY_METHODNAME = "SELECT " + ARCHIVE
-         + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND a.TENANT = ? AND r.TARGET = ? AND r.METHOD = ? ORDER BY a.CREATEDATE";
-   public final static String SEL_BY_METHODNAME_NO_TENANT = "SELECT " + ARCHIVE
-         + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND r.TARGET = ? AND r.METHOD = ? ORDER BY a.CREATEDATE";
+   public final static String SEL_BY_METHODNAME = "com.logitags.cibet.actuator.archive.Archive.SEL_BY_METHODNAME";
+   public final static String SEL_BY_METHODNAME_NO_TENANT = "com.logitags.cibet.actuator.archive.Archive.SEL_BY_METHODNAME_NO_TENANT";
 
    /**
     * named query
     */
-   public static final String SEL_BY_PRIMARYKEYID = "SELECT " + ARCHIVE
-         + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND r.TARGET = ? AND r.PRIMARYKEYID = ? ORDER BY a.CREATEDATE";
+   public static final String SEL_BY_PRIMARYKEYID = "com.logitags.cibet.actuator.archive.Archive.SEL_BY_PRIMARYKEYID";;
    public final static String SEL_BY_GROUPID = "com.logitags.cibet.actuator.archive.Archive.SEL_BY_GROUPID";
 
    /**
@@ -243,10 +249,8 @@ public class Archive implements Serializable {
       b.append(getCreateDate() != null ? dateFormat.format(getCreateDate()) : "NULL");
       b.append(getCreateUser());
       b.append(getCaseId());
-      if (getTenant() != null)
-         b.append(getTenant());
-      if (remark != null)
-         b.append(remark);
+      if (getTenant() != null) b.append(getTenant());
+      if (remark != null) b.append(remark);
       b.append(executionStatus == null ? "" : executionStatus);
 
       if (resource != null) {
@@ -360,8 +364,8 @@ public class Archive implements Serializable {
             // object exists, must be merged
             // set version to avoid optimistic locking
             try {
-               Object version = AnnotationUtil.valueFromAnnotation(objFromDb, Version.class);
-               AnnotationUtil.setValueFromAnnotation(obj, Version.class, version);
+               Object version = AnnotationUtil.getValueOfAnnotatedFieldOrMethod(objFromDb, Version.class);
+               AnnotationUtil.setValueToAnnotatedFieldOrSetter(obj, Version.class, version);
             } catch (AnnotationNotFoundException e) {
                // ignore if entity has no @Version annotation
             }
@@ -382,8 +386,7 @@ public class Archive implements Serializable {
    }
 
    private void resetAllIdAndVersion(Object obj) {
-      if (obj == null)
-         return;
+      if (obj == null) return;
       resetIdAndVersion(obj);
 
       Class<?> intClass = obj.getClass();
@@ -395,8 +398,7 @@ public class Archive implements Serializable {
                if (Collection.class.isAssignableFrom(type)) {
                   field.setAccessible(true);
                   Collection<Object> colField = (Collection<Object>) field.get(obj);
-                  if (colField == null)
-                     continue;
+                  if (colField == null) continue;
                   Iterator<Object> it = colField.iterator();
                   while (it.hasNext()) {
                      resetAllIdAndVersion(it.next());
@@ -441,21 +443,21 @@ public class Archive implements Serializable {
    }
 
    private void resetIdAndVersion(Object obj) {
-      boolean generatedId = AnnotationUtil.isAnnotationPresent(obj.getClass(), GeneratedValue.class);
+      boolean generatedId = AnnotationUtil.isFieldOrSetterAnnotationPresent(obj.getClass(), GeneratedValue.class);
       if (generatedId) {
          // set id == null or 0
          try {
-            AnnotationUtil.setValueFromAnnotation(obj, Id.class, null);
+            AnnotationUtil.setValueToAnnotatedFieldOrSetter(obj, Id.class, null);
          } catch (IllegalArgumentException e) {
-            AnnotationUtil.setValueFromAnnotation(obj, Id.class, 0);
+            AnnotationUtil.setValueToAnnotatedFieldOrSetter(obj, Id.class, 0);
          }
       }
 
       try {
          try {
-            AnnotationUtil.setValueFromAnnotation(obj, Version.class, null);
+            AnnotationUtil.setValueToAnnotatedFieldOrSetter(obj, Version.class, null);
          } catch (IllegalArgumentException e) {
-            AnnotationUtil.setValueFromAnnotation(obj, Version.class, 0);
+            AnnotationUtil.setValueToAnnotatedFieldOrSetter(obj, Version.class, 0);
          }
       } catch (AnnotationNotFoundException e) {
          // ignore if entity has no @Version annotation

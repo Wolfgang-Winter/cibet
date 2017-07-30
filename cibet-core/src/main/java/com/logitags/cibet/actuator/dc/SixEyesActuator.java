@@ -73,8 +73,7 @@ public class SixEyesActuator extends FourEyesActuator {
 
    @Override
    protected void notifyAssigned(ExecutionStatus status, Controllable dc) {
-      if (!isSendAssignNotification())
-         return;
+      if (!isSendAssignNotification()) return;
       if (status == ExecutionStatus.FIRST_POSTPONED && dc.getFirstApprovalAddress() != null) {
          NotificationProvider notifProvider = Configuration.instance().getNotificationProvider();
          if (notifProvider != null) {
@@ -105,8 +104,8 @@ public class SixEyesActuator extends FourEyesActuator {
          return ControlEvent.FIRST_RELEASE_UPDATE;
       case SELECT:
          return ControlEvent.FIRST_RELEASE_SELECT;
-      case IMPLICIT:
-         return ControlEvent.FIRST_RELEASE;
+      case UPDATEQUERY:
+         return ControlEvent.FIRST_RELEASE_UPDATEQUERY;
       default:
          String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be first released";

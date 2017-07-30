@@ -17,6 +17,8 @@ package com.logitags.cibet.core;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Id;
@@ -40,19 +42,19 @@ public class AnnotationUtil {
    private static Log log = LogFactory.getLog(AnnotationUtil.class);
 
    /**
-    * Return the value of an annotated field or getter method.
+    * Return the value of an annotated field or method.
     * 
     * @param obj
     * @param annotationClass
     * @return
     * @throws AnnotationNotFoundException
     */
-   public static Object valueFromAnnotation(Object obj, Class<? extends Annotation> annotationClass)
+   public static Object getValueOfAnnotatedFieldOrMethod(Object obj, Class<? extends Annotation> annotationClass)
          throws AnnotationNotFoundException {
       try {
-         return valueFromFieldAnnotation(obj, annotationClass);
+         return getValueOfAnnotatedField(obj, annotationClass);
       } catch (AnnotationNotFoundException e) {
-         return valueFromMethodAnnotation(obj, annotationClass);
+         return getValueOfAnnotatedMethod(obj, annotationClass);
       }
    }
 
@@ -64,15 +66,15 @@ public class AnnotationUtil {
     * @param value
     * @throws AnnotationNotFoundException
     */
-   public static void setValueFromAnnotation(Object obj, Class<? extends Annotation> annotationClass, Object value)
-         throws AnnotationNotFoundException {
+   public static void setValueToAnnotatedFieldOrSetter(Object obj, Class<? extends Annotation> annotationClass,
+         Object value) throws AnnotationNotFoundException {
       try {
-         Field field = fieldFromFieldAnnotation(obj.getClass(), annotationClass);
+         Field field = getFieldWithAnnotation(obj.getClass(), annotationClass);
          field.setAccessible(true);
          field.set(obj, value);
 
       } catch (AnnotationNotFoundException e) {
-         Method method = setterMethodFromMethodAnnotation(obj.getClass(), annotationClass);
+         Method method = getSetterMethodOfAnnotatedMethod(obj.getClass(), annotationClass);
          try {
             method.invoke(obj, value);
          } catch (Exception e1) {
@@ -86,32 +88,109 @@ public class AnnotationUtil {
    }
 
    /**
-    * Return the value type of an annotated field or getter method.
+    * Return the value type of an annotated field or method.
     * 
     * @param clazz
     * @param annotationClass
     * @return
     * @throws AnnotationNotFoundException
     */
-   public static Class<?> typeFromAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass)
+   public static Class<?> getTypeOfAnnotatedFieldOrMethod(Class<?> clazz, Class<? extends Annotation> annotationClass)
          throws AnnotationNotFoundException {
       try {
-         return typeFromFieldAnnotation(clazz, annotationClass);
+         return getTypeOfAnnotatedField(clazz, annotationClass);
       } catch (AnnotationNotFoundException e) {
-         return typeFromMethodAnnotation(clazz, annotationClass);
+         return getTypeOfAnnotatedMethod(clazz, annotationClass);
       }
    }
 
    /**
-    * checks if an annotation is present on the field or the getter method of that field. Checks also superclass
-    * methods.
+    * checks if the given annotation is in a field or setter method of this class or its superclasses.
+    * 
+    * @param clazz
+    * @param anClass
+    * @return
+    */
+   public static boolean isFieldOrSetterAnnotationPresent(Class<?> clazz, Class<? extends Annotation> anClass) {
+      try {
+         getFieldWithAnnotation(clazz, anClass);
+         return true;
+      } catch (AnnotationNotFoundException e2) {
+         try {
+            getSetterMethodOfAnnotatedMethod(clazz, anClass);
+            return true;
+         } catch (AnnotationNotFoundException e) {
+            return false;
+         }
+      }
+   }
+
+   /**
+    * Iterates over all methods and search for the given annotation including methods of parent classes
+    * 
+    * @param obj
+    * @param annotationClass
+    * @return the return value of the annotated method.
+    * @throws AnnotationNotFoundException
+    */
+   private static Object getValueOfAnnotatedMethod(Object obj, Class<? extends Annotation> annotationClass)
+         throws AnnotationNotFoundException {
+      Class<?> clazz = obj.getClass();
+      while (clazz != null) {
+         Method[] m = clazz.getDeclaredMethods();
+         for (Method method : m) {
+            Annotation annotation = method.getAnnotation(annotationClass);
+            if (annotation != null) {
+               try {
+                  Object value = (Object) method.invoke(obj, (Object[]) null);
+                  log.debug("retrieved value from method annotation " + annotationClass.getName() + ": " + value);
+                  return value;
+               } catch (Exception e) {
+                  log.error(e.getMessage(), e);
+               }
+            }
+         }
+         clazz = clazz.getSuperclass();
+      }
+
+      String msg = "No annotation " + annotationClass.getName() + " found in methods of class "
+            + obj.getClass().getName();
+      log.info(msg);
+      throw new AnnotationNotFoundException(msg);
+   }
+
+   private static Class<?> getTypeOfAnnotatedMethod(Class<?> clazz, Class<? extends Annotation> annotationClass)
+         throws AnnotationNotFoundException {
+      Class<?> intClass = clazz;
+      while (intClass != null) {
+         Method[] m = intClass.getDeclaredMethods();
+         for (Method method : m) {
+            Annotation annotation = method.getAnnotation(annotationClass);
+            if (annotation != null) {
+               Class<?> type = method.getReturnType();
+               if (type == null) continue;
+               log.debug("retrieved type from method annotation " + annotationClass.getName() + ": " + type);
+               return type;
+            }
+         }
+         intClass = intClass.getSuperclass();
+      }
+
+      String msg = "No annotation " + annotationClass.getName() + " found in methods of class " + clazz.getName();
+      log.info(msg);
+      throw new AnnotationNotFoundException(msg);
+   }
+
+   /**
+    * checks if an annotation is present on the field or the getter/setter method of that field.
     * 
     * @param clazz
     * @param field
     * @param anClass
     * @return
     */
-   public static boolean isAnnotationPresent(Class<?> clazz, Field field, Class<? extends Annotation> anClass) {
+   public static boolean isFieldOrGetterOrSetterAnnotationPresent(Class<?> clazz, Field field,
+         Class<? extends Annotation> anClass) {
       if (field.isAnnotationPresent(anClass)) {
          log.debug(anClass.getName() + " annotation found on field " + field.getName());
          return true;
@@ -157,89 +236,19 @@ public class AnnotationUtil {
          log.debug(anClass.getName() + " annotation found on method " + m.getName() + " of class " + clazz.getName());
          return true;
       } else {
-         // log.debug(anClass.getName() + " annotation not present in " + clazz.getName());
          return false;
       }
    }
 
    /**
-    * checks if the given annotation is in a field or getter/setter method of this class or its superclasses.
+    * returns the corresponding setter method of a method that has the given annotation.
     * 
     * @param clazz
-    * @param anClass
-    * @return
-    */
-   public static boolean isAnnotationPresent(Class<?> clazz, Class<? extends Annotation> anClass) {
-      try {
-         fieldFromFieldAnnotation(clazz, anClass);
-         return true;
-      } catch (AnnotationNotFoundException e2) {
-         try {
-            setterMethodFromMethodAnnotation(clazz, anClass);
-            return true;
-         } catch (AnnotationNotFoundException e) {
-            return false;
-         }
-      }
-   }
-
-   /**
-    * Iterates over all methods and search for the given annotation including methods of parent classes
-    * 
-    * @param obj
     * @param annotationClass
-    * @return the return value of the annotated method.
+    * @return
     * @throws AnnotationNotFoundException
     */
-   private static Object valueFromMethodAnnotation(Object obj, Class<? extends Annotation> annotationClass)
-         throws AnnotationNotFoundException {
-      Class<?> clazz = obj.getClass();
-      while (clazz != null) {
-         Method[] m = clazz.getDeclaredMethods();
-         for (Method method : m) {
-            Annotation annotation = method.getAnnotation(annotationClass);
-            if (annotation != null) {
-               try {
-                  Object value = (Object) method.invoke(obj, (Object[]) null);
-                  log.debug("retrieved value from method annotation " + annotationClass.getName() + ": " + value);
-                  return value;
-               } catch (Exception e) {
-                  log.error(e.getMessage(), e);
-               }
-            }
-         }
-         clazz = clazz.getSuperclass();
-      }
-
-      String msg = "No annotation " + annotationClass.getName() + " found in methods of class "
-            + obj.getClass().getName();
-      log.warn(msg);
-      throw new AnnotationNotFoundException(msg);
-   }
-
-   private static Class<?> typeFromMethodAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass)
-         throws AnnotationNotFoundException {
-      Class<?> intClass = clazz;
-      while (intClass != null) {
-         Method[] m = intClass.getDeclaredMethods();
-         for (Method method : m) {
-            Annotation annotation = method.getAnnotation(annotationClass);
-            if (annotation != null) {
-               Class<?> type = method.getReturnType();
-               if (type == null) continue;
-               log.debug("retrieved type from method annotation " + annotationClass.getName() + ": " + type);
-               return type;
-            }
-         }
-         intClass = intClass.getSuperclass();
-      }
-
-      String msg = "No annotation " + annotationClass.getName() + " found in methods of class " + clazz.getName();
-      log.warn(msg);
-      throw new AnnotationNotFoundException(msg);
-   }
-
-   private static Method setterMethodFromMethodAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass)
+   private static Method getSetterMethodOfAnnotatedMethod(Class<?> clazz, Class<? extends Annotation> annotationClass)
          throws AnnotationNotFoundException {
       Class<?> intClass = clazz;
       while (intClass != null) {
@@ -262,7 +271,7 @@ public class AnnotationUtil {
                   } else {
                      String msg = "Failed to determine setter method from method " + method.getName()
                            + " for annotation " + annotationClass.getName() + " in class " + clazz.getName();
-                     log.warn(msg);
+                     log.info(msg);
                      throw new AnnotationNotFoundException(msg);
                   }
                   return method;
@@ -278,7 +287,7 @@ public class AnnotationUtil {
       }
 
       String msg = "No annotation " + annotationClass.getName() + " found in methods of class " + clazz.getName();
-      log.warn(msg);
+      log.info(msg);
       throw new AnnotationNotFoundException(msg);
    }
 
@@ -290,7 +299,7 @@ public class AnnotationUtil {
     * @return the attribute value of the annotated field.
     * @throws AnnotationNotFoundException
     */
-   private static Object valueFromFieldAnnotation(Object obj, Class<? extends Annotation> annotationClass)
+   public static Object getValueOfAnnotatedField(Object obj, Class<? extends Annotation> annotationClass)
          throws AnnotationNotFoundException {
       Class<?> clazz = obj.getClass();
       while (clazz != null) {
@@ -313,27 +322,62 @@ public class AnnotationUtil {
 
       String msg = "No annotation " + annotationClass.getName() + " found in fields of class "
             + obj.getClass().getName();
-      log.warn(msg);
+      log.info(msg);
       throw new AnnotationNotFoundException(msg);
    }
 
+   public static List<Object> getValuesOfAnnotatedField(Object obj, Class<? extends Annotation> annotationClass) {
+      List<Object> values = new ArrayList<>();
+
+      Class<?> clazz = obj.getClass();
+      while (clazz != null) {
+         Field[] f = clazz.getDeclaredFields();
+         for (Field field : f) {
+            Object annotation = field.getAnnotation(annotationClass);
+            if (annotation != null) {
+               field.setAccessible(true);
+               try {
+                  Object value = (Object) field.get(obj);
+                  values.add(value);
+                  log.debug("retrieved value from field annotation " + annotationClass.getName() + ": " + value);
+               } catch (Exception e) {
+                  log.error(e.getMessage(), e);
+               }
+            }
+         }
+         clazz = clazz.getSuperclass();
+      }
+
+      return values;
+   }
+
    /**
-    * Iterates over all fields and search for the annotation including fields of parent classes
+    * Iterates over all fields and search for the annotation including fields of parent classes. Returns the type of
+    * that field.
     * 
     * @param clazz
     * @param annotationClass
     * @return the value type of the annotated field
     * @throws AnnotationNotFoundException
     */
-   private static Class<?> typeFromFieldAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass)
+   private static Class<?> getTypeOfAnnotatedField(Class<?> clazz, Class<? extends Annotation> annotationClass)
          throws AnnotationNotFoundException {
-      Field field = fieldFromFieldAnnotation(clazz, annotationClass);
+      Field field = getFieldWithAnnotation(clazz, annotationClass);
       Class<?> type = field.getType();
       log.debug("retrieved type from field annotation " + annotationClass.getName() + ": " + type);
       return type;
    }
 
-   private static Field fieldFromFieldAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass)
+   /**
+    * returns the field that has the given annotation. Looks also in super classes.
+    * 
+    * @param clazz
+    * @param annotationClass
+    * @return
+    * @throws AnnotationNotFoundException
+    *            if the class contains no field with the given annotation
+    */
+   private static Field getFieldWithAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass)
          throws AnnotationNotFoundException {
       Class<?> intClass = clazz;
       while (intClass != null) {
@@ -348,7 +392,7 @@ public class AnnotationUtil {
       }
 
       String msg = "No annotation " + annotationClass.getName() + " found in fields of class " + clazz.getName();
-      log.warn(msg);
+      log.info(msg);
       throw new AnnotationNotFoundException(msg);
    }
 
@@ -358,9 +402,9 @@ public class AnnotationUtil {
     * @param target
     * @return ID or null
     */
-   public static String primaryKeyAsString(Object target) {
+   public static String primaryKeyAsString(Object target) throws AnnotationNotFoundException {
       String objectId = null;
-      Object primaryId = valueFromAnnotation(target, Id.class);
+      Object primaryId = getValueOfAnnotatedFieldOrMethod(target, Id.class);
       if (primaryId != null) objectId = primaryId.toString();
       return objectId;
    }
@@ -375,7 +419,7 @@ public class AnnotationUtil {
    public static Object primaryKeyAsObject(Object entity) throws AnnotationNotFoundException {
       if (entity == null) return null;
       try {
-         Object id = valueFromAnnotation(entity, Id.class);
+         Object id = getValueOfAnnotatedFieldOrMethod(entity, Id.class);
          if (id == null) {
             // OpenJPA returns proprietary object type
             EntityManager em = Context.internalRequestScope().getApplicationEntityManager();
@@ -394,6 +438,12 @@ public class AnnotationUtil {
       }
    }
 
+   /**
+    * returns the name of the primary key field
+    * 
+    * @param clazz
+    * @return
+    */
    public static <T> String primaryKeyName(Class<T> clazz) {
       Metamodel metaModel = Context.internalRequestScope().getApplicationEntityManager().getMetamodel();
       EntityType<T> entityType = metaModel.entity(clazz);
@@ -406,23 +456,6 @@ public class AnnotationUtil {
       String idName = entityType.getId(idClass).getName();
       log.debug("found id for class " + clazz.getName() + ": " + idName);
       return idName;
-   }
-
-   private static Object cast(Object value, Class<?> clazz) {
-      Object res = null;
-      if (clazz.equals(String.class)) {
-         res = value.toString();
-      } else if (clazz.equals(Long.class) || clazz.equals(long.class)) {
-         String s = value.toString();
-         res = Long.valueOf(s);
-      } else if (clazz.equals(Integer.class) || clazz.equals(int.class)) {
-         String s = value.toString();
-         res = Integer.valueOf(s);
-      } else if (clazz.equals(Short.class) || clazz.equals(short.class)) {
-         String s = value.toString();
-         res = Short.valueOf(s);
-      }
-      return res;
    }
 
 }

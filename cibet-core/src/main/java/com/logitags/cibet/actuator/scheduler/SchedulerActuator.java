@@ -149,7 +149,7 @@ public class SchedulerActuator extends FourEyesActuator {
       case DELETE:
       case RESTORE_UPDATE:
       case INVOKE:
-      case IMPLICIT:
+      case UPDATEQUERY:
       case REDO:
          if (Context.requestScope().getScheduledDate() != null) {
             checkScheduledResource(ctx);
@@ -173,6 +173,7 @@ public class SchedulerActuator extends FourEyesActuator {
       case RELEASE_INVOKE:
       case RELEASE_INSERT:
       case RELEASE_SELECT:
+      case RELEASE_UPDATEQUERY:
          // no check if scheduled date is in the future. If so will be
          // executed instantly
          if (ctx.getExecutionStatus() == ExecutionStatus.EXECUTING
@@ -212,6 +213,7 @@ public class SchedulerActuator extends FourEyesActuator {
 
       case DELETE:
       case SELECT:
+      case UPDATEQUERY:
          dcObj = createControlledObject(ctx.getControlEvent(), ctx);
          break;
 
@@ -225,7 +227,6 @@ public class SchedulerActuator extends FourEyesActuator {
          break;
 
       case INVOKE:
-      case IMPLICIT:
       case REDO:
          dcObj = createControlledObject(ControlEvent.INVOKE, ctx);
          break;
@@ -249,6 +250,7 @@ public class SchedulerActuator extends FourEyesActuator {
       case RELEASE_SELECT:
       case RELEASE_DELETE:
       case RELEASE_INVOKE:
+      case RELEASE_UPDATEQUERY:
          dc = (Controllable) Context.internalRequestScope().getProperty(InternalRequestScope.CONTROLLABLE);
          if (dc == null) {
             String err = "Internal error: no Controllable object found in internal context";

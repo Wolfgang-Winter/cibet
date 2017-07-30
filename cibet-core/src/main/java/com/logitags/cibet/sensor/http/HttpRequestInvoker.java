@@ -189,7 +189,7 @@ public class HttpRequestInvoker implements Invoker {
       } else {
          log.debug("create new local EventResult");
          HttpRequestResource resource = new HttpRequestResource(target, methodName, null);
-         EventMetadata metadata = new EventMetadata(
+         EventMetadata metadata = new EventMetadata(null,
                (ControlEvent) Context.internalRequestScope().getProperty(InternalRequestScope.CONTROLEVENT), resource);
          EventResult thisResult = Context.internalRequestScope()
                .registerEventResult(new EventResult(CibetFilter.SENSOR_NAME, metadata));
@@ -215,23 +215,19 @@ public class HttpRequestInvoker implements Invoker {
 
    private String createQuerystringURL(String url, Set<ResourceParameter> parameters)
          throws UnsupportedEncodingException {
-      if (parameters == null)
-         return url;
+      if (parameters == null) return url;
       StringBuffer b = new StringBuffer();
       for (ResourceParameter param : parameters) {
-         if (param.getParameterType() != ParameterType.HTTP_PARAMETER)
-            continue;
+         if (param.getParameterType() != ParameterType.HTTP_PARAMETER) continue;
          if ("java.lang.String".equals(param.getClassname())) {
-            if (b.length() > 0)
-               b.append("&");
+            if (b.length() > 0) b.append("&");
             b.append(URLEncoder.encode(param.getName(), "UTF-8"));
             b.append("=");
             b.append(URLEncoder.encode((String) param.getUnencodedValue(), "UTF-8"));
 
          } else if ("[Ljava.lang.String;".equals(param.getClassname())) {
             for (String value : (String[]) param.getUnencodedValue()) {
-               if (b.length() > 0)
-                  b.append("&");
+               if (b.length() > 0) b.append("&");
                b.append(URLEncoder.encode(param.getName(), "UTF-8"));
                b.append("=");
                b.append(URLEncoder.encode(value, "UTF-8"));
@@ -253,8 +249,7 @@ public class HttpRequestInvoker implements Invoker {
 
    private void addBodyEntity(HttpEntityEnclosingRequestBase request, Set<ResourceParameter> parameters) {
       for (ResourceParameter param : parameters) {
-         if (param.getParameterType() != ParameterType.HTTP_BODY)
-            continue;
+         if (param.getParameterType() != ParameterType.HTTP_BODY) continue;
          log.debug("add body to request");
          ByteArrayEntity entity = new ByteArrayEntity((byte[]) param.getUnencodedValue());
          request.setEntity(entity);

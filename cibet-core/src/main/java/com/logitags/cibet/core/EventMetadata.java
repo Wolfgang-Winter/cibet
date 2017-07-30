@@ -68,6 +68,16 @@ public class EventMetadata implements Serializable {
 
    private ProxyConfig proxyConfig;
 
+   private String sensor;
+
+   public EventMetadata(String sensor, ControlEvent event, Resource r) {
+      this.sensor = sensor;
+      controlEvent = event;
+      resource = r;
+      resolveExecutionStatus();
+      resolveCaseId();
+   }
+
    public EventMetadata(ControlEvent event, Resource r) {
       controlEvent = event;
       resource = r;
@@ -76,8 +86,7 @@ public class EventMetadata implements Serializable {
    }
 
    private void resolveExecutionStatus() {
-      if (getControlEvent() == null)
-         return;
+      if (getControlEvent() == null) return;
 
       switch (getControlEvent()) {
       case RELEASE:
@@ -359,6 +368,21 @@ public class EventMetadata implements Serializable {
          b.append(sp.getId());
       }
       return b.toString();
+   }
+
+   /**
+    * @return the sensor
+    */
+   public String getSensor() {
+      return sensor;
+   }
+
+   /**
+    * @param sensor
+    *           the sensor to set
+    */
+   public void setSensor(String sensor) {
+      this.sensor = sensor;
    }
 
 }

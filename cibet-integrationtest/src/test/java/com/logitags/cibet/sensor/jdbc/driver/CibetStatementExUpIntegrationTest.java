@@ -89,6 +89,9 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
    protected void authenticate(String... roles) throws AuthenticationException {
       SpringTestAuthenticationManager authManager = new SpringTestAuthenticationManager();
       for (String role : roles) {
+         if (!role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+         }
          authManager.addAuthority(role);
       }
 
@@ -100,6 +103,9 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
    protected void authenticateSecond(String... roles) throws AuthenticationException {
       SpringTestAuthenticationManager authManager = new SpringTestAuthenticationManager();
       for (String role : roles) {
+         if (!role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+         }
          authManager.addAuthority(role);
       }
 

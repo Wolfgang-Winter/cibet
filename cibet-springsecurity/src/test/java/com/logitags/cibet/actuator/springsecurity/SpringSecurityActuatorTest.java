@@ -106,6 +106,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
 
    @Test
    public void invoke() throws Exception {
+      log.info("call invoke()");
       ApplicationContext ctx = initContext("spring-context.xml");
       listBeansInContext(ctx);
 
@@ -115,21 +116,11 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
             .getActuator(SpringSecurityActuator.DEFAULTNAME);
       act.setPreAuthorize("hasAnyRole('Heinz', 'WALTER')");
 
-      authenticate("WALTER");
+      authenticate("ROLE_WALTER");
 
       TComplexEntity ent1 = new TComplexEntity();
       ent1.setCompValue(22);
       Assert.assertEquals(22, ent1.getCompValue());
-   }
-
-   private void initPreAuthorize(String preAuth, String authenticate) {
-      initContext("spring-context.xml");
-      registerSetpoint(TComplexEntity.class, SpringSecurityActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
-
-      SpringSecurityActuator act = (SpringSecurityActuator) Configuration.instance()
-            .getActuator(SpringSecurityActuator.DEFAULTNAME);
-      act.setPreAuthorize(preAuth);
-      authenticate(authenticate);
    }
 
    @Test
@@ -140,7 +131,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       SpringSecurityActuator act = (SpringSecurityActuator) Configuration.instance()
             .getActuator(SpringSecurityActuator.DEFAULTNAME);
       act.setPreAuthorize("hasAnyRole('Heinz, 'Udo[REDO]')");
-      authenticate("WALTER[REDO]");
+      authenticate("ROLE_WALTER[REDO]");
 
       TComplexEntity ent1 = new TComplexEntity();
       ent1.setCompValue(22);
@@ -179,7 +170,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
             .getActuator(SpringSecurityActuator.DEFAULTNAME);
       act.setPostAuthorize("hasAnyRole('Heinz, 'Udo[REDO]')");
 
-      authenticate("WALTER[REDO]");
+      authenticate("ROLE_WALTER[REDO]");
 
       TComplexEntity ent1 = new TComplexEntity();
       int res = ent1.setAndGetCompValue(22);
@@ -209,6 +200,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
 
    @Test
    public void invokePostOk() {
+      log.info("call invokePostOk()");
       initContext("spring-context.xml");
       registerSetpoint(TComplexEntity.class, SpringSecurityActuator.DEFAULTNAME, "setAndGetCompValue",
             ControlEvent.INVOKE);
@@ -217,7 +209,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
             .getActuator(SpringSecurityActuator.DEFAULTNAME);
       act.setPostAuthorize("hasAnyRole('Heinz, 'Udo[REDO]')");
 
-      authenticate("Heinz");
+      authenticate("ROLE_Heinz");
 
       TComplexEntity ent1 = new TComplexEntity();
       int res = ent1.setAndGetCompValue(22);
@@ -234,7 +226,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
             .getActuator(SpringSecurityActuator.DEFAULTNAME);
       act.setPostFilter("filterObject == 'eins'");
 
-      authenticate("HeinzI");
+      authenticate("ROLE_HeinzI");
 
       TComplexEntity ent1 = new TComplexEntity();
       List<String> res = ent1.giveCollection();
@@ -253,7 +245,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
             .getActuator(SpringSecurityActuator.DEFAULTNAME);
       act.setPreFilter("value=\"filterObject == 'eins' or filterObject == 'zwei'\", filterTarget=\"in\"");
 
-      authenticate("HeinzI");
+      authenticate("ROLE_HeinzI");
 
       List<String> l = new ArrayList<String>();
       l.add("eins");
@@ -277,7 +269,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
             .getActuator(SpringSecurityActuator.DEFAULTNAME);
       act.setPreFilter("value=\"filterObject == 'eins' or filterObject == 'zwei'\"");
 
-      authenticate("HeinzI");
+      authenticate("ROLE_HeinzI");
 
       List<String> l = new ArrayList<String>();
       l.add("eins");
@@ -301,7 +293,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
             .getActuator(SpringSecurityActuator.DEFAULTNAME);
       act.setPreFilter("value=\"filterObject == 'eins' or filterObject == 'zwei'\", filterTarget=\"in\"");
 
-      authenticate("HeinzI");
+      authenticate("ROLE_HeinzI");
 
       List<String> l = new ArrayList<String>();
       l.add("eins");
@@ -343,7 +335,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
    public void invokePreFilter2CollectionsOk() throws Exception {
       initContext("spring-context.xml");
 
-      authenticate("Heinz");
+      authenticate("ROLE_Heinz");
 
       SpringSecurityActuator act = new SpringSecurityActuator();
       act.setPostFilter("filterObject == 'eins'");
@@ -369,7 +361,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       Setpoint sp = new Setpoint("xx", null);
       sp.addActuator(act);
 
-      authenticate("Heinz");
+      authenticate("ROLE_Heinz");
 
       TComplexEntity ent1 = new TComplexEntity();
       Method m = TComplexEntity.class.getMethod("giveCollection");
@@ -393,7 +385,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       Setpoint sp = new Setpoint("xx", null);
       sp.addActuator(act);
 
-      authenticate("Heinz");
+      authenticate("ROLE_Heinz");
 
       TComplexEntity ent1 = new TComplexEntity();
       Method m = TComplexEntity.class.getMethod("giveCollection");
@@ -415,6 +407,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
 
    @Test
    public void invokeTwoActuators() throws Exception {
+      log.info("call invokeTwoActuators()");
       initContext("spring-context.xml");
 
       SpringSecurityActuator act1 = new SpringSecurityActuator();
@@ -430,7 +423,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       registerSetpoint(TComplexEntity.class, "SPRING2", "setAndGetCompValue", ControlEvent.INVOKE);
 
       // allow actuator1
-      authenticate("Heinz", "Fritz");
+      authenticate("ROLE_Heinz", "ROLE_Fritz");
       TComplexEntity ent1 = new TComplexEntity();
       int res = ent1.setAndGetCompValue(99);
       Assert.assertEquals(99, ent1.getCompValue());
@@ -438,7 +431,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
 
       // allow actuator2
       SecurityContextHolder.clearContext();
-      authenticate("Fritz");
+      authenticate("ROLE_Fritz");
       TComplexEntity ent2 = new TComplexEntity();
       res = ent2.setAndGetCompValue(456);
       Assert.assertEquals(0, ent2.getCompValue());
@@ -454,7 +447,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       registerSetpoint(TComplexEntity.class, SpringSecurityActuator.DEFAULTNAME, "giveCollection2",
             ControlEvent.INVOKE);
 
-      authenticate("Heinz", "Fritz");
+      authenticate("ROLE_Heinz", "ROLE_Fritz");
 
       List<String> l = new ArrayList<String>();
       l.add("eins");
@@ -578,7 +571,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
    public void beforeHttpExpression() {
       log.debug("start beforeHttpExpression");
       initContext("spring-context-http-Expression.xml");
-      authenticate("Heinz", "Fritz");
+      authenticate("ROLE_Heinz", "ROLE_Fritz");
 
       SpringSecurityActuator act = new SpringSecurityActuator();
       act.setUrlAccess("hasRole ( ROLE_USER) ");
@@ -607,7 +600,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
    @Test
    public void beforeHttpExpressionOkay() {
       log.debug("start beforeHttpExpressionOkay");
-      authenticate("charlie");
+      authenticate("ROLE_charlie");
       initContext("spring-context-http-Expression.xml");
       SpringSecurityActuator act = new SpringSecurityActuator();
       act.setUrlAccess("hasRole ( charlie) ");

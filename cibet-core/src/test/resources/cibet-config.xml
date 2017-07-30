@@ -150,7 +150,7 @@
    <setpoint id="ConditionControlTest-3">
       <controls>
          <tenant>ten1</tenant>
-         <event>INSERT, INVOKE</event>
+         <event>INSERT, INVOKE,UPDATEQUERY</event>
          <target>com.logitags.*</target>
          <method>hasenmethode()</method>
          <invoker exclude="true">com.logitags.cibet.*</invoker>

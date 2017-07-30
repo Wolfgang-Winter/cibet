@@ -187,7 +187,7 @@ public class JpaResource extends Resource {
             break;
          case INSERT:
             em.persist(obj);
-            setPrimaryKeyObject(AnnotationUtil.valueFromAnnotation(obj, Id.class));
+            setPrimaryKeyObject(AnnotationUtil.getValueOfAnnotatedFieldOrMethod(obj, Id.class));
             break;
          case UPDATE:
             obj = em.merge(obj);
@@ -353,7 +353,7 @@ public class JpaResource extends Resource {
    public Object getPrimaryKeyObject() {
       if (primaryKeyObject == null) {
          if (getUnencodedTargetObject() instanceof Class<?>) {
-            Class<?> pkTypeClass = AnnotationUtil.typeFromAnnotation((Class<?>) getUnencodedTargetObject(), Id.class);
+            Class<?> pkTypeClass = AnnotationUtil.getTypeOfAnnotatedFieldOrMethod((Class<?>) getUnencodedTargetObject(), Id.class);
             primaryKeyObject = cast(pkTypeClass, getPrimaryKeyId());
 
          } else if (!(getUnencodedTargetObject() instanceof String)) {

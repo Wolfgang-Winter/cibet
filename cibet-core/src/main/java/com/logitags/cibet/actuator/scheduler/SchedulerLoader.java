@@ -56,7 +56,7 @@ public abstract class SchedulerLoader extends DcLoader {
    public static List<Controllable> findScheduled(String target) {
       Query q = Context.internalRequestScope().getEntityManager()
             .createNamedQuery(Controllable.SEL_SCHED_BY_TARGETTYPE);
-      q.setParameter("tenant", Context.internalSessionScope().getTenant());
+      q.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       q.setParameter("oclass", target);
       List<Controllable> list = q.getResultList();
       for (Controllable dc : list) {
@@ -91,7 +91,7 @@ public abstract class SchedulerLoader extends DcLoader {
     */
    public static List<Controllable> findScheduled() {
       Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_SCHED_BY_TENANT);
-      q.setParameter("tenant", Context.internalSessionScope().getTenant());
+      q.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       List<Controllable> list = q.getResultList();
       for (Controllable dc : list) {
          dc.decrypt();
@@ -178,8 +178,7 @@ public abstract class SchedulerLoader extends DcLoader {
       q.setParameter("uniqueId", uniqueId);
       List<Controllable> list = (List<Controllable>) q.getResultList();
       for (Controllable dc : list) {
-         if (dc.getExecutionStatus() != ExecutionStatus.SCHEDULED)
-            continue;
+         if (dc.getExecutionStatus() != ExecutionStatus.SCHEDULED) continue;
          if (dc.getControlEvent() == ControlEvent.UPDATE) {
 
             ResourceParameter rp = dc.getResource().getParameter(SchedulerActuator.CLEANOBJECT);
@@ -189,7 +188,8 @@ public abstract class SchedulerLoader extends DcLoader {
                log.error(err);
                throw new RuntimeException(err);
             }
-            List<Difference> difList = CibetUtil.compare(dc.getResource().getUnencodedTargetObject(), rp.getUnencodedValue());
+            List<Difference> difList = CibetUtil.compare(dc.getResource().getUnencodedTargetObject(),
+                  rp.getUnencodedValue());
             map.put(dc, difList);
          } else {
             map.put(dc, null);

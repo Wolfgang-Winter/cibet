@@ -23,15 +23,9 @@ public enum ControlEvent {
    ALL(null),
 
    /**
-    * the event is implicitly given through the context. For example a JPA query has an implicit event type as it is
-    * given by the sql itself. EventControl will be ignored if the business case is of IMPLICIT event type.
-    */
-   IMPLICIT(ALL),
-
-   /**
     * all INSERT, UPDATE, DELETE, RESTORE events
     */
-   PERSIST(IMPLICIT),
+   PERSIST(ALL),
 
    /**
     * new instantiation (no dc, only audit)
@@ -52,7 +46,12 @@ public enum ControlEvent {
    /**
     * method execution (no dc, only audit)
     */
-   INVOKE(IMPLICIT),
+   INVOKE(ALL),
+
+   /**
+    * when JPA query executeUpdate() is called
+    */
+   UPDATEQUERY(PERSIST),
 
    /**
     * summary of RELEASE, FIRST_RELEASE and REJECT
@@ -81,6 +80,8 @@ public enum ControlEvent {
 
    RELEASE_SELECT(RELEASE),
 
+   RELEASE_UPDATEQUERY(RELEASE),
+
    /**
     * first approval in 6-eyes mode
     */
@@ -103,6 +104,8 @@ public enum ControlEvent {
    FIRST_RELEASE_UPDATE(FIRST_RELEASE),
 
    FIRST_RELEASE_SELECT(FIRST_RELEASE),
+
+   FIRST_RELEASE_UPDATEQUERY(FIRST_RELEASE),
 
    /**
     * rejection
@@ -127,6 +130,8 @@ public enum ControlEvent {
 
    REJECT_SELECT(REJECT),
 
+   REJECT_UPDATEQUERY(REJECT),
+
    PASSBACK(DC_CONTROL),
 
    PASSBACK_INVOKE(PASSBACK),
@@ -139,6 +144,8 @@ public enum ControlEvent {
 
    PASSBACK_SELECT(PASSBACK),
 
+   PASSBACK_UPDATEQUERY(PASSBACK),
+
    SUBMIT(DC_CONTROL),
 
    SUBMIT_INVOKE(SUBMIT),
@@ -150,6 +157,8 @@ public enum ControlEvent {
    SUBMIT_UPDATE(SUBMIT),
 
    SUBMIT_SELECT(SUBMIT),
+
+   SUBMIT_UPDATEQUERY(SUBMIT),
 
    /**
     * redo of a method execution (no dc, only audit)
@@ -180,8 +189,7 @@ public enum ControlEvent {
       for (ControlEvent par : parents) {
          ControlEvent p = this;
          while (p != null) {
-            if (par == p)
-               return true;
+            if (par == p) return true;
             p = p.getParent();
          }
       }

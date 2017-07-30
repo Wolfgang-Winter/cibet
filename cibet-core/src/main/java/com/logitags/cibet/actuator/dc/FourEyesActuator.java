@@ -124,6 +124,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       case REJECT_INVOKE:
       case REJECT_UPDATE:
       case REJECT_SELECT:
+      case REJECT_UPDATEQUERY:
          ctx.setExecutionStatus(ExecutionStatus.REJECTED);
          break;
 
@@ -133,6 +134,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       case PASSBACK_INVOKE:
       case PASSBACK_SELECT:
       case PASSBACK_UPDATE:
+      case PASSBACK_UPDATEQUERY:
          ctx.setExecutionStatus(ExecutionStatus.PASSEDBACK);
          break;
 
@@ -142,6 +144,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       case FIRST_RELEASE_INVOKE:
       case FIRST_RELEASE_UPDATE:
       case FIRST_RELEASE_SELECT:
+      case FIRST_RELEASE_UPDATEQUERY:
          ctx.setExecutionStatus(ExecutionStatus.FIRST_RELEASED);
          break;
 
@@ -154,7 +157,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       case DELETE:
       case RESTORE_UPDATE:
       case INVOKE:
-      case IMPLICIT:
+      case UPDATEQUERY:
       case REDO:
          if (ctx.getExecutionStatus() == ExecutionStatus.EXECUTING) {
             checkUnapprovedResource(ctx);
@@ -168,6 +171,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       case SUBMIT_INVOKE:
       case SUBMIT_SELECT:
       case SUBMIT_UPDATE:
+      case SUBMIT_UPDATEQUERY:
          ctx.setExecutionStatus(getPostponedExecutionStatus());
          if (isThrowPostponedException()) {
             try {
@@ -223,6 +227,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
 
       case DELETE:
       case SELECT:
+      case UPDATEQUERY:
          dcObj = createControlledObject(ctx.getControlEvent(), ctx);
          break;
 
@@ -239,7 +244,6 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          dcObj = createControlledObject(ControlEvent.UPDATE, ctx);
          break;
 
-      case IMPLICIT:
       case INVOKE:
       case REDO:
          dcObj = createControlledObject(ControlEvent.INVOKE, ctx);
@@ -417,8 +421,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          return ControlEvent.RELEASE_UPDATE;
       case SELECT:
          return ControlEvent.RELEASE_SELECT;
-      case IMPLICIT:
-         return ControlEvent.RELEASE;
+      case UPDATEQUERY:
+         return ControlEvent.RELEASE_UPDATEQUERY;
       default:
          String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be released";
@@ -439,8 +443,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          return ControlEvent.REJECT_UPDATE;
       case SELECT:
          return ControlEvent.REJECT_SELECT;
-      case IMPLICIT:
-         return ControlEvent.REJECT;
+      case UPDATEQUERY:
+         return ControlEvent.REJECT_UPDATEQUERY;
       default:
          String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be rejected";
@@ -461,8 +465,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          return ControlEvent.PASSBACK_UPDATE;
       case SELECT:
          return ControlEvent.PASSBACK_SELECT;
-      case IMPLICIT:
-         return ControlEvent.PASSBACK;
+      case UPDATEQUERY:
+         return ControlEvent.PASSBACK_UPDATEQUERY;
       default:
          String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be passed back";
@@ -483,8 +487,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          return ControlEvent.SUBMIT_UPDATE;
       case SELECT:
          return ControlEvent.SUBMIT_SELECT;
-      case IMPLICIT:
-         return ControlEvent.SUBMIT;
+      case UPDATEQUERY:
+         return ControlEvent.SUBMIT_UPDATEQUERY;
       default:
          String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
                + " cannot be submitted";

@@ -29,11 +29,11 @@ import org.springframework.security.access.method.MethodSecurityMetadataSource;
 /**
  *
  */
-public class SetpointJsr250SecurityMetadataSource implements
-      MethodSecurityMetadataSource {
+public class SetpointJsr250SecurityMetadataSource implements MethodSecurityMetadataSource {
 
-   private static Log log = LogFactory
-         .getLog(SetpointJsr250SecurityMetadataSource.class);
+   private static Log log = LogFactory.getLog(SetpointJsr250SecurityMetadataSource.class);
+
+   private String defaultRolePrefix = "ROLE_";
 
    private static MethodSecurityMetadataSource instance;
 
@@ -50,8 +50,7 @@ public class SetpointJsr250SecurityMetadataSource implements
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.springframework.security.access.method.MethodSecurityMetadataSource
+    * @see org.springframework.security.access.method.MethodSecurityMetadataSource
     * #getAttributes(java.lang.reflect.Method, java.lang.Class)
     */
    public Collection<ConfigAttribute> getAttributes(Method arg0, Class<?> arg1) {
@@ -61,8 +60,7 @@ public class SetpointJsr250SecurityMetadataSource implements
    /*
     * (non-Javadoc)
     * 
-    * @seeorg.springframework.security.access.SecurityMetadataSource#
-    * getAllConfigAttributes()
+    * @seeorg.springframework.security.access.SecurityMetadataSource# getAllConfigAttributes()
     */
    public Collection<ConfigAttribute> getAllConfigAttributes() {
       return null;
@@ -71,29 +69,26 @@ public class SetpointJsr250SecurityMetadataSource implements
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.springframework.security.access.SecurityMetadataSource#getAttributes
-    * (java.lang.Object)
+    * @see org.springframework.security.access.SecurityMetadataSource#getAttributes (java.lang.Object)
     */
-   public Collection<ConfigAttribute> getAttributes(Object obj)
-         throws IllegalArgumentException {
+   public Collection<ConfigAttribute> getAttributes(Object obj) throws IllegalArgumentException {
       CibetMethodInvocation mi = (CibetMethodInvocation) obj;
       Collection<ConfigAttribute> list = new ArrayList<ConfigAttribute>();
 
       if (mi.getRules().containsKey(CibetMethodInvocation.JSR250_DENYALL_RULE)) {
          list.add(Jsr250SecurityConfig.DENY_ALL_ATTRIBUTE);
-      } else if (mi.getRules().containsKey(
-            CibetMethodInvocation.JSR250_PERMITALL_RULE)) {
+
+      } else if (mi.getRules().containsKey(CibetMethodInvocation.JSR250_PERMITALL_RULE)) {
          list.add(Jsr250SecurityConfig.PERMIT_ALL_ATTRIBUTE);
-      } else if (mi.getRules().containsKey(
-            CibetMethodInvocation.JSR250_ROLESALLOWED_RULE)) {
-         String rule = mi
-               .getRule(CibetMethodInvocation.JSR250_ROLESALLOWED_RULE);
+
+      } else if (mi.getRules().containsKey(CibetMethodInvocation.JSR250_ROLESALLOWED_RULE)) {
+         String rule = mi.getRule(CibetMethodInvocation.JSR250_ROLESALLOWED_RULE);
          rule = rule.replaceAll("[\"'\\{\\}]", "");
          StringTokenizer tok = new StringTokenizer(rule, ",");
          while (tok.hasMoreTokens()) {
             String token = tok.nextToken().trim();
-            list.add(new Jsr250SecurityConfig(token));
+            String role = getRoleWithDefaultPrefix(token);
+            list.add(new Jsr250SecurityConfig(role));
          }
       }
 
@@ -109,12 +104,23 @@ public class SetpointJsr250SecurityMetadataSource implements
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.springframework.security.access.SecurityMetadataSource#supports(java
-    * .lang.Class)
+    * @see org.springframework.security.access.SecurityMetadataSource#supports(java .lang.Class)
     */
    public boolean supports(Class<?> cl) {
       return MethodInvocation.class.isAssignableFrom(cl);
+   }
+
+   private String getRoleWithDefaultPrefix(String role) {
+      if (role == null) {
+         return role;
+      }
+      if (defaultRolePrefix == null || defaultRolePrefix.length() == 0) {
+         return role;
+      }
+      if (role.startsWith(defaultRolePrefix)) {
+         return role;
+      }
+      return defaultRolePrefix + role;
    }
 
 }

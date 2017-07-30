@@ -1,3 +1,12 @@
+Version 2.1 
+
+  * updated to new Spring Security version
+  
+  * use named native queries instead of native queries
+  
+  * new ControlEvent type UPDATEQUERY
+   
+
 Version 2.0 (2.7.2017)
 
   This is a major release that includes modifications of the database scheme. In cibet-core.jar!WEB-INF/classes/sql 
@@ -41,7 +50,7 @@ Version 2.0 (2.7.2017)
   
   * SchedulerActuator init() fixed for no-database business cases
       
-  * Invoker control made less strict: emthod declaration could end with or without (). 
+  * Invoker control made less strict: method declaration could end with or without (). 
   
   * ResourceHandler removed, new table Resource, new Resource class model
   

@@ -253,7 +253,7 @@ public class CibetProxy extends HttpFiltersAdapter {
       addParameters(querystring, content(request.content()), contentType, resource);
 
       resource.setInvoker("localhost");
-      EventMetadata metadata = new EventMetadata(controlEvent, resource);
+      EventMetadata metadata = new EventMetadata(SENSOR_NAME, controlEvent, resource);
       metadata.setProxyConfig(proxyConfig);
       return metadata;
    }
@@ -323,8 +323,7 @@ public class CibetProxy extends HttpFiltersAdapter {
    private void addHeaders(HttpHeaders headers, HttpRequestResource resource) {
       log.debug("HTTP HEADERS:");
       for (String name : headers.names()) {
-         if (name.toUpperCase().startsWith("CIBET_"))
-            continue;
+         if (name.toUpperCase().startsWith("CIBET_")) continue;
          String headerName = name.toLowerCase();
          List<String> headerValues = headers.getAll(name);
          if (headerValues.size() == 1) {
@@ -346,8 +345,7 @@ public class CibetProxy extends HttpFiltersAdapter {
       if (metadata == null) {
          return;
       }
-      if (metadata.getActuators().isEmpty())
-         return;
+      if (metadata.getActuators().isEmpty()) return;
 
       if (Context.requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) != EntityManagerType.JTA) {
          for (Actuator actuator : metadata.getActuators()) {
@@ -370,8 +368,7 @@ public class CibetProxy extends HttpFiltersAdapter {
       if (metadata == null) {
          return;
       }
-      if (metadata.getActuators().isEmpty())
-         return;
+      if (metadata.getActuators().isEmpty()) return;
 
       if (Context.requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) != EntityManagerType.JTA) {
          for (Actuator actuator : metadata.getActuators()) {

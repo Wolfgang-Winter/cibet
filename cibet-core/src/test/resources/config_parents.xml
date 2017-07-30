@@ -31,7 +31,7 @@
 			com.logitags.cibet.control.ControllerImplTest</target>
 			<method>cleanUp,evaluateWithParents</method>
 			<invoker>net.nixxi.*</invoker>
-			<condition>file:D:\projects\cibet/src/test/resources/testscript1.js</condition>
+			<condition>file:D:\projects\git/cibet/cibet-core/src/test/resources/testscript1.js</condition>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>

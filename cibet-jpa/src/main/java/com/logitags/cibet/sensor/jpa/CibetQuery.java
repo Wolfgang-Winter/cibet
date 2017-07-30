@@ -98,7 +98,7 @@ public class CibetQuery implements Query {
       try {
          startManaging = Context.start();
 
-         metadata = before(QueryExecutionType.JPA_GET_RESULTLIST);
+         metadata = before(QueryExecutionType.JPA_GET_RESULTLIST, ControlEvent.SELECT);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          List<?> result = new ArrayList<Object>();
@@ -151,7 +151,7 @@ public class CibetQuery implements Query {
       try {
          startManaging = Context.start();
 
-         metadata = before(QueryExecutionType.JPA_GET_SINGLE_RESULT);
+         metadata = before(QueryExecutionType.JPA_GET_SINGLE_RESULT, ControlEvent.SELECT);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          Object result = null;
@@ -218,7 +218,7 @@ public class CibetQuery implements Query {
       try {
          startManaging = Context.start();
 
-         metadata = before(QueryExecutionType.JPA_EXECUTE_UPDATE);
+         metadata = before(QueryExecutionType.JPA_EXECUTE_UPDATE, ControlEvent.UPDATEQUERY);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          int result = 0;
@@ -529,14 +529,14 @@ public class CibetQuery implements Query {
       return query.unwrap(arg0);
    }
 
-   private EventMetadata before(QueryExecutionType executionType) {
+   private EventMetadata before(QueryExecutionType executionType, ControlEvent event) {
       entityManager.entityManagerIntoContext();
-      ControlEvent controlEvent = entityManager.controlEvent(ControlEvent.IMPLICIT);
+      ControlEvent controlEvent = entityManager.controlEvent(event);
 
       Set<ResourceParameter> params = new TreeSet<ResourceParameter>(new ParameterSequenceComparator());
       params.addAll(parameters.values());
       JpaQueryResource res = new JpaQueryResource(queryToken, params);
-      EventMetadata metadata = new EventMetadata(controlEvent, res);
+      EventMetadata metadata = new EventMetadata(SENSOR_NAME, controlEvent, res);
 
       metadata.getResource().addParameter("StatementType", executionType, ParameterType.JPA_STATEMENT_TYPE);
       metadata.getResource().addParameter("QueryType", queryType, ParameterType.JPA_QUERY_TYPE);

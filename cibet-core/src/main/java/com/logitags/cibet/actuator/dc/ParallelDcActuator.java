@@ -94,7 +94,6 @@ public class ParallelDcActuator extends FourEyesActuator {
 
       switch (ctx.getControlEvent()) {
       case INVOKE:
-      case IMPLICIT:
          checkUnapprovedResource(ctx);
 
          if (timelag > 0 || differentUsers) {
@@ -180,7 +179,6 @@ public class ParallelDcActuator extends FourEyesActuator {
          ctx.setExecutionStatus(ExecutionStatus.POSTPONED);
          break;
 
-      case IMPLICIT:
       case INVOKE:
          ctx.setExecutionStatus(ExecutionStatus.POSTPONED);
          Controllable dcObj = createControlledObject(ControlEvent.INVOKE, ctx);
@@ -211,8 +209,7 @@ public class ParallelDcActuator extends FourEyesActuator {
       q.setParameter("uniqueId", ctx.getResource().getUniqueId());
       List<Controllable> list = (List<Controllable>) q.getResultList();
       for (Controllable dc : list) {
-         if (dc.getCaseId().equals(ctx.getCaseId()))
-            continue;
+         if (dc.getCaseId().equals(ctx.getCaseId())) continue;
          switch (dc.getExecutionStatus()) {
          case FIRST_POSTPONED:
          case FIRST_RELEASED:

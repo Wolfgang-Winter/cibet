@@ -79,7 +79,7 @@ public class ArchiveDefinition extends ResourceDefinition {
             "SELECT " + Archive.ARCHIVE + " FROM cib_archive a WHERE a.caseid = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_BY_METHODNAME,
             "SELECT " + Archive.ARCHIVE
-                  + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and a.tenant = ? AND r.target = ? "
+                  + " FROM cib_archive a, cib_resource r WHERE a.resourceid = r.resourceid and a.tenant LIKE ? AND r.target = ? "
                   + "AND r.method = ? ORDER BY a.createdate");
       queries.put(Archive.SEL_BY_METHODNAME_NO_TENANT,
             "SELECT " + Archive.ARCHIVE
@@ -156,8 +156,7 @@ public class ArchiveDefinition extends ResourceDefinition {
          ps.executeUpdate();
 
       } finally {
-         if (ps != null)
-            ps.close();
+         if (ps != null) ps.close();
       }
    }
 
@@ -194,8 +193,7 @@ public class ArchiveDefinition extends ResourceDefinition {
                   + ar.getVersion() + ": id not found or optimistic locked");
          }
       } finally {
-         if (ps != null)
-            ps.close();
+         if (ps != null) ps.close();
       }
       return obj;
    }
@@ -220,8 +218,7 @@ public class ArchiveDefinition extends ResourceDefinition {
                   + ar.getVersion() + ": id not found or optimistic locked");
          }
       } finally {
-         if (stmt != null)
-            stmt.close();
+         if (stmt != null) stmt.close();
       }
    }
 

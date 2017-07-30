@@ -115,7 +115,7 @@ public class RemoteEjbInvocationHandler extends CibetInterceptor implements Invo
 
          EjbResource resource = new EjbResource(interf, method, params);
          resource.setInvokerClass(RemoteEJBInvoker.class.getName());
-         metadata = new EventMetadata(controlEvent, resource);
+         metadata = new EventMetadata(SENSOR_NAME, controlEvent, resource);
          Configuration.instance().getController().evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 

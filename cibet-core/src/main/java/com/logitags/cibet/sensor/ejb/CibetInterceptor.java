@@ -86,7 +86,7 @@ public class CibetInterceptor implements Serializable {
 
          EjbResource resource = new EjbResource(ctx.getTarget(), method, params);
          resource.setInvokerClass(EJBInvoker.class.getName());
-         metadata = new EventMetadata(controlEvent, resource);
+         metadata = new EventMetadata("EJB", controlEvent, resource);
          Configuration.instance().getController().evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 

@@ -80,6 +80,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
       case FIRST_RELEASE_INSERT:
       case FIRST_RELEASE_UPDATE:
       case FIRST_RELEASE_SELECT:
+      case FIRST_RELEASE_UPDATEQUERY:
          ctx.setExecutionStatus(ExecutionStatus.POSTPONED);
          break;
 
@@ -88,6 +89,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
       case REJECT_UPDATE:
       case REJECT_INVOKE:
       case REJECT_SELECT:
+      case REJECT_UPDATEQUERY:
          ctx.setExecutionStatus(ExecutionStatus.REJECTED);
          break;
 
@@ -96,6 +98,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
       case PASSBACK_INVOKE:
       case PASSBACK_SELECT:
       case PASSBACK_UPDATE:
+      case PASSBACK_UPDATEQUERY:
          ctx.setExecutionStatus(ExecutionStatus.PASSEDBACK);
          break;
 
@@ -108,7 +111,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
       case DELETE:
       case RESTORE_UPDATE:
       case INVOKE:
-      case IMPLICIT:
+      case UPDATEQUERY:
       case REDO:
          checkUnapprovedResource(ctx);
          // no break, fall through
@@ -120,7 +123,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
       case SUBMIT_INVOKE:
       case SUBMIT_SELECT:
       case SUBMIT_UPDATE:
-
+      case SUBMIT_UPDATEQUERY:
          if (Context.internalSessionScope().getSecondUser() != null) {
             if (Context.internalSessionScope().getSecondUser().equals(Context.internalSessionScope().getUser())) {
                String msg = "release failed: user id of releasing user is equal to the "
@@ -175,26 +178,31 @@ public class TwoManRuleActuator extends FourEyesActuator {
       case RELEASE_INSERT:
       case RELEASE_INVOKE:
       case RELEASE_SELECT:
+      case RELEASE_UPDATEQUERY:
       case FIRST_RELEASE_INVOKE:
       case FIRST_RELEASE_DELETE:
       case FIRST_RELEASE_INSERT:
       case FIRST_RELEASE_UPDATE:
       case FIRST_RELEASE_SELECT:
+      case FIRST_RELEASE_UPDATEQUERY:
       case REJECT_DELETE:
       case REJECT_INSERT:
       case REJECT_UPDATE:
       case REJECT_INVOKE:
       case REJECT_SELECT:
+      case REJECT_UPDATEQUERY:
       case PASSBACK_DELETE:
       case PASSBACK_INSERT:
       case PASSBACK_INVOKE:
       case PASSBACK_SELECT:
       case PASSBACK_UPDATE:
+      case PASSBACK_UPDATEQUERY:
       case SUBMIT_DELETE:
       case SUBMIT_INSERT:
       case SUBMIT_INVOKE:
       case SUBMIT_SELECT:
       case SUBMIT_UPDATE:
+      case SUBMIT_UPDATEQUERY:
          break;
 
       case UPDATE:
@@ -209,6 +217,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
       case DELETE:
       case SELECT:
       case INSERT:
+      case UPDATEQUERY:
          dcObj = createControlledObject(ctx.getControlEvent(), ctx);
          break;
 
@@ -217,7 +226,6 @@ public class TwoManRuleActuator extends FourEyesActuator {
          break;
 
       case INVOKE:
-      case IMPLICIT:
       case REDO:
          dcObj = createControlledObject(ControlEvent.INVOKE, ctx);
          break;

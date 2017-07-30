@@ -68,7 +68,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 
@@ -282,8 +282,15 @@ public class SpringTestServlet extends HttpServlet {
             // SecurityContextHolder.getContext().setAuthentication(null);
          } else {
             Context.sessionScope().setUser(null);
+
+            String role = req.getParameter("ROLE");
+            if (!role.startsWith("ROLE_")) {
+               role = "ROLE_" + role;
+            }
+
             Collection<GrantedAuthority> authList = new ArrayList<>();
-            authList.add(new GrantedAuthorityImpl(req.getParameter("ROLE")));
+            authList.add(new SimpleGrantedAuthority(role));
+
             Authentication request = new UsernamePasswordAuthenticationToken(user, "FIXED-PW", authList);
             SecurityContextHolder.getContext().setAuthentication(request);
          }
@@ -333,7 +340,11 @@ public class SpringTestServlet extends HttpServlet {
             log.debug("set secondRole = null");
             Context.internalSessionScope().setProperty(InternalSessionScope.SECOND_PRINCIPAL, null);
          } else {
-            authManager.addAuthority(req.getParameter("ROLE"));
+            String role = req.getParameter("ROLE");
+            if (!role.startsWith("ROLE_")) {
+               role = "ROLE_" + role;
+            }
+            authManager.addAuthority(role);
          }
 
          if (req.getParameter("USER") != null) {
@@ -536,8 +547,7 @@ public class SpringTestServlet extends HttpServlet {
 
       } finally {
          // Closing the input stream will trigger connection release
-         if (instream != null)
-            instream.close();
+         if (instream != null) instream.close();
          Thread.sleep(100);
       }
    }
@@ -567,6 +577,9 @@ public class SpringTestServlet extends HttpServlet {
             log.debug("set secondRole = null");
             Context.internalSessionScope().setProperty(InternalSessionScope.SECOND_PRINCIPAL, null);
          } else {
+            if (!role.startsWith("ROLE_")) {
+               role = "ROLE_" + role;
+            }
             authManager.addAuthority(role);
          }
       }

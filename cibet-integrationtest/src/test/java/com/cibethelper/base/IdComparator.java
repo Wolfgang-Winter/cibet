@@ -41,8 +41,8 @@ public class IdComparator implements Comparator<Object>, Serializable {
          return 0;
       }
       try {
-         Object id1 = AnnotationUtil.valueFromAnnotation(o1, Id.class);
-         Object id2 = AnnotationUtil.valueFromAnnotation(o2, Id.class);
+         Object id1 = AnnotationUtil.getValueOfAnnotatedFieldOrMethod(o1, Id.class);
+         Object id2 = AnnotationUtil.getValueOfAnnotatedFieldOrMethod(o2, Id.class);
 
          if (id1 instanceof Comparable) {
             return ((Comparable) id1).compareTo(id2);

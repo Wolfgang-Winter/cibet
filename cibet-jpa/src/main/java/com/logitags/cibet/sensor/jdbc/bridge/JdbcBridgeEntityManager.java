@@ -384,7 +384,7 @@ public class JdbcBridgeEntityManager implements EntityManager {
    @Override
    public void refresh(Object obj) {
       try {
-         Object id = AnnotationUtil.valueFromAnnotation(obj, Id.class);
+         Object id = AnnotationUtil.getValueOfAnnotatedFieldOrMethod(obj, Id.class);
          Object refreshed = find(obj.getClass(), id);
          if (refreshed != null) {
             BeanUtilsBean.getInstance().getConvertUtils().register(false, false, 0);

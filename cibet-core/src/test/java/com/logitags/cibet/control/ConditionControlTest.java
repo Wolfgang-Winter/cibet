@@ -75,7 +75,7 @@ public class ConditionControlTest extends CoreTestBase {
       Context.sessionScope().setProperty("Emil", new Integer(2));
 
       MethodResource res = new MethodResource(ent, null, null);
-      EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
 
       Assert.assertEquals(1, list.size());
@@ -104,7 +104,7 @@ public class ConditionControlTest extends CoreTestBase {
       paramList.add(new ResourceParameter("PARAM2", Date.class.getName(), now, ParameterType.METHOD_PARAMETER, 3));
       paramList.add(new ResourceParameter("PARAM3", Date.class.getName(), null, ParameterType.METHOD_PARAMETER, 4));
       MethodResource res = new MethodResource(ent, String.class.getDeclaredMethod("getBytes"), paramList);
-      EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
 
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
 
@@ -132,7 +132,7 @@ public class ConditionControlTest extends CoreTestBase {
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
-      EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
       res.addParameter(new ResourceParameter("p1", String.class.getName(), "Hase", ParameterType.HTTP_ATTRIBUTE, 1));
       res.addParameter(new ResourceParameter("head1", boolean.class.getName(), true, ParameterType.HTTP_HEADER, 2));
       res.addParameter(
@@ -153,7 +153,7 @@ public class ConditionControlTest extends CoreTestBase {
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
-      EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
       res.addParameter(new ResourceParameter("p1", String.class.getName(), "Hase", ParameterType.HTTP_ATTRIBUTE, 1));
       res.addParameter(new ResourceParameter("head1", boolean.class.getName(), true, ParameterType.HTTP_HEADER, 2));
       res.addParameter(
@@ -179,7 +179,7 @@ public class ConditionControlTest extends CoreTestBase {
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
-      EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
 
       try {
          Control eval = new ConditionControl();
@@ -200,7 +200,7 @@ public class ConditionControlTest extends CoreTestBase {
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
-      EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
 
       List<Setpoint> list = evaluate(md, spB);
       Assert.assertEquals(0, list.size());
@@ -225,7 +225,7 @@ public class ConditionControlTest extends CoreTestBase {
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
-      EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
 
       List<Setpoint> list = evaluate(md, spB);
       Assert.assertEquals(0, list.size());
@@ -250,7 +250,7 @@ public class ConditionControlTest extends CoreTestBase {
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
-      EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
 
       Context.requestScope().setProperty("psx", "Hase");
       List<Setpoint> list = evaluate(md, spB);

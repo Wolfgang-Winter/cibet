@@ -358,7 +358,7 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          Assert.assertEquals(sa.getArchiveId(), list.get(0).getArchiveId());
          Assert.assertEquals(sa2.getArchiveId(), list.get(1).getArchiveId());
 
-         q = jdbcEM.createNamedQuery(Archive.SEL_BY_METHODNAME);
+         q = jdbcEM.createNamedQuery(Archive.SEL_BY_METHODNAME, Archive.class);
          q.setParameter("tenant", TENANT);
          q.setParameter("tt", "class");
          q.setParameter("mn", "methodname");
@@ -403,7 +403,7 @@ public class ArchiveDefinitionTest extends JdbcHelper {
          Assert.assertEquals(sa.getArchiveId(), list.get(0).getArchiveId());
          Assert.assertEquals(sa2.getArchiveId(), list.get(1).getArchiveId());
 
-         q = jdbcEM.createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+         q = jdbcEM.createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
          q.setParameter(1, "class");
          q.setParameter(2, 25);
          list = q.getResultList();

@@ -379,7 +379,7 @@ public class DcControllableDefinitionTest extends JdbcHelper {
          Assert.assertTrue(sa.getControllableId() != null);
          Assert.assertTrue(sa2.getControllableId() != null);
 
-         Query q = jdbcEM.createNativeQuery(Controllable.SEL_BY_ID_CLASS, Controllable.class);
+         Query q = jdbcEM.createNamedQuery(Controllable.SEL_BY_ID_CLASS, Controllable.class);
          q.setParameter(1, "25");
          q.setParameter(2, "class");
          List<Controllable> list = q.getResultList();

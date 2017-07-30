@@ -65,6 +65,11 @@
       <class>com.cibethelper.AuditedTComplexEntity</class>
       <class>com.cibethelper.entities.Te1</class>
       <class>com.cibethelper.entities.Te2</class>
+      <class>com.cibethelper.entities.owner.Company</class>
+      <class>com.cibethelper.entities.owner.Merchant</class>
+      <class>com.cibethelper.entities.owner.Merchant2</class>
+      <class>com.cibethelper.entities.owner.Product</class>
+      <class>com.cibethelper.entities.owner.Product2</class>
       
       <properties>
          <property name="com.logitags.cibet.persistence.provider" value="org.apache.openjpa.persistence.PersistenceProviderImpl"/>

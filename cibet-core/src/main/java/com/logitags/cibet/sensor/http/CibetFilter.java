@@ -195,8 +195,7 @@ public class CibetFilter extends CibetContextFilter implements Filter {
    }
 
    private CibetEEContext before(EventMetadata metadata) throws ServletException {
-      if (metadata.getActuators().isEmpty())
-         return null;
+      if (metadata.getActuators().isEmpty()) return null;
 
       CibetEEContext ejb = EjbLookup.lookupEjb(EJB_JNDINAME, CibetEEContextEJB.class);
       if (ejb != null) {
@@ -234,8 +233,7 @@ public class CibetFilter extends CibetContextFilter implements Filter {
    }
 
    private void after(CibetEEContext ejb, EventMetadata metadata) throws ServletException {
-      if (metadata.getActuators().isEmpty())
-         return;
+      if (metadata.getActuators().isEmpty()) return;
       if (ejb != null) {
          ejb.afterEvent(metadata);
 
@@ -275,7 +273,7 @@ public class CibetFilter extends CibetContextFilter implements Filter {
       }
       log.debug("INVOKER: " + ipaddress);
       resource.setInvoker(ipaddress);
-      EventMetadata metadata = new EventMetadata(controlEvent, resource);
+      EventMetadata metadata = new EventMetadata(SENSOR_NAME, controlEvent, resource);
       return metadata;
    }
 
@@ -284,8 +282,7 @@ public class CibetFilter extends CibetContextFilter implements Filter {
       Enumeration<String> headers = request.getHeaderNames();
       while (headers.hasMoreElements()) {
          String headerName = headers.nextElement();
-         if (headerName.toUpperCase().startsWith("CIBET_"))
-            continue;
+         if (headerName.toUpperCase().startsWith("CIBET_")) continue;
          headerName = headerName.toLowerCase();
          Enumeration<String> header = request.getHeaders(headerName);
          List<String> headerValues = new ArrayList<String>();

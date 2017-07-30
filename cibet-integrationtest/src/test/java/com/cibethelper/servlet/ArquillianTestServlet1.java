@@ -70,7 +70,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.cibethelper.SpringTestAuthenticationManager;
@@ -279,7 +279,7 @@ public class ArquillianTestServlet1 extends HttpServlet {
 
       try {
          Collection<GrantedAuthority> authList = new ArrayList<>();
-         authList.add(new GrantedAuthorityImpl(req.getParameter("ROLE")));
+         authList.add(new SimpleGrantedAuthority(req.getParameter("ROLE")));
          Authentication request = new UsernamePasswordAuthenticationToken(req.getParameter("USER"), "FIXED-PW",
                authList);
          SecurityContextHolder.getContext().setAuthentication(request);
@@ -520,8 +520,7 @@ public class ArquillianTestServlet1 extends HttpServlet {
 
       } finally {
          // Closing the input stream will trigger connection release
-         if (instream != null)
-            instream.close();
+         if (instream != null) instream.close();
          Thread.sleep(100);
       }
    }

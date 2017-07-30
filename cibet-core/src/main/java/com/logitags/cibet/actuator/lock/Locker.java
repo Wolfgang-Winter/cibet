@@ -215,7 +215,7 @@ public abstract class Locker {
    public static List<Controllable> loadLockedObjects() {
       TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
             .createNamedQuery(Controllable.SEL_LOCKED_ALL, Controllable.class);
-      query.setParameter("tenant", Context.internalSessionScope().getTenant());
+      query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       return query.getResultList();
    }
 
@@ -228,7 +228,7 @@ public abstract class Locker {
    public static List<Controllable> loadLockedObjects(String target) {
       TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
             .createNamedQuery(Controllable.SEL_LOCKED_BY_TARGETTYPE, Controllable.class);
-      query.setParameter("tenant", Context.internalSessionScope().getTenant());
+      query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       query.setParameter("targettype", target);
       return query.getResultList();
    }
@@ -242,7 +242,7 @@ public abstract class Locker {
    public static List<Controllable> loadLockedObjectsByUser(String user) {
       TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
             .createNamedQuery(Controllable.SEL_LOCKED_BY_USER, Controllable.class);
-      query.setParameter("tenant", Context.internalSessionScope().getTenant());
+      query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       query.setParameter("user", user);
       return query.getResultList();
    }
@@ -257,7 +257,7 @@ public abstract class Locker {
    public static List<Controllable> loadLockedObjects(Class<?> cl, String method) {
       TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
             .createNamedQuery(Controllable.SEL_LOCKED_BY_TARGETTYPE, Controllable.class);
-      query.setParameter("tenant", Context.internalSessionScope().getTenant());
+      query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       query.setParameter("targettype", cl.getName());
       List<Controllable> list = query.getResultList();
       Iterator<Controllable> iter = list.iterator();

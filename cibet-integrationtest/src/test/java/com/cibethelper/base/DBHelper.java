@@ -67,7 +67,7 @@ public class DBHelper extends CoreTestBase {
    @BeforeClass
    public static void beforeClass() throws Exception {
       try {
-         log.debug("beforeClass");
+         log.debug("DBHelper beforeClass");
          fac = Persistence.createEntityManagerFactory("localTest");
          log.debug("now create EntityManager");
          applEman = fac.createEntityManager();
@@ -235,6 +235,9 @@ public class DBHelper extends CoreTestBase {
    protected void authenticate(String... roles) throws AuthenticationException {
       SpringTestAuthenticationManager authManager = new SpringTestAuthenticationManager();
       for (String role : roles) {
+         if (!role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+         }
          authManager.addAuthority(role);
       }
 
@@ -251,6 +254,9 @@ public class DBHelper extends CoreTestBase {
             log.debug("set secondRole = null");
             Context.internalSessionScope().setProperty(InternalSessionScope.SECOND_PRINCIPAL, null);
          } else {
+            if (!role.startsWith("ROLE_")) {
+               role = "ROLE_" + role;
+            }
             authManager.addAuthority(role);
          }
       }

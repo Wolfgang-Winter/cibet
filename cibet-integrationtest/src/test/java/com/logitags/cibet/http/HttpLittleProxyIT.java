@@ -192,6 +192,9 @@ public class HttpLittleProxyIT extends AbstractArquillian {
    protected void authenticate(String... roles) throws AuthenticationException {
       SpringTestAuthenticationManager authManager = new SpringTestAuthenticationManager();
       for (String role : roles) {
+         if (!role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+         }
          authManager.addAuthority(role);
       }
 
@@ -220,8 +223,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       for (int i = 1; i < 6; i++) {
          Query q = localEM.createQuery("SELECT a FROM Archive a " + " ORDER BY a.createDate ");
          list = q.getResultList();
-         if (expected == list.size())
-            break;
+         if (expected == list.size()) break;
 
          log.debug("No result. Try query again: " + i);
          localEM.clear();
@@ -252,8 +254,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       List<Controllable> list = null;
       for (int i = 1; i < 6; i++) {
          list = DcLoader.findUnreleased();
-         if (1 == list.size())
-            break;
+         if (1 == list.size()) break;
 
          log.debug("No result. Try query again: " + i);
          Thread.sleep(400);

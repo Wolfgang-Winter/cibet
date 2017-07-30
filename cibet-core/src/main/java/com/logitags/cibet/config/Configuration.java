@@ -67,6 +67,7 @@ import com.logitags.cibet.actuator.common.Actuator;
 import com.logitags.cibet.actuator.loadcontrol.LoadControlCallback;
 import com.logitags.cibet.actuator.loadcontrol.Monitor;
 import com.logitags.cibet.actuator.loadcontrol.MonitorStatus;
+import com.logitags.cibet.actuator.owner.OwnerCheckCallback;
 import com.logitags.cibet.actuator.scheduler.SchedulerTaskInterceptor;
 import com.logitags.cibet.authentication.AuthenticationProvider;
 import com.logitags.cibet.authentication.ChainedAuthenticationProvider;
@@ -270,10 +271,8 @@ public class Configuration {
    public synchronized void reinitAuthenticationProvider(List<Cibet> cibets) {
       chainedAuthenticationProvider = new ChainedAuthenticationProvider();
       initAuthenticationProvider();
-      if (cibets == null)
-         cibets = readConfigurationFiles();
-      if (cibets == null)
-         return;
+      if (cibets == null) cibets = readConfigurationFiles();
+      if (cibets == null) return;
       for (Cibet cibet : cibets) {
          registerAuthenticationProviderFromBinding(cibet.getAuthenticationProvider());
       }
@@ -288,10 +287,8 @@ public class Configuration {
     */
    public synchronized void reinitNotificationProvider(List<Cibet> cibets) {
       notificationProvider = null;
-      if (cibets == null)
-         cibets = readConfigurationFiles();
-      if (cibets == null)
-         return;
+      if (cibets == null) cibets = readConfigurationFiles();
+      if (cibets == null) return;
       for (Cibet cibet : cibets) {
          registerNotificationProviderFromBinding(cibet.getNotificationProvider());
       }
@@ -305,10 +302,8 @@ public class Configuration {
     */
    public synchronized void reinitSecurityProvider(List<Cibet> cibets) {
       securityProvider = new DefaultSecurityProvider();
-      if (cibets == null)
-         cibets = readConfigurationFiles();
-      if (cibets == null)
-         return;
+      if (cibets == null) cibets = readConfigurationFiles();
+      if (cibets == null) return;
       for (Cibet cibet : cibets) {
          registerSecurityProviderFromBinding(cibet.getSecurityProvider());
       }
@@ -327,10 +322,8 @@ public class Configuration {
 
    private void initActuators(List<Cibet> cibets) {
       initBuiltInActuators();
-      if (cibets == null)
-         cibets = readConfigurationFiles();
-      if (cibets == null)
-         return;
+      if (cibets == null) cibets = readConfigurationFiles();
+      if (cibets == null) return;
       for (Cibet cibet : cibets) {
          for (ActuatorBinding bin : cibet.getActuator()) {
             registerActuatorFromBinding(bin);
@@ -358,10 +351,8 @@ public class Configuration {
    private void initControls(List<Cibet> cibets) {
       controls.clear();
       initBuiltInControls();
-      if (cibets == null)
-         cibets = readConfigurationFiles();
-      if (cibets == null)
-         return;
+      if (cibets == null) cibets = readConfigurationFiles();
+      if (cibets == null) return;
       for (Cibet cibet : cibets) {
          for (ControlDefBinding cdef : cibet.getControl()) {
             registerControlDefFromBinding(cdef);
@@ -377,10 +368,8 @@ public class Configuration {
     */
    public synchronized void reinitSetpoints(List<Cibet> cibets) {
       setpoints.clear();
-      if (cibets == null)
-         cibets = readConfigurationFiles();
-      if (cibets == null)
-         return;
+      if (cibets == null) cibets = readConfigurationFiles();
+      if (cibets == null) return;
       for (Cibet cibet : cibets) {
          for (SetpointBinding bin : cibet.getSetpoint()) {
             Setpoint sp = new Setpoint(bin.getId());
@@ -698,8 +687,7 @@ public class Configuration {
    }
 
    private void registerAuthenticationProviderFromBinding(ClassDefBinding cdef) {
-      if (cdef == null)
-         return;
+      if (cdef == null) return;
       try {
          @SuppressWarnings("unchecked")
          Class<AuthenticationProvider> clazz = (Class<AuthenticationProvider>) Class.forName(cdef.getClazz());
@@ -718,8 +706,7 @@ public class Configuration {
    }
 
    private void registerNotificationProviderFromBinding(ClassDefBinding cdef) {
-      if (cdef == null)
-         return;
+      if (cdef == null) return;
       try {
          @SuppressWarnings("unchecked")
          Class<NotificationProvider> clazz = (Class<NotificationProvider>) Class.forName(cdef.getClazz());
@@ -738,8 +725,7 @@ public class Configuration {
    }
 
    private void registerSecurityProviderFromBinding(ClassDefBinding secProv) {
-      if (secProv == null)
-         return;
+      if (secProv == null) return;
       try {
          @SuppressWarnings("unchecked")
          Class<SecurityProvider> clazz = (Class<SecurityProvider>) Class.forName(secProv.getClazz());
@@ -834,6 +820,7 @@ public class Configuration {
       ConvertUtils.register(pc, LoadControlCallback.class);
       ConvertUtils.register(pc, Monitor[].class);
       ConvertUtils.register(pc, SchedulerTaskInterceptor.class);
+      ConvertUtils.register(pc, OwnerCheckCallback.class);
 
       ServiceLoader<Actuator> loader = ServiceLoader.load(Actuator.class);
       Iterator<Actuator> iter = loader.iterator();

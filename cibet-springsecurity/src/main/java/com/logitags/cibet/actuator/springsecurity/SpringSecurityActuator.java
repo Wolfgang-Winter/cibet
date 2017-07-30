@@ -149,7 +149,6 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
 
       switch (ctx.getControlEvent()) {
       case INVOKE:
-      case IMPLICIT:
       case RELEASE_INVOKE:
       case FIRST_RELEASE_INVOKE:
       case REJECT_INVOKE:
@@ -164,8 +163,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    public void afterInvoke(EventMetadata ctx) {
-      if (ctx.getResource() instanceof HttpRequestResource)
-         return;
+      if (ctx.getResource() instanceof HttpRequestResource) return;
 
       // 1. if no Post-rules --> return
       if (postAuthorize == null && postFilter == null) {
@@ -191,14 +189,10 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
             arguments, ctx.getSetpointIds() + this.getName(), ctx.getResource().getResultObject());
 
       // 2.c set pre- and post access roles
-      if (preAuthorize != null)
-         methodInv.addRule(CibetMethodInvocation.PREAUTHORIZE_RULE, preAuthorize);
-      if (preFilter != null)
-         methodInv.addRule(CibetMethodInvocation.PREFILTER_RULE, preFilter);
-      if (postAuthorize != null)
-         methodInv.addRule(CibetMethodInvocation.POSTAUTHORIZE_RULE, postAuthorize);
-      if (postFilter != null)
-         methodInv.addRule(CibetMethodInvocation.POSTFILTER_RULE, postFilter);
+      if (preAuthorize != null) methodInv.addRule(CibetMethodInvocation.PREAUTHORIZE_RULE, preAuthorize);
+      if (preFilter != null) methodInv.addRule(CibetMethodInvocation.PREFILTER_RULE, preFilter);
+      if (postAuthorize != null) methodInv.addRule(CibetMethodInvocation.POSTAUTHORIZE_RULE, postAuthorize);
+      if (postFilter != null) methodInv.addRule(CibetMethodInvocation.POSTFILTER_RULE, postFilter);
 
       // 3. Get MethodSecurityInterceptor from Spring context
       MethodSecurityInterceptor interceptor;
@@ -284,8 +278,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
     * @return fixed rule
     */
    protected String fixRule(String rule) {
-      if (rule == null || rule.length() == 0)
-         return rule;
+      if (rule == null || rule.length() == 0) return rule;
       rule = rule.trim();
 
       Matcher m = hasAnyRolePattern.matcher(rule);
@@ -363,18 +356,12 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
       }
 
       // 2. set pre- access roles in CibetContext
-      if (preAuthorize != null)
-         methodInv.addRule(CibetMethodInvocation.PREAUTHORIZE_RULE, preAuthorize);
-      if (preFilter != null)
-         methodInv.addRule(CibetMethodInvocation.PREFILTER_RULE, preFilter);
-      if (secured != null)
-         methodInv.addRule(CibetMethodInvocation.SECURED_RULE, secured);
-      if (denyAll == true)
-         methodInv.addRule(CibetMethodInvocation.JSR250_DENYALL_RULE, "true");
-      if (permitAll == true)
-         methodInv.addRule(CibetMethodInvocation.JSR250_PERMITALL_RULE, "true");
-      if (rolesAllowed != null)
-         methodInv.addRule(CibetMethodInvocation.JSR250_ROLESALLOWED_RULE, rolesAllowed);
+      if (preAuthorize != null) methodInv.addRule(CibetMethodInvocation.PREAUTHORIZE_RULE, preAuthorize);
+      if (preFilter != null) methodInv.addRule(CibetMethodInvocation.PREFILTER_RULE, preFilter);
+      if (secured != null) methodInv.addRule(CibetMethodInvocation.SECURED_RULE, secured);
+      if (denyAll == true) methodInv.addRule(CibetMethodInvocation.JSR250_DENYALL_RULE, "true");
+      if (permitAll == true) methodInv.addRule(CibetMethodInvocation.JSR250_PERMITALL_RULE, "true");
+      if (rolesAllowed != null) methodInv.addRule(CibetMethodInvocation.JSR250_ROLESALLOWED_RULE, rolesAllowed);
 
       // 3. Get MethodSecurityInterceptor from Spring context
       MethodSecurityInterceptor interceptor;
@@ -600,8 +587,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
       } else {
          this.denyAll = value;
       }
-      if (denyAll == true)
-         permitAll = false;
+      if (denyAll == true) permitAll = false;
    }
 
    /**
@@ -621,8 +607,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
       } else {
          this.permitAll = pa;
       }
-      if (permitAll == true)
-         denyAll = false;
+      if (permitAll == true) denyAll = false;
    }
 
    /**

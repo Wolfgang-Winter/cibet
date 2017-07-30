@@ -136,6 +136,9 @@ public class SpringCibetInterceptorEncryptIT extends AbstractArquillian {
    protected void authenticate(String... roles) throws AuthenticationException {
       SpringTestAuthenticationManager authManager = new SpringTestAuthenticationManager();
       for (String role : roles) {
+         if (!role.startsWith("ROLE_")) {
+            role = "ROLE_" + role;
+         }
          authManager.addAuthority(role);
       }
 

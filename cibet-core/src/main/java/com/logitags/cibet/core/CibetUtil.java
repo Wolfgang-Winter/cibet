@@ -167,7 +167,7 @@ public class CibetUtil {
                continue;
             if (Modifier.isTransient(f.getModifiers()))
                continue;
-            if (AnnotationUtil.isAnnotationPresent(clazz, f, Transient.class))
+            if (AnnotationUtil.isFieldOrGetterOrSetterAnnotationPresent(clazz, f, Transient.class))
                continue;
             boolean loaded = util.isLoaded(entity, f.getName());
             log.debug(f.getName() + " [" + f.getType() + "] loaded: " + loaded);

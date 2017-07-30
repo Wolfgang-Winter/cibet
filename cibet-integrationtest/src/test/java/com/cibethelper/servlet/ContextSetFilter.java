@@ -219,15 +219,13 @@ public class ContextSetFilter implements Filter {
    }
 
    private void setSpringContext() throws ServletException {
-      if (springWebContext == null)
-         return;
+      if (springWebContext == null) return;
       try {
          log.debug("setSpringContext");
          Field f = SpringSecurityActuator.class.getDeclaredField("context");
          f.setAccessible(true);
          ApplicationContext appCtx = (ApplicationContext) f.get(null);
-         if (appCtx instanceof WebApplicationContext)
-            return;
+         if (appCtx instanceof WebApplicationContext) return;
 
          springTempContext = appCtx;
          f.set(null, springWebContext);
@@ -238,8 +236,7 @@ public class ContextSetFilter implements Filter {
    }
 
    private void resetSpringContext() throws ServletException {
-      if (springTempContext == null)
-         return;
+      if (springTempContext == null) return;
       try {
          Field f = SpringSecurityActuator.class.getDeclaredField("context");
          f.setAccessible(true);
@@ -297,7 +294,7 @@ public class ContextSetFilter implements Filter {
          WebApplicationContext ctx = WebApplicationContextUtils
                .getRequiredWebApplicationContext(req.getServletContext());
          AffirmativeBased bean = ctx.getBean(AffirmativeBased.class);
-         Iterator<AccessDecisionVoter> it = bean.getDecisionVoters().iterator();
+         Iterator<AccessDecisionVoter<? extends Object>> it = bean.getDecisionVoters().iterator();
          while (it.hasNext()) {
             AccessDecisionVoter v = it.next();
             if (v instanceof WebExpressionVoter) {

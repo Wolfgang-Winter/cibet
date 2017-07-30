@@ -115,7 +115,7 @@ public abstract class AbstractAspect extends CibetInterceptor {
 
          resource.setInvokerClass(factoryClass.getName());
          resource.setInvokerParam(param);
-         metadata = new EventMetadata(controlEvent, resource);
+         metadata = new EventMetadata(sensorName, controlEvent, resource);
          Configuration.instance().getController().evaluate(metadata);
 
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(sensorName, metadata));
@@ -153,8 +153,7 @@ public abstract class AbstractAspect extends CibetInterceptor {
    }
 
    private void checkParam(String param) {
-      if (param == null || "".equals(param))
-         return;
+      if (param == null || "".equals(param)) return;
       if (param.endsWith("()")) {
          if (param.lastIndexOf(".") < 0) {
             throw new IllegalArgumentException("param attribute of @CibetIntercept annotation must be of "

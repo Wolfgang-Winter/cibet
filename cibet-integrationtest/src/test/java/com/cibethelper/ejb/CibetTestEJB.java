@@ -28,6 +28,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 
@@ -338,7 +339,7 @@ public class CibetTestEJB {
    public List<Archive> queryArchive(String tenant, String targetType, String objectId) {
       EntityManager em = Context.requestScope().getEntityManager();
       em.clear();
-      Query q = em.createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      TypedQuery<Archive> q = em.createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
       q.setParameter(1, targetType);
       q.setParameter(2, objectId);
       return q.getResultList();

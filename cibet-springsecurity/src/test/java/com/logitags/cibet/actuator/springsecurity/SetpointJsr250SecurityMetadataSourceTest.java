@@ -124,7 +124,7 @@ public class SetpointJsr250SecurityMetadataSourceTest extends SpringTestBase {
       ent1.setCompValue(22);
       Assert.assertEquals(0, ent1.getCompValue());
 
-      authenticate("LOLLO");
+      authenticate("ROLE_LOLLO");
 
       TComplexEntity ent2 = new TComplexEntity();
       ent2.setCompValue(78);

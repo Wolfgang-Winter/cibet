@@ -40,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import com.logitags.cibet.actuator.loadcontrol.LoadControlCallback;
 import com.logitags.cibet.actuator.loadcontrol.Monitor;
 import com.logitags.cibet.actuator.loadcontrol.MonitorStatus;
+import com.logitags.cibet.actuator.owner.OwnerCheckCallback;
 import com.logitags.cibet.actuator.scheduler.SchedulerTaskInterceptor;
 
 public class PropertyConverter implements Converter {
@@ -144,6 +145,17 @@ public class PropertyConverter implements Converter {
                "<NULL> not allowed for property to set a LoadControlCallback implementation class name");
          try {
             Class<LoadControlCallback> clazz = (Class<LoadControlCallback>) Class.forName((String) value);
+            return clazz.newInstance();
+         } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+         }
+
+      } else if (OwnerCheckCallback.class.isAssignableFrom(type)) {
+         if (value == null) throw new RuntimeException(
+               "<NULL> not allowed for property to set a OwnerCheckCallback implementation class name");
+         try {
+            Class<OwnerCheckCallback> clazz = (Class<OwnerCheckCallback>) Class.forName((String) value);
             return clazz.newInstance();
          } catch (Exception e) {
             log.error(e.getMessage(), e);

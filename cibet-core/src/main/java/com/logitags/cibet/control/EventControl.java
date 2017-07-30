@@ -38,9 +38,6 @@ public class EventControl extends AbstractControl {
 
    public static final String NAME = "event";
 
-   /**
-    * returns true if metadata.getControlEvent() == ControlEvent.IMPLICIT
-    */
    public boolean evaluate(Object controlValue, EventMetadata metadata) {
       if (metadata == null || metadata.getControlEvent() == null) {
          String msg = "failed to execute event evaluation: metadata or event in metadata is null";
@@ -52,11 +49,6 @@ public class EventControl extends AbstractControl {
 
       for (String cv : eventList) {
          ControlEvent curEvent = metadata.getControlEvent();
-
-         if (ControlEvent.valueOf(cv).isChildOf(curEvent)) {
-            return true;
-         }
-
          while (curEvent != null) {
             if (cv.equals(curEvent.name())) {
                return true;
@@ -77,8 +69,7 @@ public class EventControl extends AbstractControl {
    public Object resolve(String configValue) {
       log.debug("resolve " + getName() + " config value: " + configValue);
       List<String> valueList = new ArrayList<String>();
-      if (configValue == null)
-         return valueList;
+      if (configValue == null) return valueList;
       if (configValue.length() == 0) {
          valueList.add("");
       } else {

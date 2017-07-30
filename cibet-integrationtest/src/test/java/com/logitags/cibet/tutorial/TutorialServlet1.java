@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.logitags.cibet.actuator.archive.Archive;
@@ -254,7 +254,7 @@ public class TutorialServlet1 extends HttpServlet {
       String tenant = req.getParameter("TENANT");
       String user = req.getParameter("USER");
       Collection<GrantedAuthority> authList = new ArrayList<>();
-      authList.add(new GrantedAuthorityImpl(req.getParameter("ROLE")));
+      authList.add(new SimpleGrantedAuthority(req.getParameter("ROLE")));
       Authentication request = new UsernamePasswordAuthenticationToken(user, "FIXED-PW", authList);
       SecurityContextHolder.getContext().setAuthentication(request);
 

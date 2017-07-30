@@ -400,7 +400,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertNotNull(selEnt);
       Assert.assertEquals(5, selEnt.getCounter());
 
-      Query q = Context.requestScope().getEntityManager().createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
       q.setParameter(1, TEntity.class.getName());
       q.setParameter(2, String.valueOf(entity.getId()));
       List<Archive> list = q.getResultList();
@@ -533,7 +533,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Context.end();
       Context.start();
 
-      Query q = Context.requestScope().getEntityManager().createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
       q.setParameter(1, TEntity.class.getName());
       q.setParameter(2, String.valueOf(entity.getId()));
       List<Archive> list = q.getResultList();
@@ -705,7 +705,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       TEntity selEnt = applEman.find(TEntity.class, entity.getId());
       Assert.assertNull("entity with id " + entity.getId() + " not deleted", selEnt);
 
-      Query q = Context.requestScope().getEntityManager().createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
       q.setParameter(1, TEntity.class.getName());
       q.setParameter(2, String.valueOf(entity.getId()));
       List<Archive> list = q.getResultList();
@@ -766,7 +766,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       TComplexEntity ce = createTComplexEntity();
       applEman.persist(ce);
 
-      Query q = Context.requestScope().getEntityManager().createNativeQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
       q.setParameter(1, TComplexEntity.class.getName());
       q.setParameter(2, String.valueOf(ce.getId()));
       List<Archive> list = q.getResultList();

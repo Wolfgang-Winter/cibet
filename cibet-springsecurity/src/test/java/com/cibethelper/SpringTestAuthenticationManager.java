@@ -20,7 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class SpringTestAuthenticationManager implements AuthenticationProvider {
 
@@ -34,7 +34,7 @@ public class SpringTestAuthenticationManager implements AuthenticationProvider {
    }
 
    public void addAuthority(String role) {
-      authorities.add(new GrantedAuthorityImpl(role));
+      authorities.add(new SimpleGrantedAuthority(role));
    }
 
    public Authentication authenticate(Authentication auth) throws AuthenticationException {

@@ -73,7 +73,7 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
       String sql = "Update cuba SET ddss= 4, voodoo='huch' WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
-      EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
+      EventMetadata md = new EventMetadata("JDBC", ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, spB);
       Assert.assertEquals(1, list.size());
    }
@@ -89,7 +89,7 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
       String sql = "Update cuba SET ddss= 4, voodoo='huch' WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
-      EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
+      EventMetadata md = new EventMetadata("JDBC", ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, spB);
       Assert.assertEquals(0, list.size());
    }
@@ -105,7 +105,7 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
       String sql = "Update cuba SET ddss= 4, voodoo='huch',voodo=99 WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
-      EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
+      EventMetadata md = new EventMetadata("JDBC", ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, spB);
       Assert.assertEquals(1, list.size());
    }
@@ -121,7 +121,7 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
       String sql = "Update cuba SET ddss= 4, voodo=99 WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
-      EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
+      EventMetadata md = new EventMetadata("JDBC", ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, spB);
       Assert.assertEquals(0, list.size());
    }

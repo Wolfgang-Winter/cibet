@@ -102,4 +102,20 @@ public class SetpointExpressionSecurityMetadataSourceTest extends SpringTestBase
       Assert.assertEquals(0, ent1.getCompValue());
    }
 
+   @Test
+   public void invokePermitAllThreeEnabled2() throws Exception {
+      log.debug("start invokePermitAllThreeEnabled2()");
+      initContext("spring-context_three.xml");
+      registerSetpoint(TComplexEntity.class, SpringSecurityActuator.DEFAULTNAME, "setCompValue", ControlEvent.INVOKE);
+
+      SpringSecurityActuator act = (SpringSecurityActuator) Configuration.instance()
+            .getActuator(SpringSecurityActuator.DEFAULTNAME);
+      act.setRolesAllowed("'LOLLO,Henry'");
+
+      authenticate("ROLE_LOLLO");
+
+      TComplexEntity ent1 = new TComplexEntity();
+      ent1.setCompValue(22);
+      Assert.assertEquals(22, ent1.getCompValue());
+   }
 }

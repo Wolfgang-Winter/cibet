@@ -61,6 +61,13 @@
       <class>com.cibethelper.loadcontrol.CoreJMEntity</class>
       <class>com.cibethelper.AuditedTEntity</class>
       <class>com.cibethelper.AuditedTComplexEntity</class>
+      <class>com.cibethelper.entities.owner.Company</class>
+      <class>com.cibethelper.entities.owner.Merchant</class>
+      <class>com.cibethelper.entities.owner.Merchant2</class>
+      <class>com.cibethelper.entities.owner.Merchant3</class>
+      <class>com.cibethelper.entities.owner.Product</class>
+      <class>com.cibethelper.entities.owner.Product2</class>
+      <class>com.cibethelper.entities.owner.Transaction</class>
       
       <properties>
          <property name="com.logitags.cibet.persistence.provider" value="org.hibernate.ejb.HibernatePersistence"/>
@@ -71,7 +78,6 @@
          <property name="javax.persistence.jdbc.user" value="APP"/>
          <property name="javax.persistence.jdbc.password" value="x"/>
 
-<!--         <property name="hibernate.show_sql" value="true" /> -->
          <property name="hibernate.format_sql" value="true" />
 <!--          <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
          <property name="hibernate.listeners.envers.autoRegister" value="false"/>

@@ -516,6 +516,7 @@ public class CibetInterceptorIT extends AbstractArquillian {
       Assert.assertEquals("Happy New Year", list1.get(1).getRemark());
       Assert.assertEquals(ControlEvent.RELEASE_INVOKE, list1.get(1).getControlEvent());
 
+      log.debug("++*****");
       List<Archive> alist = ArchiveLoader.loadArchivesByMethodName(CibetTestEJB.class, "testInvoke");
       Assert.assertEquals(2, alist.size());
       log.debug(alist.get(0));
