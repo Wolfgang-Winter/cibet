@@ -51,7 +51,6 @@ import org.littleshoot.proxy.impl.ProxyUtils;
 
 import com.logitags.cibet.actuator.common.Actuator;
 import com.logitags.cibet.authentication.SecurityContext;
-import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ProxyConfig;
 import com.logitags.cibet.config.ProxyConfig.ProxyMode;
 import com.logitags.cibet.context.CibetEEContext;
@@ -59,6 +58,7 @@ import com.logitags.cibet.context.CibetEEContextEJB;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.EntityManagerType;
 import com.logitags.cibet.context.InternalRequestScope;
+import com.logitags.cibet.control.Controller;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
@@ -513,7 +513,7 @@ public class CibetProxy extends HttpFiltersAdapter {
          request.headers().set(Headers.CIBET_CASEID.name(), Context.requestScope().getCaseId());
 
          metadata = createEventMetadata(request);
-         Configuration.instance().getController().evaluate(metadata);
+         Controller.evaluate(metadata);
          eventResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          try {

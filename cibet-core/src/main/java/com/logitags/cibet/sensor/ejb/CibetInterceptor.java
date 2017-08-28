@@ -24,9 +24,9 @@ import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.circuitbreaker.CircuitBreakerActuator;
 import com.logitags.cibet.actuator.common.Actuator;
-import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;
+import com.logitags.cibet.control.Controller;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
@@ -87,7 +87,7 @@ public class CibetInterceptor implements Serializable {
          EjbResource resource = new EjbResource(ctx.getTarget(), method, params);
          resource.setInvokerClass(EJBInvoker.class.getName());
          metadata = new EventMetadata("EJB", controlEvent, resource);
-         Configuration.instance().getController().evaluate(metadata);
+         Controller.evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          try {

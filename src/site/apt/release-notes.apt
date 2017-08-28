@@ -5,7 +5,13 @@ Version 2.1
   * use named native queries instead of native queries
   
   * new ControlEvent type UPDATEQUERY
-   
+  
+  * cibet-config xsd refactured. Use include and exclude in controls
+  
+  * naming of cibet-configs to prevent overriding of setpoints in different files  
+
+  * MethodControl: possible to declare only a methodname without class
+     
 
 Version 2.0 (2.7.2017)
 

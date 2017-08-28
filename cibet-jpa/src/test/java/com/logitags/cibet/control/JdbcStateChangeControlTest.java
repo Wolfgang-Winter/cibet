@@ -13,8 +13,6 @@ package com.logitags.cibet.control;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.persistence.EntityManager;
 
@@ -43,38 +41,19 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
    @Mock
    private EntityManager em2;
 
-   private List<Setpoint> evaluate(EventMetadata md, List<Setpoint> spoints) {
-      Control eval = new StateChangeControl();
-      List<Setpoint> list = new ArrayList<Setpoint>();
-      for (Setpoint spi : spoints) {
-         Map<String, Object> controlValues = new TreeMap<String, Object>(new ControlComparator());
-         spi.getEffectiveControlValues(controlValues);
-         Object value = controlValues.get("stateChange");
-         if (value == null) {
-            list.add(spi);
-         } else {
-            boolean okay = eval.evaluate(value, md);
-            if (okay) {
-               list.add(spi);
-            }
-         }
-      }
-      return list;
-   }
-
    @Test
    public void evaluateExcludeJdbc() throws Exception {
       log.info("start evaluateExcludeJdbc()");
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("jdbc1");
-      sp.setStateChange(true, "voodoo");
+      sp.addStateChangeIncludes("voodoo");
       spB.add(sp);
 
       String sql = "Update cuba SET ddss= 4, voodoo='huch' WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata("JDBC", ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, spB);
+      List<Setpoint> list = evaluate(md, spB, new StateChangeControl());
       Assert.assertEquals(1, list.size());
    }
 
@@ -83,14 +62,14 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
       log.info("start evaluateExcludeJdbc2()");
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("jdbc1");
-      sp.setStateChange(true, "voodoo", "ddss");
+      sp.addStateChangeExcludes("voodoo", "ddss");
       spB.add(sp);
 
       String sql = "Update cuba SET ddss= 4, voodoo='huch' WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata("JDBC", ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, spB);
+      List<Setpoint> list = evaluate(md, spB, new StateChangeControl());
       Assert.assertEquals(0, list.size());
    }
 
@@ -99,14 +78,14 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
       log.info("start evaluateIncludeJdbc()");
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("jdbc1");
-      sp.setStateChange(false, "voodoo");
+      sp.addStateChangeIncludes("voodoo");
       spB.add(sp);
 
       String sql = "Update cuba SET ddss= 4, voodoo='huch',voodo=99 WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata("JDBC", ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, spB);
+      List<Setpoint> list = evaluate(md, spB, new StateChangeControl());
       Assert.assertEquals(1, list.size());
    }
 
@@ -115,14 +94,14 @@ public class JdbcStateChangeControlTest extends CoreTestBase {
       log.info("start evaluateIncludeJdbc2()");
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("jdbc1");
-      sp.setStateChange(false, "voodoo");
+      sp.addStateChangeIncludes("voodoo");
       spB.add(sp);
 
       String sql = "Update cuba SET ddss= 4, voodo=99 WHERE hinz=1234";
       SqlParser parser = new SqlParser(null, sql);
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata("JDBC", ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, spB);
+      List<Setpoint> list = evaluate(md, spB, new StateChangeControl());
       Assert.assertEquals(0, list.size());
    }
 

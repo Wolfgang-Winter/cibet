@@ -14,8 +14,9 @@
  */
 package com.logitags.cibet.control;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
@@ -28,7 +29,7 @@ import com.logitags.cibet.core.EventMetadata;
  * evaluates the current event against configured setpoints. If the sensor/metadata contains IMPLICIT ControlEvent the
  * configuration in the setpoint is ignored.
  */
-public class EventControl extends AbstractControl {
+public class EventControl implements Serializable, Control {
 
    /**
     * 
@@ -38,53 +39,46 @@ public class EventControl extends AbstractControl {
 
    public static final String NAME = "event";
 
-   public boolean evaluate(Object controlValue, EventMetadata metadata) {
+   @Override
+   public String getName() {
+      return NAME;
+   }
+
+   private Set<ControlEvent> parse(String configValue) {
+      Set<ControlEvent> valueList = new HashSet<>();
+      if (configValue == null || configValue.length() == 0) return valueList;
+      StringTokenizer tok = new StringTokenizer(configValue, ",;");
+      while (tok.hasMoreTokens()) {
+         String t = tok.nextToken().trim();
+         valueList.add(ControlEvent.valueOf(t));
+      }
+      return valueList;
+   }
+
+   @Override
+   public Boolean evaluate(Set<String> values, EventMetadata metadata) {
       if (metadata == null || metadata.getControlEvent() == null) {
          String msg = "failed to execute event evaluation: metadata or event in metadata is null";
          log.error(msg);
          throw new IllegalArgumentException(msg);
       }
 
-      List<String> eventList = (List<String>) controlValue;
+      if (values == null || values.isEmpty()) return null;
 
-      for (String cv : eventList) {
-         ControlEvent curEvent = metadata.getControlEvent();
-         while (curEvent != null) {
-            if (cv.equals(curEvent.name())) {
-               return true;
+      for (String cv : values) {
+         Set<ControlEvent> controlEvents = parse(cv);
+         for (ControlEvent controlEvent : controlEvents) {
+            ControlEvent curEvent = metadata.getControlEvent();
+            while (curEvent != null) {
+               if (curEvent == controlEvent) {
+                  return true;
+               }
+               curEvent = curEvent.getParent();
             }
-            curEvent = curEvent.getParent();
          }
       }
 
       return false;
-   }
-
-   @Override
-   public String getName() {
-      return NAME;
-   }
-
-   @Override
-   public Object resolve(String configValue) {
-      log.debug("resolve " + getName() + " config value: " + configValue);
-      List<String> valueList = new ArrayList<String>();
-      if (configValue == null) return valueList;
-      if (configValue.length() == 0) {
-         valueList.add("");
-      } else {
-         StringTokenizer tok = new StringTokenizer(configValue, ",;");
-         while (tok.hasMoreTokens()) {
-            String t = tok.nextToken().trim();
-
-            ControlEvent.valueOf(t);
-
-            if (!valueList.contains(t)) {
-               valueList.add(t);
-            }
-         }
-      }
-      return valueList;
    }
 
 }

@@ -1,130 +1,168 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config.xsd">
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="scenario2">
 
-  <actuator name="SPRINGSECURITY_PREMIUMOFFICER">
-     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
-     <properties>
-        <preAuthorize>hasRole(ROLE_PREMIUMOFFICER)</preAuthorize>
-     </properties>
-  </actuator>
+	<actuator name="SPRINGSECURITY_PREMIUMOFFICER">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator
+		</class>
+		<properties>
+			<preAuthorize>hasRole(ROLE_PREMIUMOFFICER)</preAuthorize>
+		</properties>
+	</actuator>
 
-  <actuator name="SPRINGSECURITY_RELEASER">
-     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
-     <properties>
-        <preAuthorize>hasRole(ROLE_RELEASER)</preAuthorize>
-     </properties>
-  </actuator>
-  
-  <actuator name="SPRINGSECURITY_NORMALUSER">
-     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
-     <properties>
-        <preAuthorize>hasRole(ROLE_NORMALUSER)</preAuthorize>
-     </properties>
-  </actuator>
+	<actuator name="SPRINGSECURITY_RELEASER">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator
+		</class>
+		<properties>
+			<preAuthorize>hasRole(ROLE_RELEASER)</preAuthorize>
+		</properties>
+	</actuator>
 
-  <actuator name="SPRINGSECURITY_DENY">
-     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
-     <properties>
-        <preAuthorize>denyAll()</preAuthorize>
-     </properties>
-  </actuator>
+	<actuator name="SPRINGSECURITY_NORMALUSER">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator
+		</class>
+		<properties>
+			<preAuthorize>hasRole(ROLE_NORMALUSER)</preAuthorize>
+		</properties>
+	</actuator>
 
-  <setpoint id="C">
-    <controls>
-      <tenant>ten1</tenant>
-	  <event>INVOKE</event>
-  	  <target>com.bank.service.*</target>
-  	  <method>pay</method>
-	  <invoker>com.bank.gui.*</invoker>
-	</controls>
-	<actuator name="SPRINGSECURITY_NORMALUSER"/>
-	<actuator name="FOUR_EYES"/>
-  </setpoint>
+	<actuator name="SPRINGSECURITY_DENY">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator
+		</class>
+		<properties>
+			<preAuthorize>denyAll()</preAuthorize>
+		</properties>
+	</actuator>
 
-  <setpoint id="C1" extends="C">
-    <controls>
-	  <invoker>com.bank.batch.*</invoker>
-      <condition>
-        importPackage(java.util);
-        var today = Calendar.getInstance();
-        today.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY 
-          &amp;&amp; today.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
-      </condition> 
-	</controls>
-	<actuator name="ARCHIVE"/>
-  </setpoint>
+	<setpoint id="C">
+		<controls>
+			<tenant>
+				<include>ten1</include>
+			</tenant>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>com.bank.service.*</include>
+			</target>
+			<method>
+				<include>pay</include>
+			</method>
+			<invoker>
+				<include>com.bank.gui.*</include>
+			</invoker>
+		</controls>
+		<actuator name="SPRINGSECURITY_NORMALUSER" />
+		<actuator name="FOUR_EYES" />
+	</setpoint>
 
-  <setpoint id="C2" extends="C1">
-    <controls>
-      <condition>
-        importPackage(java.util);
-        var today = Calendar.getInstance();
-        today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY 
-          || today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
-      </condition> 
-	</controls>
-	<actuator name="SPRINGSECURITY_DENY"/>
-  </setpoint>  
+	<setpoint id="C1" extends="C">
+		<controls>
+			<invoker>
+				<include>com.bank.batch.*</include>
+			</invoker>
+			<condition>
+				<include>
+					importPackage(java.util);
+					var today = Calendar.getInstance();
+					today.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
+					&amp;&amp; today.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
+				</include>
+			</condition>
+		</controls>
+		<actuator name="ARCHIVE" />
+	</setpoint>
 
-  <setpoint id="C3" extends="C">
-    <controls>
-	  <event>RELEASE</event>
-      <condition>
-        importPackage(java.util);
-        var today = Calendar.getInstance();
-        today.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY 
-          &amp;&amp; today.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
-      </condition> 
-	</controls>
-	<actuator name="SPRINGSECURITY_RELEASER"/>
-	<actuator name="ARCHIVE"/>
-  </setpoint>  
+	<setpoint id="C2" extends="C1">
+		<controls>
+			<condition>
+				<include>
+					importPackage(java.util);
+					var today = Calendar.getInstance();
+					today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+					|| today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+				</include>
+			</condition>
+		</controls>
+		<actuator name="SPRINGSECURITY_DENY" />
+	</setpoint>
 
-  <setpoint id="C4" extends="C3">
-    <controls>
-      <condition>
-        importPackage(java.util);
-        var today = Calendar.getInstance();
-        today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY 
-          || today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
-      </condition> 
-	</controls>
-	<actuator name="SPRINGSECURITY_DENY"/>
-  </setpoint>  
+	<setpoint id="C3" extends="C">
+		<controls>
+			<event>
+				<include>RELEASE</include>
+			</event>
+			<condition>
+				<include>
+					importPackage(java.util);
+					var today = Calendar.getInstance();
+					today.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
+					&amp;&amp; today.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY
+				</include>
+			</condition>
+		</controls>
+		<actuator name="SPRINGSECURITY_RELEASER" />
+		<actuator name="ARCHIVE" />
+	</setpoint>
 
-  <setpoint id="C5" extends="C">
-    <controls>
- 	  <event>REJECT</event>
-	</controls>
-	<actuator name="SPRINGSECURITY_RELEASER"/>
-  </setpoint>  
+	<setpoint id="C4" extends="C3">
+		<controls>
+			<condition>
+				<include>
+					importPackage(java.util);
+					var today = Calendar.getInstance();
+					today.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+					|| today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+				</include>
+			</condition>
+		</controls>
+		<actuator name="SPRINGSECURITY_DENY" />
+	</setpoint>
 
-  <setpoint id="C6" extends="C">
-    <controls>
- 	  <event>REDO</event>
- 	  <condition>PARAM0 &lt;= 1000</condition>
-	</controls>
-	<actuator name="SPRINGSECURITY_NORMALUSER"/>
-	<actuator name="ARCHIVE"/>
-  </setpoint>  
+	<setpoint id="C5" extends="C">
+		<controls>
+			<event>
+				<include>REJECT</include>
+			</event>
+		</controls>
+		<actuator name="SPRINGSECURITY_RELEASER" />
+	</setpoint>
 
-  <setpoint id="C7" extends="C6">
-    <controls>
- 	  <event>REDO, RELEASE, REJECT</event>
- 	  <condition>PARAM0 &gt; 1000</condition>
-	</controls>
-	<actuator name="SPRINGSECURITY_PREMIUMOFFICER"/>
-    <actuator name="FOUR_EYES"/>
-    <actuator name="ARCHIVE"/>
-  </setpoint>  
+	<setpoint id="C6" extends="C">
+		<controls>
+			<event>
+				<include>REDO</include>
+			</event>
+			<condition>
+				<include>PARAM0 &lt;= 1000</include>
+			</condition>
+		</controls>
+		<actuator name="SPRINGSECURITY_NORMALUSER" />
+		<actuator name="ARCHIVE" />
+	</setpoint>
 
-  <setpoint id="C8" extends="C6">
-    <controls>
- 	  <condition>PARAM0 &gt; 10000</condition>
-	</controls>
-	<actuator name="SPRINGSECURITY_DENY"/>
-  </setpoint>  
+	<setpoint id="C7" extends="C6">
+		<controls>
+			<event>
+				<include>REDO, RELEASE, REJECT</include>
+			</event>
+			<condition>
+				<include>PARAM0 &gt; 1000</include>
+			</condition>
+		</controls>
+		<actuator name="SPRINGSECURITY_PREMIUMOFFICER" />
+		<actuator name="FOUR_EYES" />
+		<actuator name="ARCHIVE" />
+	</setpoint>
+
+	<setpoint id="C8" extends="C6">
+		<controls>
+			<condition>
+				<include>PARAM0 &gt; 10000</include>
+			</condition>
+		</controls>
+		<actuator name="SPRINGSECURITY_DENY" />
+	</setpoint>
 
 </cibet>   

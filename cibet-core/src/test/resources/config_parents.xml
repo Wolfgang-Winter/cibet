@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.3.xsd">
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="parents">
 
 	<setpoint id="A">
 		<controls>
@@ -18,27 +18,44 @@
 
 	<setpoint id="A1" extends="B2">
 		<controls>
-			<condition>file:testscript2.js</condition>
+			<condition>
+				<include>file:testscript2.js</include>
+			</condition>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
 
 	<setpoint id="B">
 		<controls>
-			<tenant>ten</tenant>
-			<event>UPDATE</event>
-			<target>com.logitags.cibet.ConfigurationIntegrationTest,
-			com.logitags.cibet.control.ControllerImplTest</target>
-			<method>cleanUp,evaluateWithParents</method>
-			<invoker>net.nixxi.*</invoker>
-			<condition>file:D:\projects\git/cibet/cibet-core/src/test/resources/testscript1.js</condition>
+			<tenant>
+				<include>ten</include>
+			</tenant>
+			<event>
+				<include>UPDATE</include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.ConfigurationIntegrationTest</include>
+				<include>com.logitags.cibet.control.ControllerImplTest</include>
+			</target>
+			<method>
+				<include>cleanUp</include>
+				<include>evaluateWithParents</include>
+			</method>
+			<invoker>
+				<include>net.nixxi.*</include>
+			</invoker>
+			<condition>
+				<include>file:D:\projects\git/cibet/cibet-core/src/test/resources/testscript1.js</include>
+			</condition>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
 
 	<setpoint id="B1" extends="B">
 		<controls>
-			<event>INVOKE, RELEASE</event>
+			<event>
+				<include>INVOKE, RELEASE</include>
+			</event>
 			<invoker></invoker>
 		</controls>
 		<actuator name="ARCHIVE"/>

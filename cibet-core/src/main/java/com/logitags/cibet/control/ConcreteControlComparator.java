@@ -30,7 +30,7 @@ import java.util.List;
 
 import com.logitags.cibet.config.Configuration;
 
-public class ControlComparator implements Serializable, Comparator<String> {
+public class ConcreteControlComparator implements Serializable, Comparator<ConcreteControl> {
 
    /**
     * 
@@ -38,23 +38,28 @@ public class ControlComparator implements Serializable, Comparator<String> {
    private static final long serialVersionUID = 8017710795553467074L;
    private List<String> controlNames;
 
-   public ControlComparator() {
+   public ConcreteControlComparator() {
    }
 
-   public ControlComparator(List<String> list) {
+   public ConcreteControlComparator(List<String> list) {
       controlNames = list;
    }
 
    @Override
-   public int compare(String o1, String o2) {
-      if (o1 != null && o1.equals(o2)) return 0;
+   public int compare(ConcreteControl o1, ConcreteControl o2) {
+      if (o1 == null || o2 == null) return 0;
+      if (o1.getControl() == null || o2.getControl() == null) return 0;
+      if (o1.getControl().getName() == null || o2.getControl().getName() == null) return 0;
+
+      if (o1.getControl().getName().equals(o2.getControl().getName())) return 0;
+
       if (controlNames == null) {
          controlNames = Configuration.instance().getControlNames();
       }
 
-      int int1 = controlNames.indexOf(o1);
+      int int1 = controlNames.indexOf(o1.getControl().getName());
       if (int1 == -1) int1 = 1000;
-      int int2 = controlNames.indexOf(o2);
+      int int2 = controlNames.indexOf(o2.getControl().getName());
       if (int2 == -1) int2 = 1000;
       return int1 < int2 ? -1 : 1;
    }

@@ -1,27 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.0.xsd">
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="stateChange2">
 
 	<setpoint id="A">
 		<controls>
-			<tenant>ten1</tenant>
-			<event>INSERT, INVOKE</event>
-			<target>*</target>
-			<method>getBytes(), doX</method>
-			<stateChange>nixxi, lazyList</stateChange>
+			<tenant>
+				<include>ten1</include>
+			</tenant>
+			<event>
+				<include>INSERT, INVOKE</include>
+			</event>
+			<target>
+				<include>*</include>
+			</target>
+			<method>
+				<include>getBytes()</include>
+				<include>doX</include>
+			</method>
+			<stateChange>
+				<include>nixxi</include>
+				<include>lazyList</include>
+			</stateChange>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
 
 	<setpoint id="C">
 		<controls>
-			<event>INSERT</event>
-			<target>com.cibethelper.entities.TEntity</target>
-			<method>"getBytes(int, String)", "getBytes(int, java.lang.String,
-						com.cibethelper.entities.TEntity)";
-						"getBytes(int[], java.lang.String[][])"</method>
-			<stateChange>counter, ten.counter</stateChange>
+			<event>
+				<include>INSERT</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+			</target>
+			<method>
+				<include>getBytes(int, String)</include>
+				<include>getBytes(int, java.lang.String, com.cibethelper.entities.TEntity)</include>
+				<include>getBytes(int[], java.lang.String[][])</include>
+			</method>
+			<stateChange>
+				<include>counter</include>
+				<include>ten.counter</include>
+			</stateChange>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>

@@ -24,13 +24,15 @@
  */
 package com.cibethelper.base;
 
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.logitags.cibet.control.AbstractControl;
+import com.logitags.cibet.control.Control;
 import com.logitags.cibet.core.EventMetadata;
 
-public class FalseCustomControl extends AbstractControl {
+public class FalseCustomControl implements Control {
 
    private static Log log = LogFactory.getLog(FalseCustomControl.class);
 
@@ -61,7 +63,7 @@ public class FalseCustomControl extends AbstractControl {
    }
 
    @Override
-   public boolean evaluate(Object controlValue, EventMetadata metadata) {
+   public Boolean evaluate(Set<String> values, EventMetadata metadata) {
       return false;
    }
 

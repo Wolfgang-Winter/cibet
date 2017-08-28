@@ -19,13 +19,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.common.Actuator;
-import com.logitags.cibet.control.BooleanAttributedControlValue;
+import com.logitags.cibet.control.ConcreteControl;
+import com.logitags.cibet.control.ConcreteControlComparator;
 import com.logitags.cibet.control.ConditionControl;
 import com.logitags.cibet.control.Control;
 import com.logitags.cibet.control.EventControl;
@@ -34,6 +36,7 @@ import com.logitags.cibet.control.MethodControl;
 import com.logitags.cibet.control.StateChangeControl;
 import com.logitags.cibet.control.TargetControl;
 import com.logitags.cibet.control.TenantControl;
+import com.logitags.cibet.core.ControlEvent;
 
 /**
  * Abstraction of the SetpointBinding class. Facilitates configuration of setpoints through API.
@@ -47,15 +50,22 @@ public class Setpoint implements Serializable {
 
    private static Log log = LogFactory.getLog(Setpoint.class);
 
+   public static final String CODE_CONFIGNAME = "code";
+
    private String id;
 
    private Setpoint _extends;
 
    private String extendsId;
 
-   private Map<String, Object> controlValues = new HashMap<String, Object>();
+   /**
+    * the config file name where this setpoint is defined. If defined in code defaults to code
+    */
+   private String configName = CODE_CONFIGNAME;
 
-   private List<Actuator> actuators = new ArrayList<Actuator>();
+   private Map<String, ConcreteControl> controls = new HashMap<>();
+
+   private List<Actuator> actuators = new ArrayList<>();
 
    public Setpoint(String id, Setpoint parent) {
       this(id);
@@ -74,6 +84,14 @@ public class Setpoint implements Serializable {
       this.id = id;
    }
 
+   public Setpoint(String id, String configName) {
+      this(id);
+      if (configName == null || configName.length() == 0) {
+         throw new IllegalArgumentException("Failed to create Setpoint: configName is null or has zero length");
+      }
+      this.configName = configName;
+   }
+
    private Control getControl(String name) {
       Control control = Configuration.instance().getControl(name);
       if (control == null) {
@@ -85,132 +103,355 @@ public class Setpoint implements Serializable {
    }
 
    /**
-    * set the given event control values. eventList could be a String, an array of String or a String that contains
-    * comma/semicolon separated events. The events replace already registered event values.
-    * 
-    * @param eventList
+    * removes all registered Control values for inclusion
     */
-   public void setEvent(String... eventList) {
-      if (eventList == null) {
+   public Setpoint removeCustomControlIncludes(String controlName) {
+      ConcreteControl cc = controls.get(controlName);
+      if (cc != null) {
+         cc.getIncludes().clear();
+      }
+      return this;
+   }
+
+   /**
+    * removes all registered Control values for exclusion
+    */
+   public Setpoint removeCustomControlExcludes(String controlName) {
+      ConcreteControl cc = controls.get(controlName);
+      if (cc != null) {
+         cc.getExcludes().clear();
+      }
+      return this;
+   }
+
+   /**
+    * removes all registered ControlEvents for inclusion
+    */
+   public Setpoint removeEventIncludes() {
+      return removeCustomControlIncludes(EventControl.NAME);
+   }
+
+   /**
+    * removes all registered ControlEvents for exclusion
+    */
+   public Setpoint removeEventExcludes() {
+      return removeCustomControlExcludes(EventControl.NAME);
+   }
+
+   /**
+    * remove all include values of invoker control.
+    * 
+    * @return
+    */
+   public Setpoint removeInvokerIncludes() {
+      return removeCustomControlIncludes(InvokerControl.NAME);
+   }
+
+   /**
+    * remove all exclude values of invoker control.
+    * 
+    * @return
+    */
+   public Setpoint removeInvokerExcludes() {
+      return removeCustomControlExcludes(InvokerControl.NAME);
+   }
+
+   /**
+    * remove all include values of condition control.
+    * 
+    * @return
+    */
+   public Setpoint removeConditionIncludes() {
+      return removeCustomControlIncludes(ConditionControl.NAME);
+   }
+
+   /**
+    * remove all exclude values of Condition control.
+    * 
+    * @return
+    */
+   public Setpoint removeConditionExcludes() {
+      return removeCustomControlExcludes(ConditionControl.NAME);
+   }
+
+   /**
+    * remove all include values of Method control.
+    * 
+    * @return
+    */
+   public Setpoint removeMethodIncludes() {
+      return removeCustomControlIncludes(MethodControl.NAME);
+   }
+
+   /**
+    * remove all exclude values of Method control.
+    * 
+    * @return
+    */
+   public Setpoint removeMethodExcludes() {
+      return removeCustomControlExcludes(MethodControl.NAME);
+   }
+
+   /**
+    * remove all include values of StateChange control.
+    * 
+    * @return
+    */
+   public Setpoint removeStateChangeIncludes() {
+      return removeCustomControlIncludes(StateChangeControl.NAME);
+   }
+
+   /**
+    * remove all exclude values of StateChange control.
+    * 
+    * @return
+    */
+   public Setpoint removeStateChangeExcludes() {
+      return removeCustomControlExcludes(StateChangeControl.NAME);
+   }
+
+   /**
+    * remove all include values of Target control.
+    * 
+    * @return
+    */
+   public Setpoint removeTargetIncludes() {
+      return removeCustomControlIncludes(TargetControl.NAME);
+   }
+
+   /**
+    * remove all exclude values of Target control.
+    * 
+    * @return
+    */
+   public Setpoint removeTargetExcludes() {
+      return removeCustomControlExcludes(TargetControl.NAME);
+   }
+
+   /**
+    * remove all include values of Tenant control.
+    * 
+    * @return
+    */
+   public Setpoint removeTenantIncludes() {
+      return removeCustomControlIncludes(TenantControl.NAME);
+   }
+
+   /**
+    * remove all exclude values of Tenant control.
+    * 
+    * @return
+    */
+   public Setpoint removeTenantExcludes() {
+      return removeCustomControlExcludes(TenantControl.NAME);
+   }
+
+   /**
+    * adds the given event control values for inclusion.
+    * 
+    * @param events
+    */
+   public Setpoint addEventIncludes(ControlEvent... events) {
+      if (events == null) {
          String msg = "failed to set event: NULL value not allowed";
          log.error(msg);
          throw new IllegalArgumentException(msg);
       }
-      controlValues.remove(EventControl.NAME);
-      for (String event : eventList) {
-         addControlValue(EventControl.NAME, event);
+      ConcreteControl cc = controls.get(EventControl.NAME);
+      if (cc == null) {
+         cc = new ConcreteControl(getControl(EventControl.NAME));
+         controls.put(EventControl.NAME, cc);
       }
+      for (ControlEvent event : events) {
+         if (event != null) cc.getIncludes().add(event.name());
+      }
+      return this;
    }
 
    /**
-    * sets the resolved object for the given value as value for the Control with name controlName. An existing object is
-    * replaced.
+    * adds the given event control values for exclusion.
     * 
-    * @param controlName
-    * @param value
+    * @param events
     */
-   public void setCustomControl(String controlName, String value) {
-      Control control = getControl(controlName);
-      Object obj = control.resolve(value);
-      controlValues.put(controlName, obj);
-   }
-
-   private void addControlValue(String controlName, String value) {
-      if (value == null) {
-         String msg = "failed to add " + controlName + " value: NULL value not allowed";
+   public Setpoint addEventExcludes(ControlEvent... events) {
+      if (events == null) {
+         String msg = "failed to set event: NULL value not allowed";
          log.error(msg);
          throw new IllegalArgumentException(msg);
       }
-
-      Control control = getControl(controlName);
-
-      List<String> list = (List<String>) controlValues.get(controlName);
-      if (list == null) {
-         controlValues.put(controlName, control.resolve(value));
-      } else {
-         controlValues.put(controlName, CollectionUtils.union(list, (List<String>) control.resolve(value)));
+      ConcreteControl cc = controls.get(EventControl.NAME);
+      if (cc == null) {
+         cc = new ConcreteControl(getControl(EventControl.NAME));
+         controls.put(EventControl.NAME, cc);
       }
+      for (ControlEvent event : events) {
+         if (event != null) cc.getExcludes().add(event.name());
+      }
+      return this;
    }
 
    /**
-    * set the given invoker control values. inv could be a String, an array of String or a String that contains
-    * comma/semicolon separated invokers. The invokers replace already registered invoker values. Default for isExclude
-    * is false.
+    * adds the given values to a custom control control for inclusion.
     * 
-    * @param inv
+    * @param events
     */
-   public void setInvoker(String... inv) {
-      setInvoker(false, inv);
-   }
-
-   /**
-    * set the given invoker control values. inv could be a String, an array of String or a String that contains
-    * comma/semicolon separated invokers. The invokers replace already registered invoker values.
-    * 
-    * @param isExclude
-    * @param inv
-    */
-   public void setInvoker(boolean isExclude, String... inv) {
-      if (inv == null) {
-         String msg = "failed to set invoker: NULL value not allowed";
+   public Setpoint addCustomControlIncludes(String controlName, String... values) {
+      if (controlName == null || values == null) {
+         String msg = "failed to set control values: NULL method parameter not allowed";
          log.error(msg);
          throw new IllegalArgumentException(msg);
       }
-      controlValues.remove(InvokerControl.NAME);
-      for (String s : inv) {
-         addBooleanAttributedControlValue(InvokerControl.NAME, isExclude, s);
+      ConcreteControl cc = controls.get(controlName);
+      if (cc == null) {
+         cc = new ConcreteControl(getControl(controlName));
+         controls.put(controlName, cc);
       }
-   }
-
-   private void addBooleanAttributedControlValue(String controlName, boolean bool, String value) {
-      if (value == null) {
-         String msg = "failed to add " + controlName + " value: NULL value not allowed";
-         log.error(msg);
-         throw new IllegalArgumentException(msg);
+      for (String value : values) {
+         if (value != null) cc.getIncludes().add(value);
       }
-
-      Control control = getControl(controlName);
-
-      BooleanAttributedControlValue bav = (BooleanAttributedControlValue) controlValues.get(controlName);
-      if (bav == null) {
-         bav = new BooleanAttributedControlValue();
-         bav.setBooleanValue(bool);
-         bav.setValues((List<String>) control.resolve(value));
-         controlValues.put(controlName, bav);
-      } else {
-         bav.setBooleanValue(bool);
-         bav.setValues((List<String>) CollectionUtils.union(bav.getValues(), (List<String>) control.resolve(value)));
-      }
+      return this;
    }
 
    /**
-    * set the given StateChange control values. chg could be a String, an array of String or a String that contains
-    * comma/semicolon separated StateChanges. The StateChanges replace already registered StateChange values. Default
-    * for isExclude is false.
+    * adds the given values to a custom control for exclusion.
     * 
-    * @param chg
+    * @param events
     */
-   public void setStateChange(String... chg) {
-      setStateChange(false, chg);
-   }
-
-   /**
-    * set the given StateChange control values. chg could be a String, an array of String or a String that contains
-    * comma/semicolon separated StateChanges. The StateChanges replace already registered StateChange values.
-    * 
-    * @param isExclude
-    * @param chg
-    */
-   public void setStateChange(boolean isExclude, String... chg) {
-      if (chg == null) {
-         String msg = "failed to set stateChange: NULL value not allowed";
+   public Setpoint addCustomControlExcludes(String controlName, String... values) {
+      if (controlName == null || values == null) {
+         String msg = "failed to set control values: NULL method parameter not allowed";
          log.error(msg);
          throw new IllegalArgumentException(msg);
       }
-      controlValues.remove(StateChangeControl.NAME);
-      for (String s : chg) {
-         addBooleanAttributedControlValue(StateChangeControl.NAME, isExclude, s);
+      ConcreteControl cc = controls.get(controlName);
+      if (cc == null) {
+         cc = new ConcreteControl(getControl(controlName));
+         controls.put(controlName, cc);
       }
+      for (String value : values) {
+         if (value != null) cc.getExcludes().add(value);
+      }
+      return this;
+   }
+
+   /**
+    * add the invoker control include values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addInvokerIncludes(String... values) {
+      return addCustomControlIncludes(InvokerControl.NAME, values);
+   }
+
+   /**
+    * add the invoker control exclude values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addInvokerExcludes(String... values) {
+      return addCustomControlExcludes(InvokerControl.NAME, values);
+   }
+
+   /**
+    * add the Condition control include values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addConditionIncludes(String... values) {
+      return addCustomControlIncludes(ConditionControl.NAME, values);
+   }
+
+   /**
+    * add the Condition control exclude values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addConditionExcludes(String... values) {
+      return addCustomControlExcludes(ConditionControl.NAME, values);
+   }
+
+   /**
+    * add the Method control include values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addMethodIncludes(String... values) {
+      return addCustomControlIncludes(MethodControl.NAME, values);
+   }
+
+   /**
+    * add the Method control exclude values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addMethodExcludes(String... values) {
+      return addCustomControlExcludes(MethodControl.NAME, values);
+   }
+
+   /**
+    * add the StateChange control include values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addStateChangeIncludes(String... values) {
+      return addCustomControlIncludes(StateChangeControl.NAME, values);
+   }
+
+   /**
+    * add the StateChange control exclude values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addStateChangeExcludes(String... values) {
+      return addCustomControlExcludes(StateChangeControl.NAME, values);
+   }
+
+   /**
+    * add the Target control include values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addTargetIncludes(String... values) {
+      return addCustomControlIncludes(TargetControl.NAME, values);
+   }
+
+   /**
+    * add the Target control exclude values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addTargetExcludes(String... values) {
+      return addCustomControlExcludes(TargetControl.NAME, values);
+   }
+
+   /**
+    * add the Tenant control include values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addTenantIncludes(String... values) {
+      return addCustomControlIncludes(TenantControl.NAME, values);
+   }
+
+   /**
+    * add the Tenant control exclude values
+    * 
+    * @param values
+    * @return
+    */
+   public Setpoint addTenantExcludes(String... values) {
+      return addCustomControlExcludes(TenantControl.NAME, values);
    }
 
    /**
@@ -227,6 +468,10 @@ public class Setpoint implements Serializable {
     */
    public String getId() {
       return id;
+   }
+
+   public String getCombinedId() {
+      return configName + "/" + id;
    }
 
    public void addActuator(Actuator... actuator) {
@@ -247,71 +492,6 @@ public class Setpoint implements Serializable {
 
    public boolean removeActuator(Actuator actuator) {
       return actuators.remove(actuator);
-   }
-
-   /**
-    * set the given target control values. target could be a String, an array of String or a String that contains
-    * comma/semicolon separated targets. The targets replace already registered target values.
-    * 
-    * @param target
-    *           classname
-    */
-   public void setTarget(String... target) {
-      if (target == null) {
-         String msg = "failed to set target: NULL value not allowed";
-         log.error(msg);
-         throw new IllegalArgumentException(msg);
-      }
-      controlValues.remove(TargetControl.NAME);
-      for (String s : target) {
-         addControlValue(TargetControl.NAME, s);
-      }
-   }
-
-   /**
-    * set the given method control values. methodname could be a String, an array of String or a String that contains
-    * comma/semicolon separated methods. The methods replace already registered method values.
-    * 
-    * @param methodname
-    */
-   public void setMethod(String... methodname) {
-      if (methodname == null) {
-         String msg = "failed to set method: NULL value not allowed";
-         log.error(msg);
-         throw new IllegalArgumentException(msg);
-      }
-      controlValues.remove(MethodControl.NAME);
-      for (String s : methodname) {
-         addControlValue(MethodControl.NAME, s);
-      }
-   }
-
-   /**
-    * set the given tenant control values. tenant could be a String, an array of String or a String that contains
-    * comma/semicolon separated tenants. The tenants replace already registered tenant values.
-    * 
-    * @param tenant
-    */
-   public void setTenant(String... tenant) {
-      if (tenant == null) {
-         String msg = "failed to set tenant: NULL value not allowed";
-         log.error(msg);
-         throw new IllegalArgumentException(msg);
-      }
-      controlValues.remove(TenantControl.NAME);
-      for (String s : tenant) {
-         addControlValue(TenantControl.NAME, s);
-      }
-   }
-
-   /**
-    * sets the resolved condition for the given value. An existing condition is replaced.
-    * 
-    * @param condition
-    *           the condition to set
-    */
-   public void setCondition(String condition) {
-      setCustomControl(ConditionControl.NAME, condition);
    }
 
    /**
@@ -350,61 +530,12 @@ public class Setpoint implements Serializable {
       b.append(id);
       b.append(", extends: ");
       b.append(extendsId);
-      b.append(", targets: ");
-      List<String> targets = (List<String>) controlValues.get(TargetControl.NAME);
-      if (targets != null) {
-         for (String t : targets) {
-            b.append(" ");
-            b.append(t);
-         }
-      }
-      b.append(", tenants: ");
-      List<String> tenants = (List<String>) controlValues.get(TenantControl.NAME);
-      if (tenants != null) {
-         for (String t : tenants) {
-            b.append(" ");
-            b.append(t);
-         }
-      }
-      b.append(", events: ");
-      List<String> events = (List<String>) controlValues.get(EventControl.NAME);
-      if (events != null) {
-         for (String t : events) {
-            b.append(" ");
-            b.append(t);
-         }
-      }
-      b.append(", condition: ");
-      b.append(controlValues.get(ConditionControl.NAME));
 
-      b.append(", invoker: ");
-      BooleanAttributedControlValue bav = (BooleanAttributedControlValue) controlValues.get(InvokerControl.NAME);
-      if (bav != null) {
-         for (String t : bav.getValues()) {
-            b.append(" ");
-            b.append(t);
-         }
-         b.append(", exclude invoker: ");
-         b.append(bav.isBooleanValue());
+      for (ConcreteControl cc : controls.values()) {
+         b.append(", ");
+         b.append(cc);
       }
-      b.append(", methods: ");
-      List<String> methods = (List<String>) controlValues.get(MethodControl.NAME);
-      if (methods != null) {
-         for (String t : methods) {
-            b.append(" ");
-            b.append(t);
-         }
-      }
-      b.append(", stateChanges: ");
-      bav = (BooleanAttributedControlValue) controlValues.get(StateChangeControl.NAME);
-      if (bav != null) {
-         for (String t : bav.getValues()) {
-            b.append(" ");
-            b.append(t);
-         }
-         b.append(", exclude stateChanges: ");
-         b.append(bav.isBooleanValue());
-      }
+
       b.append(", actuators: ");
       for (Actuator t : actuators) {
          b.append(" ");
@@ -415,37 +546,41 @@ public class Setpoint implements Serializable {
    }
 
    /**
-    * @return the controlValues
+    * @return the controls
     */
-   public Map<String, Object> getControlValues() {
-      return controlValues;
+   public Map<String, ConcreteControl> getControls() {
+      return controls;
    }
 
    /**
-    * @param controlValues
-    *           the controlValues to set
+    * @param controls
+    *           the controls to set
     */
-   public void setControlValues(Map<String, Object> controlValues) {
-      this.controlValues = controlValues;
-   }
-
-   public Object getControlValue(String name) {
-      return controlValues.get(name);
-   }
-
-   public void removeControlValue(String name) {
-      controlValues.remove(name);
+   public void setControls(Map<String, ConcreteControl> controls) {
+      this.controls = controls;
    }
 
    /**
     * returns the control values including the inherited ones.
     * 
     */
-   public void getEffectiveControlValues(Map<String, Object> map) {
+   public Set<ConcreteControl> getEffectiveControls() {
+      Set<ConcreteControl> effControls = new TreeSet<ConcreteControl>(
+            new ConcreteControlComparator(Configuration.instance().getControlNames()));
+
+      effControls.addAll(controls.values());
+
       if (_extends != null) {
-         _extends.getEffectiveControlValues(map);
+         effControls.addAll(_extends.getEffectiveControls());
       }
-      map.putAll(controlValues);
+      return effControls;
+   }
+
+   /**
+    * @return the configName
+    */
+   public String getConfigName() {
+      return configName;
    }
 
 }

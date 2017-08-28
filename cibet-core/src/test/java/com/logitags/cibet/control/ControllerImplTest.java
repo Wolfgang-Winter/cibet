@@ -94,8 +94,7 @@ public class ControllerImplTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      Controller ev = new DefaultController();
-      ev.evaluate(md);
+      Controller.evaluate(md);
       Assert.assertEquals(0, md.getActuators().size());
    }
 
@@ -110,8 +109,7 @@ public class ControllerImplTest extends CoreTestBase {
       TComplexEntity cte = createEntity();
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
-      Controller ev = new DefaultController();
-      ev.evaluate(md);
+      Controller.evaluate(md);
       Assert.assertEquals(1, md.getActuators().size());
       Assert.assertEquals("INFOLOG", md.getActuators().get(0).getName());
    }
@@ -127,8 +125,7 @@ public class ControllerImplTest extends CoreTestBase {
       TComplexEntity cte = createEntity();
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      Controller ev = new DefaultController();
-      ev.evaluate(md);
+      Controller.evaluate(md);
       Assert.assertEquals(1, md.getActuators().size());
       ArchiveActuator act = (ArchiveActuator) md.getActuators().get(0);
       Assert.assertEquals("ARCH2", act.getName());
@@ -153,8 +150,7 @@ public class ControllerImplTest extends CoreTestBase {
       log.debug("xxx");
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
-      Controller ev = new DefaultController();
-      ev.evaluate(md);
+      Controller.evaluate(md);
       Assert.assertEquals(1, md.getActuators().size());
       Assert.assertEquals("INFOLOG", md.getActuators().get(0).getName());
    }
@@ -178,8 +174,7 @@ public class ControllerImplTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      Controller ev = new DefaultController();
-      ev.evaluate(md);
+      Controller.evaluate(md);
       Assert.assertEquals(1, md.getActuators().size());
       ArchiveActuator act = (ArchiveActuator) md.getActuators().get(0);
       Assert.assertEquals("ARCH2", act.getName());
@@ -194,7 +189,7 @@ public class ControllerImplTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(new TEntity());
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      new DefaultController().evaluate(md);
+      Controller.evaluate(md);
       Assert.assertTrue(md.getActuators().size() == 2);
       Iterator<Actuator> it = md.getActuators().iterator();
       Assert.assertTrue("FOUR_EYES".equals(it.next().getName()));
@@ -209,7 +204,7 @@ public class ControllerImplTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(new TComplexEntity());
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
-      new DefaultController().evaluate(md);
+      Controller.evaluate(md);
       Assert.assertTrue(md.getActuators().size() == 1);
       Iterator<Actuator> it = md.getActuators().iterator();
       Assert.assertTrue("ARCHIVE".equals(it.next().getName()));
@@ -226,7 +221,7 @@ public class ControllerImplTest extends CoreTestBase {
       Method m = TrueCustomControl.class.getDeclaredMethod("setGaga", new Class[] { String.class });
       MethodResource res = new MethodResource(new TrueCustomControl(), m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      new DefaultController().evaluate(md);
+      Controller.evaluate(md);
       Assert.assertTrue(md.getActuators().size() == 1);
       Iterator<Actuator> it = md.getActuators().iterator();
       Assert.assertTrue("ARCHIVE".equals(it.next().getName()));
@@ -241,9 +236,10 @@ public class ControllerImplTest extends CoreTestBase {
       Method m = TrueCustomControl.class.getDeclaredMethod("getName");
       MethodResource res = new MethodResource(new TrueCustomControl(), m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      new DefaultController().evaluate(md);
+      Controller.evaluate(md);
+      log.debug("** md:" + md);
 
-      Assert.assertTrue(md.getActuators().size() == 1);
+      Assert.assertEquals(1, md.getActuators().size());
       Iterator<Actuator> it = md.getActuators().iterator();
       Actuator act = it.next();
       Assert.assertTrue("ARCHIVE2".equals(act.getName()));
@@ -257,17 +253,16 @@ public class ControllerImplTest extends CoreTestBase {
       initConfiguration("cibet-config.xml");
       Context.sessionScope().setTenant("c");
 
-      Setpoint sb = new Setpoint("Test-G", null);
-      sb.setTarget(TEntity.class.getName());
-      sb.setEvent(ControlEvent.INSERT.name());
+      Setpoint sb = new Setpoint("Test-G");
+      sb.addTargetIncludes(TEntity.class.getName());
+      sb.addEventIncludes(ControlEvent.INSERT);
       sb.addActuator(Configuration.instance().getActuator(ArchiveActuator.DEFAULTNAME));
       sb.addActuator(Configuration.instance().getActuator(SixEyesActuator.DEFAULTNAME));
       Configuration.instance().registerSetpoint(sb);
 
       JpaResource res = new JpaResource(new TEntity());
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
-      Controller contr = new DefaultController();
-      contr.evaluate(md);
+      Controller.evaluate(md);
 
       Assert.assertEquals(2, md.getActuators().size());
       Iterator<Actuator> it = md.getActuators().iterator();
@@ -283,17 +278,16 @@ public class ControllerImplTest extends CoreTestBase {
 
       Configuration.instance().registerActuator(new Sub4EyesController());
 
-      Setpoint sb = new Setpoint("Test-H", null);
-      sb.setTarget(TEntity.class.getName());
-      sb.setEvent(ControlEvent.INSERT.name());
+      Setpoint sb = new Setpoint("Test-H");
+      sb.addTargetIncludes(TEntity.class.getName());
+      sb.addEventIncludes(ControlEvent.INSERT);
       sb.addActuator(Configuration.instance().getActuator("Sub4EyesController"));
       sb.addActuator(Configuration.instance().getActuator(SixEyesActuator.DEFAULTNAME));
       Configuration.instance().registerSetpoint(sb);
 
       JpaResource res = new JpaResource(new TEntity());
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
-      Controller evaluator = new DefaultController();
-      evaluator.evaluate(md);
+      Controller.evaluate(md);
       Assert.assertEquals(2, md.getActuators().size());
       Iterator<Actuator> it = md.getActuators().iterator();
       Assert.assertEquals("Sub4EyesController", it.next().getName());
@@ -310,16 +304,15 @@ public class ControllerImplTest extends CoreTestBase {
       Configuration.instance().registerActuator(new SubSub4EyesController("Willi"));
 
       Setpoint sb = new Setpoint("Test-I");
-      sb.setTarget(TEntity.class.getName());
-      sb.setEvent(ControlEvent.INSERT.name());
+      sb.addTargetIncludes(TEntity.class.getName());
+      sb.addEventIncludes(ControlEvent.INSERT);
       sb.addActuator(Configuration.instance().getActuator("Sub4EyesController"));
       sb.addActuator(Configuration.instance().getActuator("Willi"));
       Configuration.instance().registerSetpoint(sb);
 
       JpaResource res = new JpaResource(new TEntity());
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
-      Controller evaluator = new DefaultController();
-      evaluator.evaluate(md);
+      Controller.evaluate(md);
 
       Assert.assertEquals(2, md.getActuators().size());
       Iterator<Actuator> it = md.getActuators().iterator();
@@ -337,8 +330,8 @@ public class ControllerImplTest extends CoreTestBase {
       cman.registerActuator(new SubSub4EyesController("Willi"));
 
       Setpoint sb = new Setpoint("Test-J");
-      sb.setTarget(TEntity.class.getName());
-      sb.setEvent(ControlEvent.INSERT.name());
+      sb.addTargetIncludes(TEntity.class.getName());
+      sb.addEventIncludes(ControlEvent.INSERT);
       sb.addActuator(cman.getActuator("Sub4EyesController"));
       sb.addActuator(cman.getActuator("Willi"));
       sb.addActuator(cman.getActuator("Willi"));
@@ -348,8 +341,7 @@ public class ControllerImplTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(new TEntity());
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
-      Controller evaluator = new DefaultController();
-      evaluator.evaluate(md);
+      Controller.evaluate(md);
 
       Assert.assertEquals(3, md.getActuators().size());
       Iterator<Actuator> it = md.getActuators().iterator();
@@ -367,8 +359,7 @@ public class ControllerImplTest extends CoreTestBase {
       Method m = ControllerImplTest.class.getDeclaredMethod("evaluateWithParents");
       MethodResource res = new MethodResource(this, m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      Controller ev = new DefaultController();
-      ev.evaluate(md);
+      Controller.evaluate(md);
 
       Assert.assertEquals(3, md.getSetpoints().size());
       Assert.assertEquals("A", md.getSetpoints().get(0).getId());
@@ -379,32 +370,7 @@ public class ControllerImplTest extends CoreTestBase {
    @Test(expected = IllegalArgumentException.class)
    public void evaluateNullEventMetadata() {
       log.info("start evaluateNullEventMetadata()");
-      Controller ev = new DefaultController();
-      ev.evaluate((EventMetadata) null);
+      Controller.evaluate((EventMetadata) null);
    }
 
-   @Test
-   public void noRegisteredControl() throws Exception {
-      log.info("start noRegisteredControl()");
-      initConfiguration("config_parents.xml");
-      Configuration cman = Configuration.instance();
-      cman.unregisterSetpoint("A");
-      cman.unregisterSetpoint("A1");
-      cman.unregisterSetpoint("B");
-      cman.unregisterSetpoint("B1");
-      cman.unregisterSetpoint("B2");
-      Setpoint sp = registerSetpoint(TEntity.class, ArchiveActuator.DEFAULTNAME, ControlEvent.DELETE);
-      sp.getControlValues().clear();
-      sp.getControlValues().put("WRONG", "??");
-
-      EventMetadata md = new EventMetadata(ControlEvent.INVOKE, null);
-      Controller ev = new DefaultController();
-      try {
-         ev.evaluate(md);
-         Assert.fail();
-      } catch (Exception e) {
-         log.error(e.getMessage(), e);
-         Assert.assertTrue(e.getMessage().endsWith("No Control registered with name WRONG"));
-      }
-   }
 }

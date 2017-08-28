@@ -14,6 +14,7 @@ package com.logitags.cibet.control;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -21,9 +22,13 @@ import org.junit.Test;
 
 import com.cibethelper.base.CoreTestBase;
 import com.cibethelper.base.TrueCustomControl;
+import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.bindings.ControlDefBinding;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
+import com.logitags.cibet.core.ControlEvent;
+import com.logitags.cibet.core.EventMetadata;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 public class CustomControlTest extends CoreTestBase {
 
@@ -38,21 +43,16 @@ public class CustomControlTest extends CoreTestBase {
       Assert.assertNotNull(ct);
       Assert.assertEquals("45", ((TrueCustomControl) ct).getGaga());
 
-      Setpoint s1 = Configuration.instance().getSetpoint("K2");
-      List<String> l = (List<String>) s1.getControlValues().get("TRUE");
-      Assert.assertEquals(1, l.size());
-      Assert.assertEquals("", l.get(0));
-      BooleanAttributedControlValue l2 = (BooleanAttributedControlValue) s1.getControlValues().get("invoker");
-      Assert.assertEquals(false, l2.isBooleanValue());
-      Assert.assertEquals("", l2.getValues().get(0));
+      Setpoint s1 = Configuration.instance().getSetpoint("custControl/K2");
+      Set<String> l = s1.getControls().get("TRUE").getIncludes();
+      Assert.assertEquals(0, l.size());
+      Set<String> l2 = s1.getControls().get("invoker").getIncludes();
+      Assert.assertEquals(0, l2.size());
 
-      Setpoint s2 = Configuration.instance().getSetpoint("K3");
-      l = (List<String>) s2.getControlValues().get("TRUE");
+      Setpoint s2 = Configuration.instance().getSetpoint("custControl/K1");
+      l = s2.getControls().get("TRUE").getIncludes();
       Assert.assertEquals(1, l.size());
-      Assert.assertEquals("", l.get(0));
-      l2 = (BooleanAttributedControlValue) s2.getControlValues().get("invoker");
-      Assert.assertEquals(false, l2.isBooleanValue());
-      Assert.assertEquals("", l2.getValues().get(0));
+      Assert.assertEquals("dsfg", l.iterator().next());
    }
 
    @Test
@@ -106,6 +106,21 @@ public class CustomControlTest extends CoreTestBase {
       cman.unregisterControl("TRUE");
       l = cman.getControl("TRUE");
       Assert.assertNull(l);
+   }
+
+   @Test
+   public void testCC1() throws Exception {
+      log.info("start testCC1()");
+      initConfiguration("cibet-config-exclude.xml");
+
+      TEntity ent = createTEntity(7, "Stingel");
+      MethodResource res = new MethodResource(ent, null, null);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(),
+            Configuration.instance().getControl("CC1"));
+
+      Assert.assertEquals(1, list.size());
+      Assert.assertEquals("AA2", list.get(0).getId());
    }
 
 }

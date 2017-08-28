@@ -35,8 +35,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 
 import com.logitags.cibet.actuator.common.Actuator;
-import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.control.Controller;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
@@ -116,7 +116,7 @@ public abstract class AbstractAspect extends CibetInterceptor {
          resource.setInvokerClass(factoryClass.getName());
          resource.setInvokerParam(param);
          metadata = new EventMetadata(sensorName, controlEvent, resource);
-         Configuration.instance().getController().evaluate(metadata);
+         Controller.evaluate(metadata);
 
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(sensorName, metadata));
 

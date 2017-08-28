@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.3.xsd">
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="cibet-config1">
 
    <notificationProvider>
       <class>com.logitags.cibet.notification.EmailNotificationProvider</class>
@@ -55,10 +55,14 @@
 
 	<setpoint id="A">
 		<controls>
-			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
-			<event>UPDATE</event>
+			<tenant>
+				<include>ApiTest-loadXMLConfiguration-Owner</include>
+			</tenant>
+			<event>
+				<include>UPDATE</include>
+			</event>
 			<target>
-				com.cibethelper.entities.TEntity
+				<include>com.cibethelper.entities.TEntity</include>
 			</target>
 		</controls>
 		<actuator name="FOUR_EYES" />
@@ -67,50 +71,83 @@
 
 	<setpoint id="B">
 		<controls>
-			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
-			<event>INSERT</event>
-			<target>com.cibethelper.entities.TComplexEntity</target>
+			<tenant>
+				<include>ApiTest-loadXMLConfiguration-Owner</include>
+			</tenant>
+			<event>
+				<include>INSERT</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TComplexEntity</include>
+			</target>
 		</controls>
 		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="C">
 		<controls>
-			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
-			<event>INVOKE</event>
-			<target>com.cibethelper.base.TrueCustomControl</target>
-			<method>setGaga</method>
+			<tenant>
+				<include>ApiTest-loadXMLConfiguration-Owner</include>
+			</tenant>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.base.TrueCustomControl</include>
+			</target>
+			<method>
+				<include>setGaga</include>
+			</method>
 		</controls>
 		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="D">
 		<controls>
-			<tenant>ApiTest-loadXMLConfiguration-Owner</tenant>
-			<event>INVOKE</event>
-			<target>com.cibethelper.base.TrueCustomControl</target>
-			<method>getName()</method>
+			<tenant>
+				<include>ApiTest-loadXMLConfiguration-Owner</include>
+			</tenant>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.base.TrueCustomControl</include>
+			</target>
+			<method>
+				<include>getName()</include>
+			</method>
 		</controls>
 		<actuator name="ARCHIVE2" />
 	</setpoint>
 
 	<setpoint id="com.logitags.cibet.actuator.loadcontrol.x">
 		<controls>
-			<target>com.cibethelper.loadcontrol.MonitorTestClass</target>
-			<method>cibet*</method>
+			<target>
+				<include>com.cibethelper.loadcontrol.MonitorTestClass</include>
+			</target>
+			<method>
+				<include>cibet*</include>
+			</method>
 		</controls>
 		<actuator name="LOADCONTROL" />
 	</setpoint>
 
 	<setpoint id="ConditionControlTest-1">
 		<controls>
-			<event>INSERT</event>
-			<target>com.logitags.cibet.util.TEntity</target>
+			<event>
+				<include>INSERT</include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.util.TEntity</include>
+			</target>
 			<invoker>
-				com.logitags.cibet.controller.controls.InvokerControlTest.evaluateInclude1()
+				<include>com.logitags.cibet.controller.controls.InvokerControlTest.evaluateInclude1()</include>
 			</invoker>
-			<stateChange exclude="true">counter, ten.counter</stateChange>
+			<stateChange>
+				<exclude>counter, ten.counter</exclude>
+			</stateChange>
 			<condition>
+				<include>
 				var date = java.util.Calendar.getInstance();
 				date.get(java.util.Calendar.YEAR) &gt;= 2003
 				&amp;&amp; date.get(java.util.Calendar.YEAR) &lt;= 2050
@@ -118,6 +155,7 @@
 				&amp;&amp; $SESSIONSCOPE.getProperty("Klaus") != null
 				&amp;&amp; $SESSIONSCOPE.getProperty("Klaus").getCounter() == 7
 				&amp;&amp; $SESSIONSCOPE.getProperty("Emil") == 2
+				</include>
 			</condition>
 		</controls>
 		<actuator name="ARCHIVE" />
@@ -125,15 +163,24 @@
 
    <setpoint id="ConditionControlTest-2">
       <controls>
-         <event>INSERT</event>
-         <target>com.logitags.cibet.util.TEntity</target>
-         <method>getBytes(int)</method>
-         <invoker exclude="true">
-                com.logitags.cibet.ConfigurationTest.methodEvaluation2(),
-                com.logitags.x*,
+         <event>
+         	<include>INSERT</include>
+         </event>
+         <target>
+         	<include>com.logitags.cibet.util.TEntity</include>
+         </target>
+         <method>
+         	<include>getBytes(int)</include>
+         </method>
+         <invoker>
+             <exclude>com.logitags.cibet.ConfigurationTest.methodEvaluation2()</exclude>
+             <exclude>com.logitags.x*</exclude>
          </invoker>
-         <stateChange>counter, ten.counter</stateChange>
+         <stateChange>
+         	<include>counter, ten.counter</include>
+         </stateChange>
          <condition>
+         	<include>
               var DATE = new java.util.Date();
               print(DATE);
               print($PARAM2);
@@ -142,6 +189,7 @@
               &amp;&amp; $PARAM2.before(DATE)
               &amp;&amp; $PARAM3 == null
               &amp;&amp; $TARGETOBJECT.getCounter() == 7
+              </include>
          </condition>
       </controls>
       <actuator name="ARCHIVE"/>
@@ -149,13 +197,27 @@
 
    <setpoint id="ConditionControlTest-3">
       <controls>
-         <tenant>ten1</tenant>
-         <event>INSERT, INVOKE,UPDATEQUERY</event>
-         <target>com.logitags.*</target>
-         <method>hasenmethode()</method>
-         <invoker exclude="true">com.logitags.cibet.*</invoker>
-         <stateChange>nixxi</stateChange>
-         <condition>"Sting".equals($TARGETOBJECT.getOwner())</condition>
+         <tenant>
+         	<include>ten1</include>
+         </tenant>
+         <event>
+         	<include>INSERT, INVOKE,UPDATEQUERY</include>
+         </event>
+         <target>
+         	<include>com.logitags.*</include>
+         </target>
+         <method>
+         	<include>hasenmethode()</include>
+         </method>
+         <invoker>
+         	<exclude>com.logitags.cibet.*</exclude>
+         </invoker>
+         <stateChange>
+         	<include>nixxi</include>
+         </stateChange>
+         <condition>
+         	<include>"Sting".equals($TARGETOBJECT.getOwner())</include>
+         </condition>
       </controls>
       <actuator name="ARCHIVE"/>
    </setpoint>

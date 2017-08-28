@@ -46,8 +46,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.common.Actuator;
-import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.control.Controller;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
@@ -545,7 +545,7 @@ public class CibetQuery implements Query {
                ParameterType.JPA_QUERY_ADDITIONAL_VALUE);
       }
 
-      Configuration.instance().getController().evaluate(metadata);
+      Controller.evaluate(metadata);
 
       return metadata;
    }

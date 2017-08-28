@@ -1,65 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.0.xsd">
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="event_target">
 
 	<setpoint id="A">
 		<controls>
-			<tenant>ten1</tenant>
-			<event>INSERT, INVOKE</event>
-			<target>xxx*</target>
+			<tenant>
+				<include>ten1</include>
+			</tenant>
+			<event>
+				<include>INSERT, INVOKE</include>
+			</event>
+			<target>
+				<include>xxx*</include>
+			</target>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
 
 	<setpoint id="B1">
 		<controls>
-			<tenant>ten1|x</tenant>
-			<event>UPDATE</event>
-			<target>*</target>
+			<tenant>
+				<include>ten1|x</include>
+			</tenant>
+			<event>
+				<include>UPDATE</include>
+			</event>
+			<target>
+				<include>*</include>
+			</target>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
 
 	<setpoint id="B2">
 		<controls>
-			<tenant>ten1|x</tenant>
-			<event>UPDATE, INSERT</event>
-			<target>com.nix,com.nix.*, com.cibethelper.entities.*,com.cibethelper.base.*</target>
+			<tenant>
+				<include>ten1|x</include>
+			</tenant>
+			<event>
+				<include>UPDATE, INSERT</include>
+			</event>
+			<target>
+				<include>com.nix,com.nix.*</include>
+				<include>com.cibethelper.entities.*</include>
+				<include>com.cibethelper.base.*</include>
+			</target>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
 
 	<setpoint id="B3">
 		<controls>
-			<tenant>ten1|x</tenant>
-			<event>UPDATE, INSERT</event>
-			<target>com.cibethelper.*</target>
+			<tenant>
+				<include>ten1|x</include>
+			</tenant>
+			<event>
+				<include>UPDATE, INSERT</include>
+			</event>
+			<target>
+				<include>com.cibethelper.*</include>
+			</target>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
 
 	<setpoint id="C">
 		<controls>
-			<event>INSERT</event>
-			<target>com.logitags.cibet.Nix, com.cibethelper.entities.TEntity</target>
-			<stateChange exclude="true">counter</stateChange>
+			<event>
+				<include>INSERT </include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.Nix</include>
+				<include>com.cibethelper.entities.TEntity</include>
+			</target>
+			<stateChange>
+				<exclude>counter</exclude>
+			</stateChange>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
 
 	<setpoint id="D">
 		<controls>
-			<tenant>y</tenant>
-			<event>INSERT</event>
+			<tenant>
+				<include>y</include>
+			</tenant>
+			<event>
+				<include>INSERT</include>
+			</event>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
 
 	<setpoint id="XX">
 		<controls>
-			<tenant>other</tenant>
-			<target>"Hastela, VV " , com.logitags.cibet.Nix, com.cibethelper.entities.TE;" \"Hase"</target>
+			<tenant>
+				<include>other</include>
+			</tenant>
+			<target>
+				<include>Hastela, VV </include>
+				<include> com.logitags.cibet.Nix</include>
+				<include>com.cibethelper.entities.TE</include>
+				<include> "Hase</include>
+			</target>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>

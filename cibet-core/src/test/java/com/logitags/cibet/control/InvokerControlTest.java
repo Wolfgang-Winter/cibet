@@ -14,8 +14,6 @@ package com.logitags.cibet.control;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,25 +33,6 @@ public class InvokerControlTest extends CoreTestBase {
 
    private static Logger log = Logger.getLogger(InvokerControlTest.class);
 
-   private List<Setpoint> evaluate(EventMetadata md, List<Setpoint> spoints) {
-      Control eval = new InvokerControl();
-      List<Setpoint> list = new ArrayList<Setpoint>();
-      for (Setpoint spi : spoints) {
-         Map<String, Object> controlValues = new TreeMap<String, Object>(new ControlComparator());
-         spi.getEffectiveControlValues(controlValues);
-         Object value = controlValues.get("invoker");
-         if (value == null) {
-            list.add(spi);
-         } else {
-            boolean okay = eval.evaluate(value, md);
-            if (okay) {
-               list.add(spi);
-            }
-         }
-      }
-      return list;
-   }
-
    @Test
    public void evaluateExclude1() throws Exception {
       log.info("start evaluateExclude1()");
@@ -62,7 +41,7 @@ public class InvokerControlTest extends CoreTestBase {
       Method m = null;
       MethodResource res = new MethodResource("ClassName", m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new InvokerControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("C", list.get(0).getId());
    }
@@ -75,7 +54,7 @@ public class InvokerControlTest extends CoreTestBase {
       Method m = String.class.getDeclaredMethod("getBytes");
       MethodResource res = new MethodResource("ClassName", m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new InvokerControl());
 
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
@@ -89,7 +68,7 @@ public class InvokerControlTest extends CoreTestBase {
       Method m = null;
       MethodResource res = new MethodResource("ClassName", m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new InvokerControl());
 
       Assert.assertEquals(2, list.size());
       Assert.assertEquals("A", list.get(0).getId());
@@ -102,14 +81,14 @@ public class InvokerControlTest extends CoreTestBase {
 
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setInvoker("168.52.3.4");
+      sp.addInvokerIncludes("168.52.3.4");
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       res.setInvoker("168.52.3.4");
 
-      List<Setpoint> list = evaluate(md, spB);
+      List<Setpoint> list = evaluate(md, spB, new InvokerControl());
       Assert.assertEquals(1, list.size());
    }
 
@@ -119,14 +98,14 @@ public class InvokerControlTest extends CoreTestBase {
 
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setInvoker("168.52*");
+      sp.addInvokerIncludes("168.52*");
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       res.setInvoker("168.52.3.4");
 
-      List<Setpoint> list = evaluate(md, spB);
+      List<Setpoint> list = evaluate(md, spB, new InvokerControl());
       Assert.assertEquals(1, list.size());
    }
 
@@ -136,7 +115,7 @@ public class InvokerControlTest extends CoreTestBase {
 
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setInvoker(true, "168.52*");
+      sp.addInvokerExcludes("168.52*");
       spB.add(sp);
 
       Setpoint sp2 = new Setpoint("head", sp);
@@ -145,9 +124,23 @@ public class InvokerControlTest extends CoreTestBase {
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
       res.setInvoker("167.52.3.4");
-      List<Setpoint> list = evaluate(md, spB);
+      List<Setpoint> list = evaluate(md, spB, new InvokerControl());
 
       Assert.assertEquals(2, list.size());
+   }
+
+   @Test
+   public void evaluateExclude3() throws Exception {
+      log.info("start evaluateExclude3()");
+      initConfiguration("cibet-config-exclude.xml");
+
+      Method m = this.getClass().getDeclaredMethod("evaluateExclude3");
+      MethodResource res = new MethodResource("ClassName", m, null);
+      EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new InvokerControl());
+
+      Assert.assertEquals(1, list.size());
+      Assert.assertEquals("AA2", list.get(0).getId());
    }
 
 }

@@ -12,10 +12,9 @@
 package com.logitags.cibet.control;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 
@@ -48,35 +47,14 @@ public class StateChangeControlTest extends CoreTestBase {
    @Mock
    private EntityManager em2;
 
-   private List<Setpoint> evaluate(EventMetadata md, List<Setpoint> spoints) {
-      Control eval = new StateChangeControl();
-      List<Setpoint> list = new ArrayList<Setpoint>();
-      for (Setpoint spi : spoints) {
-         Map<String, Object> controlValues = new TreeMap<String, Object>(new ControlComparator());
-         spi.getEffectiveControlValues(controlValues);
-         Object value = controlValues.get("stateChange");
-         if (value == null) {
-            list.add(spi);
-         } else {
-            boolean okay = eval.evaluate(value, md);
-            if (okay) {
-               list.add(spi);
-            }
-         }
-      }
-      return list;
-   }
-
    @Test
    public void evaluateMetadataTargetNull() throws Exception {
       log.info("start evaluateMetadataTargetNull()");
 
       JpaResource res = new JpaResource((Object) null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> l = new ArrayList<Setpoint>();
-      Setpoint s = new Setpoint("x");
-      s.setStateChange("fast");
-      l.add(s);
+      Set<String> l = new HashSet<>();
+      l.add("fast");
       try {
          Control eval = new StateChangeControl();
          eval.evaluate(l, md);
@@ -96,11 +74,14 @@ public class StateChangeControlTest extends CoreTestBase {
       te.setId(1);
       Mockito.when(em.find(TEntity.class, 1l)).thenReturn(te);
 
+      Set<String> l = new HashSet<>();
+      l.add("fast");
+
       try {
          JpaResource res = new JpaResource(te);
          EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
          Control eval = new StateChangeControl();
-         eval.evaluate(Configuration.instance().getSetpoints(), md);
+         eval.evaluate(l, md);
          Assert.fail();
       } catch (Exception e) {
          log.debug(e.getMessage(), e);
@@ -125,7 +106,7 @@ public class StateChangeControlTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
 
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
@@ -147,7 +128,7 @@ public class StateChangeControlTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
 
       Assert.assertEquals(2, list.size());
       Assert.assertEquals("A", list.get(0).getId());
@@ -170,11 +151,10 @@ public class StateChangeControlTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
 
-      Assert.assertEquals(2, list.size());
+      Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
-      Assert.assertEquals("C", list.get(1).getId());
    }
 
    @Test
@@ -204,7 +184,7 @@ public class StateChangeControlTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
 
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
@@ -244,7 +224,7 @@ public class StateChangeControlTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("C", list.get(0).getId());
       Context.end();
@@ -273,7 +253,7 @@ public class StateChangeControlTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
 
       Assert.assertEquals(2, list.size());
       Assert.assertEquals("A", list.get(0).getId());
@@ -296,7 +276,7 @@ public class StateChangeControlTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("C", list.get(0).getId());
 
@@ -304,7 +284,7 @@ public class StateChangeControlTest extends CoreTestBase {
       te.setNameValue("Wein");
       res = new JpaResource(te);
       md = new EventMetadata(ControlEvent.UPDATE, res);
-      list = evaluate(md, Configuration.instance().getSetpoints());
+      list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
       Assert.assertEquals(0, list.size());
    }
 
@@ -333,7 +313,7 @@ public class StateChangeControlTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("C", list.get(0).getId());
       Context.end();
@@ -372,7 +352,7 @@ public class StateChangeControlTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
       Context.end();
@@ -402,7 +382,7 @@ public class StateChangeControlTest extends CoreTestBase {
 
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
       Assert.assertEquals(0, list.size());
       Context.end();
    }
@@ -413,13 +393,16 @@ public class StateChangeControlTest extends CoreTestBase {
       Context.internalRequestScope().setApplicationEntityManager2(em);
       Mockito.when(em.find(TEntity.class, 0l)).thenReturn(null);
 
-      List<Setpoint> spB = new ArrayList<Setpoint>();
-      Setpoint sp = new Setpoint("conditionParams");
-      sp.setStateChange(true, "TEntity");
-      spB.add(sp);
+      Set<String> l = new HashSet<>();
+      l.add("TEntity");
 
-      Setpoint sp2 = new Setpoint("head", sp);
-      spB.add(sp2);
+      // List<Setpoint> spB = new ArrayList<Setpoint>();
+      // Setpoint sp = new Setpoint("conditionParams");
+      // sp.setStateChange(true, "TEntity");
+      // spB.add(sp);
+      //
+      // Setpoint sp2 = new Setpoint("head", sp);
+      // spB.add(sp2);
 
       Method m = TEntity.class.getMethod("getCounter");
       JpaResource res = new JpaResource(new TEntity());
@@ -427,7 +410,7 @@ public class StateChangeControlTest extends CoreTestBase {
 
       Control eval = new StateChangeControl();
       try {
-         eval.evaluate(spB, md);
+         eval.evaluate(l, md);
          Assert.fail();
       } catch (IllegalStateException e) {
          log.debug(e.getMessage(), e);

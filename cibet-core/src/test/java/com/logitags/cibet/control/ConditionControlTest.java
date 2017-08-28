@@ -13,11 +13,10 @@ package com.logitags.cibet.control;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,26 +42,6 @@ public class ConditionControlTest extends CoreTestBase {
 
    private static Logger log = Logger.getLogger(ConditionControlTest.class);
 
-   private List<Setpoint> evaluate(EventMetadata md, List<Setpoint> spoints) {
-      Control eval = new ConditionControl();
-      List<Setpoint> list = new ArrayList<Setpoint>();
-      for (Setpoint spi : spoints) {
-         Map<String, Object> controlValues = new TreeMap<String, Object>(new ControlComparator());
-         spi.getEffectiveControlValues(controlValues);
-         Object value = controlValues.get("condition");
-         if (value == null) {
-            // list.add(spi);
-         } else {
-            log.debug("evaluate " + value + " on " + md);
-            boolean okay = eval.evaluate(value, md);
-            if (okay) {
-               list.add(spi);
-            }
-         }
-      }
-      return list;
-   }
-
    @Test
    public void evaluate1() throws Exception {
       log.info("start evaluate1(): condition_test1.xml");
@@ -76,10 +55,20 @@ public class ConditionControlTest extends CoreTestBase {
 
       MethodResource res = new MethodResource(ent, null, null);
       EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new ConditionControl());
 
-      Assert.assertEquals(1, list.size());
-      Assert.assertEquals("ConditionControlTest-1", list.get(0).getId());
+      Assert.assertEquals(6, list.size());
+      boolean iss = true;
+      for (Setpoint s : list) {
+         if (s.getId().equals("ConditionControlTest-3")) {
+            iss = false;
+         }
+         if (s.getId().equals("ConditionControlTest-2")) {
+            iss = false;
+         }
+      }
+      Assert.assertEquals(true, iss);
+      Context.end();
    }
 
    @Test
@@ -106,19 +95,24 @@ public class ConditionControlTest extends CoreTestBase {
       MethodResource res = new MethodResource(ent, String.class.getDeclaredMethod("getBytes"), paramList);
       EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
 
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new ConditionControl());
 
-      Assert.assertEquals(2, list.size());
-      Assert.assertEquals("ConditionControlTest-2", list.get(0).getId());
-      Assert.assertEquals("ConditionControlTest-3", list.get(1).getId());
+      Assert.assertEquals(7, list.size());
+      boolean iss = true;
+      for (Setpoint s : list) {
+         if (s.getId().equals("ConditionControlTest-1")) {
+            iss = false;
+         }
+      }
+      Assert.assertEquals(true, iss);
+      Context.end();
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void evaluateNullSetpoints() {
       log.info("start evaluateNullSetpoints()");
       Control eval = new ConditionControl();
-      TEntity ent = createTEntity(7, "Sting");
-      eval.evaluate(ent, (EventMetadata) null);
+      eval.evaluate(Collections.emptySet(), (EventMetadata) null);
    }
 
    @Test
@@ -127,7 +121,7 @@ public class ConditionControlTest extends CoreTestBase {
 
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setCondition("$HTTPATTRIBUTES.get('p1')=='Hase' " + "&& $HTTPHEADERS.get('head1') == true "
+      sp.addConditionIncludes("$HTTPATTRIBUTES.get('p1')=='Hase' " + "&& $HTTPHEADERS.get('head1') == true "
             + "&& $HTTPPARAMETERS.get('param1') == 67");
       spB.add(sp);
 
@@ -138,7 +132,7 @@ public class ConditionControlTest extends CoreTestBase {
       res.addParameter(
             new ResourceParameter("param1", Integer.class.getName(), new Integer(67), ParameterType.HTTP_PARAMETER, 3));
 
-      List<Setpoint> list = evaluate(md, spB);
+      List<Setpoint> list = evaluate(md, spB, new ConditionControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("conditionParams", list.get(0).getId());
    }
@@ -149,7 +143,7 @@ public class ConditionControlTest extends CoreTestBase {
 
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setCondition("imyInt = 5;");
+      sp.addConditionIncludes("imyInt = 5;");
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
@@ -161,7 +155,7 @@ public class ConditionControlTest extends CoreTestBase {
 
       try {
          Control eval = new ConditionControl();
-         eval.evaluate(sp.getControlValue("condition"), md);
+         eval.evaluate(sp.getControls().get(ConditionControl.NAME).getIncludes(), md);
          Assert.fail();
       } catch (RuntimeException e) {
          Assert.assertTrue(e.getMessage()
@@ -175,7 +169,7 @@ public class ConditionControlTest extends CoreTestBase {
 
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setCondition("imyInt = 5sdd");
+      sp.addConditionIncludes("imyInt = 5sdd");
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
@@ -183,7 +177,7 @@ public class ConditionControlTest extends CoreTestBase {
 
       try {
          Control eval = new ConditionControl();
-         eval.evaluate(sp.getControlValue("condition"), md);
+         eval.evaluate(sp.getControls().get(ConditionControl.NAME).getIncludes(), md);
          Assert.fail();
       } catch (RuntimeException e) {
          Assert.assertTrue(e.getMessage().startsWith("failed to execute Condition evaluation: Java script error"));
@@ -196,22 +190,22 @@ public class ConditionControlTest extends CoreTestBase {
 
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setCondition("$APPLICATIONSCOPE.getProperty('p1')=='Hase' ");
+      sp.addConditionIncludes("$APPLICATIONSCOPE.getProperty('p1')=='Hase' ");
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
 
-      List<Setpoint> list = evaluate(md, spB);
+      List<Setpoint> list = evaluate(md, spB, new ConditionControl());
       Assert.assertEquals(0, list.size());
 
       Context.applicationScope().setProperty("p1", "Hase");
-      list = evaluate(md, spB);
+      list = evaluate(md, spB, new ConditionControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("conditionParams", list.get(0).getId());
       Assert.assertEquals("Hase", Context.applicationScope().getProperty("p1"));
       Context.applicationScope().removeProperty("p1");
-      list = evaluate(md, spB);
+      list = evaluate(md, spB, new ConditionControl());
       Assert.assertEquals(0, list.size());
    }
 
@@ -221,22 +215,22 @@ public class ConditionControlTest extends CoreTestBase {
 
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setCondition("$REQUESTSCOPE.getProperty('pxp')=='Hase' ");
+      sp.addConditionIncludes("$REQUESTSCOPE.getProperty('pxp')=='Hase' ");
       spB.add(sp);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
 
-      List<Setpoint> list = evaluate(md, spB);
+      List<Setpoint> list = evaluate(md, spB, new ConditionControl());
       Assert.assertEquals(0, list.size());
 
       Context.requestScope().setProperty("pxp", "Hase");
-      list = evaluate(md, spB);
+      list = evaluate(md, spB, new ConditionControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("conditionParams", list.get(0).getId());
       Assert.assertEquals("Hase", Context.requestScope().getProperty("pxp"));
       Context.requestScope().removeProperty("pxp");
-      list = evaluate(md, spB);
+      list = evaluate(md, spB, new ConditionControl());
       Assert.assertEquals(0, list.size());
    }
 
@@ -245,7 +239,7 @@ public class ConditionControlTest extends CoreTestBase {
       log.info("start resolveCondition()");
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setCondition(
+      sp.addConditionIncludes(
             "$REQUESTSCOPE.getProperty('psx')=='Hase' &amp;&amp; $xyParam =='ann' &amp;&amp; $ZZParam.get('dubi2')!=null;");
       spB.add(sp);
 
@@ -253,8 +247,49 @@ public class ConditionControlTest extends CoreTestBase {
       EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
 
       Context.requestScope().setProperty("psx", "Hase");
-      List<Setpoint> list = evaluate(md, spB);
+      List<Setpoint> list = evaluate(md, spB, new ConditionControl());
       Assert.assertEquals(0, list.size());
+   }
+
+   @Test
+   public void evaluateEx1() throws Exception {
+      log.info("start evaluateEx1(): condition_test1.xml");
+      initConfiguration("cibet-config-exclude.xml");
+
+      TEntity ent = createTEntity(7, "Stingel");
+      Context.sessionScope().setTenant("ten");
+      Context.sessionScope().setUser("Werner");
+      Context.sessionScope().setProperty("Klaus", ent);
+      Context.sessionScope().setProperty("Emil", new Integer(2));
+
+      MethodResource res = new MethodResource(ent, null, null);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new ConditionControl());
+
+      Assert.assertEquals(1, list.size());
+      Context.end();
+   }
+
+   @Test
+   public void evaluateEx2() throws Exception {
+      log.info("start evaluateEx2(): condition_test1.xml");
+      initConfiguration("cibet-config-exclude.xml");
+
+      TEntity ent = createTEntity(7, "Stingel");
+      Context.sessionScope().setTenant("ten");
+      Context.sessionScope().setUser("Werner");
+      Context.sessionScope().setProperty("Emil", new Integer(2));
+
+      MethodResource res = new MethodResource(ent, null, null);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INVOKE, res);
+      try {
+         List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new ConditionControl());
+         Assert.fail();
+      } catch (RuntimeException e) {
+         log.warn(e.getMessage());
+         Assert.assertTrue(e.getMessage().startsWith("failed to execute Condition evaluation: Java script error"));
+      }
+      Context.end();
    }
 
 }

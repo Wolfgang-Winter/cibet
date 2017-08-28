@@ -318,7 +318,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
 
       SpringSecurityActuator act = new SpringSecurityActuator();
       act.setPostFilter("filterObject == 'eins'");
-      Setpoint sp = new Setpoint("xx", null);
+      Setpoint sp = new Setpoint("xx");
       sp.addActuator(act);
 
       TComplexEntity ent1 = new TComplexEntity();
@@ -339,7 +339,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
 
       SpringSecurityActuator act = new SpringSecurityActuator();
       act.setPostFilter("filterObject == 'eins'");
-      Setpoint sp = new Setpoint("xx", null);
+      Setpoint sp = new Setpoint("xx");
       sp.addActuator(act);
 
       TComplexEntity ent1 = new TComplexEntity();
@@ -358,7 +358,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       initContext("spring-context.xml");
 
       SpringSecurityActuator act = new SpringSecurityActuator();
-      Setpoint sp = new Setpoint("xx", null);
+      Setpoint sp = new Setpoint("xx");
       sp.addActuator(act);
 
       authenticate("ROLE_Heinz");
@@ -382,7 +382,7 @@ public class SpringSecurityActuatorTest extends SpringTestBase {
       initContext("spring-context.xml");
 
       SpringSecurityActuator act = new SpringSecurityActuator();
-      Setpoint sp = new Setpoint("xx", null);
+      Setpoint sp = new Setpoint("xx");
       sp.addActuator(act);
 
       authenticate("ROLE_Heinz");

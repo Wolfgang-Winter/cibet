@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="cibet-config-exclude">
+
+	<control name="CC1">
+		<class>com.cibethelper.base.AttributedCustomControl</class>
+		<properties>
+			<ga>45</ga>
+		</properties>
+	</control>
+	
+	<setpoint id="AA1">
+		<controls>
+			<tenant>
+				<exclude>Werner</exclude>
+				<exclude>Werner2</exclude>
+				<include>Werner</include>
+			</tenant>
+			<event>
+				<include>PERSIST</include>
+				<exclude>UPDATE</exclude>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+				<exclude>com.lang.*</exclude>
+			</target>
+			<method>
+				<include>setGaga</include>
+				<exclude>getBytes()</exclude>
+			</method>
+			<invoker>
+				<exclude>evaluateExclude3</exclude>			
+			</invoker>
+			<condition>
+				<include>
+				var date = java.util.Calendar.getInstance();
+				$SESSIONSCOPE.getProperty("Klaus").getCounter() == 7
+				&amp;&amp; date.get(java.util.Calendar.YEAR) &gt;= 2003
+				&amp;&amp; date.get(java.util.Calendar.YEAR) &lt;= 2050
+				&amp;&amp; $EVENT.name().equals("INVOKE")
+				&amp;&amp; $SESSIONSCOPE.getProperty("Klaus") != null
+				&amp;&amp; $SESSIONSCOPE.getProperty("Emil") == 2
+				</include>
+				<exclude>
+				var date = java.util.Calendar.getInstance();
+				date.get(java.util.Calendar.YEAR) &gt;= 2003
+				&amp;&amp; date.get(java.util.Calendar.YEAR) &lt;= 2050
+				</exclude>
+			</condition>
+			<customControls>
+				<customControl name="CC1">
+					<exclude>55</exclude>
+				</customControl>
+			</customControls>
+		</controls>
+		<actuator name="ARCHIVE" />
+	</setpoint>
+
+	<setpoint id="AA2">
+		<controls>
+			<customControls>
+				<customControl name="CC1">
+					<exclude>45</exclude>
+				</customControl>
+			</customControls>
+		</controls>
+		<actuator name="ARCHIVE" />
+	</setpoint>
+
+</cibet>   

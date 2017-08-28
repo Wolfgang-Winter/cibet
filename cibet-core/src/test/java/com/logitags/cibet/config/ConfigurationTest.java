@@ -13,7 +13,6 @@ package com.logitags.cibet.config;
 
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Set;
 
 import javax.management.MBeanServer;
@@ -30,7 +29,6 @@ import com.cibethelper.base.TrueCustomControl;
 import com.logitags.cibet.actuator.archive.ArchiveActuator;
 import com.logitags.cibet.actuator.common.Actuator;
 import com.logitags.cibet.context.Context;
-import com.logitags.cibet.control.BooleanAttributedControlValue;
 import com.logitags.cibet.control.ConditionControl;
 import com.logitags.cibet.control.EventControl;
 import com.logitags.cibet.control.InvokerControl;
@@ -170,23 +168,15 @@ public class ConfigurationTest extends CoreTestBase {
       Assert.assertEquals(5, Configuration.instance().getSetpoints().size());
       Setpoint sp = Configuration.instance().getSetpoints().get(0);
       Assert.assertEquals(1, sp.getActuators().size());
-      Assert.assertEquals(1, ((List<String>) sp.getControlValue(TargetControl.NAME)).size());
-      Assert.assertEquals(1, ((List<String>) sp.getControlValue(EventControl.NAME)).size());
-      Assert.assertEquals(1,
-            ((BooleanAttributedControlValue) sp.getControlValue(InvokerControl.NAME)).getValues().size());
-      Assert.assertEquals(1, ((List<String>) sp.getControlValue(MethodControl.NAME)).size());
-      Assert.assertEquals(1, ((List<String>) sp.getControlValue(TenantControl.NAME)).size());
-      Assert.assertEquals(1,
-            ((BooleanAttributedControlValue) sp.getControlValue(StateChangeControl.NAME)).getValues().size());
-      Assert.assertEquals("", (String) sp.getControlValue(ConditionControl.NAME));
-      Assert.assertEquals("", ((List<String>) sp.getControlValue(EventControl.NAME)).get(0));
-      Assert.assertEquals("", ((List<String>) sp.getControlValue(TargetControl.NAME)).get(0));
-      Assert.assertEquals("",
-            ((BooleanAttributedControlValue) sp.getControlValue(InvokerControl.NAME)).getValues().get(0));
-      Assert.assertEquals("", ((List<String>) sp.getControlValue(MethodControl.NAME)).get(0));
-      Assert.assertEquals("", ((List<String>) sp.getControlValue(TenantControl.NAME)).get(0));
-      Assert.assertEquals("",
-            ((BooleanAttributedControlValue) sp.getControlValue(StateChangeControl.NAME)).getValues().get(0));
+      Assert.assertEquals(7, sp.getControls().size());
+
+      Assert.assertEquals(0, sp.getControls().get(TargetControl.NAME).getIncludes().size());
+      Assert.assertEquals(0, sp.getControls().get(EventControl.NAME).getIncludes().size());
+      Assert.assertEquals(0, sp.getControls().get(InvokerControl.NAME).getIncludes().size());
+      Assert.assertEquals(0, sp.getControls().get(MethodControl.NAME).getIncludes().size());
+      Assert.assertEquals(0, sp.getControls().get(TenantControl.NAME).getIncludes().size());
+      Assert.assertEquals(0, sp.getControls().get(StateChangeControl.NAME).getIncludes().size());
+      Assert.assertEquals(0, sp.getControls().get(ConditionControl.NAME).getIncludes().size());
    }
 
    @Test

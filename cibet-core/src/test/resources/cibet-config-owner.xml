@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.3.xsd">
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="cibet-config-owner">
 
 	<actuator name="OWNERCHECK">
 		<properties>
@@ -25,30 +25,44 @@
 
 	<setpoint id="OC1">
 		<controls>
-			<tenant>Ralf</tenant>
-			<event>PERSIST</event>
+			<tenant>
+				<include>Ralf</include>
+			</tenant>
+			<event>
+				<include>PERSIST</include>
+			</event>
 		</controls>
 		<actuator name="OWNERCHECK" />
 	</setpoint>
 
 	<setpoint id="OC2">
 		<controls>
-			<tenant>Werner</tenant>
-			<event>PERSIST</event>
-			<target>com.cibethelper.entities.owner.Company,
-				com.cibethelper.entities.owner.Merchant,
-				com.cibethelper.entities.owner.Merchant2,
-				com.cibethelper.entities.owner.Product,
-				com.cibethelper.entities.owner.Product2,
-				select a from Company a</target>
+			<tenant>
+				<include>Werner</include>
+			</tenant>
+			<event>
+				<include>PERSIST</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.owner.Company</include>
+				<include>com.cibethelper.entities.owner.Merchant</include>
+				<include>com.cibethelper.entities.owner.Merchant2</include>
+				<include>com.cibethelper.entities.owner.Product</include>
+				<include>com.cibethelper.entities.owner.Product2</include>
+				<include>select a from Company a</include>
+			</target>
 		</controls>
 		<actuator name="OWNERCHECK-EX" />
 	</setpoint>
 
 	<setpoint id="OC3">
 		<controls>
-			<tenant>Heinz</tenant>
-			<event>PERSIST</event>
+			<tenant>
+				<include>Heinz</include>
+			</tenant>
+			<event>
+				<include>PERSIST</include>
+			</event>
 		</controls>
 		<actuator name="OWNERCHECK-CB" />
 	</setpoint>

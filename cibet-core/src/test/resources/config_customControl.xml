@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.3.xsd">
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="custControl">
 
 
 	<control name="SEC1">
@@ -26,35 +26,72 @@
 
 	<setpoint id="K1">
 		<controls>
-			<event>INVOKE</event>
-			<customControl name="TRUE">dsfg</customControl>
-			<target>com.cibethelper.entities.TComplexEntity, http://localhost:9090/webapp/other*,
-					http://localhost:9190/webapp/other*</target>
-			<method>setOwner, GET,POST</method>
-			<invoker exclude="false">fff</invoker>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<customControls>
+				<customControl name="TRUE">
+					<include>dsfg</include>
+				</customControl>
+			</customControls>
+			<target>
+				<include>com.cibethelper.entities.TComplexEntity</include>
+				<include>http://localhost:9090/webapp/other*</include>
+				<include>http://localhost:9190/webapp/other*</include>
+			</target>
+			<method>
+				<include>setOwner</include>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
+			<invoker>
+				<include>fff</include>
+			</invoker>
 		</controls>
 		<actuator name="INFOLOG"/>
 	</setpoint>
 
 	<setpoint id="K2">
 		<controls>
-			<event>INVOKE</event>
-			<customControl name="TRUE"></customControl>
-			<target>com.cibethelper.entities.TComplexEntity,http://localhost:9090/webapp/other*,
-					http://localhost:9190/webapp/other*</target>
-			<method>setOwner,  GET,POST</method>
-			<invoker exclude="false"></invoker>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<customControls>
+				<customControl name="TRUE"></customControl>
+			</customControls>
+			<target>
+				<include>com.cibethelper.entities.TComplexEntity</include>
+				<include>http://localhost:9090/webapp/other*</include>
+				<include>http://localhost:9190/webapp/other*</include>
+			</target>
+			<method>
+				<include>setOwner</include>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
+			<invoker></invoker>
 		</controls>
 		<actuator name="INFOLOG"/>
 	</setpoint>
 
 	<setpoint id="K3">
 		<controls>
-			<event>INVOKE</event>
-			<customControl name="TRUE" />
-			<target>com.cibethelper.entities.TComplexEntity, http://localhost:9090/webapp/other*,
-					http://localhost:9190/webapp/other*</target>
-			<method>setOwner,  GET,POST</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<customControls>
+				<customControl name="TRUE" />
+			</customControls>
+			<target>
+				<include>com.cibethelper.entities.TComplexEntity</include>
+				<include>http://localhost:9090/webapp/other*</include>
+				<include>http://localhost:9190/webapp/other*</include>
+			</target>
+			<method>
+				<include>setOwner</include>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
 			<invoker />
 		</controls>
 		<actuator name="INFOLOG"/>

@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.0.xsd">
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="stateChange1">
 
 	<setpoint id="A">
 		<controls>
-			<tenant>ten1</tenant>
-			<event>INSERT, INVOKE</event>
-			<target>*</target>
-			<condition>5==3</condition>
+			<tenant>
+				<include>ten1</include>
+			</tenant>
+			<event>
+				<include>INSERT, INVOKE</include>
+			</event>
+			<target>
+				<include>*</include>
+			</target>
+			<condition>
+				<include>5==3</include>
+			</condition>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>
 
 	<setpoint id="C">
 		<controls>
-			<event>INSERT</event>
-			<target>com.cibethelper.entities.TEntity</target>
-			<invoker exclude="true">com.logitags.cibet.control.*</invoker>
-			<stateChange exclude="true">counter, ten.counter</stateChange>
+			<event>
+				<include>INSERT</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+			</target>
+			<invoker>
+				<exclude>com.logitags.cibet.control.*</exclude>
+			</invoker>
+			<stateChange>
+				<exclude>counter</exclude>
+				<exclude>ten.counter</exclude>
+			</stateChange>
 		</controls>
 		<actuator name="ARCHIVE"/>
 	</setpoint>

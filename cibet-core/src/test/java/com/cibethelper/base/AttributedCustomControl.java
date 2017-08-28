@@ -26,14 +26,19 @@ package com.cibethelper.base;
 
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.logitags.cibet.control.Control;
 import com.logitags.cibet.core.EventMetadata;
 
-public class TrueCustomControl implements Control {
+public class AttributedCustomControl implements Control {
 
-   private String name = "TRUE";
+   private static Log log = LogFactory.getLog(AttributedCustomControl.class);
 
-   private String gaga;
+   private String name = "CC1";
+
+   private String ga;
 
    /**
     * 
@@ -49,17 +54,25 @@ public class TrueCustomControl implements Control {
       this.name = name;
    }
 
-   public String getGaga() {
-      return gaga;
+   public String getGa() {
+      return ga;
    }
 
-   public void setGaga(String g) {
-      gaga = g;
+   public void setGa(String gaga) {
+      ga = gaga;
    }
 
    @Override
    public Boolean evaluate(Set<String> values, EventMetadata metadata) {
-      return true;
+      if (values == null || values.isEmpty()) return null;
+
+      int attr = Integer.parseInt(ga);
+      for (String s : values) {
+         int value = Integer.parseInt(s);
+         log.info("check attr = " + attr + ", value: " + value);
+         if (attr + value == 100) return true;
+      }
+      return false;
    }
 
 }

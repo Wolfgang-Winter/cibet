@@ -90,7 +90,7 @@ public class ConfigurationTest extends CoreTestBase {
       Assert.assertEquals("Actuators successfully reinitialized. Setpoints have also been reinitialized", result);
       Assert.assertTrue(
             Configuration.instance().getActuator("SPRINGSECURITY_RELEASER") instanceof SpringSecurityActuator);
-      Assert.assertNotNull(Configuration.instance().getSetpoint("D1"));
+      Assert.assertNotNull(Configuration.instance().getSetpoint("scenario1/D1"));
    }
 
    @Test

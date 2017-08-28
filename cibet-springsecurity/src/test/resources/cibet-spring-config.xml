@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.0.xsd">
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="spring1">
 
 	<actuator name="SEC">
 		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
@@ -14,9 +14,15 @@
 	
 	<setpoint id="ZZSD23">
 		<controls>
-			<event>INVOKE</event>
-			<target>com.cibethelper.entities.TComplexEntity</target>
-			<method>setCompValue</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TComplexEntity</include>
+			</target>
+			<method>
+				<include>setCompValue</include>
+			</method>
 		</controls>
 		<actuator name="SEC"/>
 	</setpoint>

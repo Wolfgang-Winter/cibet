@@ -20,9 +20,9 @@ import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.circuitbreaker.CircuitBreakerActuator;
 import com.logitags.cibet.actuator.common.Actuator;
-import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;
+import com.logitags.cibet.control.Controller;
 import com.logitags.cibet.core.AnnotationUtil;
 import com.logitags.cibet.core.CEntityManager;
 import com.logitags.cibet.core.CibetUtil;
@@ -208,7 +208,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
          }
 
          metadata = new EventMetadata(SENSOR_NAME, controlEvent, res);
-         Configuration.instance().getController().evaluate(metadata);
+         Controller.evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          T obj = null;
@@ -351,7 +351,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
          ControlEvent controlEvent = controlEvent(ControlEvent.UPDATE);
          JpaResource res = new JpaResource(obj);
          metadata = new EventMetadata(SENSOR_NAME, controlEvent, res);
-         Configuration.instance().getController().evaluate(metadata);
+         Controller.evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          try {
@@ -413,7 +413,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
          ControlEvent controlEvent = controlEvent(ControlEvent.INSERT);
          JpaResource res = new JpaResource(obj);
          metadata = new EventMetadata(SENSOR_NAME, controlEvent, res);
-         Configuration.instance().getController().evaluate(metadata);
+         Controller.evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          try {
@@ -490,7 +490,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
          ControlEvent controlEvent = controlEvent(ControlEvent.DELETE);
          JpaResource res = new JpaResource(obj);
          metadata = new EventMetadata(SENSOR_NAME, controlEvent, res);
-         Configuration.instance().getController().evaluate(metadata);
+         Controller.evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          try {
@@ -581,22 +581,25 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
    }
 
    void doFinally(boolean startManaging, EventMetadata metadata, EventResult thisResult) {
-      if (metadata == null || thisResult == null) return;
       try {
-         metadata.evaluateEventExecuteStatus();
+         if (metadata != null) {
+            metadata.evaluateEventExecuteStatus();
+         }
       } catch (RuntimeException e) {
          throw e;
       } catch (Throwable e) {
          throw new RuntimeException(e);
       } finally {
-         if (metadata.getExecutionStatus() == ExecutionStatus.ERROR) {
-            Context.requestScope().setRemark(null);
-         }
+         if (metadata != null && thisResult != null) {
+            if (metadata.getExecutionStatus() == ExecutionStatus.ERROR) {
+               Context.requestScope().setRemark(null);
+            }
 
-         if (metadata.getExecutionStatus() == ExecutionStatus.EXECUTING) {
-            thisResult.setExecutionStatus(ExecutionStatus.EXECUTED);
-         } else {
-            thisResult.setExecutionStatus(metadata.getExecutionStatus());
+            if (metadata.getExecutionStatus() == ExecutionStatus.EXECUTING) {
+               thisResult.setExecutionStatus(ExecutionStatus.EXECUTED);
+            } else {
+               thisResult.setExecutionStatus(metadata.getExecutionStatus());
+            }
          }
 
          if (startManaging) {

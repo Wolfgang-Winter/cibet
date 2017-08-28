@@ -13,8 +13,7 @@ package com.logitags.cibet.control;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,12 +22,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.cibethelper.base.CoreTestBase;
+import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.Setpoint;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.sensor.http.HttpRequestResource;
 import com.logitags.cibet.sensor.jpa.JpaResource;
+import com.logitags.cibet.sensor.pojo.MethodResource;
 
 public class EventControlTest extends CoreTestBase {
 
@@ -45,23 +46,24 @@ public class EventControlTest extends CoreTestBase {
       List<Setpoint> list = new ArrayList<Setpoint>();
       List<Setpoint> spB = Configuration.instance().getSetpoints();
       for (Setpoint sp : spB) {
-         if (!eval.hasControlValue(sp.getControlValue("event"))) {
+         if (sp.getControls().get("event") == null) {
             continue;
          }
-         boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+         boolean okay = eval.evaluate(sp.getControls().get("event").getIncludes(), md);
          if (okay) {
             list.add(sp);
+            log.debug("add setpoint " + sp.getId());
          }
       }
-      Assert.assertTrue(list.size() == 0);
+      Assert.assertEquals(0, list.size());
 
       md = new EventMetadata(ControlEvent.INVOKE, null);
       list.clear();
       for (Setpoint sp : spB) {
-         if (!eval.hasControlValue(sp.getControlValue("event"))) {
+         if (sp.getControls().get("event") == null) {
             continue;
          }
-         boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+         boolean okay = eval.evaluate(sp.getControls().get("event").getIncludes(), md);
          if (okay) {
             list.add(sp);
          }
@@ -74,10 +76,10 @@ public class EventControlTest extends CoreTestBase {
       md = new EventMetadata(ControlEvent.UPDATE, null);
       list.clear();
       for (Setpoint sp : spB) {
-         if (!eval.hasControlValue(sp.getControlValue("event"))) {
+         if (sp.getControls().get("event") == null) {
             continue;
          }
-         boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+         boolean okay = eval.evaluate(sp.getControls().get("event").getIncludes(), md);
          if (okay) {
             list.add(sp);
          }
@@ -90,10 +92,10 @@ public class EventControlTest extends CoreTestBase {
       md = new EventMetadata(ControlEvent.UPDATEQUERY, null);
       list.clear();
       for (Setpoint sp : spB) {
-         if (!eval.hasControlValue(sp.getControlValue("event"))) {
+         if (sp.getControls().get("event") == null) {
             continue;
          }
-         boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+         boolean okay = eval.evaluate(sp.getControls().get("event").getIncludes(), md);
          if (okay) {
             list.add(sp);
          }
@@ -107,11 +109,11 @@ public class EventControlTest extends CoreTestBase {
 
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setEvent(ControlEvent.FIRST_RELEASE.name());
+      sp.addEventIncludes(ControlEvent.FIRST_RELEASE);
       spB.add(sp);
 
       Control eval = new EventControl();
-      eval.evaluate(spB, (EventMetadata) null);
+      eval.evaluate(null, (EventMetadata) null);
    }
 
    @Test
@@ -120,7 +122,7 @@ public class EventControlTest extends CoreTestBase {
 
       List<Setpoint> spB = new ArrayList<Setpoint>();
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setEvent(ControlEvent.FIRST_RELEASE.name());
+      sp.addEventIncludes(ControlEvent.FIRST_RELEASE);
       spB.add(sp);
 
       Setpoint sp2 = new Setpoint("head", sp);
@@ -132,11 +134,15 @@ public class EventControlTest extends CoreTestBase {
       Control eval = new EventControl();
       List<Setpoint> list = new ArrayList<Setpoint>();
       for (Setpoint spi : spB) {
-         Map<String, Object> controlValues = new TreeMap<String, Object>(new ControlComparator());
-         spi.getEffectiveControlValues(controlValues);
-         boolean okay = eval.evaluate(controlValues.get("event"), md);
-         if (okay) {
-            list.add(spi);
+         Set<ConcreteControl> sc = spi.getEffectiveControls();
+         for (ConcreteControl cc : sc) {
+            if ("event".equals(cc.getControl().getName())) {
+               boolean okay = eval.evaluate(cc.getIncludes(), md);
+               if (okay) {
+                  list.add(spi);
+               }
+               break;
+            }
          }
       }
       Assert.assertEquals(2, list.size());
@@ -147,13 +153,13 @@ public class EventControlTest extends CoreTestBase {
       log.info("start evaluateImplicitNok()");
 
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setEvent(ControlEvent.FIRST_RELEASE_INSERT.name());
+      sp.addEventIncludes(ControlEvent.FIRST_RELEASE_INSERT);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATEQUERY, res);
 
       Control eval = new EventControl();
-      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      boolean okay = eval.evaluate(sp.getControls().get("event").getIncludes(), md);
       Assert.assertFalse(okay);
    }
 
@@ -162,13 +168,13 @@ public class EventControlTest extends CoreTestBase {
       log.info("start evaluateImplicitOk()");
 
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setEvent(ControlEvent.UPDATEQUERY.name());
+      sp.addEventIncludes(ControlEvent.UPDATEQUERY);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATEQUERY, res);
 
       Control eval = new EventControl();
-      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      boolean okay = eval.evaluate(sp.getControls().get("event").getIncludes(), md);
       Assert.assertTrue(okay);
    }
 
@@ -177,13 +183,13 @@ public class EventControlTest extends CoreTestBase {
       log.info("start evaluateImplicitOk2()");
 
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setEvent(ControlEvent.PERSIST.name());
+      sp.addEventIncludes(ControlEvent.PERSIST);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATEQUERY, res);
 
       Control eval = new EventControl();
-      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      boolean okay = eval.evaluate(sp.getControls().get("event").getIncludes(), md);
       Assert.assertTrue(okay);
    }
 
@@ -192,13 +198,13 @@ public class EventControlTest extends CoreTestBase {
       log.info("start evaluateHierarchy()");
 
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setEvent(ControlEvent.FIRST_RELEASE.name());
+      sp.addEventIncludes(ControlEvent.FIRST_RELEASE);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.FIRST_RELEASE_INSERT, res);
 
       Control eval = new EventControl();
-      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      boolean okay = eval.evaluate(sp.getControls().get("event").getIncludes(), md);
       Assert.assertTrue(okay);
    }
 
@@ -207,13 +213,13 @@ public class EventControlTest extends CoreTestBase {
       log.info("start evaluateHierarchyAll()");
 
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setEvent(ControlEvent.ALL.name());
+      sp.addEventIncludes(ControlEvent.ALL);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.FIRST_RELEASE_INSERT, res);
 
       Control eval = new EventControl();
-      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      boolean okay = eval.evaluate(sp.getControls().get("event").getIncludes(), md);
       Assert.assertTrue(okay);
    }
 
@@ -222,13 +228,42 @@ public class EventControlTest extends CoreTestBase {
       log.info("start evaluateHierarchyNot()");
 
       Setpoint sp = new Setpoint("conditionParams");
-      sp.setEvent(ControlEvent.RELEASE_INVOKE.name());
+      sp.addEventIncludes(ControlEvent.RELEASE_INVOKE);
 
       HttpRequestResource res = new HttpRequestResource("targ", "POST", (HttpServletRequest) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.FIRST_RELEASE, res);
 
       Control eval = new EventControl();
-      boolean okay = eval.evaluate(sp.getControlValue("event"), md);
+      boolean okay = eval.evaluate(sp.getControls().get("event").getIncludes(), md);
       Assert.assertFalse(okay);
    }
+
+   @Test
+   public void evaluateEventEx1() throws Exception {
+      log.info("start evaluateEventEx1()");
+      initConfiguration("cibet-config-exclude.xml");
+
+      TEntity ent = createTEntity(7, "Stingel");
+
+      MethodResource res = new MethodResource(ent, null, null);
+      EventMetadata md = new EventMetadata(null, ControlEvent.INSERT, res);
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new EventControl());
+      Assert.assertEquals(2, list.size());
+      initConfiguration("cibet-config.xml");
+   }
+
+   @Test
+   public void evaluateEventEx2() throws Exception {
+      log.info("start evaluateEventEx2()");
+      initConfiguration("cibet-config-exclude.xml");
+
+      TEntity ent = createTEntity(7, "Stingel");
+
+      MethodResource res = new MethodResource(ent, null, null);
+      EventMetadata md = new EventMetadata(null, ControlEvent.UPDATE, res);
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new EventControl());
+      Assert.assertEquals(1, list.size());
+      initConfiguration("cibet-config.xml");
+   }
+
 }

@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -33,8 +34,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import javax.management.MBeanServer;
@@ -80,7 +81,7 @@ import com.logitags.cibet.bindings.Cibet;
 import com.logitags.cibet.bindings.ClassDefBinding;
 import com.logitags.cibet.bindings.ControlDefBinding;
 import com.logitags.cibet.bindings.CustomControlBinding;
-import com.logitags.cibet.bindings.InExAttributeBinding;
+import com.logitags.cibet.bindings.InExBinding;
 import com.logitags.cibet.bindings.ObjectFactory;
 import com.logitags.cibet.bindings.PropertiesBinding;
 import com.logitags.cibet.bindings.SetpointActuatorBinding;
@@ -88,12 +89,10 @@ import com.logitags.cibet.bindings.SetpointBinding;
 import com.logitags.cibet.config.ProxyConfig.ProxyMode;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;
-import com.logitags.cibet.control.BooleanAttributedControlValue;
+import com.logitags.cibet.control.ConcreteControl;
 import com.logitags.cibet.control.ConditionControl;
 import com.logitags.cibet.control.Control;
-import com.logitags.cibet.control.ControlComparator;
 import com.logitags.cibet.control.Controller;
-import com.logitags.cibet.control.DefaultController;
 import com.logitags.cibet.control.EventControl;
 import com.logitags.cibet.control.InvokerControl;
 import com.logitags.cibet.control.MethodControl;
@@ -121,7 +120,7 @@ public class Configuration {
 
    private static String CONFIGURATION_FILENAME = "cibet-config.xml";
 
-   private static String CONFIGURATION_XSD_FILENAME = "cibet-config_1.3.xsd";
+   private static String CONFIGURATION_XSD_FILENAME = "cibet-config_1.4.xsd";
 
    public static final String JMX_BASE = "com.logitags.cibet";
    private static final String JMX_OBJECTNAME = JMX_BASE + ":type=Configuration,app=" + getApplicationName();
@@ -137,6 +136,9 @@ public class Configuration {
    private static final String PROXY_CLIENT_KEYSTOREPASSWORD = "cibet.proxy.clientKeystorePassword";
    private static final String PROXY_EXCLUDES = "cibet.proxy.excludes";
 
+   private static final String TAG_INCLUDE = "include";
+   private static final String TAG_EXCLUDE = "exclude";
+
    private static Map<String, Actuator> actuators = Collections.synchronizedMap(new LinkedHashMap<String, Actuator>());
 
    private static Map<String, Control> controls = Collections.synchronizedMap(new LinkedHashMap<String, Control>());
@@ -148,8 +150,6 @@ public class Configuration {
    private static String applicationName;
 
    private NotificationProvider notificationProvider;
-
-   private Controller controller = new DefaultController();
 
    private SecurityProvider securityProvider = new DefaultSecurityProvider();
 
@@ -368,11 +368,25 @@ public class Configuration {
     */
    public synchronized void reinitSetpoints(List<Cibet> cibets) {
       setpoints.clear();
+      Set<String> configNames = new HashSet<>();
+
       if (cibets == null) cibets = readConfigurationFiles();
       if (cibets == null) return;
       for (Cibet cibet : cibets) {
+         if (Setpoint.CODE_CONFIGNAME.equals(cibet.getName())) {
+            String err = "Failed to read configuration files: Cibet configuration name " + Setpoint.CODE_CONFIGNAME
+                  + " is reserved for configuration in code";
+            throw new IllegalArgumentException(err);
+         }
+         if (configNames.contains(cibet.getName())) {
+            String err = "Failed to read configuration files: Cibet configuration name " + cibet.getName()
+                  + " is doubled";
+            throw new IllegalArgumentException(err);
+         }
+         configNames.add(cibet.getName());
+
          for (SetpointBinding bin : cibet.getSetpoint()) {
-            Setpoint sp = new Setpoint(bin.getId());
+            Setpoint sp = new Setpoint(bin.getId(), cibet.getName());
             resolveSetpoint(sp, bin);
             registerSetpoint(sp);
          }
@@ -381,9 +395,14 @@ public class Configuration {
       // resolve extends
       for (Setpoint sp : setpoints.values()) {
          if (sp.getExtendsId() != null) {
-            Setpoint parent = setpoints.get(sp.getExtendsId());
+            String extId = sp.getExtendsId();
+            if (extId.indexOf("/") < 0) {
+               extId = sp.getConfigName() + "/" + extId;
+            }
+
+            Setpoint parent = setpoints.get(extId);
             if (parent == null) {
-               String msg = "Setpoint " + sp.getId() + " extends Setpoint " + sp.getExtendsId()
+               String msg = "Setpoint " + sp.getCombinedId() + " extends Setpoint " + extId
                      + " but this Setpoint is unknown";
                log.error(msg);
                throw new RuntimeException(msg);
@@ -502,11 +521,12 @@ public class Configuration {
          log.error(msg);
          throw new IllegalArgumentException(msg);
       }
-      if (setpoints.containsKey(sp.getId())) {
-         log.warn("A Setpoint with ID " + sp.getId() + " exists is already registered and will be overwritten");
+      if (setpoints.containsKey(sp.getCombinedId())) {
+         log.warn(
+               "A Setpoint with ID " + sp.getCombinedId() + " exists, is already registered and will be overwritten");
       }
-      log.info("register setpoint " + sp.getId());
-      setpoints.put(sp.getId(), sp);
+      log.info("register setpoint " + sp.getCombinedId());
+      setpoints.put(sp.getCombinedId(), sp);
    }
 
    /**
@@ -546,6 +566,12 @@ public class Configuration {
       return new LinkedList<Setpoint>(setpoints.values());
    }
 
+   /**
+    * 
+    * @param id
+    *           combined configName + "/" + id
+    * @return
+    */
    public Setpoint getSetpoint(String id) {
       return setpoints.get(id);
    }
@@ -600,8 +626,14 @@ public class Configuration {
       this.securityProvider = securityService;
    }
 
-   public Controller getController() {
-      return controller;
+   private String listToString(List<String> list) {
+      StringBuffer b = new StringBuffer();
+      b.append(" , ");
+      for (String s : list) {
+         b.append(" , ");
+         b.append(s);
+      }
+      return b.toString().substring(1);
    }
 
    private void resolveSetpoint(Setpoint sp, SetpointBinding spb) {
@@ -609,56 +641,74 @@ public class Configuration {
          sp.setExtendsId(((SetpointBinding) spb.getExtends()).getId());
       }
 
-      Map<String, Object> controlValues = new TreeMap<String, Object>(new ControlComparator(getControlNames()));
+      Map<String, ConcreteControl> controls = new HashMap<>();
 
-      for (JAXBElement<?> elem : spb.getControls().getTenantOrEventOrTarget()) {
-         String tag = elem.getName().getLocalPart();
+      ConcreteControl cc = resolveInExType(spb.getControls().getTenant(), TenantControl.NAME);
+      if (cc != null) {
+         controls.put(cc.getControl().getName(), cc);
+      }
+      cc = resolveInExType(spb.getControls().getEvent(), EventControl.NAME);
+      if (cc != null) {
+         controls.put(cc.getControl().getName(), cc);
+      }
+      cc = resolveInExType(spb.getControls().getInvoker(), InvokerControl.NAME);
+      if (cc != null) {
+         controls.put(cc.getControl().getName(), cc);
+      }
+      cc = resolveInExType(spb.getControls().getMethod(), MethodControl.NAME);
+      if (cc != null) {
+         controls.put(cc.getControl().getName(), cc);
+      }
+      cc = resolveInExType(spb.getControls().getStateChange(), StateChangeControl.NAME);
+      if (cc != null) {
+         controls.put(cc.getControl().getName(), cc);
+      }
+      cc = resolveInExType(spb.getControls().getTarget(), TargetControl.NAME);
+      if (cc != null) {
+         controls.put(cc.getControl().getName(), cc);
+      }
+      cc = resolveInExType(spb.getControls().getCondition(), ConditionControl.NAME);
+      if (cc != null) {
+         controls.put(cc.getControl().getName(), cc);
+      }
 
-         if (elem.getValue() instanceof String) {
-            Control control = getControl(tag);
-            if (control == null) {
-               String err = "Failed to initialise Setpoint " + sp.getId() + ": " + " Control with name " + tag
-                     + " is not initialised";
-               log.fatal(err);
-               throw new IllegalStateException(err);
+      if (spb.getControls().getCustomControls() != null) {
+         for (CustomControlBinding custCB : spb.getControls().getCustomControls().getCustomControl()) {
+            cc = resolveInExType(custCB, custCB.getName());
+            if (cc != null) {
+               controls.put(cc.getControl().getName(), cc);
             }
-            Object resolved = control.resolve((String) elem.getValue());
-            controlValues.put(tag, resolved);
-
-         } else if (elem.getValue() instanceof InExAttributeBinding) {
-            InExAttributeBinding inex = (InExAttributeBinding) elem.getValue();
-            BooleanAttributedControlValue cv = new BooleanAttributedControlValue();
-            cv.setBooleanValue(inex.isExclude());
-            Control control = getControl(tag);
-            if (control == null) {
-               String err = "Failed to initialise Setpoint " + sp.getId() + ": " + " Control with name " + tag
-                     + " is not initialised";
-               log.fatal(err);
-               throw new IllegalStateException(err);
-            }
-            cv.setValues((List<String>) control.resolve(inex.getValue()));
-            controlValues.put(tag, cv);
-
-         } else if (elem.getValue() instanceof CustomControlBinding) {
-            CustomControlBinding ccb = (CustomControlBinding) elem.getValue();
-            Control control = getControl(ccb.getName());
-            if (control == null) {
-               String err = "Failed to initialise Setpoint " + sp.getId() + ": " + " Control with name " + tag
-                     + " is not initialised";
-               log.fatal(err);
-               throw new IllegalStateException(err);
-            }
-            Object resolved = control.resolve(ccb.getValue());
-            controlValues.put(ccb.getName(), resolved);
          }
       }
-      sp.setControlValues(controlValues);
+
+      sp.setControls(controls);
 
       for (SetpointActuatorBinding sab : spb.getActuator()) {
          Actuator act = getActuator(sab.getName());
          log.info("resolve actuator " + sab.getName());
          sp.getActuators().add(act);
       }
+   }
+
+   private ConcreteControl resolveInExType(InExBinding type, String controlName) {
+      if (type != null) {
+         ConcreteControl control = new ConcreteControl(getControl(controlName));
+         for (JAXBElement<?> elem : type.getIncludeOrExclude()) {
+            String tag = elem.getName().getLocalPart();
+            if (TAG_INCLUDE.equals(tag)) {
+               String resolvedValue = Controller.resolve((String) elem.getValue());
+               control.getIncludes().add(resolvedValue);
+               log.info("resolve " + controlName + " control include value: " + resolvedValue);
+
+            } else if (TAG_EXCLUDE.equals(tag)) {
+               String resolvedValue = Controller.resolve((String) elem.getValue());
+               control.getExcludes().add(resolvedValue);
+               log.info("resolve " + controlName + " control exclude value: " + resolvedValue);
+            }
+         }
+         return control;
+      }
+      return null;
    }
 
    private List<InputStream> openConfigurationFiles() {

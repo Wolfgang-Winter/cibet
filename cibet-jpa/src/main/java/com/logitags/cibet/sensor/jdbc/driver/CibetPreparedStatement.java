@@ -47,8 +47,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.common.Actuator;
-import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.control.Controller;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
 import com.logitags.cibet.core.EventResult;
@@ -105,7 +105,7 @@ public class CibetPreparedStatement extends CibetStatement implements PreparedSt
          metadata.getResource().addParameter("StatementType", StatementType.PREPAREDSTATEMENT_EXECUTE,
                ParameterType.JDBC_STATEMENT_TYPE);
 
-         Configuration.instance().getController().evaluate(metadata);
+         Controller.evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          try {
@@ -162,7 +162,7 @@ public class CibetPreparedStatement extends CibetStatement implements PreparedSt
          metadata.getResource().addParameter("StatementType", StatementType.PREPAREDSTATEMENT_EXECUTEUPDATE,
                ParameterType.JDBC_STATEMENT_TYPE);
 
-         Configuration.instance().getController().evaluate(metadata);
+         Controller.evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          try {

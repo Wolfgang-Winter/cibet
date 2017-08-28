@@ -30,7 +30,10 @@ import com.logitags.cibet.actuator.dc.FourEyesActuator;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.config.ConfigurationService;
 import com.logitags.cibet.config.Setpoint;
+import com.logitags.cibet.control.ConcreteControl;
+import com.logitags.cibet.control.Control;
 import com.logitags.cibet.core.ControlEvent;
+import com.logitags.cibet.core.EventMetadata;
 
 public abstract class CoreTestBase {
 
@@ -54,7 +57,7 @@ public abstract class CoreTestBase {
    }
 
    protected static String initConfiguration(String configName) {
-      log.debug("++initConfiguration " + configName);
+      log.debug("++initConfiguration " + Configuration.instance());
       Configuration.instance().close();
       try {
          Field FILENAME = Configuration.class.getDeclaredField("CONFIGURATION_FILENAME");
@@ -64,6 +67,7 @@ public abstract class CoreTestBase {
          throw new RuntimeException(e);
       }
 
+      log.debug("++reinitConfiguration " + Configuration.instance() + " from file " + configName);
       ConfigurationService confMan = new ConfigurationService();
       String res = confMan.initialise();
       log.debug("end ++initConfiguration: " + res);
@@ -72,7 +76,7 @@ public abstract class CoreTestBase {
 
    protected Setpoint registerSetpoint(Class<?> clazz, String act, String methodName, ControlEvent... events) {
       Setpoint sp = registerSetpoint(clazz, act, events);
-      sp.setMethod(methodName);
+      sp.addMethodIncludes(methodName);
       return sp;
    }
 
@@ -81,13 +85,9 @@ public abstract class CoreTestBase {
    }
 
    protected Setpoint registerSetpoint(String clazz, String act, ControlEvent... events) {
-      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()), null);
-      sp.setTarget(clazz);
-      List<String> evl = new ArrayList<String>();
-      for (ControlEvent ce : events) {
-         evl.add(ce.name());
-      }
-      sp.setEvent(evl.toArray(new String[0]));
+      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()));
+      sp.addTargetIncludes(clazz);
+      sp.addEventIncludes(events);
       Configuration cman = Configuration.instance();
       sp.addActuator(cman.getActuator(act));
       cman.registerSetpoint(sp);
@@ -95,15 +95,15 @@ public abstract class CoreTestBase {
    }
 
    protected Setpoint registerSetpoint(String clazz, List<String> acts, ControlEvent... events) {
-      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()), null);
+      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()));
       if (clazz != null) {
-         sp.setTarget(clazz);
+         sp.addTargetIncludes(clazz);
       }
       List<String> evl = new ArrayList<String>();
       for (ControlEvent ce : events) {
          evl.add(ce.name());
       }
-      sp.setEvent(evl.toArray(new String[0]));
+      sp.addEventIncludes(events);
       Configuration cman = Configuration.instance();
       for (String scheme : acts) {
          sp.addActuator(cman.getActuator(scheme));
@@ -114,13 +114,13 @@ public abstract class CoreTestBase {
 
    protected Setpoint registerSetpoint(Class<?> clazz, List<String> acts, String methodName, ControlEvent... events) {
       Setpoint sp = registerSetpoint(clazz.getName(), acts, events);
-      sp.setMethod(methodName);
+      sp.addMethodIncludes(methodName);
       return sp;
    }
 
    protected Setpoint registerSetpoint(String target, String method, List<String> acts, ControlEvent... events) {
       Setpoint sp = registerSetpoint(target, acts, events);
-      sp.setMethod(method);
+      sp.addMethodIncludes(method);
       return sp;
    }
 
@@ -196,6 +196,31 @@ public abstract class CoreTestBase {
       ce.addLazyList(createTEntity(6, "Hase6"));
 
       return ce;
+   }
+
+   protected List<Setpoint> evaluate(EventMetadata md, List<Setpoint> spoints, Control control) {
+      List<Setpoint> list = new ArrayList<Setpoint>();
+      for (Setpoint spi : spoints) {
+         Set<ConcreteControl> controlValues = spi.getEffectiveControls();
+         boolean isPresent = false;
+         for (ConcreteControl cc : controlValues) {
+            if (control.getName().equals(cc.getControl().getName())) {
+               isPresent = true;
+               Boolean okay1 = control.evaluate(cc.getIncludes(), md);
+               Boolean okay2 = control.evaluate(cc.getExcludes(), md);
+               if ((okay1 == null || okay1) && (okay2 == null || !okay2)) {
+                  log.info("add setpoint " + spi.getId());
+                  list.add(spi);
+               }
+               break;
+            }
+         }
+         if (!isPresent) {
+            log.info("add setpoint (not present) " + spi.getId());
+            list.add(spi);
+         }
+      }
+      return list;
    }
 
 }

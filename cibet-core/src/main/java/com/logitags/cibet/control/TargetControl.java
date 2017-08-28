@@ -14,8 +14,10 @@
  */
 package com.logitags.cibet.control;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,7 +39,7 @@ import com.logitags.cibet.sensor.http.HttpRequestResource;
  * <p>
  * all classes of a package including subpackages: com.logitags.cibet.**
  */
-public class TargetControl extends AbstractControl {
+public class TargetControl implements Serializable, Control {
 
    /**
     * 
@@ -54,13 +56,21 @@ public class TargetControl extends AbstractControl {
    }
 
    @Override
-   public boolean evaluate(Object controlValue, EventMetadata metadata) {
-      if (metadata.getResource().getTarget() == null) {
-         return true;
+   public Boolean evaluate(Set<String> values, EventMetadata metadata) {
+      if (metadata == null) {
+         String msg = "failed to execute target evaluation: metadata is null";
+         log.error(msg);
+         throw new IllegalArgumentException(msg);
       }
 
+      if (metadata.getResource().getTarget() == null) {
+         return null;
+      }
+
+      if (values == null || values.isEmpty()) return null;
+
       List<String> added = new ArrayList<>();
-      List<String> list = new ArrayList<String>((List<String>) controlValue);
+      List<String> list = new ArrayList<String>(values);
       for (String cl : list) {
          if (cl.startsWith("http://")) {
             added.add(cl.substring(7));
@@ -96,34 +106,15 @@ public class TargetControl extends AbstractControl {
                if (occ == -1) {
                   added.add(host + ":443");
                }
-
-               // int occ = noScheme.indexOf("/");
-               // if (occ != -1) {
-               // added.add(noScheme.substring(0, occ));
-               // continue;
-               // }
-               // occ = noScheme.indexOf("?");
-               // if (occ != -1) {
-               // added.add(noScheme.substring(0, occ));
-               // continue;
-               // }
-               // occ = noScheme.indexOf("#");
-               // if (occ != -1) {
-               // added.add(noScheme.substring(0, occ));
-               // }
             }
          }
       }
       list.addAll(added);
-      if (log.isDebugEnabled()) {
-         log.debug("Target control of " + metadata.getResource().getTarget() + " against:");
-         for (String cl : list) {
-            log.debug(cl);
-         }
-      }
 
       for (String cl : list) {
-         // log.debug(metadata.getResource().getTargetType() + " : " + cl);
+         if (log.isDebugEnabled()) {
+            log.debug("Target control of " + metadata.getResource().getTarget() + " against: " + cl);
+         }
          if (cl.length() == 0 || metadata.getResource().getTarget().equals(cl)) {
             return true;
 
@@ -136,4 +127,5 @@ public class TargetControl extends AbstractControl {
       }
       return false;
    }
+
 }

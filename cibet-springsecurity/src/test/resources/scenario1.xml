@@ -1,101 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config.xsd">
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="scenario1">
 
-  <actuator name="SPRINGSECURITY_PREMIUMOFFICER">
-     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
-     <properties>
-        <preAuthorize>hasRole(ROLE_PREMIUMOFFICER)</preAuthorize>
-     </properties>
-  </actuator>
+	<actuator name="SPRINGSECURITY_PREMIUMOFFICER">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator
+		</class>
+		<properties>
+			<preAuthorize>hasRole(ROLE_PREMIUMOFFICER)</preAuthorize>
+		</properties>
+	</actuator>
 
-  <actuator name="SPRINGSECURITY_RELEASER">
-     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
-     <properties>
-        <preAuthorize>hasRole(ROLE_RELEASER)</preAuthorize>
-     </properties>
-  </actuator>
-  
-  <actuator name="SPRINGSECURITY_NORMALUSER">
-     <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
-     <properties>
-        <preAuthorize>hasRole(ROLE_NORMALUSER)</preAuthorize>
-     </properties>
-  </actuator>
-  
+	<actuator name="SPRINGSECURITY_RELEASER">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator
+		</class>
+		<properties>
+			<preAuthorize>hasRole(ROLE_RELEASER)</preAuthorize>
+		</properties>
+	</actuator>
 
-  <setpoint id="D">
-    <controls>
-      <tenant>MM Bank</tenant>
-	  <event>INSERT, DELETE, REJECT_INSERT, REJECT_DELETE</event>
-  	  <target>com.bank.business.Customer</target>
-  	  <condition>Customer.getCategory() != 'PREMIUM'</condition>
-	</controls>
-	<actuator name="FOUR_EYES"/>
-	<actuator name="INFOLOG"/>
-  </setpoint>
+	<actuator name="SPRINGSECURITY_NORMALUSER">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator
+		</class>
+		<properties>
+			<preAuthorize>hasRole(ROLE_NORMALUSER)</preAuthorize>
+		</properties>
+	</actuator>
 
-  <setpoint id="D1" extends="D">
-    <controls>
-  	  <condition>Customer.getCategory() == 'PREMIUM'</condition>
-	</controls>
-	<actuator name="SPRINGSECURITY_PREMIUMOFFICER" />
-	<actuator name="FOUR_EYES"/>
-	<actuator name="INFOLOG"/>
-  </setpoint>
 
-  <setpoint id="D2" extends="D">
-    <controls>
-      <event>RELEASE_INSERT</event>
-  	  <condition></condition>
-    </controls>
-	<actuator name="SPRINGSECURITY_RELEASER"/>
-	<actuator name="ARCHIVE"/>
-  </setpoint>
+	<setpoint id="D">
+		<controls>
+			<tenant>
+				<include>MM Bank</include>
+			</tenant>
+			<event>
+				<include>INSERT, DELETE, REJECT_INSERT, REJECT_DELETE</include>
+			</event>
+			<target>
+				<include>com.bank.business.Customer</include>
+			</target>
+			<condition>
+				<include>Customer.getCategory() != 'PREMIUM'</include>
+			</condition>
+		</controls>
+		<actuator name="FOUR_EYES" />
+		<actuator name="INFOLOG" />
+	</setpoint>
 
-  <setpoint id="D3" extends="D2">
-    <controls>
- 	  <event>RELEASE_DELETE</event>
-	</controls>
-	<actuator name="SPRINGSECURITY_PREMIUMOFFICER"/>
-	<actuator name="ARCHIVE"/>
-  </setpoint>
+	<setpoint id="D1" extends="D">
+		<controls>
+			<condition>
+				<include>Customer.getCategory() == 'PREMIUM'</include>
+			</condition>
+		</controls>
+		<actuator name="SPRINGSECURITY_PREMIUMOFFICER" />
+		<actuator name="FOUR_EYES" />
+		<actuator name="INFOLOG" />
+	</setpoint>
 
-  <setpoint id="D4" extends="D">
-    <controls>
-	  <event>UPDATE</event>
-	  <stateChange exclude="true">account, category</stateChange>
-  	  <condition></condition>
-	</controls>
-	<actuator name="SPRINGSECURITY_NORMALUSER"/>
-	<actuator name="ARCHIVE"/>
-  </setpoint>
+	<setpoint id="D2" extends="D">
+		<controls>
+			<event>
+				<include>RELEASE_INSERT</include>
+			</event>
+			<condition></condition>
+		</controls>
+		<actuator name="SPRINGSECURITY_RELEASER" />
+		<actuator name="ARCHIVE" />
+	</setpoint>
 
-  <setpoint id="D5" extends="D2">
-    <controls>
- 	  <event>UPDATE, REJECT_UPDATE</event>
- 	  <stateChange>account, category</stateChange>
-	</controls>
-	<actuator name="SPRINGSECURITY_PREMIUMOFFICER"/>
-	<actuator name="FOUR_EYES"/>                                   
-  </setpoint>
+	<setpoint id="D3" extends="D2">
+		<controls>
+			<event>
+				<include>RELEASE_DELETE</include>
+			</event>
+		</controls>
+		<actuator name="SPRINGSECURITY_PREMIUMOFFICER" />
+		<actuator name="ARCHIVE" />
+	</setpoint>
 
-  <setpoint id="D6" extends="D5">
-    <controls>
- 	  <event>RELEASE_UPDATE</event>
-	</controls>
-	<actuator name="SPRINGSECURITY_RELEASER"/>
-	<actuator name="ARCHIVE"/>
-  </setpoint>
+	<setpoint id="D4" extends="D">
+		<controls>
+			<event>
+				<include>UPDATE</include>
+			</event>
+			<stateChange>
+				<exclude>account, category</exclude>
+			</stateChange>
+			<condition></condition>
+		</controls>
+		<actuator name="SPRINGSECURITY_NORMALUSER" />
+		<actuator name="ARCHIVE" />
+	</setpoint>
 
-  <setpoint id="D7">
-    <controls>
-	  <event>RESTORE</event>
-	</controls>
-	<actuator name="SPRINGSECURITY_PREMIUMOFFICER"/>
-	<actuator name="FOUR_EYES"/>                                   
-	<actuator name="ARCHIVE"/>
-  </setpoint>
+	<setpoint id="D5" extends="D2">
+		<controls>
+			<event>
+				<include>UPDATE, REJECT_UPDATE</include>
+			</event>
+			<stateChange>
+				<include>account, category</include>
+			</stateChange>
+		</controls>
+		<actuator name="SPRINGSECURITY_PREMIUMOFFICER" />
+		<actuator name="FOUR_EYES" />
+	</setpoint>
+
+	<setpoint id="D6" extends="D5">
+		<controls>
+			<event>
+				<include>RELEASE_UPDATE</include>
+			</event>
+		</controls>
+		<actuator name="SPRINGSECURITY_RELEASER" />
+		<actuator name="ARCHIVE" />
+	</setpoint>
+
+	<setpoint id="D7">
+		<controls>
+			<event>
+				<include>RESTORE</include>
+			</event>
+		</controls>
+		<actuator name="SPRINGSECURITY_PREMIUMOFFICER" />
+		<actuator name="FOUR_EYES" />
+		<actuator name="ARCHIVE" />
+	</setpoint>
 
 </cibet>   

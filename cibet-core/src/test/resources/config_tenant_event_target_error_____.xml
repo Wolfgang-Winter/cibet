@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="targetError">
+
+	<setpoint id="XXFehler">
+		<controls>
+			<tenant>
+				<include>other</include>
+			</tenant>
+<!-- 			<target>"Hastela, VV " , com.logitags.cibet.Nix, com.cibethelper.entities.TE;" \"Hase""</target> -->
+			<target>
+				<include>"Hastela, VV " , com.logitags.cibet.Nix, com.cibethelper.entities.TE;" \"Hase""</include>
+			</target>
+		</controls>
+		<actuator name="ARCHIVE"/>
+	</setpoint>
+
+</cibet>   

@@ -12,11 +12,8 @@
 package com.logitags.cibet.control;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
@@ -38,25 +35,6 @@ public class MethodControlTest extends CoreTestBase {
 
    private static Logger log = Logger.getLogger(MethodControlTest.class);
 
-   private List<Setpoint> evaluate(EventMetadata md, List<Setpoint> spoints) {
-      Control eval = new MethodControl();
-      List<Setpoint> list = new ArrayList<Setpoint>();
-      for (Setpoint spi : spoints) {
-         Map<String, Object> controlValues = new TreeMap<String, Object>(new ControlComparator());
-         spi.getEffectiveControlValues(controlValues);
-         Object value = controlValues.get("method");
-         if (value == null) {
-            list.add(spi);
-         } else {
-            boolean okay = eval.evaluate(value, md);
-            if (okay) {
-               list.add(spi);
-            }
-         }
-      }
-      return list;
-   }
-
    @Test
    public void evaluateNoMethod() throws Exception {
       log.info("start evaluateNoMethod()");
@@ -64,7 +42,7 @@ public class MethodControlTest extends CoreTestBase {
 
       MethodResource res = new MethodResource("classname", (Method) null, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new MethodControl());
       Assert.assertEquals(4, list.size());
    }
 
@@ -76,7 +54,7 @@ public class MethodControlTest extends CoreTestBase {
       Method m = String.class.getDeclaredMethod("getBytes");
       MethodResource res = new MethodResource("classname", m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new MethodControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
    }
@@ -91,7 +69,7 @@ public class MethodControlTest extends CoreTestBase {
       paramList.add(new ResourceParameter("PARAM0", int.class.getName(), 4, ParameterType.METHOD_PARAMETER, 1));
       MethodResource res = new MethodResource("classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new MethodControl());
       Assert.assertEquals(2, list.size());
       Assert.assertEquals("A", list.get(0).getId());
       Assert.assertEquals("C", list.get(1).getId());
@@ -105,7 +83,7 @@ public class MethodControlTest extends CoreTestBase {
       Method m = String.class.getDeclaredMethod("getBytes");
       MethodResource res = new MethodResource("Classname", m, null);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new MethodControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
    }
@@ -122,7 +100,7 @@ public class MethodControlTest extends CoreTestBase {
 
       MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new MethodControl());
       Assert.assertEquals(1, list.size());
    }
 
@@ -138,7 +116,7 @@ public class MethodControlTest extends CoreTestBase {
             ParameterType.METHOD_PARAMETER, 2));
       MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new MethodControl());
       Assert.assertEquals(0, list.size());
    }
 
@@ -155,7 +133,7 @@ public class MethodControlTest extends CoreTestBase {
             new ResourceParameter("PARAM2", TEntity.class.getName(), new TEntity(), ParameterType.METHOD_PARAMETER, 3));
       MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new MethodControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("C", list.get(0).getId());
    }
@@ -174,7 +152,7 @@ public class MethodControlTest extends CoreTestBase {
             new ResourceParameter("PARAM2", TEntity.class.getName(), new TEntity(), ParameterType.METHOD_PARAMETER, 3));
       MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new MethodControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("C", list.get(0).getId());
    }
@@ -191,7 +169,7 @@ public class MethodControlTest extends CoreTestBase {
             ParameterType.METHOD_PARAMETER, 2));
       MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new MethodControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("C", list.get(0).getId());
    }
@@ -208,7 +186,7 @@ public class MethodControlTest extends CoreTestBase {
             ParameterType.METHOD_PARAMETER, 2));
       MethodResource res = new MethodResource("Classname", m, paramList);
       EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new MethodControl());
       Assert.assertEquals(0, list.size());
    }
 
@@ -256,4 +234,15 @@ public class MethodControlTest extends CoreTestBase {
       Assert.assertTrue("com.logitags.cibet.util.TEntity".equals(clazz));
    }
 
+   @Test
+   public void evaluateExclude() throws Exception {
+      log.info("start evaluateExclude()");
+      initConfiguration("cibet-config-exclude.xml");
+
+      Method m = String.class.getDeclaredMethod("getBytes");
+      MethodResource res = new MethodResource("classname", m, null);
+      EventMetadata md = new EventMetadata(ControlEvent.INVOKE, res);
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new MethodControl());
+      Assert.assertEquals(1, list.size());
+   }
 }

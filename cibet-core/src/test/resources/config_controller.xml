@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.0.xsd">
+	xsi:schemaLocation="http://www.logitags.com ../../main/resources/cibet-config_1.4.xsd"
+	name="controller">
 
 <!-- 
 	xsi:schemaLocation="http://www.logitags.com cibet-config.xsd">  -->
@@ -29,76 +29,101 @@
 
 	<setpoint id="A">
 		<controls>
-			<tenant>ten1</tenant>
-			<event>INSERT, DELETE</event>
-			<target>com.cibethelper.entities.TEntity,
-				com.cibethelper.entities.TComplexEntity</target>
-			<stateChange>nixxi, counter,countValue</stateChange>
+			<tenant>
+				<include>ten1</include>
+			</tenant>
+			<event>
+				<include>INSERT, DELETE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+				<include>com.cibethelper.entities.TComplexEntity</include>
+			</target>
+			<stateChange>
+				<include>nixxi</include>
+				<include>counter</include>
+				<include>countValue</include>
+			</stateChange>
 		</controls>
 		<actuator name="INFOLOG"/>
 	</setpoint>
 
 	<setpoint id="A2" >
 		<controls>
-			<tenant>ten2</tenant>
-			<event>INSERT, DELETE, UPDATE</event>
-			<target>com.cibethelper.entities.TEntity,
-				com.cibethelper.entities.TComplexEntity</target>
-			<stateChange>nixxi, counter, compValue</stateChange>
+			<tenant>
+				<include>ten2</include>
+			</tenant>
+			<event>
+				<include>INSERT, DELETE, UPDATE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+				<include>com.cibethelper.entities.TComplexEntity</include>
+			</target>
+			<stateChange>
+				<include>nixxi</include>
+				<include>counter</include>
+				<include>compValue</include>
+			</stateChange>
 		</controls>
 		<actuator name="ARCH1"/>
 	</setpoint>
 
 	<setpoint id="A3">
 		<controls>
-			<tenant>ten2</tenant>
-			<event>DELETE, UPDATE</event>
-			<target>com.cibethelper.entities.TEntity,
-				com.cibethelper.entities.TComplexEntity</target>
-			<stateChange exclude="true">nixxi, counter</stateChange>
-				<!-- name>com.logitags.cibet.util.TComplexEntity</name>
-				<constraints>
-					<excludeStateChange>nixxi, compValue</excludeStateChange>
-				</constraints-->
+			<tenant>
+				<include>ten2</include>
+			</tenant>
+			<event>
+				<include>DELETE, UPDATE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+				<include>com.cibethelper.entities.TComplexEntity</include>
+			</target>
+			<stateChange>
+				<exclude>nixxi</exclude>
+				<exclude>counter</exclude>
+			</stateChange>
 		</controls>
 		<actuator name="ARCH2"/>
 	</setpoint>
 
 	<setpoint id="A4">
 		<controls>
-			<tenant>ten2</tenant>
-			<event>DELETE, UPDATE</event>
-			<target>com.cibethelper.entities.TEntity</target>
-			<stateChange>nixxi, counter</stateChange>
-			<!-- target>
-				<name>com.logitags.cibet.util.TComplexEntity</name>
-				<constraints>
-					<excludeStateChange>nixxi, compValue</excludeStateChange>
-					<excludeInvoker>**</excludeInvoker>
-				</constraints>
-			</target-->
+			<tenant>
+				<include>ten2</include>
+			</tenant>
+			<event>
+				<include>DELETE, UPDATE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+			</target>
+			<stateChange>
+				<include>nixxi</include>
+				<include>counter</include>
+			</stateChange>
 		</controls>
 		<actuator name="ARCH3"/>
 	</setpoint>
 
 	<setpoint id="C">
 		<controls>
-			<event>INVOKE</event>
-			<target>com.cibethelper.entities.TEntity</target>
-			<method>"doSomething(int, String)",
-				"doSomething(int, java.lang.String)",
-				com.cibethelper.entities.TEntity)</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+			</target>
+			<method>
+				<include>doSomething(int, String)</include>
+				<include>doSomething(int, java.lang.String)</include>
+				<include>com.cibethelper.entities.TEntity)</include>
+			</method>
 			<invoker>
-							com.logitags.cibet.*
-            </invoker>
-				<!-- method>
-					<name>doSomething(int[], java.lang.String[][])</name>
-					<constraints>
-						<excludeInvoker>
-							com.logitags.cibet.*
-                  </excludeInvoker>
-					</constraints>
-				</method-->
+				<include>com.logitags.cibet.*</include>
+         </invoker>
 		</controls>
 		<actuator name="ARCHIVE"/>
 		<actuator name="SIX_EYES"/>
@@ -106,22 +131,34 @@
 
 	<setpoint id="C1">
 		<controls>
-			<event>RELEASE</event>
-			<target>com.cibethelper.base.SingletonFactory</target>
-			<method>doSomethingxx(int, String),
-				doSomethingxx(int, java.lang.String,
-				com.cibethelper.entities.TEntity)</method>
+			<event>
+				<include>RELEASE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.base.SingletonFactory</include>
+			</target>
+			<method>
+				<include>doSomethingxx(int, String)</include>
+				<include>doSomethingxx(int, java.lang.String</include>
+				<include>com.cibethelper.entities.TEntity)</include>
+			</method>
 		</controls>
 		<actuator name="SIX_EYES"/>
 	</setpoint>
 
 	<setpoint id="C2">
 		<controls>
-			<event>RELEASE</event>
-			<target>com.cibethelper.base.SingletonFactory</target>
-			<method>"doSomethingxx(int, String)",
-				doSomethingxx(int, java.lang.String,
-				com.cibethelper.entities.TEntity)</method>
+			<event>
+				<include>RELEASE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.base.SingletonFactory</include>
+			</target>
+			<method>
+				<include>doSomethingxx(int, String)</include>
+				<include>doSomethingxx(int, java.lang.String</include>
+				<include>com.cibethelper.entities.TEntity)</include>
+			</method>
 		</controls>
 		<actuator name="SIX_EYES"/>
 	</setpoint>

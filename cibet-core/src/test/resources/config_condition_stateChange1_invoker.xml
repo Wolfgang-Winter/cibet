@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com 
-   http://www.logitags.com/cibet/cibet-config_1.3.xsd">
+	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.4.xsd"
+	name="cond_stateChange1_invoker">
 
 		<setpoint id="A">
          <controls>
-			<tenant>ten1</tenant>
-			<event>INSERT, INVOKE</event>
-            <target>*</target>
+				<tenant>
+					<include>ten1</include>
+				</tenant>
+				<event>
+					<include>INSERT, INVOKE</include>
+				</event>
+            <target>
+            	<include>*</include>
+            </target>
             <invoker>
-                  com.logitags.cibet.control.*
+               <include>com.logitags.cibet.control.*</include>
             </invoker>
-            <stateChange exclude="true">nixxi,  lazyList</stateChange>
+            <stateChange>
+            	<exclude>nixxi</exclude>
+            	<exclude>lazyList</exclude>
+            </stateChange>
             <condition>
+            	<include>
                     var DATE = java.util.Calendar.getInstance();
                     DATE.get(java.util.Calendar.YEAR) &gt;= 2003 &amp;&amp; 
                     DATE.get(java.util.Calendar.YEAR) &lt; 2010 &amp;&amp;
                     $EVENT.name().equals("INVOKE")
+               </include>
             </condition>
          </controls>
 		<actuator name="ARCHIVE"/>
@@ -24,13 +35,21 @@
 
       <setpoint id="C">
          <controls>
-         	<event>INSERT</event>
-            <target>com.cibethelper.entities.TEntity</target>
+         	<event>
+         		<include>INSERT</include>
+         	</event>
+            <target>
+            	<include>com.cibethelper.entities.TEntity</include>
+            </target>
             <invoker>
-              com.logitags.cibet.control.InvokerControlTest.evaluateInclude1()
+            	<include>com.logitags.cibet.control.InvokerControlTest.evaluateInclude1()</include>
             </invoker>
-            <stateChange exclude="true">counter, ten.counter</stateChange>
+            <stateChange>
+            	<exclude>counter</exclude>
+            	<exclude>ten.counter</exclude>
+            </stateChange>
             <condition>
+            	<include>
               var date = java.util.Calendar.getInstance();
               date.get(java.util.Calendar.YEAR) &gt;= 2003 
               &amp;&amp; date.get(java.util.Calendar.YEAR) &lt;= 2050
@@ -38,6 +57,7 @@
               &amp;&amp; $SESSIONSCOPE.getProperty("Klaus") != null 
               &amp;&amp; $SESSIONSCOPE.getProperty("Klaus").getCounter() == 7
               &amp;&amp; $SESSIONSCOPE.getProperty("Emil") == 2
+              </include>
             </condition>
          </controls>
 		<actuator name="ARCHIVE"/>

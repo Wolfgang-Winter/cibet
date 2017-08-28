@@ -14,7 +14,8 @@
  */
 package com.logitags.cibet.control;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 
@@ -39,7 +40,7 @@ import com.logitags.cibet.sensor.pojo.MethodResource;
  * <p>
  * all methods: *
  */
-public class MethodControl extends AbstractControl {
+public class MethodControl implements Serializable, Control {
 
    /**
     * 
@@ -56,33 +57,15 @@ public class MethodControl extends AbstractControl {
    }
 
    @Override
-   protected void parseUnquotedValue(List<String> valueList, String configValue) {
-      log.debug("resolve method config value: " + configValue);
-      StringTokenizer tok = new StringTokenizer(configValue, ",;");
-      while (tok.hasMoreTokens()) {
-         String t = tok.nextToken().trim();
-         if (t.indexOf("(") > -1) {
-            StringBuffer b = new StringBuffer(t);
-            while (!b.toString().endsWith(")")) {
-               if (!tok.hasMoreTokens()) {
-                  String msg = "Failed to parse method control value " + configValue;
-                  log.fatal(msg);
-                  throw new RuntimeException(msg);
-               }
-               b.append(", ");
-               b.append(tok.nextToken().trim());
-            }
-            t = b.toString();
-         }
-
-         if (!valueList.contains(t)) {
-            valueList.add(t);
-         }
+   public Boolean evaluate(Set<String> values, EventMetadata metadata) {
+      if (metadata == null) {
+         String msg = "failed to execute method evaluation: metadata is null";
+         log.error(msg);
+         throw new IllegalArgumentException(msg);
       }
-   }
 
-   @Override
-   public boolean evaluate(Object controlValue, EventMetadata metadata) {
+      if (values == null || values.isEmpty()) return null;
+
       String method;
       if (metadata.getResource() instanceof MethodResource) {
          method = ((MethodResource) metadata.getResource()).getMethod();
@@ -91,67 +74,60 @@ public class MethodControl extends AbstractControl {
 
       } else {
          log.info("skip method evaluation. Not applicable for " + metadata.getResource().getClass().getSimpleName());
-         return true;
+         return null;
       }
 
       if (method == null) {
          log.info("skip method evaluation: no method name given");
-         return true;
+         return null;
       }
 
-      List<String> list = (List<String>) controlValue;
-
-      for (String spMethodName : list) {
-         if (spMethodName.length() == 0 || "*".equals(spMethodName)) {
+      for (String methodName : values) {
+         if (methodName.length() == 0 || "*".equals(methodName)) {
             // all methods
             return true;
 
-         } else if (method.equals(spMethodName)) {
+         } else if (method.equals(methodName)) {
             // all overloaded methods
             return true;
 
-         } else if (spMethodName.endsWith("*")) {
+         } else if (methodName.endsWith("*")) {
             // method wildcard
-            String pack = spMethodName.substring(0, spMethodName.length() - 1);
+            String pack = methodName.substring(0, methodName.length() - 1);
             if (method.startsWith(pack)) {
                return true;
             }
 
-         } else if (spMethodName.endsWith("()")) {
-            if (method.equals(spMethodName.substring(0, spMethodName.length() - 2))
+         } else if (methodName.endsWith("()")) {
+            if (method.equals(methodName.substring(0, methodName.length() - 2))
                   && (metadata.getResource().getParameters() == null
                         || metadata.getResource().getParameters().isEmpty())) {
                // concrete method without parameters
                return true;
             }
 
-         } else if (spMethodName.endsWith(")")) {
+         } else if (methodName.endsWith(")")) {
             // concrete method with parameters
-            int index = spMethodName.indexOf("(");
+            int index = methodName.indexOf("(");
             if (index < 0) {
-               String msg = "failed to execute method evaluation: " + "Setpoint method name '" + spMethodName
+               String msg = "failed to execute method evaluation: " + "Setpoint method name '" + methodName
                      + "' is invalid.";
                log.error(msg);
                throw new RuntimeException(msg);
             }
-            if (!method.equals(spMethodName.substring(0, index)))
-               continue;
+            if (!method.equals(methodName.substring(0, index))) continue;
             // check parameters
-            StringTokenizer tok = new StringTokenizer(spMethodName.substring(index + 1, spMethodName.length() - 1),
-                  ",");
-            // if (tok.countTokens() != metadata.getResource().getParameters().size()) continue;
+            StringTokenizer tok = new StringTokenizer(methodName.substring(index + 1, methodName.length() - 1), ",");
             boolean isEqual = true;
             for (ResourceParameter param : metadata.getResource().getParameters()) {
-               if (param.getParameterType() != ParameterType.METHOD_PARAMETER)
-                  continue;
+               if (param.getParameterType() != ParameterType.METHOD_PARAMETER) continue;
                if (!tok.hasMoreElements()) {
                   isEqual = false;
                   break;
                }
 
                String intClassName = internalClassNameForName(tok.nextToken().trim());
-               log.debug("intClassName:" + intClassName);
-               log.debug("param.getUnencodedValue().getClass().getCanonicalName(): "
+               log.debug("intClassName: " + intClassName + ", param.getUnencodedValue().getClass().getCanonicalName(): "
                      + param.getUnencodedValue().getClass().getCanonicalName());
                if (!param.getUnencodedValue().getClass().getCanonicalName().equals(intClassName)) {
                   isEqual = false;
@@ -159,7 +135,7 @@ public class MethodControl extends AbstractControl {
                }
             }
             if (tok.hasMoreElements()) {
-               return false;
+               isEqual = false;
             }
             if (isEqual) {
                return true;

@@ -35,11 +35,11 @@ import org.apache.commons.logging.LogFactory;
 import com.logitags.cibet.actuator.common.Actuator;
 import com.logitags.cibet.authentication.AuthenticationProvider;
 import com.logitags.cibet.authentication.IPAuthenticationProvider;
-import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.CibetContextFilter;
 import com.logitags.cibet.context.CibetEEContext;
 import com.logitags.cibet.context.CibetEEContextEJB;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.control.Controller;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.EventMetadata;
@@ -116,7 +116,7 @@ public class CibetFilter extends CibetContextFilter implements Filter {
          }
 
          metadata = createEventMetadata(request, response);
-         Configuration.instance().getController().evaluate(metadata);
+         Controller.evaluate(metadata);
          thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
          CibetEEContext ejb = null;
