@@ -440,13 +440,9 @@ public class CibetTestEJB {
    }
 
    protected Setpoint registerSetpoint(String clazz, String act, ControlEvent... events) {
-      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()), null);
-      sp.setTarget(clazz);
-      List<String> evl = new ArrayList<String>();
-      for (ControlEvent ce : events) {
-         evl.add(ce.name());
-      }
-      sp.setEvent(evl.toArray(new String[0]));
+      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()));
+      sp.addTargetIncludes(clazz);
+      sp.addEventIncludes(events);
       Configuration cman = Configuration.instance();
       sp.addActuator(cman.getActuator(act));
       cman.registerSetpoint(sp);

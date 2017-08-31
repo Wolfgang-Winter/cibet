@@ -27,7 +27,6 @@ package com.cibethelper.ejb;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -95,15 +94,11 @@ public class JdbcEjb implements JdbcEjbInterface {
    }
 
    public String registerSetpoint(String clazz, List<String> acts, ControlEvent... events) {
-      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()), null);
+      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()));
       if (clazz != null) {
-         sp.setTarget(clazz);
+         sp.addTargetIncludes(clazz);
       }
-      List<String> evl = new ArrayList<String>();
-      for (ControlEvent ce : events) {
-         evl.add(ce.name());
-      }
-      sp.setEvent(evl.toArray(new String[0]));
+      sp.addEventIncludes(events);
       Configuration cman = Configuration.instance();
       for (String scheme : acts) {
          sp.addActuator(cman.getActuator(scheme));
