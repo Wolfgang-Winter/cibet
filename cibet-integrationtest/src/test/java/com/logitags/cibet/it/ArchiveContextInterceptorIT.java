@@ -135,7 +135,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
    public void afterArchiveContextInterceptorIT() {
       Context.end();
       if (sp != null) {
-         cman.unregisterSetpoint(sp.getId());
+         cman.unregisterSetpoint(null, sp.getId());
       }
    }
 
@@ -844,9 +844,9 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
 
          List<Archive> list3 = ArchiveLoader.loadArchives(TComplexEntity.class.getName());
          Assert.assertEquals(4, list3.size());
-         cman.unregisterSetpoint(sp2.getId());
+         cman.unregisterSetpoint(null, sp2.getId());
       } finally {
-         cman.unregisterSetpoint(sp2.getId());
+         cman.unregisterSetpoint(null, sp2.getId());
       }
    }
 
@@ -907,9 +907,9 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
          Controllable dcObj = dcList.get(0);
          Assert.assertEquals(list.get(2).getCaseId(), dcObj.getCaseId());
          Assert.assertEquals(ControlEvent.UPDATE, dcObj.getControlEvent());
-         cman.unregisterSetpoint(sp2.getId());
+         cman.unregisterSetpoint(null, sp2.getId());
       } finally {
-         cman.unregisterSetpoint(sp2.getId());
+         cman.unregisterSetpoint(null, sp2.getId());
       }
    }
 

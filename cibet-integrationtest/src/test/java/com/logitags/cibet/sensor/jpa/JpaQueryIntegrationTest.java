@@ -60,14 +60,14 @@ public class JpaQueryIntegrationTest extends DBHelper {
    @After
    public void afterJpaQueryIntegrationTest() {
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
    }
 
    @Test
    public void namedQuery() throws ResourceApplyException {
       log.info("start namedQuery()");
-      sp = registerSetpoint(TEntity.SEL_BY_OWNER, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE);
+      sp = registerSetpoint(TEntity.SEL_BY_OWNER, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT);
 
       persistTEntity();
 
@@ -100,7 +100,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void query() throws ResourceApplyException {
       log.info("start query()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = :owner AND a.xdate = :today";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT);
 
       Date now = new Date();
       persistTEntity(5, now, null);
@@ -136,7 +136,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void queryExecuteUpdate() throws ResourceApplyException {
       log.info("start queryExecuteUpdate()");
       String qq = "DELETE FROM TEntity a WHERE a.owner = :owner AND a.xCaltimestamp = :today";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.UPDATEQUERY);
 
       Date now = new Date();
       Calendar cal = Calendar.getInstance();
@@ -170,7 +170,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       log.info("start queryMaxResult()");
       String qq1 = "SELECT a FROM TEntity a WHERE a.owner = :owner AND a.xCaldate = :today order by a.counter";
       String qq = "SELECT a FROM TEntity a*";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT);
 
       Date now = new Date();
       Calendar cal = Calendar.getInstance();
@@ -214,7 +214,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
       log.info("start queryLockDate()");
       String qq1 = "SELECT a FROM TComplexEntity a WHERE a.owner = :owner order by a.compValue";
       String qq = "SELECT a FROM TComplexEntity a*";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT);
 
       for (int i = 0; i < 50; i++) {
          TComplexEntity tc = createTComplexEntity();
@@ -260,7 +260,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void queryNamedTimestampDate() throws ResourceApplyException {
       log.info("start queryNamedTimestampDate()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = ?1 AND a.xtimestamp = ?2";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT);
 
       Date now = new Date();
       persistTEntity(5, now, null);
@@ -296,7 +296,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void queryNamedTimeDate() throws ResourceApplyException {
       log.info("start queryNamedTimeDate()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = ?1 AND a.xtime = ?2";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT);
 
       Date now = new Date();
       persistTEntity(5, now, null);
@@ -332,7 +332,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void queryNamedDate() throws ResourceApplyException {
       log.info("start queryNamedDate()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = ?1 AND a.xdate = ?2";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT);
 
       Date now = new Date();
       persistTEntity(5, now, null);
@@ -368,7 +368,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void queryNamedCalDate() throws Exception {
       log.info("start queryNamedCalDate()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = ?1 AND a.xCaldate = ?2";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT);
 
       Date now = new Date();
       Calendar cal = Calendar.getInstance();
@@ -410,7 +410,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void queryNamedCalTimestamp() throws ResourceApplyException {
       log.info("start queryNamedCalTimestamp()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = ?1 AND a.xCaltimestamp = ?2";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT);
 
       Date now = new Date();
       Calendar cal = Calendar.getInstance();
@@ -447,7 +447,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void namedTypedQuery() throws ResourceApplyException {
       log.info("start namedTypedQuery()");
 
-      sp = registerSetpoint(TEntity.SEL_BY_OWNER, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.REDO);
+      sp = registerSetpoint(TEntity.SEL_BY_OWNER, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT, ControlEvent.REDO);
 
       persistTEntity();
 
@@ -483,7 +483,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void nativeQuery() throws ResourceApplyException {
       log.info("start nativeQuery()");
       String qq = "select COUNTER from CIB_TESTENTITY WHERE OWNER = ?1";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.REDO);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT, ControlEvent.REDO);
 
       persistTEntity();
 
@@ -532,7 +532,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void nativeTypedQuery() throws ResourceApplyException {
       log.info("start nativeTypedQuery()");
       String qq = "select * from CIB_TESTENTITY WHERE OWNER = ?1";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.REDO);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT, ControlEvent.REDO);
 
       persistTEntity();
 
@@ -568,7 +568,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void nativeMappedQuery() throws ResourceApplyException {
       log.info("start nativeMappedQuery()");
       String qq = "select COUNTER AS mapped_counter, OWNER AS mapped_owner from CIB_TESTENTITY WHERE OWNER = ?1";
-      sp = registerSetpoint("\"" + qq + "\"", ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.REDO);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT, ControlEvent.REDO);
 
       persistTEntity();
 
@@ -626,7 +626,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void typedQuery() throws ResourceApplyException {
       log.info("start typedQuery()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = :owner";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.REDO);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT, ControlEvent.REDO);
 
       persistTEntity();
 
@@ -662,7 +662,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void typedQuery4Eyes() throws ResourceApplyException {
       log.info("start typedQuery4Eyes()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = :owner";
-      sp = registerSetpoint(qq, FourEyesActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.RELEASE);
+      sp = registerSetpoint(qq, FourEyesActuator.DEFAULTNAME, ControlEvent.SELECT, ControlEvent.RELEASE);
 
       persistTEntity();
 
@@ -692,7 +692,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void typedQuery4EyesSingleResult() throws ResourceApplyException {
       log.info("start typedQuery4EyesSingleResult()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = :owner";
-      sp = registerSetpoint(qq, FourEyesActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.RELEASE);
+      sp = registerSetpoint(qq, FourEyesActuator.DEFAULTNAME, ControlEvent.SELECT, ControlEvent.RELEASE);
 
       persistTEntity();
 
@@ -725,7 +725,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void typedQuery4EyesNoSingleResult() throws ResourceApplyException {
       log.info("start typedQuery4EyesNoSingleResult()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = :owner";
-      sp = registerSetpoint(qq, FourEyesActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.RELEASE);
+      sp = registerSetpoint(qq, FourEyesActuator.DEFAULTNAME, ControlEvent.SELECT, ControlEvent.RELEASE);
 
       TypedQuery<TEntity> q = applEman.createQuery(qq, TEntity.class);
       q.setParameter("owner", TENANT);
@@ -755,7 +755,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void typedQuery4EyesMultiSingleResult() throws ResourceApplyException {
       log.info("start typedQuery4EyesMultiSingleResult()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = :owner";
-      sp = registerSetpoint(qq, FourEyesActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.RELEASE);
+      sp = registerSetpoint(qq, FourEyesActuator.DEFAULTNAME, ControlEvent.SELECT, ControlEvent.RELEASE);
 
       persistTEntity();
       persistTEntity();
@@ -788,7 +788,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void queryResultListWithException() throws ResourceApplyException {
       log.info("start queryResultListWithException()");
       String qq = "DELETE FROM TEntity a WHERE a.owner = :owner";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.REDO);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT, ControlEvent.REDO);
 
       Query q = applEman.createQuery(qq);
       q.setParameter("owner", "nonexistant");
@@ -823,7 +823,7 @@ public class JpaQueryIntegrationTest extends DBHelper {
    public void querySingleWithException() throws ResourceApplyException {
       log.info("start querySingleWithException()");
       String qq = "SELECT a FROM TEntity a WHERE a.owner = :owner";
-      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.INVOKE, ControlEvent.REDO);
+      sp = registerSetpoint(qq, ArchiveActuator.DEFAULTNAME, ControlEvent.SELECT, ControlEvent.REDO);
 
       Query q = applEman.createQuery(qq);
       q.setParameter("owner", "nonexistant");

@@ -1,136 +1,199 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.3.xsd">
+	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.4.xsd"
+	name="config-spring">
 
-   <actuator name="SCHEDULER">
-      <properties>
-         <timerStart>+8</timerStart>
-      </properties>
-   </actuator>
+	<actuator name="SCHEDULER">
+		<properties>
+			<timerStart>+8</timerStart>
+		</properties>
+	</actuator>
 
-   <actuator name="LOCAL-SCHEDULER">
-      <class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class>
-      <properties>
-         <timerStart>+10</timerStart>
-         <persistenceUnit>APPL-UNIT</persistenceUnit>
-      </properties>
-   </actuator>
+	<actuator name="LOCAL-SCHEDULER">
+		<class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class>
+		<properties>
+			<timerStart>+10</timerStart>
+			<persistenceUnit>APPL-UNIT</persistenceUnit>
+		</properties>
+	</actuator>
 
-   <actuator name="SPRINGSECURITY_PERSIST">
-      <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
-      <properties>
-         <preAuthorize>hasRole("persister")</preAuthorize>
-      </properties>
-   </actuator>
-   
-   <actuator name="SPRINGSECURITY_RELEASE">
-      <class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
-      <properties>
-         <preAuthorize>hasRole("releaser")</preAuthorize>
-      </properties>
-   </actuator>
+	<actuator name="SPRINGSECURITY_PERSIST">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<properties>
+			<preAuthorize>hasRole("persister")</preAuthorize>
+		</properties>
+	</actuator>
 
-   <actuator name="LOCKER">
-      <properties>
-         <throwDeniedException>true</throwDeniedException>
-      </properties>
-   </actuator>
+	<actuator name="SPRINGSECURITY_RELEASE">
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<properties>
+			<preAuthorize>hasRole("releaser")</preAuthorize>
+		</properties>
+	</actuator>
 
-   <setpoint id="setpoint-1">
-      <controls>
-         <event>INSERT, DELETE, UPDATE</event>
-         <target>com.logitags.cibet.tutorial.Person, com.logitags.cibet.tutorial.Address</target>
-         <invoker>com.logitags.cibet.tutorial.TutorialServlet1.persist</invoker>
-      </controls>
-      <actuator name="ARCHIVE"/>
-   </setpoint>
+	<actuator name="LOCKER">
+		<properties>
+			<throwDeniedException>true</throwDeniedException>
+		</properties>
+	</actuator>
 
-   <setpoint id="setpoint-2">
-      <controls>
-         <event>INVOKE</event>
-         <target>http://localhost:8788/Tutorial2/ca*</target>
-      </controls>
-      <actuator name="ARCHIVE"/>
-   </setpoint>
+	<setpoint id="setpoint-1">
+		<controls>
+			<event>
+				<include>INSERT, DELETE, UPDATE</include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.tutorial.Person</include>
+				<include>com.logitags.cibet.tutorial.Address</include>
+			</target>
+			<invoker>
+				<include>com.logitags.cibet.tutorial.TutorialServlet1.persist</include>
+			</invoker>
+		</controls>
+		<actuator name="ARCHIVE" />
+	</setpoint>
 
-   <setpoint id="setpoint-3">
-      <controls>
-         <event>INVOKE</event>
-         <target>com.logitags.cibet.tutorial.TutorialServlet2</target>
-         <method>changeConfig</method>
-      </controls>
-      <actuator name="FOUR_EYES"/>
-   </setpoint>
+	<setpoint id="setpoint-2">
+		<controls>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/Tutorial2/ca*</include>
+			</target>
+		</controls>
+		<actuator name="ARCHIVE" />
+	</setpoint>
 
-   <setpoint id="setpoint-4">
-      <controls>
-         <event>INVOKE</event>
-         <target>http://localhost:8788/Tutorial2/secured</target>
-      </controls>
-      <actuator name="FOUR_EYES"/>
-   </setpoint>
+	<setpoint id="setpoint-3">
+		<controls>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.tutorial.TutorialServlet2</include>
+			</target>
+			<method>
+				<include>changeConfig</include>
+			</method>
+		</controls>
+		<actuator name="FOUR_EYES" />
+	</setpoint>
 
-   <setpoint id="setpoint-5">
-      <controls>
-         <event>UPDATE</event>
-         <target>com.logitags.cibet.tutorial.Person</target>
-         <stateChange>name</stateChange>
-      </controls>
-      <actuator name="TWO_MAN_RULE"/>
-   </setpoint>
+	<setpoint id="setpoint-4">
+		<controls>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/Tutorial2/secured</include>
+			</target>
+		</controls>
+		<actuator name="FOUR_EYES" />
+	</setpoint>
 
-   <setpoint id="setpoint-6">
-      <controls>
-         <event>INVOKE</event>
-         <target>com.logitags.cibet.tutorial.SimpleRemoteEjbImpl</target>
-         <method>writeString(String)</method>
-      </controls>
-      <actuator name="SCHEDULER"/>
-   </setpoint>
+	<setpoint id="setpoint-5">
+		<controls>
+			<event>
+				<include>UPDATE</include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.tutorial.Person</include>
+			</target>
+			<stateChange>
+				<include>name</include>
+			</stateChange>
+		</controls>
+		<actuator name="TWO_MAN_RULE" />
+	</setpoint>
 
-   <setpoint id="setpoint-8">
-      <controls>
-         <event>INSERT</event>
-         <target>com.logitags.cibet.tutorial.Person, com.logitags.cibet.tutorial.Address</target>
-         <invoker>com.logitags.cibet.tutorial.TutorialServlet5.persist()</invoker>
-      </controls>
-      <actuator name="LOCAL-SCHEDULER"/>
-   </setpoint>
+	<setpoint id="setpoint-6">
+		<controls>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.tutorial.SimpleRemoteEjbImpl</include>
+			</target>
+			<method>
+				<include>writeString(String)</include>
+			</method>
+		</controls>
+		<actuator name="SCHEDULER" />
+	</setpoint>
 
-   <setpoint id="setpoint-9">
-      <controls>
-         <event>INSERT</event>
-         <target>com.logitags.cibet.tutorial.Person</target>
-         <tenant>SpringTest</tenant>
-      </controls>
-      <actuator name="FOUR_EYES"/>
-      <actuator name="SPRINGSECURITY_PERSIST"/>
-   </setpoint>
+	<setpoint id="setpoint-8">
+		<controls>
+			<event>
+				<include>INSERT</include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.tutorial.Person</include>
+				<include>com.logitags.cibet.tutorial.Address</include>
+			</target>
+			<invoker>
+				<include>com.logitags.cibet.tutorial.TutorialServlet5.persist()</include>
+			</invoker>
+		</controls>
+		<actuator name="LOCAL-SCHEDULER" />
+	</setpoint>
 
-   <setpoint id="setpoint-10" extends="setpoint-9">
-      <controls>
-         <event>RELEASE</event>
-      </controls>
-      <actuator name="SPRINGSECURITY_RELEASE"/>
-   </setpoint>
+	<setpoint id="setpoint-9">
+		<controls>
+			<event>
+				<include>INSERT</include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.tutorial.Person</include>
+			</target>
+			<tenant>
+				<include>SpringTest</include>
+			</tenant>
+		</controls>
+		<actuator name="FOUR_EYES" />
+		<actuator name="SPRINGSECURITY_PERSIST" />
+	</setpoint>
 
-   <setpoint id="setpoint-11">
-      <controls>
-         <event>SELECT</event>
-         <target>com.logitags.cibet.tutorial.Person</target>
-         <tenant>LockTest</tenant>
-      </controls>
-      <actuator name="LOCKER"/>
-   </setpoint>
+	<setpoint id="setpoint-10" extends="setpoint-9">
+		<controls>
+			<event>
+				<include>RELEASE</include>
+			</event>
+		</controls>
+		<actuator name="SPRINGSECURITY_RELEASE" />
+	</setpoint>
 
-   <setpoint id="setpoint-12">
-      <controls>
-         <event>INVOKE</event>
-         <target>com.logitags.cibet.tutorial.TutorialServlet1</target>
-         <method>persist</method>
-         <tenant>LockTest</tenant>
-      </controls>
-      <actuator name="LOCKER"/>
-   </setpoint>
+	<setpoint id="setpoint-11">
+		<controls>
+			<event>
+				<include>SELECT</include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.tutorial.Person</include>
+			</target>
+			<tenant>
+				<include>LockTest</include>
+			</tenant>
+		</controls>
+		<actuator name="LOCKER" />
+	</setpoint>
+
+	<setpoint id="setpoint-12">
+		<controls>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.tutorial.TutorialServlet1</include>
+			</target>
+			<method>
+				<include>persist</include>
+			</method>
+			<tenant>
+				<include>LockTest</include>
+			</tenant>
+		</controls>
+		<actuator name="LOCKER" />
+	</setpoint>
 
 </cibet>   

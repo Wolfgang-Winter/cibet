@@ -69,7 +69,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
    @After
    public void afterCibetAspectIntegrationTest() {
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
    }
 
@@ -624,7 +624,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       }
       Context.sessionScope().setSecondUser(null);
       Context.sessionScope().setProperty(InternalSessionScope.SECOND_PRINCIPAL, null);
-      Configuration.instance().unregisterSetpoint(sp2.getId());
+      Configuration.instance().unregisterSetpoint(null, sp2.getId());
    }
 
    @Test
@@ -672,7 +672,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       }
       Context.sessionScope().setSecondUser(null);
       Context.sessionScope().setProperty(InternalSessionScope.SECOND_PRINCIPAL, null);
-      Configuration.instance().unregisterSetpoint(sp2.getId());
+      Configuration.instance().unregisterSetpoint(null, sp2.getId());
    }
 
    @Test(expected = NoResultException.class)
@@ -690,12 +690,12 @@ public class CibetAspectIntegrationTest extends DBHelper {
       q.getSingleResult();
    }
 
-   // @Ignore
    @Test
    public void invokeMethodInterceptor() {
       log.info("start invokeMethodInterceptor");
-      sp = registerSetpoint(AspectInvokeTestClass.class, ArchiveActuator.DEFAULTNAME,
-            "callWithAspect, callWithoutAspect", ControlEvent.INVOKE);
+      sp = registerSetpoint(AspectInvokeTestClass.class, ArchiveActuator.DEFAULTNAME, "callWithAspect",
+            ControlEvent.INVOKE);
+      sp.addMethodIncludes("callWithoutAspect");
 
       AspectInvokeTestClass ent1 = new AspectInvokeTestClass();
       String answer = ent1.callWithAspect("Hello!");

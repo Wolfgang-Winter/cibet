@@ -59,7 +59,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
    @After
    public void afterJpa1Archive2ManRuleIntegrationTest() {
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
    }
 

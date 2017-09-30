@@ -51,8 +51,7 @@ public class ControllerImplIntegrationTest extends DBHelper {
 
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      Controller ev = new Controller();
-      ev.evaluate(md);
+      Controller.evaluate(md);
       Assert.assertEquals(0, md.getActuators().size());
    }
 
@@ -65,8 +64,7 @@ public class ControllerImplIntegrationTest extends DBHelper {
 
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
-      Controller ev = new Controller();
-      ev.evaluate(md);
+      Controller.evaluate(md);
       Assert.assertEquals(1, md.getActuators().size());
       Assert.assertEquals("INFOLOG", md.getActuators().get(0).getName());
    }
@@ -86,8 +84,7 @@ public class ControllerImplIntegrationTest extends DBHelper {
       Context.sessionScope().setTenant("ten2|x");
       JpaResource res = new JpaResource(cte);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      Controller ev = new Controller();
-      ev.evaluate(md);
+      Controller.evaluate(md);
       Assert.assertEquals(1, md.getActuators().size());
       ArchiveActuator act = (ArchiveActuator) md.getActuators().get(0);
       Assert.assertEquals("ARCH2", act.getName());
@@ -106,8 +103,7 @@ public class ControllerImplIntegrationTest extends DBHelper {
 
       JpaResource res = new JpaResource(cte2);
       EventMetadata md = new EventMetadata(ControlEvent.INSERT, res);
-      Controller ev = new Controller();
-      ev.evaluate(md);
+      Controller.evaluate(md);
       Assert.assertEquals(1, md.getActuators().size());
       Assert.assertEquals("INFOLOG", md.getActuators().get(0).getName());
    }
@@ -130,8 +126,7 @@ public class ControllerImplIntegrationTest extends DBHelper {
       Context.sessionScope().setTenant("ten2|x|cc");
       JpaResource res = new JpaResource(cte2);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      Controller ev = new Controller();
-      ev.evaluate(md);
+      Controller.evaluate(md);
       Assert.assertEquals(1, md.getActuators().size());
       ArchiveActuator act = (ArchiveActuator) md.getActuators().get(0);
       Assert.assertEquals("ARCH2", act.getName());

@@ -109,7 +109,7 @@ public class ChainedActuatorIT extends AbstractArquillian {
    public void afterChainedActuatorIT() {
       Context.end();
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
    }
 
@@ -201,7 +201,7 @@ public class ChainedActuatorIT extends AbstractArquillian {
       Assert.assertEquals(ControlEvent.INVOKE, ar2.getControlEvent());
       Assert.assertEquals("insertTComplexEntity", res2.getMethod());
 
-      Configuration.instance().unregisterSetpoint(sp2.getId());
+      Configuration.instance().unregisterSetpoint(null, sp2.getId());
    }
 
    @Test
@@ -317,8 +317,8 @@ public class ChainedActuatorIT extends AbstractArquillian {
       List<Controllable> dcs = ejb.queryControllable();
       Assert.assertEquals(1, dcs.size());
 
-      Configuration.instance().unregisterSetpoint(sp2.getId());
-      Configuration.instance().unregisterSetpoint(sp3.getId());
+      Configuration.instance().unregisterSetpoint(null, sp2.getId());
+      Configuration.instance().unregisterSetpoint(null, sp3.getId());
    }
 
 }

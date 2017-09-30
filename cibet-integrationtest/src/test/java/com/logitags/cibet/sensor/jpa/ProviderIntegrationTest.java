@@ -53,7 +53,7 @@ public class ProviderIntegrationTest extends DBHelper {
    @After
    public void afterProviderIntegrationTest() {
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
    }
 

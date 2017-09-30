@@ -6,6 +6,8 @@ Version 2.1
   
   * new ControlEvent type UPDATEQUERY
   
+  * use event SELECT instead of INVOKE for JPA select queries
+  
   * cibet-config xsd refactured. Use include and exclude in controls
   
   * naming of cibet-configs to prevent overriding of setpoints in different files  

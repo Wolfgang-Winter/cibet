@@ -209,7 +209,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       }
       Assert.assertEquals(5, count);
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -246,7 +246,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
       Assert.assertEquals(UPDATE, CibetUtil.decode(rs.getBytes("TARGETOBJECT")));
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -280,7 +280,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals("cib_testentity", rs.getString("TARGET"));
       Assert.assertEquals(DELETE, CibetUtil.decode(rs.getBytes("TARGETOBJECT")));
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -325,7 +325,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertTrue(rs.next());
       Assert.assertEquals(5L, rs.getLong(1));
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -377,7 +377,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals("Röschen", rs.getString(1));
       Assert.assertEquals(99, rs.getLong(2));
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -423,7 +423,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       rs = query("select namevalue, counter from cib_testentity where id=5");
       Assert.assertTrue(!rs.next());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -457,7 +457,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.INSERT, dcOb.getControlEvent());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -491,7 +491,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -538,7 +538,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -574,7 +574,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.DELETE, dcOb.getControlEvent());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -608,7 +608,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -657,7 +657,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -691,7 +691,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Controllable dcOb = list1.get(0);
       Assert.assertEquals(ControlEvent.UPDATE, dcOb.getControlEvent());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -726,7 +726,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -778,7 +778,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test(expected = DeniedException.class)
@@ -817,8 +817,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
          insert(1);
 
       } finally {
-         Configuration.instance().unregisterSetpoint(sp.getId());
-         Configuration.instance().unregisterSetpoint(sp2.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp2.getId());
       }
    }
 
@@ -865,8 +865,8 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
-      Configuration.instance().unregisterSetpoint(sp2.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp2.getId());
    }
 
    @Test
@@ -936,7 +936,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       rs = query("select namevalue, counter from cib_testentity where owner='Lalla'");
       Assert.assertTrue(!rs.next());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -962,7 +962,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       ResultSet rs = query("select namevalue, counter from cib_testentity where id=5");
       Assert.assertTrue(!rs.next());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -985,7 +985,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       ResultSet rs = query("select namevalue, counter from cib_testentity where id=5");
       Assert.assertTrue(rs.next());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -1031,7 +1031,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -1066,7 +1066,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Assert.assertEquals(1, l2.size());
       log.debug("LOCKEDOBJECT: " + l2.get(0));
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -1171,9 +1171,12 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
                + ", " + rs2.getInt("SEQUENCE"));
          Object value = CibetUtil.decode(rs2.getBytes("ENCODEDVALUE"));
          log.debug("VALUE: " + value);
-         if (count2 == 2) Assert.assertEquals("rosen", value);
-         if (count2 == 3) Assert.assertEquals(255, value);
-         if (count2 == 4) Assert.assertEquals("Lalla", value);
+         if (count2 == 2)
+            Assert.assertEquals("rosen", value);
+         if (count2 == 3)
+            Assert.assertEquals(255, value);
+         if (count2 == 4)
+            Assert.assertEquals("Lalla", value);
          Assert.assertEquals(count2, rs2.getInt("SEQUENCE"));
       }
       Assert.assertEquals(5, count2);
@@ -1192,13 +1195,16 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
                + ", " + rs2.getInt("SEQUENCE"));
          Assert.assertEquals(count2, rs2.getInt("SEQUENCE"));
          Object value = CibetUtil.decode(rs2.getBytes("ENCODEDVALUE"));
-         if (count2 == 2) Assert.assertEquals("rosen", value);
-         if (count2 == 3) Assert.assertEquals(444, value);
-         if (count2 == 4) Assert.assertEquals("Kuller", value);
+         if (count2 == 2)
+            Assert.assertEquals("rosen", value);
+         if (count2 == 3)
+            Assert.assertEquals(444, value);
+         if (count2 == 4)
+            Assert.assertEquals("Kuller", value);
       }
       Assert.assertEquals(5, count2);
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -1267,7 +1273,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -1329,7 +1335,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       list1 = DcLoader.findUnreleased();
       Assert.assertEquals(1, list1.size());
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -1370,7 +1376,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       }
       Assert.assertEquals(5, count);
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
    @Test
@@ -1412,7 +1418,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       }
       Assert.assertEquals(5, count);
 
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
    }
 
 }

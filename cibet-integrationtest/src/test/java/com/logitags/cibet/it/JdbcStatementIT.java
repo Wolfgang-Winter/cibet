@@ -116,7 +116,7 @@ public class JdbcStatementIT extends DBHelper {
    @After
    public void afterJdbcStatementIT() throws Exception {
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
 
       if (conn != null) {

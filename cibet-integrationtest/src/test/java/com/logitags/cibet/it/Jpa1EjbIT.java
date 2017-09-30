@@ -116,7 +116,7 @@ public class Jpa1EjbIT extends AbstractArquillian {
    public void afterJpa1EjbIT() {
       Context.end();
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
    }
 

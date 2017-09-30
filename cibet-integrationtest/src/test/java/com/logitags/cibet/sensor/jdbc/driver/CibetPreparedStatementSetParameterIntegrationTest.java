@@ -80,7 +80,7 @@ public class CibetPreparedStatementSetParameterIntegrationTest extends JdbcHelpe
    public void afterJdbcBridgeEntityManagerIntegrationTest() throws Exception {
       Context.end();
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
    }
 

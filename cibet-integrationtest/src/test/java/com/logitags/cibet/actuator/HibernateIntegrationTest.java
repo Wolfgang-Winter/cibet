@@ -40,7 +40,7 @@ public class HibernateIntegrationTest extends DBHelper {
    @After
    public void afterHibernateIntegrationTest() {
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
    }
 

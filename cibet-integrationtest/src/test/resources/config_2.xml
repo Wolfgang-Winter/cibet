@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.2.xsd">
+	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.4.xsd"
+	name="config2">
 
 	<notificationProvider>
-		<class>com.logitags.cibet.notification.EmailNotificationProvider</class>
+		<class>com.logitags.cibet.notification.EmailNotificationProvider
+		</class>
 		<properties>
 			<from>from@test.de</from>
 			<smtpHost>localhost</smtpHost>
@@ -20,37 +22,58 @@
 
 	<setpoint id="SD25">
 		<controls>
-			<event>INSERT,UPDATE,DELETE</event>
-			<target>com.cibethelper.entities.TEntity</target>
-			<tenant>testTenant</tenant>
+			<event>
+				<include>INSERT,UPDATE,DELETE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+			</target>
+			<tenant>
+				<include>testTenant</include>
+			</tenant>
 		</controls>
-		<actuator name="ARCHIVE"/>
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="SD25b">
 		<controls>
-			<event>INSERT</event>
-			<target>com.cibethelper.entities.TEntity</target>
-			<invoker>RemoteEJBImpl.persist</invoker>
+			<event>
+				<include>INSERT</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+			</target>
+			<invoker>
+				<include>RemoteEJBImpl.persist</include>
+			</invoker>
 		</controls>
-		<actuator name="ARCHIVE"/>
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="SD26">
 		<controls>
-			<event>RELEASE</event>
-			<target>com.cibethelper.entities.TEntity</target>
+			<event>
+				<include>RELEASE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+			</target>
 		</controls>
-		<actuator name="FOUR_EYES"/>
-		<actuator name="ARCHIVE"/>
+		<actuator name="FOUR_EYES" />
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
-   <setpoint id="SD27">
-      <controls>
-         <event>INVOKE</event>
-         <target>https://localhost:8743/CibetContextInterceptorIT/target1.url</target>
-      </controls>
-      <actuator name="FOUR_EYES"/>
-   </setpoint>
+	<setpoint id="SD27">
+		<controls>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>https://localhost:8743/CibetContextInterceptorIT/target1.url
+				</include>
+			</target>
+		</controls>
+		<actuator name="FOUR_EYES" />
+	</setpoint>
 
 </cibet>   

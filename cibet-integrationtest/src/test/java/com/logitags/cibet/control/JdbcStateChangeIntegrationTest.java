@@ -17,10 +17,7 @@ package com.logitags.cibet.control;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -52,25 +49,6 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
     */
    private static Logger log = Logger.getLogger(JdbcStateChangeIntegrationTest.class);
 
-   private List<Setpoint> evaluate(EventMetadata md, List<Setpoint> spoints) {
-      Control eval = new StateChangeControl();
-      List<Setpoint> list = new ArrayList<Setpoint>();
-      for (Setpoint spi : spoints) {
-         Map<String, Object> controlValues = new TreeMap<String, Object>(new ControlComparator());
-         spi.getEffectiveControlValues(controlValues);
-         Object value = controlValues.get("stateChange");
-         if (value == null) {
-            list.add(spi);
-         } else {
-            boolean okay = eval.evaluate(value, md);
-            if (okay) {
-               list.add(spi);
-            }
-         }
-      }
-      return list;
-   }
-
    @Test
    public void evaluateExclude1u2() throws Exception {
       log.info("start jdbcEvaluateExclude1u2()");
@@ -81,7 +59,7 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
 
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
 
@@ -89,7 +67,7 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
       parser = new SqlParser(connection, sql);
       res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
       md = new EventMetadata(ControlEvent.UPDATE, res);
-      list = evaluate(md, Configuration.instance().getSetpoints());
+      list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
       Assert.assertEquals(2, list.size());
       Assert.assertEquals("A", list.get(0).getId());
       Assert.assertEquals("C", list.get(1).getId());
@@ -105,7 +83,7 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
 
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
       Assert.assertEquals(2, list.size());
       Assert.assertEquals("A", list.get(0).getId());
       Assert.assertEquals("C", list.get(1).getId());
@@ -121,7 +99,7 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
 
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
-      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints());
+      List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
       Assert.assertEquals(1, list.size());
       Assert.assertEquals("C", list.get(0).getId());
 
@@ -129,7 +107,7 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
       parser = new SqlParser(connection, sql);
       res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
       md = new EventMetadata(ControlEvent.UPDATE, res);
-      list = evaluate(md, Configuration.instance().getSetpoints());
+      list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
       Assert.assertEquals(0, list.size());
    }
 

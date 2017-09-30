@@ -50,7 +50,7 @@ public class Jpa1SpringSecurity2ManRuleIntegrationTest extends DBHelper {
    @After
    public void afterJpa1SpringSecurity2ManRuleIntegrationTest() {
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
    }
 

@@ -71,7 +71,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
    public void afterJdbcBridgeEntityManagerIntegrationTest() throws Exception {
       Context.end();
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
    }
 
@@ -740,7 +740,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
                + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", 1);
       } finally {
          Context.sessionScope().setSecondUser(null);
-         Configuration.instance().unregisterSetpoint(sp2.getId());
+         Configuration.instance().unregisterSetpoint(null, sp2.getId());
       }
    }
 
@@ -787,7 +787,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
 
       List<Controllable> list1 = DcLoader.findUnreleased();
       Assert.assertEquals(0, list1.size());
-      Configuration.instance().unregisterSetpoint(sp2.getId());
+      Configuration.instance().unregisterSetpoint(null, sp2.getId());
    }
 
    @Test

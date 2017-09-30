@@ -315,7 +315,7 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       acts.add(ArchiveActuator.DEFAULTNAME);
       acts.add(FourEyesActuator.DEFAULTNAME);
       Setpoint sp = registerSetpoint(RemoteEJB.class.getName(), acts, ControlEvent.INVOKE, ControlEvent.RELEASE);
-      sp.setMethod("persist(com.cibethelper.entities.TEntity)");
+      sp.addMethodIncludes("persist(com.cibethelper.entities.TEntity)");
 
       TEntity te = new TEntity("myName", 45, "winter");
 

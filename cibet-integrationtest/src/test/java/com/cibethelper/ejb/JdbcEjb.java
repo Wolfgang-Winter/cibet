@@ -108,7 +108,7 @@ public class JdbcEjb implements JdbcEjbInterface {
    }
 
    public void unregisterSetpoint(String id) {
-      Configuration.instance().unregisterSetpoint(id);
+      Configuration.instance().unregisterSetpoint(null, id);
    }
 
    @CibetContext

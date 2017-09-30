@@ -77,7 +77,7 @@ public class JpaControlPTTest {
       List<Setpoint> spList = cm.getSetpoints();
       for (Setpoint sp : spList) {
          log.debug("unregister setpoint " + sp.getId());
-         cm.unregisterSetpoint(sp.getId());
+         cm.unregisterSetpoint(null, sp.getId());
       }
       log.debug("ConfigurationManager contains " + cm.getSetpoints().size() + " setpoints");
 
@@ -98,14 +98,14 @@ public class JpaControlPTTest {
    }
 
    private Setpoint registerSetpoint(String clazz, List<String> acts, ControlEvent... events) {
-      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()), null);
-      sp.setTarget(clazz);
+      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()));
+      sp.addTargetIncludes(clazz);
       for (ControlEvent ce : events) {
-         sp.setEvent(ce.name());
+         sp.addEventIncludes(ce);
       }
-      sp.setInvoker("com.logitags.cibet.*");
-      sp.setMethod("*");
-      sp.setTenant("TENANT");
+      sp.addInvokerIncludes("com.logitags.cibet.*");
+      sp.addMethodIncludes("*");
+      sp.addTenantIncludes("TENANT");
       Configuration cman = Configuration.instance();
       for (String scheme : acts) {
          sp.addActuator(cman.getActuator(scheme));

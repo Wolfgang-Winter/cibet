@@ -209,10 +209,9 @@ public class MultiThread4EyesTest extends DBHelper {
    }
 
    private void startThreads(int nbr, List<String> schemes, int delay) throws Exception {
-      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()), null);
-      sp.setTarget(TEntity.class.getName());
-      sp.setEvent(ControlEvent.INSERT.name(), ControlEvent.UPDATE.name(), ControlEvent.DELETE.name(),
-            ControlEvent.RELEASE_INSERT.name());
+      Setpoint sp = new Setpoint(String.valueOf(new Date().getTime()));
+      sp.addTargetIncludes(TEntity.class.getName());
+      sp.addEventIncludes(ControlEvent.INSERT, ControlEvent.UPDATE, ControlEvent.DELETE, ControlEvent.RELEASE_INSERT);
       Configuration cman = Configuration.instance();
       for (String scheme : schemes) {
          sp.addActuator(cman.getActuator(scheme));

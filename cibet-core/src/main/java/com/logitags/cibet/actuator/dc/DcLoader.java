@@ -203,7 +203,7 @@ public abstract class DcLoader {
       params.add(entityClass.getName());
       StringBuffer sql = new StringBuffer();
       sql.append(
-            "SELECT a.* FROM CIB_CONTROLLABLE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and a.TENANT = ? AND r.TARGET = ?");
+            "SELECT a.* FROM CIB_CONTROLLABLE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID and a.TENANT LIKE ? AND r.TARGET = ?");
 
       if (properties != null) {
          for (Entry<String, Object> entry : properties.entrySet()) {

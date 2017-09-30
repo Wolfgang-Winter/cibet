@@ -53,7 +53,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
    @After
    public void afterJpa1Archive2ManRuleIntegrationTest() {
       if (sp != null) {
-         Configuration.instance().unregisterSetpoint(sp.getId());
+         Configuration.instance().unregisterSetpoint(null, sp.getId());
       }
    }
 
@@ -820,7 +820,7 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
          List<Controllable> list1 = DcLoader.findUnreleased();
          Assert.assertEquals(0, list1.size());
       } finally {
-         Configuration.instance().unregisterSetpoint(sp2.getId());
+         Configuration.instance().unregisterSetpoint(null, sp2.getId());
       }
    }
 

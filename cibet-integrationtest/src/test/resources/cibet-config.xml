@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.3.xsd">
+	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.4.xsd"
+	name="cibet-config2">
 
-   <actuator name="CLIENT-SCHEDULER">
-      <class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class>
-      <properties>
-         <timerStart>+10</timerStart>
-      </properties>
-   </actuator>
+	<actuator name="CLIENT-SCHEDULER">
+		<class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class>
+		<properties>
+			<timerStart>+10</timerStart>
+		</properties>
+	</actuator>
 
-   <setpoint id="setpoint-7">
-      <controls>
-         <event>INVOKE</event>
-         <target>com.logitags.cibet.tutorial.SimpleRemoteEjb</target>
-         <method>writeStringNoIntercept(String)</method>
-      </controls>
-      <actuator name="CLIENT-SCHEDULER"/>
-   </setpoint>
+	<setpoint id="setpoint-7">
+		<controls>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>com.logitags.cibet.tutorial.SimpleRemoteEjb</include>
+			</target>
+			<method>
+				<include>writeStringNoIntercept(String)</include>
+			</method>
+		</controls>
+		<actuator name="CLIENT-SCHEDULER" />
+	</setpoint>
 
 </cibet>   

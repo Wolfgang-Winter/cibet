@@ -262,7 +262,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       Setpoint sp = registerSetpoint(getBaseURL().substring(0, getBaseURL().length() - 4) + "*", schemes,
             ControlEvent.INVOKE);
-      sp.setInvoker("192.68.2.1");
+      sp.addInvokerIncludes("192.68.2.1");
 
       List<NameValuePair> formparams = new ArrayList<NameValuePair>();
       formparams.add(new BasicNameValuePair("act", "aschenfels"));
@@ -285,7 +285,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       Setpoint sp = registerSetpoint(getBaseURL().substring(0, getBaseURL().length() - 4) + "*", schemes,
             ControlEvent.INVOKE);
-      sp.setInvoker("192.68.*");
+      sp.addInvokerIncludes("192.68.*");
 
       List<NameValuePair> formparams = new ArrayList<NameValuePair>();
       formparams.add(new BasicNameValuePair("act", "aschenfels"));
@@ -308,7 +308,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       Setpoint sp = registerSetpoint(getBaseURL().substring(0, getBaseURL().length() - 4) + "*", schemes,
             ControlEvent.INVOKE);
-      sp.setInvoker("192.68.*");
+      sp.addInvokerIncludes("192.68.*");
 
       List<NameValuePair> formparams = new ArrayList<NameValuePair>();
       formparams.add(new BasicNameValuePair("act", "aschenfels"));
@@ -330,7 +330,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       Setpoint sp = registerSetpoint(getBaseURL().substring(0, getBaseURL().length() - 4) + "*", schemes,
             ControlEvent.INVOKE);
-      sp.setCondition("$HTTPPARAMETERS.get('act')=='aschenfels'");
+      sp.addConditionIncludes("$HTTPPARAMETERS.get('act')=='aschenfels'");
 
       List<NameValuePair> formparams = new ArrayList<NameValuePair>();
       formparams.add(new BasicNameValuePair("act", "aschenfels"));
@@ -353,7 +353,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       Setpoint sp = registerSetpoint(getBaseURL().substring(0, getBaseURL().length() - 4) + "*", schemes,
             ControlEvent.INVOKE);
-      sp.setCondition("$HTTPPARAMETERS.get('act')=='aschenfels' && $HTTPPARAMETERS.get('dubi2')!=null;");
+      sp.addConditionIncludes("$HTTPPARAMETERS.get('act')=='aschenfels' && $HTTPPARAMETERS.get('dubi2')!=null;");
 
       List<NameValuePair> formparams = new ArrayList<NameValuePair>();
       formparams.add(new BasicNameValuePair("act", "aschenfels"));
@@ -376,7 +376,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       Setpoint sp = registerSetpoint(getBaseURL().substring(0, getBaseURL().length() - 4) + "*", schemes,
             ControlEvent.INVOKE);
-      sp.setCondition(
+      sp.addConditionIncludes(
             "js = new java.lang.String($HTTPHEADERS.get('http_x_forwarded_for')); $HTTPPARAMETERS.get('mixi')==\"hasenfiss\" && js.startsWith(\"192.68.2.1\")");
 
       StringEntity entity = new StringEntity("important message �sal", "UTF-8");
@@ -431,7 +431,7 @@ public class HttpCibetFilterIT extends AbstractArquillian {
       schemes.add(ArchiveActuator.DEFAULTNAME);
       Setpoint sp = registerSetpoint(getBaseURL().substring(0, getBaseURL().length() - 4) + "*", schemes,
             ControlEvent.INVOKE);
-      sp.setCondition("$HTTPPARAMETERS.get('act')=='aschenfels' && $HTTPPARAMETERS.get('dubi2')!=null;");
+      sp.addConditionIncludes("$HTTPPARAMETERS.get('act')=='aschenfels' && $HTTPPARAMETERS.get('dubi2')!=null;");
 
       List<NameValuePair> formparams = new ArrayList<NameValuePair>();
       formparams.add(new BasicNameValuePair("act", "aschenfels"));

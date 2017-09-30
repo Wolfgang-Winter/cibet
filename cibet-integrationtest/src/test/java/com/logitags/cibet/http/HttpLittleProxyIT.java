@@ -177,7 +177,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
 
       new DBHelper().doAfter();
       if (sp != null) {
-         cman.unregisterSetpoint(sp.getId());
+         cman.unregisterSetpoint(null, sp.getId());
       }
    }
 
@@ -223,7 +223,8 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       for (int i = 1; i < 6; i++) {
          Query q = localEM.createQuery("SELECT a FROM Archive a " + " ORDER BY a.createDate ");
          list = q.getResultList();
-         if (expected == list.size()) break;
+         if (expected == list.size())
+            break;
 
          log.debug("No result. Try query again: " + i);
          localEM.clear();
@@ -254,7 +255,8 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       List<Controllable> list = null;
       for (int i = 1; i < 6; i++) {
          list = DcLoader.findUnreleased();
-         if (1 == list.size()) break;
+         if (1 == list.size())
+            break;
 
          log.debug("No result. Try query again: " + i);
          Thread.sleep(400);
@@ -503,7 +505,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Assert.assertEquals("lonestarr", eventResult.getUser());
 
       checkArchive("POST", getBaseURL() + "/test/setuser", 1);
-      Configuration.instance().unregisterSetpoint(sp.getId());
+      Configuration.instance().unregisterSetpoint(null, sp.getId());
       currentUser.logout();
    }
 
@@ -883,7 +885,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       List<String> schemes = new ArrayList<String>();
       schemes.add(ArchiveActuator.DEFAULTNAME);
       sp = registerSetpoint(url, schemes, ControlEvent.INVOKE);
-      sp.setMethod("GET");
+      sp.addMethodIncludes("GET");
 
       ProxyConfig config = new ProxyConfig();
       config.setMode(ProxyMode.MITM);
@@ -932,7 +934,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       List<String> schemes = new ArrayList<String>();
       schemes.add(ArchiveActuator.DEFAULTNAME);
       sp = registerSetpoint(url, schemes, ControlEvent.INVOKE);
-      sp.setMethod("CONNECT");
+      sp.addMethodIncludes("CONNECT");
 
       ProxyConfig config = new ProxyConfig();
       config.setMode(ProxyMode.MITM);
@@ -981,7 +983,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       List<String> schemes = new ArrayList<String>();
       schemes.add(ArchiveActuator.DEFAULTNAME);
       sp = registerSetpoint(url, schemes, ControlEvent.INVOKE);
-      sp.setMethod("CONNECT", "GET");
+      sp.addMethodIncludes("CONNECT", "GET");
 
       ProxyConfig config = new ProxyConfig();
       config.setMode(ProxyMode.MITM);
@@ -1044,7 +1046,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       List<String> schemes = new ArrayList<String>();
       schemes.add(ArchiveActuator.DEFAULTNAME);
       sp = registerSetpoint(url, schemes, ControlEvent.INVOKE);
-      sp.setMethod("CONNECT", "GET");
+      sp.addMethodIncludes("CONNECT", "GET");
 
       ProxyConfig config = new ProxyConfig();
       config.setMode(ProxyMode.MITM);
