@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.2.xsd">
+	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.4.xsd"
+	name="c_shiro2">
 
 	<actuator name="schedEE">
 		<class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class>
@@ -40,7 +41,7 @@
 			<requiresGuest>false</requiresGuest>
 		</properties>
 	</actuator>
-	
+
 	<actuator name="SEC-URLdeny">
 		<class>com.logitags.cibet.actuator.shiro.ShiroActuator</class>
 		<properties>
@@ -51,89 +52,133 @@
 
 	<setpoint id="SD23">
 		<controls>
-			<event>INVOKE</event>
-			<target>com.cibethelper.ejb.OutService</target>
-			<method>logThis</method>
-			<condition>! $PARAM0.equals('gutte')</condition>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.ejb.OutService</include>
+			</target>
+			<method>
+				<include>logThis</include>
+			</method>
+			<condition>
+				<include>! $PARAM0.equals('gutte')</include>
+			</condition>
 		</controls>
-		<actuator name="SEC2"/>
-		<actuator name="ARCHIVE"/>
+		<actuator name="SEC2" />
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="SD27-server-1">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8788/HttpLittleProxyIT/test/setuser, https://localhost:8743/HttpLittleProxyIT/test/setuser</target>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/HttpLittleProxyIT/test/setuser</include>
+				<include>https://localhost:8743/HttpLittleProxyIT/test/setuser</include>
+			</target>
 		</controls>
-		<actuator name="ARCHIVE"/>
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="SD27-deny">
 		<controls>
-			<event>INVOKE</event>
-			<target> http://localhost:8788/HttpLittleProxyIT/logThis.url</target>
-			<tenant>XYCompany</tenant>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/HttpLittleProxyIT/logThis.url</include>
+			</target>
+			<tenant>
+				<include>XYCompany</include>
+			</tenant>
 		</controls>
-		<actuator name="SEC-URLdeny"/>
-		<actuator name="ARCHIVE"/>
+		<actuator name="SEC-URLdeny" />
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="SD23-allow" extends="SD23">
 		<controls>
-			<condition>$PARAM0.equals('gutte')</condition>
+			<condition>
+				<include>$PARAM0.equals('gutte')</include>
+			</condition>
 		</controls>
-		<actuator name="TRACKER"/>
+		<actuator name="TRACKER" />
 	</setpoint>
 
 	<setpoint id="SD28-permit" extends="SD27-deny">
 		<controls>
-			<condition>"red".equals($HTTPPARAMETERS.get('color'))</condition>
+			<condition>
+				<include>"red".equals($HTTPPARAMETERS.get('color'))</include>
+			</condition>
 			<tenant></tenant>
 		</controls>
-		<actuator name="SEC-URLpermit"/>
-		<actuator name="ARCHIVE"/>
+		<actuator name="SEC-URLpermit" />
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="SD29-4eyes" extends="SD28-permit">
 		<controls>
-			<condition>"blue".equals($HTTPPARAMETERS.get('color'))</condition>
+			<condition>
+				<include>"blue".equals($HTTPPARAMETERS.get('color'))</include>
+			</condition>
 		</controls>
-		<actuator name="TWO_MAN_RULE"/>
-		<actuator name="ARCHIVE"/>
+		<actuator name="TWO_MAN_RULE" />
+		<actuator name="ARCHIVE" />
 	</setpoint>
-	
+
 	<setpoint id="jdbc1">
 		<controls>
-			<target>cib_testentity</target>
-			<event>INSERT</event>	
+			<target>
+				<include>cib_testentity</include>
+			</target>
+			<event>
+				<include>INSERT</include>
+			</event>
 		</controls>
-		<actuator name="ARCHIVE"/>
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="sched1">
 		<controls>
-			<target>com.cibethelper.entities.TEntity, org.apache.openjpa.enhance.*</target>
-			<event>UPDATE</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+				<include>org.apache.openjpa.enhance.*</include>
+			</target>
+			<event>
+				<include>UPDATE</include>
+			</event>
 		</controls>
-		<actuator name="schedEE"/>
+		<actuator name="schedEE" />
 	</setpoint>
 
 	<setpoint id="merge1">
 		<controls>
-			<target>com.cibethelper.entities.TComplexEntity2</target>
-			<event>INSERT</event>
-			<condition>$TARGET.getCompValue()==12</condition>
+			<target>
+				<include>com.cibethelper.entities.TComplexEntity2</include>
+			</target>
+			<event>
+				<include>INSERT</include>
+			</event>
+			<condition>
+				<include>$TARGET.getCompValue()==12</include>
+			</condition>
 		</controls>
-		<actuator name="ARCHIVE"/>
+		<actuator name="ARCHIVE" />
 	</setpoint>
-	
+
 	<setpoint id="merge2">
 		<controls>
-			<target>com.cibethelper.entities.TComplexEntity2</target>
-			<event>UPDATE</event>
-			<!-- stateChange>compValue</stateChange-->
+			<target>
+				<include>com.cibethelper.entities.TComplexEntity2</include>
+			</target>
+			<event>
+				<include>UPDATE</include>
+			</event>
+			<!-- stateChange>compValue</stateChange -->
 		</controls>
-		<actuator name="ARCHIVE"/>
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
 </cibet>   

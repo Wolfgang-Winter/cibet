@@ -440,11 +440,11 @@
 						<version>2.16</version>
 						<configuration>
 							<includes>
-<!-- 								<include>**/http/*IT.java</include> -->
+								<include>**/http/*IT.java</include>
 <!-- 								<include>**/it/*IT.java</include> -->
 <!-- 								<include>**/*Test.java</include> -->
 <!--                         <include>com/logitags/cibet/sensor/jdbc/driver/*.java</include> -->
-                        <include>**/CibetInterceptorIT.java</include>
+<!--                         <include>**/JdbcStateChangeIntegrationTest.java</include> -->
 							</includes>
 							<enableAssertions>false</enableAssertions>
 							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx1024m -Xms1024m</argLine>

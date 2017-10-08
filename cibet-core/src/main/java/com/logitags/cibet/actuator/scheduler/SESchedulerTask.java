@@ -218,9 +218,11 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
          return ControlEvent.RELEASE_UPDATE;
       case SELECT:
          return ControlEvent.RELEASE_SELECT;
+      case UPDATEQUERY:
+         return ControlEvent.RELEASE_UPDATEQUERY;
       default:
          String msg = "Controlled object [" + co.getControllableId() + "] with control event " + co.getControlEvent()
-               + " cannot be released";
+               + " cannot be released. ControlEvent not supported for release";
          log.error(msg);
          throw new IllegalArgumentException(msg);
       }

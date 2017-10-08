@@ -80,7 +80,8 @@ public abstract class PersistenceUtil {
             Object cleanObject = getCleanResource(jpar);
             if (cleanObject == null) {
                String msg = "failed to load object from database: no object of class "
-                     + jpar.getUnencodedTargetObject().getClass().getName() + " with id " + jpar.getPrimaryKeyObject() + " found";
+                     + jpar.getUnencodedTargetObject().getClass().getName() + " with id " + jpar.getPrimaryKeyObject()
+                     + " found";
                log.error(msg);
                throw new IllegalStateException(msg);
             }
@@ -126,7 +127,8 @@ public abstract class PersistenceUtil {
          Object storedObject = internalEM.find(jpar.getUnencodedTargetObject().getClass(), jpar.getPrimaryKeyObject());
          if (storedObject == null) {
             String msg = "failed to load object from database: no object of class "
-                  + jpar.getUnencodedTargetObject().getClass().getName() + " with id " + jpar.getPrimaryKeyObject() + " found";
+                  + jpar.getUnencodedTargetObject().getClass().getName() + " with id " + jpar.getPrimaryKeyObject()
+                  + " found";
             log.error(msg);
             throw new IllegalStateException(msg);
          }
@@ -136,8 +138,7 @@ public abstract class PersistenceUtil {
 
       } finally {
          EntityManager internalEM = Context.internalRequestScope().getApplicationEntityManager2();
-         if (internalEM != null)
-            internalEM.clear();
+         if (internalEM != null) internalEM.clear();
       }
    }
 

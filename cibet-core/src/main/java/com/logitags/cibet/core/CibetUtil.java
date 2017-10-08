@@ -68,8 +68,6 @@ public class CibetUtil {
 
    public static final Pattern classNamePattern = Pattern.compile("^(\\[+)([BZCDFIJSL]{1})(.*?);?");
 
-   private static ObjectDiffer objectDiffer;
-
    /**
     * decodes a byte stream to an object
     * 
@@ -78,8 +76,7 @@ public class CibetUtil {
     */
    public static Object decode(byte[] enc) {
       try {
-         if (enc == null)
-            return null;
+         if (enc == null) return null;
          ByteArrayInputStream in = new ByteArrayInputStream(enc);
          ObjectInputStream instream = new ObjectInputStream(in);
          return instream.readObject();
@@ -99,20 +96,18 @@ public class CibetUtil {
    public static Object decode(ClassLoader classLoader, byte[] enc) {
       ClassLoaderObjectInputStream instream = null;
       try {
-         if (enc == null)
-            return null;
+         if (enc == null) return null;
          ByteArrayInputStream in = new ByteArrayInputStream(enc);
          instream = new ClassLoaderObjectInputStream(classLoader, in);
          return instream.readObject();
       } catch (Exception e) {
          throw new RuntimeException(e.getMessage(), e);
       } finally {
-         if (instream != null)
-            try {
-               instream.close();
-            } catch (IOException e) {
-               log.error(e.getMessage(), e);
-            }
+         if (instream != null) try {
+            instream.close();
+         } catch (IOException e) {
+            log.error(e.getMessage(), e);
+         }
       }
    }
 
@@ -123,8 +118,7 @@ public class CibetUtil {
     * @return
     */
    public static byte[] encode(Object obj) throws IOException {
-      if (obj == null)
-         return null;
+      if (obj == null) return null;
       ByteArrayOutputStream output = new ByteArrayOutputStream();
       ObjectOutputStream out = new ObjectOutputStream(output);
       out.writeObject(obj);
@@ -163,16 +157,12 @@ public class CibetUtil {
       while (clazz != null) {
          Field[] fields = clazz.getDeclaredFields();
          for (Field f : fields) {
-            if (Modifier.isStatic(f.getModifiers()))
-               continue;
-            if (Modifier.isTransient(f.getModifiers()))
-               continue;
-            if (AnnotationUtil.isFieldOrGetterOrSetterAnnotationPresent(clazz, f, Transient.class))
-               continue;
+            if (Modifier.isStatic(f.getModifiers())) continue;
+            if (Modifier.isTransient(f.getModifiers())) continue;
+            if (AnnotationUtil.isFieldOrGetterOrSetterAnnotationPresent(clazz, f, Transient.class)) continue;
             boolean loaded = util.isLoaded(entity, f.getName());
             log.debug(f.getName() + " [" + f.getType() + "] loaded: " + loaded);
-            if (!loaded)
-               loadstate = false;
+            if (!loaded) loadstate = false;
          }
          clazz = clazz.getSuperclass();
       }
@@ -199,8 +189,7 @@ public class CibetUtil {
     * @param upReferences
     */
    public static void deepDetach(Object entity, List<Object> upReferences) {
-      if (entity == null)
-         return;
+      if (entity == null) return;
       Class<?> clazz = entity.getClass();
       log.debug("detach all properties of instance of " + clazz);
       EntityManager em = Context.internalRequestScope().getApplicationEntityManager();
@@ -294,8 +283,7 @@ public class CibetUtil {
     * @param reference
     */
    private static void loadLazyEntities(Object obj, Class<?> clazz, List<Object> upReferences) {
-      if (obj == null)
-         return;
+      if (obj == null) return;
 
       if (obj.getClass().getAnnotation(Embeddable.class) == null
             && obj.getClass().getAnnotation(Entity.class) == null) {
@@ -466,12 +454,15 @@ public class CibetUtil {
       }
    }
 
+   /**
+    * seems not to be threadsafe.
+    * 
+    * @return
+    */
    public static ObjectDiffer getObjectDiffer() {
-      if (objectDiffer == null) {
-         objectDiffer = ObjectDifferBuilder.startBuilding().introspection()
-               .setDefaultIntrospector(new EntityIntrospector()).and().differs()
-               .register(new PrimitiveArrayDifferFactory()).build();
-      }
+      ObjectDiffer objectDiffer = ObjectDifferBuilder.startBuilding().introspection()
+            .setDefaultIntrospector(new EntityIntrospector()).and().differs()
+            .register(new PrimitiveArrayDifferFactory()).build();
       return objectDiffer;
    }
 

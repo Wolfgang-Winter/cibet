@@ -57,7 +57,9 @@
 				<include>INVOKE</include>
 			</event>
 			<customControls>
-				<customControl name="TRUE"></customControl>
+				<customControl name="TRUE">
+					<include>inc</include>
+				</customControl>
 			</customControls>
 			<target>
 				<include>com.cibethelper.entities.TComplexEntity</include>
@@ -80,7 +82,9 @@
 				<include>INVOKE</include>
 			</event>
 			<customControls>
-				<customControl name="TRUE" />
+				<customControl name="TRUE">
+					<include>inc</include>
+				</customControl>
 			</customControls>
 			<target>
 				<include>com.cibethelper.entities.TComplexEntity</include>

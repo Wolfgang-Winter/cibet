@@ -84,9 +84,8 @@ public class JdbcStateChangeIntegrationTest extends JdbcHelper {
       JdbcResource res = new JdbcResource(parser.getSql(), parser.getTarget(), parser.getPrimaryKey(), null);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, Configuration.instance().getSetpoints(), new StateChangeControl());
-      Assert.assertEquals(2, list.size());
+      Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
-      Assert.assertEquals("C", list.get(1).getId());
    }
 
    @Test

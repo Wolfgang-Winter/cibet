@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.0.xsd">
+   ../../main/resources/cibet-config_1.4.xsd"
+	name="c_webshiro">
 
 	<actuator name="SEC1">
 		<class>com.logitags.cibet.actuator.shiro.ShiroActuator</class>
@@ -48,7 +49,7 @@
 	<actuator name="SEC7">
 		<class>com.logitags.cibet.actuator.shiro.ShiroActuator</class>
 		<properties>
-			<requiresUser/>
+			<requiresUser />
 		</properties>
 	</actuator>
 
@@ -65,106 +66,186 @@
 	<actuator name="SEC9">
 		<class>com.logitags.cibet.actuator.shiro.ShiroActuator</class>
 		<properties>
-			<secondPrincipal/>
+			<secondPrincipal />
 			<throwDeniedException></throwDeniedException>
-			<requiresUser/>
+			<requiresUser />
 			<isPermittedAll>jaeger:schiess:Reh </isPermittedAll>
-			<!--hasAllRoles>badguy</hasAllRoles-->
+			<!--hasAllRoles>badguy</hasAllRoles -->
 		</properties>
 	</actuator>
 
 	<setpoint id="SHIRO1">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8788/HttpShiroIT/ts/shiro1,http://localhost:9190/webapp/ts/shiro1</target>
-			<method>GET,POST</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/HttpShiroIT/ts/shiro1</include>
+				<include>http://localhost:9190/webapp/ts/shiro1</include>
+			</target>
+			<method>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
 		</controls>
-		<actuator name="SEC1"/>
+		<actuator name="SEC1" />
 	</setpoint>
 
 	<setpoint id="SHIRO1DENY">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8788/HttpShiroIT/ts/shiro2,http://localhost:9190/webapp/ts/shiro2</target>
-			<method>GET,POST</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/HttpShiroIT/ts/shiro2</include>
+				<include>http://localhost:9190/webapp/ts/shiro2</include>
+			</target>
+			<method>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
 		</controls>
-		<actuator name="SEC2"/>
+		<actuator name="SEC2" />
 	</setpoint>
 
 	<setpoint id="SHIRO1DENY2">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8788/HttpShiroIT/ts/shiro3,http://localhost:9190/webapp/ts/shiro3</target>
-			<method>GET,POST</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/HttpShiroIT/ts/shiro3</include>
+				<include>http://localhost:9190/webapp/ts/shiro3</include>
+			</target>
+			<method>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
 		</controls>
-		<actuator name="SEC3"/>
+		<actuator name="SEC3" />
 	</setpoint>
 
 	<setpoint id="SHIRO3">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8788/HttpShiroIT/ts/shiro4,http://localhost:9190/webapp/ts/shiro4</target>
-			<method>GET,POST</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/HttpShiroIT/ts/shiro4</include>
+				<include>http://localhost:9190/webapp/ts/shiro4</include>
+			</target>
+			<method>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
 		</controls>
-		<actuator name="SEC4"/>
+		<actuator name="SEC4" />
 	</setpoint>
 
 	<setpoint id="SHIRO4">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8788/HttpShiroIT/ts/shiro5,http://localhost:9190/webapp/ts/shiro5</target>
-			<method>GET,POST</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/HttpShiroIT/ts/shiro5</include>
+				<include>http://localhost:9190/webapp/ts/shiro5</include>
+			</target>
+			<method>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
 		</controls>
-		<actuator name="SEC5"/>
+		<actuator name="SEC5" />
 	</setpoint>
 
 	<setpoint id="SHIRO5">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8788/HttpShiroIT/ts/shiro6,http://localhost:9190/webapp/ts/shiro6</target>
-			<method>GET,POST</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/HttpShiroIT/ts/shiro6</include>
+				<include>http://localhost:9190/webapp/ts/shiro6</include>
+			</target>
+			<method>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
 		</controls>
-		<actuator name="SEC6"/>
+		<actuator name="SEC6" />
 	</setpoint>
 
 	<setpoint id="SHIRO6">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8788/HttpShiroIT/ts/shiro7,http://localhost:9190/webapp/ts/shiro7</target>
-			<method>GET,POST</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/HttpShiroIT/ts/shiro7</include>
+				<include>http://localhost:9190/webapp/ts/shiro7</include>
+			</target>
+			<method>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
 		</controls>
-		<actuator name="SEC7"/>
+		<actuator name="SEC7" />
 	</setpoint>
 
 	<setpoint id="SHIRO7">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8788/HttpShiroIT/ts/shiro8,http://localhost:9190/webapp/ts/shiro8</target>
-			<method>GET,POST</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/HttpShiroIT/ts/shiro8</include>
+				<include>http://localhost:9190/webapp/ts/shiro8</include>
+			</target>
+			<method>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
 		</controls>
-		<actuator name="SEC8"/>
-		<actuator name="SEC5"/>
-		<actuator name="SEC7"/>
+		<actuator name="SEC8" />
+		<actuator name="SEC5" />
+		<actuator name="SEC7" />
 	</setpoint>
 
 	<setpoint id="SHIRO8">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8788/HttpShiroIT/ts/shiro9,http://localhost:9190/webapp/ts/shiro9</target>
-			<method>GET,POST</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/HttpShiroIT/ts/shiro9</include>
+				<include>http://localhost:9190/webapp/ts/shiro9</include>
+			</target>
+			<method>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
 		</controls>
-		<actuator name="SEC5"/>
-		<actuator name="SEC7"/>
-		<actuator name="SEC9"/>
+		<actuator name="SEC5" />
+		<actuator name="SEC7" />
+		<actuator name="SEC9" />
 	</setpoint>
 
 	<setpoint id="SHIRO2">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8080/ejbwar/ts, http://localhost:8788/HttpShiroIT/eee, http://localhost:9190/webapp/eee</target>
-			<method>OPTIONS</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8080/ejbwar/ts</include>
+				<include> http://localhost:8788/HttpShiroIT/eee</include>
+				<include> http://localhost:9190/webapp/eee</include>
+			</target>
+			<method>
+				<include>OPTIONS</include>
+			</method>
 		</controls>
-		<actuator name="SEC2"/>
+		<actuator name="SEC2" />
 	</setpoint>
 
 </cibet>   

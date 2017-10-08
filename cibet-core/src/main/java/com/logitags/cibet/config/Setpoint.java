@@ -573,6 +573,7 @@ public class Setpoint implements Serializable {
       if (_extends != null) {
          effControls.addAll(_extends.getEffectiveControls());
       }
+
       return effControls;
    }
 

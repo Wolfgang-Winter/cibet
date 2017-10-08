@@ -117,9 +117,8 @@ public class StateChangeIntegrationTest extends DBHelper {
       JpaResource res = new JpaResource(te);
       EventMetadata md = new EventMetadata(ControlEvent.UPDATE, res);
       List<Setpoint> list = evaluate(md, cman.getSetpoints(), new StateChangeControl());
-      Assert.assertEquals(2, list.size());
+      Assert.assertEquals(1, list.size());
       Assert.assertEquals("A", list.get(0).getId());
-      Assert.assertEquals("C", list.get(1).getId());
       applEman.getTransaction().begin();
    }
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.2.xsd">
+	xsi:schemaLocation="http://www.logitags.com http://www.logitags.com/cibet/cibet-config_1.4.xsd"
+	name="config_scheduler">
 
 	<actuator name="SCHEDULER-1">
 		<class>com.logitags.cibet.actuator.scheduler.SchedulerActuator</class>
@@ -31,46 +32,70 @@
 
 	<setpoint id="SD35">
 		<controls>
-			<event>INSERT</event>
-			<target>com.cibethelper.entities.TEntity</target>
-			<invoker exclude="true">com.cibethelper.ejb.SimpleEjb</invoker>
+			<event>
+				<include>INSERT</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+			</target>
+			<invoker>
+				<exclude>com.cibethelper.ejb.SimpleEjb</exclude>
+			</invoker>
 		</controls>
-		<actuator name="ARCHIVE"/>
-		<actuator name="SCHEDULER-1"/>
+		<actuator name="ARCHIVE" />
+		<actuator name="SCHEDULER-1" />
 	</setpoint>
 
 	<setpoint id="SD36">
 		<controls>
-			<event>RELEASE</event>
-         <target>com.cibethelper.entities.TEntity</target>
+			<event>
+				<include>RELEASE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+			</target>
 		</controls>
-		<actuator name="FOUR_EYES"/>
-		<actuator name="ARCHIVE"/>
+		<actuator name="FOUR_EYES" />
+		<actuator name="ARCHIVE" />
 	</setpoint>
 
 	<setpoint id="SD37">
 		<controls>
-			<event>UPDATE</event>
-         <target>com.cibethelper.entities.TEntity</target>
+			<event>
+				<include>UPDATE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.entities.TEntity</include>
+			</target>
 		</controls>
-		<actuator name="SCHEDULER-2"/>
+		<actuator name="SCHEDULER-2" />
 	</setpoint>
 
 	<setpoint id="SD38">
 		<controls>
-			<event>INVOKE,RELEASE</event>
-			<target>com.cibethelper.ejb.SimpleEjb</target>
-			<method>storeTEntityForTimerTask</method>
+			<event>
+				<include>INVOKE,RELEASE</include>
+			</event>
+			<target>
+				<include>com.cibethelper.ejb.SimpleEjb</include>
+			</target>
+			<method>
+				<include>storeTEntityForTimerTask</include>
+			</method>
 		</controls>
-		<actuator name="SCHEDULER-2"/>
+		<actuator name="SCHEDULER-2" />
 	</setpoint>
 
 	<setpoint id="SD39">
 		<controls>
-			<event>INVOKE</event>
-			<target>"INSERT INTO CIB_TESTENTITY(ID, NAMEVALUE, COUNTER) VALUES (?,?,?)"</target>
+			<event>
+				<include>UPDATEQUERY</include>
+			</event>
+			<target>
+				<include>INSERT INTO CIB_TESTENTITY(ID, NAMEVALUE, COUNTER) VALUES (?,?,?)</include>
+			</target>
 		</controls>
-		<actuator name="SCHEDULER-2"/>
+		<actuator name="SCHEDULER-2" />
 	</setpoint>
 
 </cibet>   

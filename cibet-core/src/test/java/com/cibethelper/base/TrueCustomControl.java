@@ -26,10 +26,14 @@ package com.cibethelper.base;
 
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.logitags.cibet.control.Control;
 import com.logitags.cibet.core.EventMetadata;
 
 public class TrueCustomControl implements Control {
+
+   private static Logger log = Logger.getLogger(TrueCustomControl.class);
 
    private String name = "TRUE";
 
@@ -59,7 +63,16 @@ public class TrueCustomControl implements Control {
 
    @Override
    public Boolean evaluate(Set<String> values, EventMetadata metadata) {
-      return true;
+      if (values.size() > 0) {
+         log.debug("value=" + values.iterator().next());
+      } else {
+         log.debug("no value");
+      }
+      if (values.contains("inc")) {
+         return true;
+      } else {
+         return false;
+      }
    }
 
 }

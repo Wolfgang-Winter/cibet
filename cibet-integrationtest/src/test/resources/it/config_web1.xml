@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.logitags.com 
-   ../../main/resources/cibet-config_1.1.xsd">
+   ../../main/resources/cibet-config_1.4.xsd"
+	name="c-web1">
 
 	<actuator name="SEC1">
-		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator</class>
+		<class>com.logitags.cibet.actuator.springsecurity.SpringSecurityActuator
+		</class>
 		<properties>
 			<urlAccess>ROLE_ADMINI</urlAccess>
 		</properties>
@@ -18,12 +20,19 @@
 
 	<setpoint id="K1">
 		<controls>
-			<event>INVOKE</event>
-			<target>http://localhost:8788/*</target>
-			<method>GET,POST</method>
+			<event>
+				<include>INVOKE</include>
+			</event>
+			<target>
+				<include>http://localhost:8788/*</include>
+			</target>
+			<method>
+				<include>GET</include>
+				<include>POST</include>
+			</method>
 		</controls>
-		<actuator name="SEC1"/>
-		<actuator name="FOUR_EYES"/>
+		<actuator name="SEC1" />
+		<actuator name="FOUR_EYES" />
 	</setpoint>
 
 </cibet>   

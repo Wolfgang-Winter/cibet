@@ -4,7 +4,7 @@ Version 2.1
   
   * use named native queries instead of native queries
   
-  * new ControlEvent type UPDATEQUERY
+  * new ControlEvent type UPDATEQUERY for JPA update queries
   
   * use event SELECT instead of INVOKE for JPA select queries
   

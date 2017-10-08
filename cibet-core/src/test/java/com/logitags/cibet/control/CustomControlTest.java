@@ -45,7 +45,7 @@ public class CustomControlTest extends CoreTestBase {
 
       Setpoint s1 = Configuration.instance().getSetpoint("custControl/K2");
       Set<String> l = s1.getControls().get("TRUE").getIncludes();
-      Assert.assertEquals(0, l.size());
+      Assert.assertEquals(1, l.size());
       Set<String> l2 = s1.getControls().get("invoker").getIncludes();
       Assert.assertEquals(0, l2.size());
 
