@@ -41,6 +41,8 @@ public interface OwnerCheckCallback {
     *           the tenant in session scope
     * @param object
     *           the offending object
+    * @param ownerString
+    *           the owner string that is created from the entity and compared to the tenant in session scope
     */
-   void onOwnerCheckFailed(String tenant, Object object);
+   void onOwnerCheckFailed(String tenant, Object object, String ownerString);
 }

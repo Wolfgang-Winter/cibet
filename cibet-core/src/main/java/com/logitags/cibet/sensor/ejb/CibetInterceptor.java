@@ -45,7 +45,7 @@ public class CibetInterceptor implements Serializable {
     */
    private static final long serialVersionUID = 1L;
 
-   private Log log = LogFactory.getLog(CibetInterceptor.class);
+   private static Log log = LogFactory.getLog(CibetInterceptor.class);
 
    private EjbSensorExecutor defaultExecutor = new EjbDefaultSensorExecutor();
 

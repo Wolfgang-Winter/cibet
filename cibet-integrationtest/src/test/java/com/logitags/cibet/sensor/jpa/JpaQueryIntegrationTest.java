@@ -422,9 +422,13 @@ public class JpaQueryIntegrationTest extends DBHelper {
       List<TEntity> tlist = q.getResultList();
       Assert.assertEquals(1, tlist.size());
 
-      log.debug("entity.getId(): " + tlist.get(0).getId());
+      log.debug("##entity.getId(): " + tlist.get(0).getId());
 
       List<Archive> list = ArchiveLoader.loadArchives(qq);
+      for (Archive a : list) {
+         log.info(a);
+      }
+
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaQueryResource r = (JpaQueryResource) ar.getResource();

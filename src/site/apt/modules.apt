@@ -20,7 +20,7 @@ Cibet Modules
    
 * cibet-envers
 
-   This module integrates with {{{http://hibernate.org/orm/envers/}Hibernate Envers}} and must be included if the ENVERS actuator shall be applied. 
+   This module integrates with {{{http://hibernate.org/orm/envers/}Hibernate Envers}} and must be included if the ENVERS actuator is applied. 
    
 -------------------
          <dependency>
@@ -35,7 +35,7 @@ Cibet Modules
    
 * cibet-jpa
 
-   This module integrates with {{{http://download.oracle.com/otndocs/jcp/persistence-2.0-fr-oth-JSpec/}JPA}} and {{{http://www.oracle.com/technetwork/java/javase/jdbc/index.html}JDBC APIs}} and must be included if the JPA or JDBC sensors shall be applied. 
+   This module integrates with {{{http://download.oracle.com/otndocs/jcp/persistence-2.0-fr-oth-JSpec/}JPA}} and {{{http://www.oracle.com/technetwork/java/javase/jdbc/index.html}JDBC APIs}} and must be included if the JPA or JDBC sensors are used. 
    
 -------------------
          <dependency>
@@ -50,7 +50,7 @@ Cibet Modules
 
 * cibet-shiro   
 
-   This module integrates with {{{https://shiro.apache.org/}Apache Shiro}} and must be included if the SHIRO actuator shall be applied. 
+   This module integrates with {{{https://shiro.apache.org/}Apache Shiro}} and must be included if the SHIRO actuator is used. 
    
 -------------------
          <dependency>
@@ -66,7 +66,7 @@ Cibet Modules
 * cibet-springsecurity
 
    This module integrates with {{{https://projects.spring.io/spring-security/}Spring Security}} and must be included if the SPRINGSECURITY 
-   actuator shall be applied. 
+   actuator is used. 
    
 -------------------
          <dependency>

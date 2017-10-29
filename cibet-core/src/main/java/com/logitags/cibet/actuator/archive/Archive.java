@@ -67,13 +67,14 @@ import com.logitags.cibet.sensor.jpa.JpaResource;
  */
 @Entity
 @Table(name = "CIB_ARCHIVE")
-@NamedQueries({ @NamedQuery(name = Archive.SEL_ALL, query = "SELECT a FROM Archive a ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_BY_GROUPID, query = "SELECT a FROM Archive a WHERE a.resource.groupId = :groupId ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_ALL_BY_TENANT, query = "SELECT a FROM Archive a WHERE a.tenant LIKE :tenant ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_ALL_BY_CASEID, query = "SELECT a FROM Archive a WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_ALL_BY_CASEID_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.caseId = :caseId ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_ALL_BY_CLASS, query = "SELECT a FROM Archive a WHERE a.tenant LIKE :tenant AND a.resource.target = :targetType ORDER BY a.createDate"),
-      @NamedQuery(name = Archive.SEL_ALL_BY_CLASS_NO_TENANT, query = "SELECT a FROM Archive a WHERE a.resource.target = :targetType ORDER BY a.createDate") })
+@NamedQueries({
+      @NamedQuery(name = Archive.SEL_ALL, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters ORDER BY a.createDate"),
+      @NamedQuery(name = Archive.SEL_BY_GROUPID, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE r.groupId = :groupId ORDER BY a.createDate"),
+      @NamedQuery(name = Archive.SEL_ALL_BY_TENANT, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE a.tenant LIKE :tenant ORDER BY a.createDate"),
+      @NamedQuery(name = Archive.SEL_ALL_BY_CASEID, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate"),
+      @NamedQuery(name = Archive.SEL_ALL_BY_CASEID_NO_TENANT, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE a.caseId = :caseId ORDER BY a.createDate"),
+      @NamedQuery(name = Archive.SEL_ALL_BY_CLASS, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE a.tenant LIKE :tenant AND r.target = :targetType ORDER BY a.createDate"),
+      @NamedQuery(name = Archive.SEL_ALL_BY_CLASS_NO_TENANT, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE r.target = :targetType ORDER BY a.createDate") })
 @NamedNativeQueries({
       @NamedNativeQuery(name = Archive.SEL_BY_PRIMARYKEYID, query = "SELECT " + Archive.ARCHIVE
             + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND r.TARGET = ? AND r.PRIMARYKEYID = ? ORDER BY a.CREATEDATE", resultClass = Archive.class),
@@ -663,6 +664,36 @@ public class Archive implements Serializable {
     */
    public void setResource(Resource resource) {
       this.resource = resource;
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((archiveId == null) ? 0 : archiveId.hashCode());
+      return result;
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
+      Archive other = (Archive) obj;
+      if (archiveId == null) {
+         if (other.archiveId != null) return false;
+      } else if (!archiveId.equals(other.archiveId)) return false;
+      return true;
    }
 
 }

@@ -168,7 +168,7 @@ public class TutorialServlet1 extends HttpServlet {
       String info = "Person persisted with id " + person.getPersonId();
       log.info(info);
       PrintWriter writer = resp.getWriter();
-      writer.print(person.getPersonId());
+      writer.print("" + person.getPersonId());
       writer.close();
    }
 
@@ -254,7 +254,7 @@ public class TutorialServlet1 extends HttpServlet {
       String tenant = req.getParameter("TENANT");
       String user = req.getParameter("USER");
       Collection<GrantedAuthority> authList = new ArrayList<>();
-      authList.add(new SimpleGrantedAuthority(req.getParameter("ROLE")));
+      authList.add(new SimpleGrantedAuthority("ROLE_" + req.getParameter("ROLE")));
       Authentication request = new UsernamePasswordAuthenticationToken(user, "FIXED-PW", authList);
       SecurityContextHolder.getContext().setAuthentication(request);
 

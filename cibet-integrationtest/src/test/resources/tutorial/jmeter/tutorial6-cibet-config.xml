@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cibet xmlns="http://www.logitags.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.logitags.com  http://www.logitags.com/cibet/cibet-config_1.3.xsd">
+   xsi:schemaLocation="http://www.logitags.com  http://www.logitags.com/cibet/cibet-config_1.4.xsd"
+   name="tut6">
 
    <actuator name="LOADCONTROL">
       <properties>
@@ -16,7 +17,9 @@
 
    <setpoint id="SP1-servletFilter">
       <controls>
-         <target>http://localhost:8788/*</target>
+         <target>
+         	<include>http://localhost:8788/*</include>
+         </target>
       </controls>
       <actuator name="LOADCONTROL"/>
    </setpoint>

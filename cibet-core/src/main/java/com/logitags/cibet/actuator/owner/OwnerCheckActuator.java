@@ -26,6 +26,7 @@ package com.logitags.cibet.actuator.owner;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -61,7 +62,7 @@ public class OwnerCheckActuator extends AbstractActuator {
 
    private boolean throwWrongOwnerException = false;
 
-   private OwnerCheckCallback ownerCheckCallback;
+   private transient OwnerCheckCallback ownerCheckCallback;
 
    public OwnerCheckActuator() {
       setName(DEFAULTNAME);
@@ -190,11 +191,11 @@ public class OwnerCheckActuator extends AbstractActuator {
                + "]: resource owner '" + owner + "' does not start with Cibet comtext owner '" + tenant + "'";
          log.warn(err);
          if (throwWrongOwnerException) {
-            ctx.setException(new WrongOwnerException(resultObject, err));
+            ctx.setException(new WrongOwnerException(resultObject, err, owner));
          }
 
          if (ownerCheckCallback != null) {
-            ownerCheckCallback.onOwnerCheckFailed(tenant, resultObject);
+            ownerCheckCallback.onOwnerCheckFailed(tenant, resultObject, owner);
          }
          return false;
       }
@@ -220,7 +221,7 @@ public class OwnerCheckActuator extends AbstractActuator {
    }
 
    private void buildOwnerStack(Deque<String> stack, Object entity) {
-      List<Object> owners = getValuesOfAnnotatedField(entity);
+      List<Object> owners = getAnnotatedValues(entity);
       if (owners.isEmpty()) {
          log.debug(entity.getClass().getName() + " has no Owner annotation");
          return;
@@ -253,9 +254,9 @@ public class OwnerCheckActuator extends AbstractActuator {
       }
    }
 
-   public List<Object> getValuesOfAnnotatedField(Object obj) {
+   private List<Object> getAnnotatedValues(Object obj) {
       if (!ownerAnnotation.isAssignableFrom(Owner.class)) {
-         return AnnotationUtil.getValuesOfAnnotatedField(obj, ownerAnnotation);
+         return AnnotationUtil.getValuesOfAnnotatedFieldOrMethod(obj, ownerAnnotation);
       }
 
       Map<Integer, Object> map = new TreeMap<>();
@@ -277,7 +278,31 @@ public class OwnerCheckActuator extends AbstractActuator {
                      sequence++;
                   }
 
-                  log.debug("retrieved value from field annotation @Owner: " + value);
+                  log.debug("retrieved @Owner value from field " + field.getName() + ": " + value);
+               } catch (Exception e) {
+                  log.error(e.getMessage(), e);
+               }
+            }
+         }
+         clazz = clazz.getSuperclass();
+      }
+
+      clazz = obj.getClass();
+      while (clazz != null) {
+         Method[] m = clazz.getDeclaredMethods();
+         for (Method method : m) {
+            Owner annotation = method.getAnnotation(Owner.class);
+            if (annotation != null) {
+               try {
+                  Object value = method.invoke(obj);
+                  if (annotation.value() >= 0) {
+                     map.put(annotation.value(), value);
+                  } else {
+                     map.put(sequence, value);
+                     sequence++;
+                  }
+
+                  log.debug("retrieved @Owner value from method " + method.getName() + ": " + value);
                } catch (Exception e) {
                   log.error(e.getMessage(), e);
                }

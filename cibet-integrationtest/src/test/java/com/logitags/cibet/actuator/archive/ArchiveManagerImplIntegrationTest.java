@@ -642,6 +642,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       applEman.clear();
       Context.requestScope().getEntityManager().clear();
 
+      log.info("hhhhhhhh");
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity.class.getName(),
             String.valueOf(selEnt.getId()));
       Assert.assertEquals(3, list.size());

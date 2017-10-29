@@ -34,7 +34,7 @@ public class MyOwnerCheckCallback implements OwnerCheckCallback {
    private static Logger log = Logger.getLogger(MyOwnerCheckCallback.class);
 
    @Override
-   public void onOwnerCheckFailed(String tenant, Object entity) {
+   public void onOwnerCheckFailed(String tenant, Object entity, String os) {
       String mes = "CALLBACK: " + tenant + " : " + entity;
       log.info(mes);
       OwnerIntegrationTest.testString = mes;

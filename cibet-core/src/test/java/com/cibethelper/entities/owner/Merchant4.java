@@ -22,43 +22,61 @@
  * limitations under the License.
  *******************************************************************************
  */
-package com.logitags.cibet.actuator.owner;
+package com.cibethelper.entities.owner;
 
-import com.logitags.cibet.core.CibetException;
+import java.io.Serializable;
 
-public class WrongOwnerException extends CibetException {
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.logitags.cibet.actuator.owner.Owner;
+
+@Entity
+@Table(name = "TEST_MERCHANT")
+public class Merchant4 implements Serializable {
 
    /**
     * 
     */
    private static final long serialVersionUID = 1L;
 
-   private Object offendingEntity;
+   @Id
+   private long id;
 
-   private String ownerString;
+   @ManyToOne
+   @Owner
+   private Merchant4 parent;
 
-   public WrongOwnerException(Object entity, String err, String ownerString) {
-      super(err);
-      offendingEntity = entity;
-      this.ownerString = ownerString;
-   }
-
-   public WrongOwnerException(String err) {
-      super(err);
+   /**
+    * @return the id
+    */
+   public long getId() {
+      return id;
    }
 
    /**
-    * @return the offendingEntity
+    * @param id
+    *           the id to set
     */
-   public Object getOffendingEntity() {
-      return offendingEntity;
+   public void setId(long id) {
+      this.id = id;
    }
 
    /**
-    * @return the ownerString
+    * @return the parent
     */
-   public String getOwnerString() {
-      return ownerString;
+   public Merchant4 getParent() {
+      return parent;
+   }
+
+   /**
+    * @param parent
+    *           the parent to set
+    */
+   public void setParent(Merchant4 parent) {
+      this.parent = parent;
    }
 
 }

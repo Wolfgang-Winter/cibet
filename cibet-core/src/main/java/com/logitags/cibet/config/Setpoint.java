@@ -293,7 +293,8 @@ public class Setpoint implements Serializable {
    /**
     * adds the given values to a custom control control for inclusion.
     * 
-    * @param events
+    * @param controlName
+    * @param values
     */
    public Setpoint addCustomControlIncludes(String controlName, String... values) {
       if (controlName == null || values == null) {
@@ -315,7 +316,8 @@ public class Setpoint implements Serializable {
    /**
     * adds the given values to a custom control for exclusion.
     * 
-    * @param events
+    * @param controlName
+    * @param values
     */
    public Setpoint addCustomControlExcludes(String controlName, String... values) {
       if (controlName == null || values == null) {

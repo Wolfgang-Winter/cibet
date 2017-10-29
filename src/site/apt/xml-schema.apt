@@ -2,6 +2,7 @@
 [images/total.jpg]
 
 +-------------------
+<?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.logitags.com"
 	targetNamespace="http://www.logitags.com" elementFormDefault="qualified">
 
@@ -14,8 +15,10 @@
 				<element name="notificationProvider"
 					type="tns:ClassDefBinding" minOccurs="0" maxOccurs="1">
 				</element>
-                <element name="securityProvider" type="tns:ClassDefBinding" minOccurs="0" maxOccurs="1"></element>
-                <element name="control" minOccurs="0"
+				<element name="securityProvider"
+					type="tns:ClassDefBinding" minOccurs="0" maxOccurs="1">
+				</element>
+				<element name="control" minOccurs="0"
 					maxOccurs="unbounded" type="tns:ControlDefBinding">
 				</element>
 				<element name="actuator" type="tns:ActuatorBinding"
@@ -36,6 +39,7 @@
 				</element>
 
 			</sequence>
+			<attribute name="name" type="string" use="required"></attribute>
 		</complexType>
 
 		<key name="ControlDefBindingKey">
@@ -49,81 +53,53 @@
 		</key>
 
 		<keyref name="customControlKeyref" refer="tns:ControlDefBindingKey">
-			<selector xpath="tns:setpoint/tns:controls/tns:customControl" />
+			<selector xpath="tns:setpoint/tns:controls/tns:customControls/tns:customControl" />
 			<field xpath="@name" />
 		</keyref>
 
 	</element>
 
-	<complexType name="ControlsBinding">
-		<choice maxOccurs="unbounded" minOccurs="1">
-			<element name="tenant" type="token" minOccurs="0" maxOccurs="1" />
-
-			<element name="event" type="token" minOccurs="0" maxOccurs="1" />
-
-			<element name="target" type="token" maxOccurs="1" minOccurs="0">
-				<annotation>
-					<documentation>control for a class</documentation>
-				</annotation>
-			</element>
-
-			<element name="method" type="token" maxOccurs="1" minOccurs="0" />
-
-			<element name="invoker" type="tns:InExAttributeBinding"
-				maxOccurs="1" minOccurs="0">
-				<annotation>
-					<documentation>
-						comma separated list of class and methods from
-						which
-						the current method sensor was executed
-						which shall be included or
-						excluded into control
-					</documentation>
-				</annotation>
-			</element>
-
-			<element name="stateChange" type="tns:InExAttributeBinding"
-				maxOccurs="1" minOccurs="0">
-				<annotation>
-					<documentation>
-						comma separated list of class properties which
-						shall
-						be included or excluded into control
-					</documentation>
-				</annotation>
-			</element>
-
-			<element name="condition" type="token" maxOccurs="1"
-				minOccurs="0">
-				<annotation>
-					<documentation>
-						condition expression which must be fulfilled for
-						the
-						method to be included into control
-					</documentation>
-				</annotation>
-			</element>
-
-
-			<element name="customControl" type="tns:CustomControlBinding"
-				minOccurs="0" maxOccurs="unbounded"></element>
-		</choice>
-	</complexType>
-
-	<complexType name="PropertiesBinding">
+	<complexType name="ClassDefBinding">
 		<sequence>
-			<any processContents="skip" minOccurs="0" maxOccurs="unbounded">
-				<annotation>
-					<documentation>any property. A bean property of the same
-						name with
-						setter method must be present in the
-						implementation
-					</documentation>
-				</annotation>
-			</any>
+			<element name="class" type="token" minOccurs="1" maxOccurs="1"></element>
+			<element name="properties" type="tns:PropertiesBinding"
+				minOccurs="0" maxOccurs="1">
+			</element>
 		</sequence>
 	</complexType>
 
+	<complexType name="ControlDefBinding">
+		<sequence>
+			<element name="class" type="token" minOccurs="1" maxOccurs="1"></element>
+			<element name="properties" type="tns:PropertiesBinding"
+				minOccurs="0" maxOccurs="1">
+			</element>
+		</sequence>
+		<attribute name="name" type="token" use="required"></attribute>
+	</complexType>
+
+	<complexType name="ActuatorBinding">
+		<sequence>
+			<element name="class" type="token" maxOccurs="1" minOccurs="0">
+				<annotation>
+					<documentation>
+						full qualified actuator class
+					</documentation>
+				</annotation>
+			</element>
+			<element name="properties" type="tns:PropertiesBinding"
+				maxOccurs="1" minOccurs="0">
+				<annotation>
+					<documentation>actuator properties</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="name" type="token" use="required">
+			<annotation>
+				<documentation>unique name of the actuator.</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
 
 	<complexType name="SetpointBinding">
 		<sequence>
@@ -151,27 +127,74 @@
 		<attribute name="extends" type="IDREF" use="optional" />
 	</complexType>
 
-	<complexType name="ActuatorBinding">
-		<sequence>
-			<element name="class" type="token" maxOccurs="1" minOccurs="0">
+	<complexType name="ControlsBinding">
+		<all>
+			<element name="tenant" type="tns:InExBinding"  minOccurs="0" />
+
+			<element name="event" type="tns:InExBinding" minOccurs="0" />
+
+			<element name="target" type="tns:InExBinding" minOccurs="0">
+				<annotation>
+					<documentation>control for a class</documentation>
+				</annotation>
+			</element>
+
+			<element name="method" type="tns:InExBinding"  minOccurs="0" />
+
+			<element name="invoker" type="tns:InExBinding" minOccurs="0">
 				<annotation>
 					<documentation>
-						full qualified actuator class
+						comma separated list of class and methods from
+						which
+						the current method sensor was executed
+						which shall be included or
+						excluded into control
 					</documentation>
 				</annotation>
 			</element>
-			<element name="properties" type="tns:PropertiesBinding"
-				maxOccurs="1" minOccurs="0">
+
+			<element name="stateChange" type="tns:InExBinding" minOccurs="0">
 				<annotation>
-					<documentation>actuator properties</documentation>
+					<documentation>
+						comma separated list of class properties which
+						shall
+						be included or excluded into control
+					</documentation>
 				</annotation>
 			</element>
+
+			<element name="condition" type="tns:InExBinding" minOccurs="0">
+				<annotation>
+					<documentation>
+						condition expression which must be fulfilled for
+						the
+						method to be included into control
+					</documentation>
+				</annotation>
+			</element>
+
+			<element name="customControls" minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="customControl" type="tns:CustomControlBinding" minOccurs="1" maxOccurs="unbounded"></element>
+					</sequence>
+				</complexType>
+			</element>
+		</all>
+	</complexType>
+
+	<complexType name="PropertiesBinding">
+		<sequence>
+			<any processContents="skip" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>any property. A bean property of the same
+						name with
+						setter method must be present in the
+						implementation
+					</documentation>
+				</annotation>
+			</any>
 		</sequence>
-		<attribute name="name" type="token" use="required">
-			<annotation>
-				<documentation>unique name of the actuator.</documentation>
-			</annotation>
-		</attribute>
 	</complexType>
 
 	<complexType name="SetpointActuatorBinding">
@@ -182,41 +205,20 @@
 		</attribute>
 	</complexType>
 
-	<complexType name="InExAttributeBinding">
-		<simpleContent>
-			<extension base="token">
-				<attribute name="exclude" type="boolean" default="false"
-					use="optional"></attribute>
-			</extension>
-		</simpleContent>
+	<complexType name="InExBinding">
+		<choice minOccurs="1" maxOccurs="unbounded">
+			<element name="include" type="token" minOccurs="0" maxOccurs="unbounded"></element>
+			<element name="exclude" type="token" minOccurs="0" maxOccurs="unbounded"></element>
+		</choice>
 	</complexType>
 
-	<complexType name="ControlDefBinding">
-		<sequence>
-			<element name="class" type="token" minOccurs="1" maxOccurs="1"></element>
-			<element name="properties" type="tns:PropertiesBinding"
-				minOccurs="0" maxOccurs="1">
-			</element>
-		</sequence>
-		<attribute name="name" type="token" use="required"></attribute>
-	</complexType>
-
-	<complexType name="ClassDefBinding">
-		<sequence>
-			<element name="class" type="token" minOccurs="1" maxOccurs="1"></element>
-			<element name="properties" type="tns:PropertiesBinding"
-				minOccurs="0" maxOccurs="1">
-			</element>
-		</sequence>
-	</complexType>
-
-
-	<complexType name="CustomControlBinding">
-		<simpleContent>
-			<extension base="token">
+    <complexType name="CustomControlBinding" >
+    	<complexContent>
+    		<extension base="tns:InExBinding">
 				<attribute name="name" type="token" use="required"></attribute>
-			</extension>
-		</simpleContent>
-	</complexType>
+    		</extension>
+    	</complexContent>
+    </complexType>
+    
 </schema>
 +-------------------

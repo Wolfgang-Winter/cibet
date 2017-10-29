@@ -34,6 +34,7 @@ import com.cibethelper.entities.owner.Company;
 import com.cibethelper.entities.owner.Merchant;
 import com.cibethelper.entities.owner.Merchant2;
 import com.cibethelper.entities.owner.Merchant3;
+import com.cibethelper.entities.owner.Merchant4;
 import com.cibethelper.entities.owner.Product;
 import com.cibethelper.entities.owner.Product2;
 import com.cibethelper.entities.owner.Transaction;
@@ -60,6 +61,10 @@ public class OwnerTest {
       String token = (String) m.invoke(actuator, m2);
       log.info("owner token = " + token);
       Assert.assertEquals("Ralf|1|2", token);
+
+      token = (String) m.invoke(actuator, m1);
+      log.info("owner token = " + token);
+      Assert.assertEquals("Ralf|1", token);
    }
 
    @Test
@@ -140,6 +145,36 @@ public class OwnerTest {
       String token = (String) m.invoke(actuator, txn);
       log.info("owner token = " + token);
       Assert.assertEquals("ten1|2|DE|1|3", token);
+
+      token = (String) m.invoke(actuator, m2);
+      log.info("owner token = " + token);
+      Assert.assertEquals("ten1|2", token);
+
+      token = (String) m.invoke(actuator, m1);
+      log.info("owner token = " + token);
+      Assert.assertEquals("ten1|2|DE|1", token);
+   }
+
+   @Test
+   public void testOwner6() throws Exception {
+      Merchant4 m1 = new Merchant4();
+      m1.setId(1);
+
+      Merchant4 m2 = new Merchant4();
+      m2.setId(2);
+      m2.setParent(m1);
+
+      OwnerCheckActuator actuator = new OwnerCheckActuator();
+
+      Method m = OwnerCheckActuator.class.getDeclaredMethod("buildOwnerString", Object.class);
+      m.setAccessible(true);
+      String token = (String) m.invoke(actuator, m1);
+      log.info("owner token = " + token);
+      Assert.assertEquals("1", token);
+
+      token = (String) m.invoke(actuator, m2);
+      log.info("owner token = " + token);
+      Assert.assertEquals("1|2", token);
    }
 
 }

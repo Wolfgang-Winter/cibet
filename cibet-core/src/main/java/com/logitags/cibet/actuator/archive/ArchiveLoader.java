@@ -16,6 +16,7 @@ package com.logitags.cibet.actuator.archive;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -57,8 +58,11 @@ public abstract class ArchiveLoader {
       Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       List<Archive> list = (List<Archive>) query.getResultList();
-      decrypt(list);
-      return list;
+      // make distinct
+      Set<Archive> s = new LinkedHashSet<>(list);
+      List<Archive> list2 = new ArrayList<>(s);
+      decrypt(list2);
+      return list2;
    }
 
    /**
@@ -69,8 +73,11 @@ public abstract class ArchiveLoader {
    public static List<Archive> loadAllArchives() {
       Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL);
       List<Archive> list = (List<Archive>) query.getResultList();
-      decrypt(list);
-      return list;
+      // make distinct
+      Set<Archive> s = new LinkedHashSet<>(list);
+      List<Archive> list2 = new ArrayList<>(s);
+      decrypt(list2);
+      return list2;
    }
 
    /**
@@ -86,8 +93,11 @@ public abstract class ArchiveLoader {
       query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       query.setParameter("targetType", target);
       List<Archive> list = (List<Archive>) query.getResultList();
-      decrypt(list);
-      return list;
+      // make distinct
+      Set<Archive> s = new LinkedHashSet<>(list);
+      List<Archive> list2 = new ArrayList<>(s);
+      decrypt(list2);
+      return list2;
    }
 
    /**
@@ -103,8 +113,11 @@ public abstract class ArchiveLoader {
             .createNamedQuery(Archive.SEL_ALL_BY_CLASS_NO_TENANT);
       query.setParameter("targetType", target);
       List<Archive> list = (List<Archive>) query.getResultList();
-      decrypt(list);
-      return list;
+      // make distinct
+      Set<Archive> s = new LinkedHashSet<>(list);
+      List<Archive> list2 = new ArrayList<>(s);
+      decrypt(list2);
+      return list2;
    }
 
    /**
@@ -119,8 +132,11 @@ public abstract class ArchiveLoader {
       query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       query.setParameter("caseId", caseId);
       List<Archive> list = (List<Archive>) query.getResultList();
-      decrypt(list);
-      return list;
+      // make distinct
+      Set<Archive> s = new LinkedHashSet<>(list);
+      List<Archive> list2 = new ArrayList<>(s);
+      decrypt(list2);
+      return list2;
    }
 
    /**
@@ -135,8 +151,11 @@ public abstract class ArchiveLoader {
             .createNamedQuery(Archive.SEL_ALL_BY_CASEID_NO_TENANT);
       query.setParameter("caseId", caseId);
       List<Archive> list = (List<Archive>) query.getResultList();
-      decrypt(list);
-      return list;
+      // make distinct
+      Set<Archive> s = new LinkedHashSet<>(list);
+      List<Archive> list2 = new ArrayList<>(s);
+      decrypt(list2);
+      return list2;
    }
 
    /**
@@ -226,8 +245,11 @@ public abstract class ArchiveLoader {
             .createNamedQuery(Archive.SEL_BY_GROUPID, Archive.class);
       query.setParameter("groupId", groupId);
       List<Archive> list = query.getResultList();
-      decrypt(list);
-      return list;
+      // make distinct
+      Set<Archive> s = new LinkedHashSet<>(list);
+      List<Archive> list2 = new ArrayList<>(s);
+      decrypt(list2);
+      return list2;
    }
 
    /**

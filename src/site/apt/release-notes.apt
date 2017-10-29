@@ -12,7 +12,11 @@ Version 2.1
   
   * naming of cibet-configs to prevent overriding of setpoints in different files  
 
-  * MethodControl: possible to declare only a methodname without class
+  * MethodControl: possible to declare only a method name without class
+  
+  * new actuator OwnerCheck to control that the logged in user is allowed to manipulate an entity with a tenant/owner  
+  
+  * Bugfix: return non-static ObjectDiffer as it is not threadsafe in CibetUtil.getObjectDiffer()
      
 
 Version 2.0 (2.7.2017)

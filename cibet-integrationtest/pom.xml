@@ -278,6 +278,13 @@
          <scope>test</scope>
       </dependency>
       		
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+			<version>2.4.2</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<dependencyManagement>
@@ -440,9 +447,9 @@
 						<version>2.16</version>
 						<configuration>
 							<includes>
-								<include>**/http/*IT.java</include>
+<!-- 								<include>**/http/*IT.java</include> -->
 <!-- 								<include>**/it/*IT.java</include> -->
-<!-- 								<include>**/*Test.java</include> -->
+								<include>**/*Test.java</include>
 <!--                         <include>com/logitags/cibet/sensor/jdbc/driver/*.java</include> -->
 <!--                         <include>**/JdbcStateChangeIntegrationTest.java</include> -->
 							</includes>
@@ -591,12 +598,12 @@
 
 			<dependencies>
 
-				<dependency>
-					<groupId>org.eclipse.persistence</groupId>
-					<artifactId>eclipselink</artifactId>
-					<version>2.4.2</version>
-					<scope>test</scope>
-				</dependency>
+<!-- 				<dependency> -->
+<!-- 					<groupId>org.eclipse.persistence</groupId> -->
+<!-- 					<artifactId>eclipselink</artifactId> -->
+<!-- 					<version>2.4.2</version> -->
+<!-- 					<scope>test</scope> -->
+<!-- 				</dependency> -->
 
 				<dependency>
 					<groupId>org.jboss.arquillian.container</groupId>

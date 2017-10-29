@@ -111,8 +111,9 @@ public class DBHelper extends CoreTestBase {
          // applEman.getTransaction().commit();
       }
 
-      // if (1 == 1)
-      // return;
+      // Context.end();
+
+      // if (1 == 1) return;
 
       Context.internalRequestScope().getEntityManager().clear();
       applEman.clear();
@@ -122,7 +123,9 @@ public class DBHelper extends CoreTestBase {
       Query q = applEman.createNamedQuery(TComplexEntity.SEL_ALL);
       List<TComplexEntity> l = q.getResultList();
       for (TComplexEntity tComplexEntity : l) {
-         applEman.remove(tComplexEntity);
+         TComplexEntity t2 = applEman.merge(tComplexEntity);
+         // applEman.remove(tComplexEntity);
+         applEman.remove(t2);
       }
 
       Query q1 = applEman.createNamedQuery(TComplexEntity2.SEL_ALL);

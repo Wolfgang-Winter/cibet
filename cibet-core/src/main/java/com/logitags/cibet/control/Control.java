@@ -34,6 +34,7 @@ public interface Control {
     * evaluates the include or exclude control values against the metadata.
     * 
     * @param values
+    *           the values of the control as configured
     * @param metadata
     * @return true if matches, false if not matches, null if not applicable
     */

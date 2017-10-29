@@ -62,7 +62,7 @@ public abstract class Controller {
          for (ConcreteControl cc : sp.getEffectiveControls()) {
             // if (!cc.getIncludes().isEmpty()) {
             Boolean result = cc.getControl().evaluate(cc.getIncludes(), metadata);
-            if (result == Boolean.FALSE) {
+            if (Boolean.FALSE.equals(result)) {
                matches = false;
                if (log.isDebugEnabled()) {
                   log.debug("Setpoint " + sp.getId() + " --> " + cc.getControl().getName() + " (includes) fails!");
@@ -73,7 +73,7 @@ public abstract class Controller {
 
             // if (!cc.getExcludes().isEmpty()) {
             result = cc.getControl().evaluate(cc.getExcludes(), metadata);
-            if (result == Boolean.TRUE) {
+            if (Boolean.TRUE.equals(result)) {
                matches = false;
                if (log.isDebugEnabled()) {
                   log.debug("Setpoint " + sp.getId() + " --> " + cc.getControl().getName() + " (excludes) fails!");

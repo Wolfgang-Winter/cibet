@@ -126,7 +126,8 @@ public class AnnotationUtil {
    }
 
    /**
-    * Iterates over all methods and search for the given annotation including methods of parent classes
+    * Iterates over all methods and search for the given annotation including methods of parent classes. Returns the
+    * first occurrence
     * 
     * @param obj
     * @param annotationClass
@@ -135,6 +136,29 @@ public class AnnotationUtil {
     */
    private static Object getValueOfAnnotatedMethod(Object obj, Class<? extends Annotation> annotationClass)
          throws AnnotationNotFoundException {
+      List<Object> values = getValuesOfAnnotatedMethod(obj, annotationClass);
+
+      if (values.isEmpty()) {
+         String msg = "No annotation " + annotationClass.getName() + " found in methods of class "
+               + obj.getClass().getName();
+         log.info(msg);
+         throw new AnnotationNotFoundException(msg);
+      } else {
+         return values.get(0);
+      }
+   }
+
+   /**
+    * Iterates over all methods and search for the given annotation including methods of parent classes. Returns all
+    * occurrences
+    * 
+    * @param obj
+    * @param annotationClass
+    * @return
+    */
+   private static List<Object> getValuesOfAnnotatedMethod(Object obj, Class<? extends Annotation> annotationClass) {
+      List<Object> values = new ArrayList<>();
+
       Class<?> clazz = obj.getClass();
       while (clazz != null) {
          Method[] m = clazz.getDeclaredMethods();
@@ -142,9 +166,9 @@ public class AnnotationUtil {
             Annotation annotation = method.getAnnotation(annotationClass);
             if (annotation != null) {
                try {
-                  Object value = (Object) method.invoke(obj, (Object[]) null);
+                  Object value = method.invoke(obj);
+                  values.add(value);
                   log.debug("retrieved value from method annotation " + annotationClass.getName() + ": " + value);
-                  return value;
                } catch (Exception e) {
                   log.error(e.getMessage(), e);
                }
@@ -153,10 +177,22 @@ public class AnnotationUtil {
          clazz = clazz.getSuperclass();
       }
 
-      String msg = "No annotation " + annotationClass.getName() + " found in methods of class "
-            + obj.getClass().getName();
-      log.info(msg);
-      throw new AnnotationNotFoundException(msg);
+      return values;
+   }
+
+   /**
+    * Return all values of annotated fields or methods.
+    * 
+    * @param obj
+    * @param annotationClass
+    * @return
+    * @throws AnnotationNotFoundException
+    */
+   public static List<Object> getValuesOfAnnotatedFieldOrMethod(Object obj,
+         Class<? extends Annotation> annotationClass) {
+      List<Object> list = getValuesOfAnnotatedField(obj, annotationClass);
+      list.addAll(getValuesOfAnnotatedMethod(obj, annotationClass));
+      return list;
    }
 
    private static Class<?> getTypeOfAnnotatedMethod(Class<?> clazz, Class<? extends Annotation> annotationClass)
@@ -292,7 +328,8 @@ public class AnnotationUtil {
    }
 
    /**
-    * Iterates over all fields and search for the annotation including fields of parent classes
+    * Iterates over all fields and search for the annotation including fields of parent classes. Returns the first
+    * occurrence
     * 
     * @param obj
     * @param annotationClass
@@ -301,31 +338,25 @@ public class AnnotationUtil {
     */
    public static Object getValueOfAnnotatedField(Object obj, Class<? extends Annotation> annotationClass)
          throws AnnotationNotFoundException {
-      Class<?> clazz = obj.getClass();
-      while (clazz != null) {
-         Field[] f = clazz.getDeclaredFields();
-         for (Field field : f) {
-            Object annotation = field.getAnnotation(annotationClass);
-            if (annotation != null) {
-               field.setAccessible(true);
-               try {
-                  Object id = (Object) field.get(obj);
-                  log.debug("retrieved value from field annotation " + annotationClass.getName() + ": " + id);
-                  return id;
-               } catch (Exception e) {
-                  log.error(e.getMessage(), e);
-               }
-            }
-         }
-         clazz = clazz.getSuperclass();
+      List<Object> values = getValuesOfAnnotatedField(obj, annotationClass);
+      if (values.isEmpty()) {
+         String msg = "No annotation " + annotationClass.getName() + " found in fields of class "
+               + obj.getClass().getName();
+         log.info(msg);
+         throw new AnnotationNotFoundException(msg);
+      } else {
+         return values.get(0);
       }
-
-      String msg = "No annotation " + annotationClass.getName() + " found in fields of class "
-            + obj.getClass().getName();
-      log.info(msg);
-      throw new AnnotationNotFoundException(msg);
    }
 
+   /**
+    * Iterates over all fields and search for the annotation including fields of parent classes. Returns all
+    * occurrences.
+    * 
+    * @param obj
+    * @param annotationClass
+    * @return
+    */
    public static List<Object> getValuesOfAnnotatedField(Object obj, Class<? extends Annotation> annotationClass) {
       List<Object> values = new ArrayList<>();
 
