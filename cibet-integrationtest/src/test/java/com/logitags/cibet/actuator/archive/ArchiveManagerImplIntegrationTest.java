@@ -1017,13 +1017,6 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
 
-      // TComplexEntity selEnt2 = applEman.find(TComplexEntity.class, ce.getId());
-      // TEntity e8 = new TEntity("val8", 8, TENANT);
-      // selEnt2.addLazyList(e8);
-      // selEnt2 = applEman.merge(selEnt2);
-      // applEman.flush();
-      // applEman.clear();
-
       log.debug("now compare");
       List<Archive> ali = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity2.class.getName(), selEnt.getId());
       Map<Archive, List<Difference>> map = ArchiveLoader.analyzeDifferences(ali);
@@ -1072,13 +1065,6 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
 
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
-
-      // TComplexEntity selEnt2 = applEman.find(TComplexEntity.class, ce.getId());
-      // TEntity e8 = new TEntity("val8", 8, TENANT);
-      // selEnt2.addLazyList(e8);
-      // selEnt2 = applEman.merge(selEnt2);
-      // applEman.flush();
-      // applEman.clear();
 
       log.debug("now compare");
       List<Archive> ali = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity2.class.getName(), selEnt.getId());

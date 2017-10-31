@@ -10,7 +10,8 @@ B. Build cibet release
 
 1. in pom.xml of cibet-parent set correct version and execute mvn versions:update-child-modules
 2. in release-notes.apt: set correct version date
-3. copy reference guide pdf from cibet-material to src/site/resources
+3. copy reference guide pdf and diff pdf from cibet-material to src/site/resources
+   copy tutorial pdf from cibet-material to src/site/resources
 4. git commit --> commit everything to git
 5. set git tag
    mvn clean install with db=derby , skipTests=true , profiles jboss , resolve Workspace artifacts=true

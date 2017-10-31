@@ -17,6 +17,10 @@ Version 2.1
   * new actuator OwnerCheck to control that the logged in user is allowed to manipulate an entity with a tenant/owner  
   
   * Bugfix: return non-static ObjectDiffer as it is not threadsafe in CibetUtil.getObjectDiffer()
+  
+  * performance tuning for ArchiveLoader queries
+  
+  * implementing own controls simplified
      
 
 Version 2.0 (2.7.2017)

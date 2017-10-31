@@ -400,10 +400,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertNotNull(selEnt);
       Assert.assertEquals(5, selEnt.getCounter());
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
-      q.setParameter(1, TEntity.class.getName());
-      q.setParameter(2, String.valueOf(entity.getId()));
-      List<Archive> list = q.getResultList();
+      List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TEntity.class.getName(),
+            String.valueOf(entity.getId()));
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       Assert.assertEquals(TEntity.class.getName(), ar.getResource().getTarget());
@@ -533,10 +531,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Context.end();
       Context.start();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
-      q.setParameter(1, TEntity.class.getName());
-      q.setParameter(2, String.valueOf(entity.getId()));
-      List<Archive> list = q.getResultList();
+      List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TEntity.class.getName(),
+            String.valueOf(entity.getId()));
       Assert.assertEquals(2, list.size());
       JpaResource res = (JpaResource) list.get(0).getResource();
       JpaResource res1 = (JpaResource) list.get(1).getResource();
@@ -705,10 +701,9 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       TEntity selEnt = applEman.find(TEntity.class, entity.getId());
       Assert.assertNull("entity with id " + entity.getId() + " not deleted", selEnt);
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
-      q.setParameter(1, TEntity.class.getName());
-      q.setParameter(2, String.valueOf(entity.getId()));
-      List<Archive> list = q.getResultList();
+      List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TEntity.class.getName(),
+            String.valueOf(entity.getId()));
+
       Assert.assertEquals(2, list.size());
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
       Assert.assertEquals(ControlEvent.DELETE, list.get(1).getControlEvent());
@@ -766,10 +761,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       TComplexEntity ce = createTComplexEntity();
       applEman.persist(ce);
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
-      q.setParameter(1, TComplexEntity.class.getName());
-      q.setParameter(2, String.valueOf(ce.getId()));
-      List<Archive> list = q.getResultList();
+      List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity.class.getName(),
+            String.valueOf(ce.getId()));
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);
       JpaResource res = (JpaResource) ar.getResource();

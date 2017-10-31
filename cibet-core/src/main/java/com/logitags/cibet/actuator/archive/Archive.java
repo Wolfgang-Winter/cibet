@@ -74,10 +74,12 @@ import com.logitags.cibet.sensor.jpa.JpaResource;
       @NamedQuery(name = Archive.SEL_ALL_BY_CASEID, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CASEID_NO_TENANT, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE a.caseId = :caseId ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CLASS, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE a.tenant LIKE :tenant AND r.target = :targetType ORDER BY a.createDate"),
+      @NamedQuery(name = Archive.SEL_BY_PRIMARYKEYID, query = "SELECT a, r FROM Archive a, JpaResource r LEFT JOIN FETCH r.parameters "
+            + "WHERE a.resource = r AND r.target = ? AND r.primaryKeyId = ? ORDER BY a.createDate"),
+
       @NamedQuery(name = Archive.SEL_ALL_BY_CLASS_NO_TENANT, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE r.target = :targetType ORDER BY a.createDate") })
+
 @NamedNativeQueries({
-      @NamedNativeQuery(name = Archive.SEL_BY_PRIMARYKEYID, query = "SELECT " + Archive.ARCHIVE
-            + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND r.TARGET = ? AND r.PRIMARYKEYID = ? ORDER BY a.CREATEDATE", resultClass = Archive.class),
       @NamedNativeQuery(name = Archive.SEL_BY_METHODNAME, query = "SELECT " + Archive.ARCHIVE
             + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND a.TENANT LIKE ? AND r.TARGET = ? AND r.METHOD = ? ORDER BY a.CREATEDATE", resultClass = Archive.class),
       @NamedNativeQuery(name = Archive.SEL_BY_METHODNAME_NO_TENANT, query = "SELECT " + Archive.ARCHIVE

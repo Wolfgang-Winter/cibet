@@ -15,9 +15,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -28,7 +30,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 
@@ -339,10 +340,11 @@ public class CibetTestEJB {
    public List<Archive> queryArchive(String tenant, String targetType, String objectId) {
       EntityManager em = Context.requestScope().getEntityManager();
       em.clear();
-      TypedQuery<Archive> q = em.createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
-      q.setParameter(1, targetType);
-      q.setParameter(2, objectId);
-      return q.getResultList();
+      // TypedQuery<Archive> q = em.createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      // q.setParameter(1, targetType);
+      // q.setParameter(2, objectId);
+      // return q.getResultList();
+      return ArchiveLoader.loadArchivesByPrimaryKeyId(targetType, objectId);
    }
 
    public List<Archive> loadArchives(String targetType) {
@@ -359,7 +361,12 @@ public class CibetTestEJB {
       em.clear();
       Query q = em.createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
-      return q.getResultList();
+      List<Archive> list = q.getResultList();
+
+      // make distinct
+      Set<Archive> s = new LinkedHashSet<>(list);
+      List<Archive> list2 = new ArrayList<>(s);
+      return list2;
    }
 
    public List<Archive> queryArchives() {

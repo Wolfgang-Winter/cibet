@@ -220,17 +220,36 @@ public abstract class ArchiveLoader {
     * @return list of Archives
     */
    public static List<Archive> loadArchivesByPrimaryKeyId(String target, Object primaryKeyId) {
-      TypedQuery<Archive> query = Context.internalRequestScope().getEntityManager()
-            .createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
+      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
       query.setParameter(1, target);
       if (primaryKeyId == null) {
          query.setParameter(2, null);
       } else {
          query.setParameter(2, primaryKeyId.toString());
       }
-      List<Archive> list = query.getResultList();
-      decrypt(list);
-      return list;
+
+      List<Archive> returnList;
+
+      List<?> resultList = query.getResultList();
+      log.info("resultList class: " + resultList.getClass().getName());
+
+      if (resultList.isEmpty()) {
+         return Collections.emptyList();
+      } else if (resultList.get(0) instanceof Object[]) {
+         List<Object[]> list = (List<Object[]>) resultList;
+         Set<Archive> set = new LinkedHashSet<>();
+         for (Object[] ob : list) {
+            set.add((Archive) ob[0]);
+         }
+
+         returnList = new ArrayList<>(set);
+
+      } else {
+         returnList = (List<Archive>) resultList;
+      }
+
+      decrypt(returnList);
+      return returnList;
    }
 
    /**
