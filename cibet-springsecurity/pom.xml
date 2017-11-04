@@ -9,9 +9,7 @@
 	<artifactId>cibet-springsecurity</artifactId>
 	
 	<properties>
-<!-- 		<spring.version>3.2.10.RELEASE</spring.version> -->
-		<spring.version>4.0.4.RELEASE</spring.version>
-<!-- 		<spring.version>4.2.3.RELEASE</spring.version> -->
+		<spring.version>4.2.3.RELEASE</spring.version>
 	</properties>
 
 	<dependencies>

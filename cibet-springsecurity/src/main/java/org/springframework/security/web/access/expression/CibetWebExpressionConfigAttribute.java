@@ -13,8 +13,7 @@ package org.springframework.security.web.access.expression;
 
 import org.springframework.expression.Expression;
 
-public class CibetWebExpressionConfigAttribute extends
-      WebExpressionConfigAttribute {
+public class CibetWebExpressionConfigAttribute extends WebExpressionConfigAttribute {
 
    /**
     * 
@@ -22,7 +21,7 @@ public class CibetWebExpressionConfigAttribute extends
    private static final long serialVersionUID = 1268575719783709427L;
 
    public CibetWebExpressionConfigAttribute(Expression authorizeExpression) {
-      super(authorizeExpression);
+      super(authorizeExpression, null);
    }
 
 }
