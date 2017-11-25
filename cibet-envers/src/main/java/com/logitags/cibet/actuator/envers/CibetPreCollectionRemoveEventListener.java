@@ -26,33 +26,29 @@ package com.logitags.cibet.actuator.envers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.envers.configuration.AuditConfiguration;
-import org.hibernate.envers.event.EnversPreCollectionRemoveEventListenerImpl;
+import org.hibernate.envers.configuration.spi.AuditConfiguration;
+import org.hibernate.envers.event.spi.EnversPreCollectionRemoveEventListenerImpl;
 import org.hibernate.event.spi.PreCollectionRemoveEvent;
 
 import com.logitags.cibet.context.Context;
 
-public class CibetPreCollectionRemoveEventListener extends
-      EnversPreCollectionRemoveEventListenerImpl {
+public class CibetPreCollectionRemoveEventListener extends EnversPreCollectionRemoveEventListenerImpl {
 
    /**
-    * 
+    *  
     */
    private static final long serialVersionUID = 1L;
 
-   private transient Log log = LogFactory
-         .getLog(CibetPreCollectionRemoveEventListener.class);
+   private transient Log log = LogFactory.getLog(CibetPreCollectionRemoveEventListener.class);
 
-   protected CibetPreCollectionRemoveEventListener(
-         AuditConfiguration enversConfiguration) {
+   protected CibetPreCollectionRemoveEventListener(AuditConfiguration enversConfiguration) {
       super(enversConfiguration);
    }
 
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.hibernate.envers.event.EnversPreCollectionRemoveEventListenerImpl#
+    * @see org.hibernate.envers.event.EnversPreCollectionRemoveEventListenerImpl#
     * onPreRemoveCollection(org.hibernate.event.spi.PreCollectionRemoveEvent)
     */
    @Override

@@ -26,22 +26,20 @@ package com.logitags.cibet.actuator.envers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.envers.configuration.AuditConfiguration;
-import org.hibernate.envers.event.EnversPostDeleteEventListenerImpl;
+import org.hibernate.envers.configuration.spi.AuditConfiguration;
+import org.hibernate.envers.event.spi.EnversPostDeleteEventListenerImpl;
 import org.hibernate.event.spi.PostDeleteEvent;
 
 import com.logitags.cibet.context.Context;
 
-public class CibetPostDeleteEventListener extends
-      EnversPostDeleteEventListenerImpl {
+public class CibetPostDeleteEventListener extends EnversPostDeleteEventListenerImpl {
 
    /**
     * 
     */
    private static final long serialVersionUID = 1L;
 
-   private transient Log log = LogFactory
-         .getLog(CibetPostDeleteEventListener.class);
+   private transient Log log = LogFactory.getLog(CibetPostDeleteEventListener.class);
 
    protected CibetPostDeleteEventListener(AuditConfiguration enversConfiguration) {
       super(enversConfiguration);
@@ -50,8 +48,7 @@ public class CibetPostDeleteEventListener extends
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.hibernate.envers.event.EnversPostDeleteEventListenerImpl#onPostDelete
+    * @see org.hibernate.envers.event.EnversPostDeleteEventListenerImpl#onPostDelete
     * (org.hibernate.event.spi.PostDeleteEvent)
     */
    @Override

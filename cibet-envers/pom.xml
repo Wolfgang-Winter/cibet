@@ -17,10 +17,9 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-envers</artifactId>
-<!-- 			<version>4.2.15.Final</version> -->
 <!-- 			<version>5.0.0.Final</version> -->
-			<version>4.2.21.Final</version>
-<!-- 			<version>4.3.0.Final</version> -->
+<!-- 			<version>4.2.21.Final</version> -->
+			<version>4.3.11.Final</version>
 			<type>jar</type>
 		</dependency>
 

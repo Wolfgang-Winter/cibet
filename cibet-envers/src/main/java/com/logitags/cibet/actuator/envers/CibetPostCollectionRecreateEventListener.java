@@ -26,25 +26,22 @@ package com.logitags.cibet.actuator.envers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.envers.configuration.AuditConfiguration;
-import org.hibernate.envers.event.EnversPostCollectionRecreateEventListenerImpl;
+import org.hibernate.envers.configuration.spi.AuditConfiguration;
+import org.hibernate.envers.event.spi.EnversPostCollectionRecreateEventListenerImpl;
 import org.hibernate.event.spi.PostCollectionRecreateEvent;
 
 import com.logitags.cibet.context.Context;
 
-public class CibetPostCollectionRecreateEventListener extends
-      EnversPostCollectionRecreateEventListenerImpl {
+public class CibetPostCollectionRecreateEventListener extends EnversPostCollectionRecreateEventListenerImpl {
 
    /**
     * 
     */
    private static final long serialVersionUID = 1L;
 
-   private transient Log log = LogFactory
-         .getLog(CibetPostCollectionRecreateEventListener.class);
+   private transient Log log = LogFactory.getLog(CibetPostCollectionRecreateEventListener.class);
 
-   protected CibetPostCollectionRecreateEventListener(
-         AuditConfiguration enversConfiguration) {
+   protected CibetPostCollectionRecreateEventListener(AuditConfiguration enversConfiguration) {
 
       super(enversConfiguration);
    }
@@ -52,17 +49,14 @@ public class CibetPostCollectionRecreateEventListener extends
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * org.hibernate.envers.event.EnversPostCollectionRecreateEventListenerImpl
-    * #onPostRecreateCollection
+    * @see org.hibernate.envers.event.EnversPostCollectionRecreateEventListenerImpl #onPostRecreateCollection
     * (org.hibernate.event.spi.PostCollectionRecreateEvent)
     */
    @Override
    public void onPostRecreateCollection(PostCollectionRecreateEvent event) {
       String entityName = event.getAffectedOwnerEntityName();
       if (!Context.internalRequestScope().isAuditedByEnvers()) {
-         log.debug(entityName
-               + " owner entity NOT audited by Cibet configuration");
+         log.debug(entityName + " owner entity NOT audited by Cibet configuration");
          return;
       } else {
          log.debug(entityName + " owner entity audited by Cibet configuration");

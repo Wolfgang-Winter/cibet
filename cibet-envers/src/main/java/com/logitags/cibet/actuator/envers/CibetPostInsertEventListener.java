@@ -26,22 +26,20 @@ package com.logitags.cibet.actuator.envers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.envers.configuration.AuditConfiguration;
-import org.hibernate.envers.event.EnversPostInsertEventListenerImpl;
+import org.hibernate.envers.configuration.spi.AuditConfiguration;
+import org.hibernate.envers.event.spi.EnversPostInsertEventListenerImpl;
 import org.hibernate.event.spi.PostInsertEvent;
 
 import com.logitags.cibet.context.Context;
 
-public class CibetPostInsertEventListener extends
-      EnversPostInsertEventListenerImpl {
+public class CibetPostInsertEventListener extends EnversPostInsertEventListenerImpl {
 
    /**
     * 
     */
    private static final long serialVersionUID = 1L;
 
-   private transient Log log = LogFactory
-         .getLog(CibetPostInsertEventListener.class);
+   private transient Log log = LogFactory.getLog(CibetPostInsertEventListener.class);
 
    public CibetPostInsertEventListener(AuditConfiguration enversConfiguration) {
       super(enversConfiguration);
