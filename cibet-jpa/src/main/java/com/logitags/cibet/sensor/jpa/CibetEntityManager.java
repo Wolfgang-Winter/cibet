@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.FlushModeType;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.metamodel.Metamodel;
 
 import org.apache.commons.logging.Log;
@@ -651,6 +655,61 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
    @Override
    public void setLoadEager(boolean loadEager) {
       this.loadEager = loadEager;
+   }
+
+   @Override
+   public <T> EntityGraph<T> createEntityGraph(Class<T> arg0) {
+      return nativeEntityManager.createEntityGraph(arg0);
+   }
+
+   @Override
+   public EntityGraph<?> createEntityGraph(String arg0) {
+      return nativeEntityManager.createEntityGraph(arg0);
+   }
+
+   @Override
+   public StoredProcedureQuery createNamedStoredProcedureQuery(String arg0) {
+      return nativeEntityManager.createStoredProcedureQuery(arg0);
+   }
+
+   @Override
+   public Query createQuery(CriteriaUpdate arg0) {
+      return nativeEntityManager.createQuery(arg0);
+   }
+
+   @Override
+   public Query createQuery(CriteriaDelete arg0) {
+      return nativeEntityManager.createQuery(arg0);
+   }
+
+   @Override
+   public StoredProcedureQuery createStoredProcedureQuery(String arg0) {
+      return nativeEntityManager.createStoredProcedureQuery(arg0);
+   }
+
+   @Override
+   public StoredProcedureQuery createStoredProcedureQuery(String arg0, Class... arg1) {
+      return nativeEntityManager.createStoredProcedureQuery(arg0, arg1);
+   }
+
+   @Override
+   public StoredProcedureQuery createStoredProcedureQuery(String arg0, String... arg1) {
+      return nativeEntityManager.createStoredProcedureQuery(arg0, arg1);
+   }
+
+   @Override
+   public EntityGraph<?> getEntityGraph(String arg0) {
+      return nativeEntityManager.getEntityGraph(arg0);
+   }
+
+   @Override
+   public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> arg0) {
+      return nativeEntityManager.getEntityGraphs(arg0);
+   }
+
+   @Override
+   public boolean isJoinedToTransaction() {
+      return nativeEntityManager.isJoinedToTransaction();
    }
 
 }

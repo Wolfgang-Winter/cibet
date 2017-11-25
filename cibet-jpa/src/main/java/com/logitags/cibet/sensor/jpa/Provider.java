@@ -208,4 +208,14 @@ public class Provider implements PersistenceProvider {
       }
 
    }
+
+   @Override
+   public void generateSchema(PersistenceUnitInfo info, Map map) {
+      persistenceProvider.generateSchema(info, map);
+   }
+
+   @Override
+   public boolean generateSchema(String persistenceUnitName, Map map) {
+      return persistenceProvider.generateSchema(persistenceUnitName, map);
+   }
 }

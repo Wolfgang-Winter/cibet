@@ -29,9 +29,12 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import javax.persistence.Cache;
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.Query;
+import javax.persistence.SynchronizationType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.metamodel.Metamodel;
 import javax.sql.DataSource;
@@ -115,6 +118,29 @@ public class JdbcBridgeEntityManagerFactory implements EntityManagerFactory {
    @Override
    public PersistenceUnitUtil getPersistenceUnitUtil() {
       return null;
+   }
+
+   @Override
+   public EntityManager createEntityManager(SynchronizationType synchronizationType) {
+      return null;
+   }
+
+   @Override
+   public EntityManager createEntityManager(SynchronizationType synchronizationType, Map map) {
+      return null;
+   }
+
+   @Override
+   public void addNamedQuery(String name, Query query) {
+   }
+
+   @Override
+   public <T> T unwrap(Class<T> cls) {
+      return null;
+   }
+
+   @Override
+   public <T> void addNamedEntityGraph(String graphName, EntityGraph<T> entityGraph) {
    }
 
 }

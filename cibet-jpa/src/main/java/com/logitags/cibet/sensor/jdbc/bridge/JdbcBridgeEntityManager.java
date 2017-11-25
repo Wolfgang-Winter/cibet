@@ -16,8 +16,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -25,9 +27,12 @@ import javax.persistence.FlushModeType;
 import javax.persistence.Id;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.metamodel.Metamodel;
 import javax.sql.DataSource;
 
@@ -162,8 +167,7 @@ public class JdbcBridgeEntityManager implements EntityManager {
     * 
     */
    protected void init() {
-      if (isRegistered)
-         return;
+      if (isRegistered) return;
 
       ArchiveDefinition arDef = ArchiveDefinition.getInstance();
       ControllableDefinition dcDef = ControllableDefinition.getInstance();
@@ -265,8 +269,7 @@ public class JdbcBridgeEntityManager implements EntityManager {
          } catch (ClassCastException e) {
             throw new IllegalArgumentException(e);
          } finally {
-            if (conn1 != null && datasource != null)
-               finalizeConnection(conn1);
+            if (conn1 != null && datasource != null) finalizeConnection(conn1);
          }
 
       } catch (SQLException e) {
@@ -310,8 +313,7 @@ public class JdbcBridgeEntityManager implements EntityManager {
 
    @Override
    public boolean isOpen() {
-      if (jdbcConnection == null)
-         return false;
+      if (jdbcConnection == null) return false;
       try {
          return !jdbcConnection.isClosed();
       } catch (SQLException e) {
@@ -347,8 +349,7 @@ public class JdbcBridgeEntityManager implements EntityManager {
          try {
             return def.merge(conn1, obj);
          } finally {
-            if (conn1 != null && datasource != null)
-               finalizeConnection(conn1);
+            if (conn1 != null && datasource != null) finalizeConnection(conn1);
          }
       } catch (SQLException e) {
          throw new CibetJdbcException(e.getMessage(), e);
@@ -373,8 +374,7 @@ public class JdbcBridgeEntityManager implements EntityManager {
          try {
             def.persist(conn1, obj);
          } finally {
-            if (conn1 != null && datasource != null)
-               finalizeConnection(conn1);
+            if (conn1 != null && datasource != null) finalizeConnection(conn1);
          }
       } catch (SQLException e) {
          throw new CibetJdbcException(e.getMessage(), e);
@@ -417,8 +417,7 @@ public class JdbcBridgeEntityManager implements EntityManager {
          try {
             def.remove(conn, obj);
          } finally {
-            if (conn != null && datasource != null)
-               finalizeConnection(conn);
+            if (conn != null && datasource != null) finalizeConnection(conn);
          }
       } catch (SQLException e) {
          throw new CibetJdbcException(e.getMessage(), e);
@@ -557,6 +556,61 @@ public class JdbcBridgeEntityManager implements EntityManager {
    @Override
    public <T> T unwrap(Class<T> arg0) {
       log.warn("call to JdbcEntityManager.unwrap ignored");
+      return null;
+   }
+
+   @Override
+   public Query createQuery(CriteriaUpdate updateQuery) {
+      return null;
+   }
+
+   @Override
+   public Query createQuery(CriteriaDelete deleteQuery) {
+      return null;
+   }
+
+   @Override
+   public StoredProcedureQuery createNamedStoredProcedureQuery(String name) {
+      return null;
+   }
+
+   @Override
+   public StoredProcedureQuery createStoredProcedureQuery(String procedureName) {
+      return null;
+   }
+
+   @Override
+   public StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class... resultClasses) {
+      return null;
+   }
+
+   @Override
+   public StoredProcedureQuery createStoredProcedureQuery(String procedureName, String... resultSetMappings) {
+      return null;
+   }
+
+   @Override
+   public boolean isJoinedToTransaction() {
+      return false;
+   }
+
+   @Override
+   public <T> EntityGraph<T> createEntityGraph(Class<T> rootType) {
+      return null;
+   }
+
+   @Override
+   public EntityGraph<?> createEntityGraph(String graphName) {
+      return null;
+   }
+
+   @Override
+   public EntityGraph<?> getEntityGraph(String graphName) {
+      return null;
+   }
+
+   @Override
+   public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass) {
       return null;
    }
 

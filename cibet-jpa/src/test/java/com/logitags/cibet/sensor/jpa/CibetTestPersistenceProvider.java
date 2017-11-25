@@ -46,8 +46,16 @@ public class CibetTestPersistenceProvider implements PersistenceProvider {
 
    @Override
    public ProviderUtil getProviderUtil() {
-      // TODO Auto-generated method stub
       return null;
+   }
+
+   @Override
+   public void generateSchema(PersistenceUnitInfo info, Map map) {
+   }
+
+   @Override
+   public boolean generateSchema(String persistenceUnitName, Map map) {
+      return false;
    }
 
 }

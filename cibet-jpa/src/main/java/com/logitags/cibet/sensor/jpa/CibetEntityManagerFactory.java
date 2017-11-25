@@ -3,9 +3,12 @@ package com.logitags.cibet.sensor.jpa;
 import java.util.Map;
 
 import javax.persistence.Cache;
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
+import javax.persistence.Query;
+import javax.persistence.SynchronizationType;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.metamodel.Metamodel;
 
@@ -82,5 +85,34 @@ public class CibetEntityManagerFactory implements EntityManagerFactory {
     */
    public EntityManagerFactory getNativeEntityManagerFactory() {
       return nativeEntityManagerFactory;
+   }
+
+   @Override
+   public <T> void addNamedEntityGraph(String arg0, EntityGraph<T> arg1) {
+      nativeEntityManagerFactory.addNamedEntityGraph(arg0, arg1);
+   }
+
+   @Override
+   public void addNamedQuery(String arg0, Query arg1) {
+      nativeEntityManagerFactory.addNamedQuery(arg0, arg1);
+   }
+
+   @Override
+   public EntityManager createEntityManager(SynchronizationType arg0) {
+      EntityManager em = nativeEntityManagerFactory.createEntityManager(arg0);
+      log.debug("create new CibetEntityManager with native " + em);
+      return new CibetEntityManager(this, em, loadEager);
+   }
+
+   @Override
+   public EntityManager createEntityManager(SynchronizationType arg0, Map arg1) {
+      EntityManager em = nativeEntityManagerFactory.createEntityManager(arg0, arg1);
+      log.debug("create new CibetEntityManager with native " + em);
+      return new CibetEntityManager(this, em, loadEager);
+   }
+
+   @Override
+   public <T> T unwrap(Class<T> arg0) {
+      return nativeEntityManagerFactory.unwrap(arg0);
    }
 }

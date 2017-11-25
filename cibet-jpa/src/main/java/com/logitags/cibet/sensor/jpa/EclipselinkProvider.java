@@ -51,6 +51,9 @@ public class EclipselinkProvider extends PersistenceProvider {
 
    public static class SecureJPAInitializer extends JavaSECMPInitializer {
 
+      // Used as a lock in getJavaSECMPInitializer.
+      private static final Object initializationLock = new Object();
+
       public SecureJPAInitializer(ClassLoader classLoader) {
          super(classLoader);
       }
@@ -83,6 +86,7 @@ public class EclipselinkProvider extends PersistenceProvider {
             return new SecureJPAInitializer(classLoader);
          }
       }
+
    }
 
 }
