@@ -48,6 +48,11 @@ import com.logitags.cibet.resource.ResourceParameter;
 
 public class RemoteEjbInvocationHandler extends CibetInterceptor implements InvocationHandler {
 
+   /**
+    * 
+    */
+   private static final long serialVersionUID = 1L;
+
    private Log log = LogFactory.getLog(RemoteEjbInvocationHandler.class);
 
    private static final String SENSOR_NAME = "EJB-CLIENT";

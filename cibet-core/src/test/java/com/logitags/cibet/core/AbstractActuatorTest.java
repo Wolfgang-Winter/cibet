@@ -34,6 +34,10 @@ public class AbstractActuatorTest {
       Assert.assertEquals(false, act.equals(act2));
       FourEyesActuator act3 = new FourEyesActuator();
       Assert.assertEquals(true, act.equals(act3));
+
+      String a = "1";
+      a += "2";
+      log.debug(a);
    }
 
 }

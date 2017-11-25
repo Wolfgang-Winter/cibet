@@ -118,7 +118,7 @@ public abstract class Context {
             }
             Context.internalRequestScope().setEntityManager(entityManager);
             log.debug("EE EntityManager created from JNDI EntityManagerFactory");
-            return entityManager;
+
          } catch (NamingException e) {
             log.info("\n-----------------------------\n"
                   + "EntityManagerFactory for JTA persistence unit Cibet could not be created. If this is NOT a Java EE application this "
@@ -224,22 +224,30 @@ public abstract class Context {
    public static void end() {
       try {
          EntityManager em = Context.internalRequestScope().getNullableEntityManager();
-         if (em != null && em.isOpen() && Context.requestScope()
-               .getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == EntityManagerType.RESOURCE_LOCAL) {
-            try {
-               if (em.getTransaction().isActive()) {
-                  if (Context.internalRequestScope().getRollbackOnly()) {
-                     log.debug("rollback Cibet");
-                     em.getTransaction().rollback();
-                  } else {
-                     log.debug("commit Cibet");
-                     em.getTransaction().commit();
+         if (em != null && em.isOpen()) {
+            if (Context.requestScope()
+                  .getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == EntityManagerType.RESOURCE_LOCAL) {
+               try {
+                  if (em.getTransaction().isActive()) {
+                     if (Context.internalRequestScope().getRollbackOnly()) {
+                        log.debug("rollback Cibet");
+                        em.getTransaction().rollback();
+                     } else {
+                        log.debug("commit Cibet");
+                        em.getTransaction().commit();
+                     }
                   }
+               } catch (IllegalStateException e) {
+                  // this is a JTA EntityManager
+                  log.debug(e.getMessage());
                }
+            }
+
+            try {
+               log.debug("close EM");
                em.close();
             } catch (IllegalStateException e) {
-               // this is a JTA EntityManager
-               log.debug(e.getMessage());
+               log.warn(e.getMessage());
             }
          }
       } finally {
