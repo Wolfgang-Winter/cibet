@@ -228,7 +228,7 @@ public class HttpGeneralIT extends AbstractArquillian {
       log.info("************** now persist denied ...");
       log.debug("tenant: " + Context.internalSessionScope().getTenant());
       body = executeGET(getBaseURL() + "/persist.cibet", HttpStatus.SC_INTERNAL_SERVER_ERROR);
-      Assert.assertTrue(body.indexOf("com.logitags.cibet.actuator.common.DeniedEjbException: Access is denied") > 0);
+      Assert.assertTrue(body.indexOf("Access is denied") > 0);
 
       log.debug("tenant: " + Context.internalSessionScope().getTenant());
       Query q = localcibet.createQuery("select a from Archive a");
@@ -275,7 +275,7 @@ public class HttpGeneralIT extends AbstractArquillian {
       log.info("************** now release denied ...");
       body = executeGET(getBaseURL() + "/releasePersist.cibet", HttpStatus.SC_INTERNAL_SERVER_ERROR);
       Assert.assertTrue(body.indexOf(
-            "InvalidUserException: release failed: user id Kim of releasing user is equal to the user id of the initial user Kim") > 0);
+            "release failed: user id Kim of releasing user is equal to the user id of the initial user Kim") > 0);
 
       log.info("************** now logout ...");
       body = executeGET(getBaseURL() + "/logout.cibet");
@@ -418,7 +418,7 @@ public class HttpGeneralIT extends AbstractArquillian {
 
       log.info("************** now release failed...");
       body = executeGET(getBaseURL() + "/releaseHttp.cibet", HttpStatus.SC_INTERNAL_SERVER_ERROR);
-      int index1 = body.indexOf("InvalidUserException: release failed: the actual authenticated user is not equal");
+      int index1 = body.indexOf("release failed: the actual authenticated user is not equal");
       Assert.assertTrue(index1 > 0);
 
       log.info("************** now logout ...");

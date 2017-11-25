@@ -223,8 +223,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       for (int i = 1; i < 6; i++) {
          Query q = localEM.createQuery("SELECT a FROM Archive a " + " ORDER BY a.createDate ");
          list = q.getResultList();
-         if (expected == list.size())
-            break;
+         if (expected == list.size()) break;
 
          log.debug("No result. Try query again: " + i);
          localEM.clear();
@@ -255,8 +254,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       List<Controllable> list = null;
       for (int i = 1; i < 6; i++) {
          list = DcLoader.findUnreleased();
-         if (1 == list.size())
-            break;
+         if (1 == list.size()) break;
 
          log.debug("No result. Try query again: " + i);
          Thread.sleep(400);
@@ -1112,7 +1110,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       HttpGet method = new HttpGet(url);
       HttpResponse response = client.execute(method);
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-      List<Archive> archives = checkArchive("CONNECT", "localhost:8743", 3);
+      List<Archive> archives = checkArchive("CONNECT", "localhost:8543", 3);
       String caseid1 = archives.get(0).getCaseId();
       String caseid2 = archives.get(1).getCaseId();
       String caseid3 = archives.get(2).getCaseId();

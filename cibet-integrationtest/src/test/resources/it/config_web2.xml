@@ -34,8 +34,8 @@
 				<include>INVOKE</include>
 			</event>
 			<target>
-				<include>http://localhost:8788/HttpSpringSecurityIT/test/ts*
-				</include>
+				<include>http://localhost:8788/HttpSpringSecurityIT/test/ts*</include>
+				<include>http://localhost:8180/HttpSpringSecurityIT/test/ts*</include>
 			</target>
 			<method>
 				<include>GET</include>
@@ -52,6 +52,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/*</include>
+				<include>http://localhost:8180/*</include>
 			</target>
 			<method>
 				<include>OPTIONS</include>
@@ -67,6 +68,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/*</include>
+				<include>http://localhost:8180/*</include>
 			</target>
 			<method>
 				<include>PUT</include>

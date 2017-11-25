@@ -16,6 +16,13 @@
         </configuration>
     </container>
 
+	 <container qualifier="jboss7" >
+    	<configuration>
+        <property name="chameleonTarget">JBoss EAP:7.1.0.Beta:remote</property>
+        <property name="managementPort">10090</property>
+    	</configuration>
+	 </container>
+
     <container qualifier="jbossas-jacoco">
         <configuration>
             <property name="jbossHome">D:\appserver\jboss-eap-6.4</property>

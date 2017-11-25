@@ -121,6 +121,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/HttpGeneralIT/logThis.url</include>
+				<include>http://localhost:8180/HttpGeneralIT/logThis.url</include>
 			</target>
 			<tenant>
 				<include>XYCompany</include>

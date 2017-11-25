@@ -77,6 +77,8 @@
 			<target>
 				<include>http://localhost:8788/HttpLittleProxyIT/test/setuser</include>
 				<include>https://localhost:8743/HttpLittleProxyIT/test/setuser</include>
+				<include>http://localhost:8180/HttpLittleProxyIT/test/setuser</include>
+				<include>https://localhost:8543/HttpLittleProxyIT/test/setuser</include>
 			</target>
 		</controls>
 		<actuator name="ARCHIVE" />
@@ -89,6 +91,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/HttpLittleProxyIT/logThis.url</include>
+				<include>http://localhost:8180/HttpLittleProxyIT/logThis.url</include>
 			</target>
 			<tenant>
 				<include>XYCompany</include>

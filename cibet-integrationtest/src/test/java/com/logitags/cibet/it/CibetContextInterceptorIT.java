@@ -158,6 +158,8 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       properties.load(url.openStream());
       properties.put(javax.naming.Context.SECURITY_PRINCIPAL, "Mutzi1");
       properties.put(javax.naming.Context.SECURITY_CREDENTIALS, "passss1234!");
+      properties.put("remote.connection.default.username", "Mutzi1");
+      properties.put("remote.connection.default.password", "passss1234!");
       InitialContext ctx = new InitialContext(properties);
       return ctx;
    }
@@ -173,8 +175,18 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       properties.put(CibetRemoteContext.NATIVE_INITIAL_CONTEXT_FACTORY, nativeFac);
       properties.put(javax.naming.Context.SECURITY_PRINCIPAL, "Mutzi1");
       properties.put(javax.naming.Context.SECURITY_CREDENTIALS, "passss1234!");
+      properties.put("remote.connection.default.username", "Mutzi1");
+      properties.put("remote.connection.default.password", "passss1234!");
+
+      Object nativePref = properties.get(javax.naming.Context.URL_PKG_PREFIXES);
+      properties.put(javax.naming.Context.URL_PKG_PREFIXES, "com.logitags.cibet.sensor");
+      properties.put(CibetRemoteContext.NATIVE_URL_PKG_PREFIXES, nativePref);
 
       InitialContext ctx = new InitialContext(properties);
+
+      log.debug("ctx: " + ctx);
+      log.debug("ctx: " + ctx.getClass());
+
       return ctx;
    }
 
@@ -185,10 +197,13 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       TEntity te = new TEntity("myName", 45, "winter");
 
       String userName = "ANONYMOUS";
-      String lookupName = CibetContextInterceptorIT.class.getSimpleName()
-            + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      // String lookupName = CibetContextInterceptorIT.class.getSimpleName()
+      // + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      String lookupName = "ejb:/CibetContextInterceptorIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+
       if (APPSERVER.equals(TOMEE)) {
-         lookupName = "global/" + lookupName;
+         lookupName = "global/" + CibetContextInterceptorIT.class.getSimpleName()
+               + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
          userName = "Mutzi1";
       }
       RemoteEJB remoteEjb = (RemoteEJB) getInitialContext().lookup(lookupName);
@@ -209,10 +224,12 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       log.debug("start testInvokeSecured()");
       TEntity te = new TEntity("myName", 45, "winter");
 
-      String lookupName = CibetContextInterceptorIT.class.getSimpleName()
-            + "/SecuredRemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      // String lookupName = CibetContextInterceptorIT.class.getSimpleName()
+      // + "/SecuredRemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      String lookupName = "ejb:/CibetContextInterceptorIT/SecuredRemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
       if (APPSERVER.equals(TOMEE)) {
-         lookupName = "global/" + lookupName;
+         lookupName = "global/" + CibetContextInterceptorIT.class.getSimpleName()
+               + "/SecuredRemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
       }
       RemoteEJB remoteEjb = (RemoteEJB) getInitialContext().lookup(lookupName);
 
@@ -246,7 +263,8 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       // ejbProperties.put(javax.naming.Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
       ejbProperties.put("remote.connections", "1");
       ejbProperties.put("remote.connection.1.host", "localhost");
-      ejbProperties.put("remote.connection.1.port", "4447");
+      // ejbProperties.put("remote.connection.1.port", "4447");
+      ejbProperties.put("remote.connection.1.port", "8180");
       ejbProperties.put("remote.connection.1.username", "ejbuser");
       ejbProperties.put("remote.connection.1.password", "ejbuser123!");
 
@@ -287,10 +305,10 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
       Context.sessionScope().setTenant("cccomp");
       Context.sessionScope().setUser("Knacki");
 
-      String lookupName = CibetContextInterceptorIT.class.getSimpleName()
-            + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      String lookupName = "ejb:/CibetContextInterceptorIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
       if (APPSERVER.equals(TOMEE)) {
-         lookupName = "global/" + lookupName;
+         lookupName = "global/" + CibetContextInterceptorIT.class.getSimpleName()
+               + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
       }
       RemoteEJB remoteEjb = (RemoteEJB) getProxyInitialContext().lookup(lookupName);
 
@@ -321,10 +339,10 @@ public class CibetContextInterceptorIT extends AbstractArquillian {
 
       Context.sessionScope().setUser("klaus");
 
-      String lookupName = CibetContextInterceptorIT.class.getSimpleName()
-            + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      String lookupName = "ejb:/CibetContextInterceptorIT/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
       if (APPSERVER.equals(TOMEE)) {
-         lookupName = "global/" + lookupName;
+         lookupName = "global/" + CibetContextInterceptorIT.class.getSimpleName()
+               + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
       }
       RemoteEJB remoteEjb = (RemoteEJB) getProxyInitialContext().lookup(lookupName);
 

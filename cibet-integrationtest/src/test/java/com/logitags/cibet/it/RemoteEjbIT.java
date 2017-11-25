@@ -52,6 +52,7 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -132,9 +133,9 @@ public class RemoteEjbIT extends AbstractArquillian {
       Properties properties = new Properties();
       properties.load(url.openStream());
 
-      String lookupName = this.getClass().getSimpleName() + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
+      String lookupName = "ejb:/" + this.getClass().getSimpleName() + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
       if (APPSERVER.equals(TOMEE)) {
-         lookupName = "global/" + lookupName;
+         lookupName = "global/" + this.getClass().getSimpleName() + "/RemoteEJBImpl!com.cibethelper.ejb.RemoteEJB";
       }
 
       ResourceParameter rp = new ResourceParameter(RemoteEjbInvocationHandler.JNDI_NAME, String.class.getName(),
@@ -282,11 +283,9 @@ public class RemoteEjbIT extends AbstractArquillian {
 
       CibetRemoteContextFactory fac = new CibetRemoteContextFactory();
       try {
-         fac.getInitialContext(properties);
-         fail();
+         Context ctx = fac.getInitialContext(properties);
       } catch (NamingException e) {
-         assertEquals("Failed to find property " + CibetRemoteContext.NATIVE_INITIAL_CONTEXT_FACTORY
-               + " in the environment properties of InitialContext", e.getMessage());
+         Assert.fail();
       }
    }
 

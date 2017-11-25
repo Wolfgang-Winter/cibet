@@ -195,8 +195,10 @@ public class HttpRequestInvokerIT extends AbstractArquillian {
       String body = readResponseBody(resp);
       log.debug("'" + body + "'");
       Assert.assertNotNull(body);
-      Assert.assertTrue(body.toLowerCase().startsWith(
-            "testinvoke done: ente1=erpel ; pferdö1=?rüpel ; headers: content-type = text/html; charset=utf-8 ; cibet_controlevent = invoke ; content-length = 0 "));
+      Assert.assertTrue(body.toLowerCase().startsWith("testinvoke done: ente1=erpel ; pferdö1=?rüpel ; headers: "));
+      Assert.assertTrue(body.toLowerCase().indexOf("content-type = text/html; charset=utf-8") > 0);
+      Assert.assertTrue(body.toLowerCase().indexOf("cibet_controlevent = invoke") > 0);
+      Assert.assertTrue(body.toLowerCase().indexOf("content-length = 0") > 0);
       // TestInvoke done: Ente1=Erpel ; PferdÖ1=?Rüpel ; HEADERS: content-type = text/html; charset=utf-8 ;
       // cibet_controlevent = INVOKE ; content-length = 0 ; host = localhost:8788 ; connection = Keep-Alive ; user-agent
       // = Apache-HttpClient/4.5.2 (Java/1.8.0_66) ; accept-encoding = gzip,deflate ;

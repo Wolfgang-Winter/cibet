@@ -122,12 +122,19 @@ public class LockerIT extends AbstractArquillian {
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
    }
 
-   @Test(expected = AlreadyLockedException.class)
+   @Test
    public void lockTwice() throws Exception {
       log.info("start lockTwice()");
       Controllable lo = ejb.lockMethodFromClass();
       Assert.assertNotNull(lo);
-      lo = ejb.lockMethodFromClass();
+      try {
+         lo = ejb.lockMethodFromClass();
+         Assert.fail();
+      } catch (Exception e) {
+         log.error(e.getMessage(), e);
+         log.error(e.getClass());
+         Assert.assertEquals(AlreadyLockedException.class, e.getClass());
+      }
    }
 
    @Test

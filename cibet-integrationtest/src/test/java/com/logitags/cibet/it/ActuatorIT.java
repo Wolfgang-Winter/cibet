@@ -111,13 +111,13 @@ public class ActuatorIT extends AbstractArquillian {
             ArquillianTestServlet1.class, RemoteEJB.class, RemoteEJBImpl.class, SecuredRemoteEJBImpl.class,
             SimpleEjb.class);
 
-      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withoutTransitivity()
+      File[] cibet = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-jpa").withTransitivity()
             .asFile();
       archive.addAsLibraries(cibet);
 
-      File[] spring = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-envers")
-            .withTransitivity().asFile();
-      archive.addAsLibraries(spring);
+      // File[] spring = Maven.resolver().loadPomFromFile("pom.xml").resolve("com.logitags:cibet-envers")
+      // .withTransitivity().asFile();
+      // archive.addAsLibraries(spring);
 
       File[] dumbster = Maven.resolver().loadPomFromFile("pom.xml").resolve("dumbster:dumbster").withTransitivity()
             .asFile();

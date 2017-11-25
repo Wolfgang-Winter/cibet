@@ -27,8 +27,8 @@
 				<include>INVOKE</include>
 			</event>
 			<target>
-				<include>http://localhost:8788/HttpSpringSecurity2IT/test/ts*
-				</include>
+				<include>http://localhost:8788/HttpSpringSecurity2IT/test/ts*</include>
+				<include>http://localhost:8180/HttpSpringSecurity2IT/test/ts*</include>
 			</target>
 			<method>
 				<include>GET</include>

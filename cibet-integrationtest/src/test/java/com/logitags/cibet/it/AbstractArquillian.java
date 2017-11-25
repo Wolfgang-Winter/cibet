@@ -87,10 +87,11 @@ public abstract class AbstractArquillian extends CoreTestBase {
       HTTPURL = properties.getProperty("http.url");
       HTTPSURL = properties.getProperty("https.url");
       log.debug("HTTPURL: " + HTTPURL);
-      if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("openejb")) {
-         APPSERVER = TOMEE;
-      } else if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("jboss")) {
+      if (!properties.containsKey(javax.naming.Context.INITIAL_CONTEXT_FACTORY)
+            || properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("jboss")) {
          APPSERVER = JBOSS;
+      } else if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("openejb")) {
+         APPSERVER = TOMEE;
       } else if (properties.getProperty(javax.naming.Context.INITIAL_CONTEXT_FACTORY).contains("sun.enterprise")) {
          APPSERVER = GLASSFISH;
       }
@@ -314,8 +315,7 @@ public abstract class AbstractArquillian extends CoreTestBase {
 
       } finally {
          // Closing the input stream will trigger connection release
-         if (instream != null)
-            instream.close();
+         if (instream != null) instream.close();
          Thread.sleep(100);
       }
    }

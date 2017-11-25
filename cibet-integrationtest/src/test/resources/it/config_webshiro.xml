@@ -81,6 +81,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/HttpShiroIT/ts/shiro1</include>
+				<include>http://localhost:8180/HttpShiroIT/ts/shiro1</include>
 				<include>http://localhost:9190/webapp/ts/shiro1</include>
 			</target>
 			<method>
@@ -98,6 +99,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/HttpShiroIT/ts/shiro2</include>
+				<include>http://localhost:8180/HttpShiroIT/ts/shiro2</include>
 				<include>http://localhost:9190/webapp/ts/shiro2</include>
 			</target>
 			<method>
@@ -115,6 +117,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/HttpShiroIT/ts/shiro3</include>
+				<include>http://localhost:8180/HttpShiroIT/ts/shiro3</include>
 				<include>http://localhost:9190/webapp/ts/shiro3</include>
 			</target>
 			<method>
@@ -132,6 +135,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/HttpShiroIT/ts/shiro4</include>
+				<include>http://localhost:8180/HttpShiroIT/ts/shiro4</include>
 				<include>http://localhost:9190/webapp/ts/shiro4</include>
 			</target>
 			<method>
@@ -149,6 +153,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/HttpShiroIT/ts/shiro5</include>
+				<include>http://localhost:8180/HttpShiroIT/ts/shiro5</include>
 				<include>http://localhost:9190/webapp/ts/shiro5</include>
 			</target>
 			<method>
@@ -166,6 +171,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/HttpShiroIT/ts/shiro6</include>
+				<include>http://localhost:8180/HttpShiroIT/ts/shiro6</include>
 				<include>http://localhost:9190/webapp/ts/shiro6</include>
 			</target>
 			<method>
@@ -183,6 +189,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/HttpShiroIT/ts/shiro7</include>
+				<include>http://localhost:8180/HttpShiroIT/ts/shiro7</include>
 				<include>http://localhost:9190/webapp/ts/shiro7</include>
 			</target>
 			<method>
@@ -200,6 +207,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/HttpShiroIT/ts/shiro8</include>
+				<include>http://localhost:8180/HttpShiroIT/ts/shiro8</include>
 				<include>http://localhost:9190/webapp/ts/shiro8</include>
 			</target>
 			<method>
@@ -219,6 +227,7 @@
 			</event>
 			<target>
 				<include>http://localhost:8788/HttpShiroIT/ts/shiro9</include>
+				<include>http://localhost:8180/HttpShiroIT/ts/shiro9</include>
 				<include>http://localhost:9190/webapp/ts/shiro9</include>
 			</target>
 			<method>
@@ -239,6 +248,7 @@
 			<target>
 				<include>http://localhost:8080/ejbwar/ts</include>
 				<include> http://localhost:8788/HttpShiroIT/eee</include>
+				<include> http://localhost:8180/HttpShiroIT/eee</include>
 				<include> http://localhost:9190/webapp/eee</include>
 			</target>
 			<method>

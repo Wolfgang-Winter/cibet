@@ -224,7 +224,8 @@ public class GeneralServlet extends HttpServlet {
 
       } catch (Exception e) {
          log.error(e.getMessage(), e);
-         throw new ServletException(e);
+         resp.sendError(500, e.getMessage());
+         // throw new ServletException(e.getMessage(), e);
       }
    }
 
