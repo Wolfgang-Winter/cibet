@@ -292,10 +292,7 @@ public class SixEyesActuator extends FourEyesActuator {
                   }
                }
 
-               // if (isEncrypt()) {
-               // co.encrypt();
-               // }
-               Context.internalRequestScope().getEntityManager().merge(co);
+               Context.internalRequestScope().getOrCreateEntityManager(true).merge(co);
             }
          }
 

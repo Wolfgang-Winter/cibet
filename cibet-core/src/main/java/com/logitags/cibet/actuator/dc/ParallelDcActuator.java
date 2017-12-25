@@ -187,10 +187,10 @@ public class ParallelDcActuator extends FourEyesActuator {
             if (isEncrypt()) {
                dcObj.getResource().encrypt();
             }
-            Context.internalRequestScope().getEntityManager().persist(dcObj.getResource());
          }
 
-         Context.internalRequestScope().getEntityManager().persist(dcObj);
+         Context.internalRequestScope().getOrCreateEntityManager(true).persist(dcObj);
+         ctx.setResource(dcObj.getResource());
 
          if (ctx.getException() != null && ctx.getException() instanceof PostponedException) {
             ((PostponedException) ctx.getException()).setControllable(dcObj);
@@ -205,7 +205,8 @@ public class ParallelDcActuator extends FourEyesActuator {
    }
 
    protected void checkUnapprovedResource(EventMetadata ctx) {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_UNIQUEID);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_BY_UNIQUEID);
       q.setParameter("uniqueId", ctx.getResource().getUniqueId());
       List<Controllable> list = (List<Controllable>) q.getResultList();
       for (Controllable dc : list) {
@@ -296,7 +297,7 @@ public class ParallelDcActuator extends FourEyesActuator {
                co.setReleaseUser(Context.internalSessionScope().getUser());
                co.setReleaseRemark(Context.internalRequestScope().getRemark());
 
-               co = Context.internalRequestScope().getEntityManager().merge(co);
+               co = Context.internalRequestScope().getOrCreateEntityManager(true).merge(co);
                if (isSendReleaseNotification()) {
                   notifyApproval(co);
                }
@@ -308,7 +309,7 @@ public class ParallelDcActuator extends FourEyesActuator {
                      dcElement.setReleaseUser(Context.internalSessionScope().getUser());
                      dcElement.setReleaseRemark(Context.internalRequestScope().getRemark());
 
-                     Context.internalRequestScope().getEntityManager().merge(dcElement);
+                     Context.internalRequestScope().getOrCreateEntityManager(true).merge(dcElement);
                      if (isSendRejectNotification()) {
                         notifyApproval(dcElement);
                      }

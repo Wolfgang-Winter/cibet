@@ -62,6 +62,13 @@ http://tomee.apache.org/refcard/refcard.html
          -->
         
     </container>
+
+    <container qualifier="tomee7" >
+        <configuration>
+        		<property name="httpPort">8180</property>
+        		<property name="appWorkingDir">target/arquillian-test-working-dir</property>
+        </configuration>
+    </container>
     
     <container qualifier="glassfish3" >
         <configuration>
@@ -83,4 +90,15 @@ http://tomee.apache.org/refcard/refcard.html
         </configuration>
     </container>
     
+    <container qualifier="tomcat8" >
+        <configuration>
+        	<property name="chameleonTarget">Tomcat:8.0.47:remote</property>
+<!--         	<property name="managementPort">8180</property> -->
+<!--             <property name="httpPort">8180</property> -->
+<!-- 				<property name="user">tomcat</property> -->
+<!-- 				<property name="pass">tomcat</property> -->
+<!-- 				<property name="jmxPort">8089</property> -->
+        </configuration>
+    </container>
+
 </arquillian>

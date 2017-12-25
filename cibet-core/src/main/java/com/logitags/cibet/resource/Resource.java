@@ -464,14 +464,13 @@ public abstract class Resource implements Serializable {
     * 
     */
    public boolean decrypt() {
-      if (!isEncrypted())
-         return false;
+      if (!isEncrypted()) return false;
       SecurityProvider secProvider = Configuration.instance().getSecurityProvider();
       setTargetObject(secProvider.decrypt(getTargetObject(), getKeyReference()));
       setResult(secProvider.decrypt(getResult(), getKeyReference()));
       if (parameters != null) {
          for (ResourceParameter param : parameters) {
-            Context.internalRequestScope().getEntityManager().detach(param);
+            Context.internalRequestScope().getOrCreateEntityManager(false).detach(param);
             param.setEncodedValue(secProvider.decrypt(param.getEncodedValue(), getKeyReference()));
          }
       }

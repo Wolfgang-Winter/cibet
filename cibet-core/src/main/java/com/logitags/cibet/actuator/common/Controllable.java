@@ -33,6 +33,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.TransactionRequiredException;
 import javax.persistence.Version;
 
 import org.apache.commons.logging.Log;
@@ -43,6 +44,7 @@ import com.logitags.cibet.actuator.dc.ResourceApplyException;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.context.CibetContext;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.core.CEntityManager;
 import com.logitags.cibet.core.ControlEvent;
 import com.logitags.cibet.core.ExecutionStatus;
 import com.logitags.cibet.resource.Resource;
@@ -247,7 +249,7 @@ public class Controllable implements Serializable {
    @Column(length = 50)
    private ExecutionStatus executionStatus;
 
-   @OneToOne(cascade = CascadeType.DETACH)
+   @OneToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST })
    @JoinColumn(name = "RESOURCEID")
    private Resource resource;
 
@@ -300,7 +302,7 @@ public class Controllable implements Serializable {
          log.debug("decrypt Controllable");
          // OpenJPA workaround:
          getResource().getParameters().size();
-         Context.internalRequestScope().getEntityManager().detach(this);
+         Context.internalRequestScope().getOrCreateEntityManager(false).detach(this);
          getResource().decrypt();
       }
    }
@@ -322,6 +324,12 @@ public class Controllable implements Serializable {
       log.debug("start release");
 
       if (entityManager != null) {
+         if ((entityManager instanceof CEntityManager && ((CEntityManager) entityManager).supportsTransactions()
+               || !(entityManager instanceof CEntityManager)) && !entityManager.isJoinedToTransaction()) {
+            String err = "release method must be called within a transaction boundary";
+            log.error(err);
+            throw new TransactionRequiredException(err);
+         }
          Context.internalRequestScope().setApplicationEntityManager(entityManager);
       }
       if (getExecutionStatus() != ExecutionStatus.SCHEDULED) {

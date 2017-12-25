@@ -100,7 +100,7 @@ public class MultiThread4EyesTest extends DBHelper {
          Context.sessionScope().setTenant(getName());
          Context.sessionScope().setUser(user);
 
-         EntityManager cem = Context.requestScope().getEntityManager();
+         EntityManager cem = Context.internalRequestScope().getOrCreateEntityManager(false);
 
          TEntity entity = persistTEntity();
 
@@ -265,7 +265,7 @@ public class MultiThread4EyesTest extends DBHelper {
       Assert.assertEquals(0, resultList.size());
 
       log.info("checking ...");
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Archive.SEL_ALL);
       List<Archive> list = q.getResultList();
       Assert.assertEquals(nbr * 2, list.size());
       Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());

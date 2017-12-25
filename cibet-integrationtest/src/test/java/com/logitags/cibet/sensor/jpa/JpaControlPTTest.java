@@ -70,7 +70,7 @@ public class JpaControlPTTest {
       em = Mockito.mock(EntityManager.class);
       Mockito.when(em.merge(te)).thenReturn(te);
 
-      Context.requestScope().setEntityManager(em);
+      Context.internalRequestScope().setEntityManager(em);
       Context.sessionScope().setUser("USER");
       Context.sessionScope().setTenant("TENANT");
       Configuration cm = Configuration.instance();

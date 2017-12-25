@@ -114,11 +114,11 @@ public class DBHelper extends CoreTestBase {
       boolean delete = true;
       if (delete) {
 
-         Context.internalRequestScope().getEntityManager().clear();
+         Context.internalRequestScope().getOrCreateEntityManager(false).clear();
          applEman.clear();
          applEman.getTransaction().begin();
 
-         Context.internalRequestScope().getEntityManager().flush();
+         Context.internalRequestScope().getOrCreateEntityManager(false).flush();
          Query q = applEman.createNamedQuery(TComplexEntity.SEL_ALL);
          List<TComplexEntity> l = q.getResultList();
          for (TComplexEntity tComplexEntity : l) {
@@ -136,31 +136,34 @@ public class DBHelper extends CoreTestBase {
          Query q2 = applEman.createNamedQuery(TEntity.DEL_ALL);
          q2.executeUpdate();
 
-         Query q3 = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL);
+         Query q3 = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Archive.SEL_ALL);
          List<Archive> alist = q3.getResultList();
          for (Archive ar : alist) {
-            Context.internalRequestScope().getEntityManager().remove(ar);
+            Context.internalRequestScope().getOrCreateEntityManager(true).remove(ar);
          }
 
-         Query q4 = Context.internalRequestScope().getEntityManager().createQuery("select d from Controllable d");
+         Query q4 = Context.internalRequestScope().getOrCreateEntityManager(true)
+               .createQuery("select d from Controllable d");
          List<Controllable> dclist = q4.getResultList();
          for (Controllable dc : dclist) {
-            Context.internalRequestScope().getEntityManager().remove(dc);
+            Context.internalRequestScope().getOrCreateEntityManager(true).remove(dc);
          }
 
-         Query q6 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
+         Query q6 = Context.internalRequestScope().getOrCreateEntityManager(true)
+               .createQuery("SELECT a FROM EventResult a");
          Iterator<EventResult> itEV = q6.getResultList().iterator();
          while (itEV.hasNext()) {
-            Context.internalRequestScope().getEntityManager().remove(itEV.next());
+            Context.internalRequestScope().getOrCreateEntityManager(true).remove(itEV.next());
          }
 
-         Query q8 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM Resource a");
+         Query q8 = Context.internalRequestScope().getOrCreateEntityManager(true)
+               .createQuery("SELECT a FROM Resource a");
          List<Resource> ll = q8.getResultList();
          log.debug("size::" + ll.size());
 
          Iterator<Resource> itR2 = ll.iterator();
          while (itR2.hasNext()) {
-            Context.internalRequestScope().getEntityManager().remove(itR2.next());
+            Context.internalRequestScope().getOrCreateEntityManager(true).remove(itR2.next());
          }
 
          applEman.getTransaction().commit();

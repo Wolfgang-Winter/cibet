@@ -240,7 +240,8 @@ public class CibetUtil {
 
                      boolean hasUpReference = false;
                      for (Object ref : upReferences) {
-                        if (o == ref) {
+                        if (o.hashCode() == ref.hashCode()) {
+                           log.debug("hasUpReference=true");
                            hasUpReference = true;
                            break;
                         }
@@ -378,7 +379,8 @@ public class CibetUtil {
 
                      boolean hasUpReference = false;
                      for (Object ref : upReferences) {
-                        if (o == ref) {
+                        if (o.hashCode() == ref.hashCode()) {
+                           log.debug("hasUpReference=true");
                            hasUpReference = true;
                            break;
                         }
@@ -588,6 +590,26 @@ public class CibetUtil {
          result = (EventResult) decode(bytes);
       }
       return result;
+   }
+
+   public static void logStackTrace() {
+      if (log.isDebugEnabled()) {
+         StackTraceElement[] traces = Thread.currentThread().getStackTrace();
+         int len = traces.length;
+         if (len > 5) {
+            len = 5;
+         }
+         for (int i = 2; i < len + 2; i++) {
+            StringBuffer b = new StringBuffer();
+            b.append("   ");
+            b.append(traces[i].getClassName());
+            b.append(".");
+            b.append(traces[i].getMethodName());
+            b.append(":");
+            b.append(traces[i].getLineNumber());
+            log.debug(b.toString());
+         }
+      }
    }
 
 }

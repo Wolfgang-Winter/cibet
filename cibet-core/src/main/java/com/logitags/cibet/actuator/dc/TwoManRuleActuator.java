@@ -265,10 +265,10 @@ public class TwoManRuleActuator extends FourEyesActuator {
                if (isEncrypt()) {
                   dcObj.getResource().encrypt();
                }
-               Context.internalRequestScope().getEntityManager().persist(dcObj.getResource());
             }
 
-            Context.internalRequestScope().getEntityManager().persist(dcObj);
+            Context.internalRequestScope().getOrCreateEntityManager(true).persist(dcObj);
+            ctx.setResource(dcObj.getResource());
 
             if (ctx.getException() != null && ctx.getException() instanceof PostponedException) {
                ((PostponedException) ctx.getException()).setControllable(dcObj);
@@ -333,10 +333,7 @@ public class TwoManRuleActuator extends FourEyesActuator {
                co.setReleaseRemark(Context.internalRequestScope().getRemark());
 
                if (co.getControllableId() != null) {
-                  // if (isEncrypt()) {
-                  // co.encrypt();
-                  // }
-                  co = Context.internalRequestScope().getEntityManager().merge(co);
+                  co = Context.internalRequestScope().getOrCreateEntityManager(true).merge(co);
                }
                if (isSendReleaseNotification()) {
                   notifyApproval(co);

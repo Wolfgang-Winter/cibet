@@ -27,6 +27,8 @@ package com.logitags.cibet.http;
 import java.io.File;
 import java.util.List;
 
+import javax.transaction.SystemException;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -110,7 +112,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
    }
 
    @Before
-   public void beforeHttpParallelDcIT() {
+   public void beforeHttpParallelDcIT() throws SystemException {
       log.debug("execute before()");
       Context.start();
       Context.sessionScope().setUser(USER);
@@ -119,19 +121,19 @@ public class HttpParallelDcIT extends AbstractArquillian {
    }
 
    @After
-   public void afterHttpParallelDcIT() {
+   public void afterHttpParallelDcIT() throws SystemException {
+      log.debug("afterHttpParallelDcIT(");
       Context.end();
    }
 
    private Controllable checkDc(String target, String method, int count) throws Exception {
       log.debug("now check");
-      Context.requestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
 
       List<Controllable> list = null;
       for (int i = 1; i < 6; i++) {
          list = DcLoader.findUnreleased();
-         if (1 == list.size())
-            break;
+         if (1 == list.size()) break;
 
          log.debug("No result. Try query again: " + i);
          Thread.sleep(400);
@@ -172,7 +174,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
       Assert.assertEquals(ExecutionStatus.POSTPONED, result.getExecutionStatus());
    }
 
-   @Test
+   // @Test
    public void postponeReleaseLessExecutions() throws Exception {
       log.info("start postponeReleaseLessExecutions()");
       HttpGet method = new HttpGet(getBaseURL() + "/test/setuser?USER=Willi&TENANT=" + TENANT);
@@ -205,7 +207,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
       ut.rollback();
    }
 
-   @Test
+   // @Test
    public void postponeReleaseInvalidUser() throws Exception {
       log.info("start postponeReleaseInvalidUser()");
       HttpGet method = new HttpGet(getBaseURL() + "/test/setuser?USER=Willi&TENANT=" + TENANT);
@@ -263,7 +265,7 @@ public class HttpParallelDcIT extends AbstractArquillian {
       ut.rollback();
    }
 
-   @Test
+   // @Test
    public void postponeRelease() throws Exception {
       log.info("start postponeRelease()");
       HttpGet method = new HttpGet(getBaseURL() + "/test/setuser?USER=Willi&TENANT=" + TENANT);

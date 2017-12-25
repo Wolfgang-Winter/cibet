@@ -500,7 +500,7 @@ public class CibetProxy extends HttpFiltersAdapter {
 
       try {
          secCtxs = parseHeaders(request.headers());
-         if (Context.internalRequestScope().getNullableEntityManager() == null
+         if (Context.internalRequestScope().getEntityManager() == null
                && Context.internalRequestScope().isManaged()) {
             newEM = true;
          }

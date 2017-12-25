@@ -66,6 +66,35 @@ public interface InternalRequestScope extends RequestScope {
     */
    EventResult registerEventResult(EventResult thisResult);
 
+   /**
+    * set the applications EntityManager instance for the Cibet entities.
+    * 
+    * @param manager
+    */
+   void setEntityManager(EntityManager manager);
+
+   /**
+    * Return the EntityManager instance for persistence of the Cibet entities.
+    * 
+    * @param transacted
+    *           if true the EntityManager must be joined to a transaction
+    * @return
+    * @throws CibetException
+    *            if no EntityManager set in CibetContext or transacted is true and no transaction
+    */
+   EntityManager getOrCreateEntityManager(boolean transacted);
+
+   /**
+    * Return the Cibet EntityManager instance. Could be null, if not set in context.
+    * 
+    * @return
+    */
+   EntityManager getEntityManager();
+
+   /**
+    * 
+    * @param manager
+    */
    void setApplicationEntityManager2(EntityManager manager);
 
    /**
@@ -90,13 +119,6 @@ public interface InternalRequestScope extends RequestScope {
     *            if no EntityManager set in context
     */
    EntityManager getApplicationEntityManager();
-
-   /**
-    * Return the Cibet EntityManager instance. Could be null, if not set in context.
-    * 
-    * @return
-    */
-   EntityManager getNullableEntityManager();
 
    /**
     * returns the applications EntityManager that is used to persist the applications entities (not Cibet entities).

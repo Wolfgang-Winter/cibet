@@ -144,7 +144,7 @@ public class SchedulerActuatorIT extends DBHelper {
       Thread.sleep(8000);
       log.debug("--------------- after TimerTask");
 
-      Context.internalRequestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
 
       list = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, list.size());
@@ -201,8 +201,8 @@ public class SchedulerActuatorIT extends DBHelper {
       Thread.sleep(8000);
       log.debug("--------------- after TimerTask");
 
-      l = (List<Controllable>) Context.requestScope().getEntityManager().createQuery("SELECT d FROM Controllable d")
-            .getResultList();
+      l = (List<Controllable>) Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createQuery("SELECT d FROM Controllable d").getResultList();
       Assert.assertEquals(1, l.size());
       co = l.get(0);
       Assert.assertEquals(3, co.getResource().getParameters().size());

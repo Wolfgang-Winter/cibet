@@ -86,7 +86,7 @@ public class JdbcSchedulerTask extends SESchedulerTask implements SchedulerTask 
 
          Context.sessionScope().setUser("SchedulerTask-" + timerConfig.getSchedulerName());
 
-         EntityManager em = Context.internalRequestScope().getEntityManager();
+         EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
          TypedQuery<Controllable> q = em.createNamedQuery(Controllable.SEL_SCHED_BY_DATE, Controllable.class);
          q.setParameter("actuator", timerConfig.getSchedulerName());
          q.setParameter("currentDate", new Date(), TemporalType.TIMESTAMP);

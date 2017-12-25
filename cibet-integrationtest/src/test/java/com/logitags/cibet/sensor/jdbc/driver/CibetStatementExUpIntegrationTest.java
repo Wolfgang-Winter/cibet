@@ -247,7 +247,7 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Controllable co = l.get(0);
 
       Context.sessionScope().setUser("test2");
-      Object res = co.release(Context.requestScope().getEntityManager(), null);
+      Object res = co.release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
       checkResult(res);
 
       Context.end();

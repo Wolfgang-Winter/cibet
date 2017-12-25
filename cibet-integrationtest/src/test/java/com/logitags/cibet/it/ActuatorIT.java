@@ -31,6 +31,8 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.persistence.Query;
+import javax.persistence.TransactionRequiredException;
+import javax.transaction.SystemException;
 
 import org.apache.log4j.Logger;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -134,7 +136,7 @@ public class ActuatorIT extends AbstractArquillian {
    }
 
    @Before
-   public void beforeActuatorIT() {
+   public void beforeActuatorIT() throws SystemException {
       Context.start();
       Context.sessionScope().setUser(USER);
       Context.sessionScope().setTenant(TENANT);
@@ -184,10 +186,11 @@ public class ActuatorIT extends AbstractArquillian {
       Context.requestScope().setRemark("created");
 
       TEntity ent = createTEntity(12, "Hirsch");
+
       persist(ent);
       Assert.assertEquals(0, ent.getId());
 
-      List<Controllable> l = DcLoader.findUnreleased();
+      List<Controllable> l = DcLoader.findUnreleased(ut);
       Assert.assertEquals(1, l.size());
       Controllable co = l.get(0);
       Assert.assertEquals("created", co.getCreateRemark());
@@ -207,6 +210,32 @@ public class ActuatorIT extends AbstractArquillian {
       TEntity te = applEman.find(TEntity.class, ((TEntity) res).getId());
       Assert.assertNotNull(te);
       Context.requestScope().setRemark(null);
+   }
+
+   @Test
+   public void releasepersistNoTransaction() throws Exception {
+      log.info("start releasepersistNoTransaction()");
+
+      List<String> schemes = new ArrayList<String>();
+      schemes.add(FourEyesActuator.DEFAULTNAME);
+      registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.INSERT, ControlEvent.RELEASE);
+      Context.requestScope().setRemark("created");
+
+      TEntity ent = createTEntity(12, "Hirsch");
+      persist(ent);
+      Assert.assertEquals(0, ent.getId());
+
+      List<Controllable> l = DcLoader.findUnreleased();
+      Assert.assertEquals(1, l.size());
+      Controllable co = l.get(0);
+      Assert.assertEquals("created", co.getCreateRemark());
+
+      Context.sessionScope().setUser("tester2");
+      try {
+         co.release(applEman, "blabla");
+         Assert.fail();
+      } catch (TransactionRequiredException e) {
+      }
    }
 
    @Test
@@ -644,7 +673,7 @@ public class ActuatorIT extends AbstractArquillian {
          Iterator<SmtpMessage> emailIter = server.getReceivedEmail();
          SmtpMessage email = emailIter.next();
          Assert.assertEquals("Cibet Notification: FIRST_POSTPONED", email.getHeaderValue("Subject"));
-         Assert.assertEquals("from@test.de", email.getHeaderValue("From"));
+         Assert.assertEquals("from @Test.de", email.getHeaderValue("From"));
          Assert.assertEquals("fizz@email.de", email.getHeaderValue("To"));
 
          server = SimpleSmtpServer.start(8854);
@@ -662,7 +691,7 @@ public class ActuatorIT extends AbstractArquillian {
          emailIter = server.getReceivedEmail();
          while (emailIter.hasNext()) {
             email = emailIter.next();
-            Assert.assertEquals("from@test.de", email.getHeaderValue("From"));
+            Assert.assertEquals("from @Test.de", email.getHeaderValue("From"));
             if ("Cibet Notification: FIRST_RELEASED".equals(email.getHeaderValue("Subject"))) {
                Assert.assertEquals("USER@email.de", email.getHeaderValue("To"));
 
@@ -703,7 +732,7 @@ public class ActuatorIT extends AbstractArquillian {
          emailIter = server.getReceivedEmail();
          email = emailIter.next();
          Assert.assertEquals("Cibet Notification: REJECTED", email.getHeaderValue("Subject"));
-         Assert.assertEquals("from@test.de", email.getHeaderValue("From"));
+         Assert.assertEquals("from @Test.de", email.getHeaderValue("From"));
          Assert.assertEquals("USER@email.de", email.getHeaderValue("To"));
 
          l1 = DcLoader.findUnreleased();
@@ -779,7 +808,7 @@ public class ActuatorIT extends AbstractArquillian {
    }
 
    @Test(expected = InvalidUserException.class)
-   public void releaseWithNoUser() throws ResourceApplyException {
+   public void releaseWithNoUser() throws ResourceApplyException, Exception {
       Context.sessionScope().setUser(null);
       Configuration.instance().reinitAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
@@ -787,11 +816,17 @@ public class ActuatorIT extends AbstractArquillian {
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(FourEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.POSTPONED);
-      sd.release(applEman, "dfdf");
+      ut.begin();
+      try {
+         sd.release(applEman, "dfdf");
+      } catch (Exception e) {
+         ut.rollback();
+         throw e;
+      }
    }
 
    @Test(expected = InvalidUserException.class)
-   public void release6EyesWithNoUser() throws ResourceApplyException {
+   public void release6EyesWithNoUser() throws ResourceApplyException, Exception {
       Context.sessionScope().setUser(null);
       Configuration.instance().reinitAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
@@ -799,11 +834,17 @@ public class ActuatorIT extends AbstractArquillian {
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.FIRST_POSTPONED);
-      sd.release(applEman, "dfdf");
+      ut.begin();
+      try {
+         sd.release(applEman, "dfdf");
+      } catch (Exception e) {
+         ut.rollback();
+         throw e;
+      }
    }
 
    @Test(expected = InvalidUserException.class)
-   public void release6EyesSameUser() throws ResourceApplyException {
+   public void release6EyesSameUser() throws ResourceApplyException, Exception {
       Context.sessionScope().setUser("US");
       Configuration.instance().registerAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
@@ -812,11 +853,17 @@ public class ActuatorIT extends AbstractArquillian {
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.FIRST_POSTPONED);
       sd.setCreateUser("US");
-      sd.release(applEman, "dfdf");
+      ut.begin();
+      try {
+         sd.release(applEman, "dfdf");
+      } catch (Exception e) {
+         ut.rollback();
+         throw e;
+      }
    }
 
    @Test(expected = ResourceApplyException.class)
-   public void release6EyesNotPostponed() throws ResourceApplyException {
+   public void release6EyesNotPostponed() throws Exception {
       Context.sessionScope().setUser("xx");
       Configuration.instance().registerAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
@@ -824,11 +871,17 @@ public class ActuatorIT extends AbstractArquillian {
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(SixEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.REJECTED);
-      sd.release(applEman, "dfdf");
+      ut.begin();
+      try {
+         sd.release(applEman, "dfdf");
+      } catch (Exception e) {
+         ut.rollback();
+         throw e;
+      }
    }
 
    @Test(expected = ResourceApplyException.class)
-   public void releaseWithWrongStatus() throws ResourceApplyException {
+   public void releaseWithWrongStatus() throws Exception {
       Context.sessionScope().setUser(null);
       Configuration.instance().registerAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
@@ -836,11 +889,18 @@ public class ActuatorIT extends AbstractArquillian {
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(FourEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.EXECUTED);
-      sd.release(applEman, "dfdf");
+      ut.begin();
+      try {
+         sd.release(applEman, "dfdf");
+      } catch (Exception e) {
+         ut.rollback();
+         throw e;
+      }
    }
 
    @Test(expected = ResourceApplyException.class)
-   public void releaseWithWrongStatus2ManRule() throws ResourceApplyException {
+   public void releaseWithWrongStatus2ManRule() throws ResourceApplyException, Exception {
+      log.debug("start releaseWithWrongStatus2ManRule");
       Context.sessionScope().setUser(null);
       Configuration.instance().registerAuthenticationProvider(null);
       log.debug("CibetContext.getUser(): " + Context.sessionScope().getUser());
@@ -848,7 +908,14 @@ public class ActuatorIT extends AbstractArquillian {
       sd.setControlEvent(ControlEvent.DELETE);
       sd.setActuator(TwoManRuleActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.EXECUTED);
-      sd.release(applEman, "dfdf");
+      ut.begin();
+      try {
+         sd.release(applEman, "dfdf");
+      } catch (Exception e) {
+         log.info(e.getMessage(), e);
+         ut.rollback();
+         throw e;
+      }
    }
 
    @Test
@@ -864,12 +931,18 @@ public class ActuatorIT extends AbstractArquillian {
    }
 
    @Test(expected = IllegalArgumentException.class)
-   public void releaseInvalidEvent() throws ResourceApplyException {
+   public void releaseInvalidEvent() throws ResourceApplyException, Exception {
       Controllable sd = new Controllable();
       sd.setControlEvent(ControlEvent.REDO);
       sd.setActuator(FourEyesActuator.DEFAULTNAME);
       sd.setExecutionStatus(ExecutionStatus.POSTPONED);
-      sd.release(applEman, "dfdf");
+      ut.begin();
+      try {
+         sd.release(applEman, "dfdf");
+      } catch (Exception e) {
+         ut.rollback();
+         throw e;
+      }
    }
 
    @Test

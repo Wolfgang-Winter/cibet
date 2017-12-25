@@ -89,7 +89,7 @@ public class ArchivePerformanceTest extends DBHelper {
    }
 
    private List<?> loadAllArchives() {
-      Query query = Context.internalRequestScope().getEntityManager().createQuery(
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false).createQuery(
             "SELECT  r, a FROM JpaResource r, Archive a WHERE a.resource = r and r.primaryKeyId = '7220' ORDER BY a.createDate");
       List<Archive> list = (List<Archive>) query.getResultList();
       // make distinct
@@ -99,7 +99,7 @@ public class ArchivePerformanceTest extends DBHelper {
    }
 
    private List<?> loadAllArchives1() {
-      Query query = Context.internalRequestScope().getEntityManager()
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createQuery("SELECT  r, a FROM Archive a, JpaResource r LEFT JOIN FETCH r.parameters "
                   + "WHERE a.resource = r and r.primaryKeyId = '7220' ORDER BY a.createDate");
       List<Archive> list = (List<Archive>) query.getResultList();
@@ -119,7 +119,8 @@ public class ArchivePerformanceTest extends DBHelper {
    }
 
    private List<Archive> loadArchivesByPrimaryKeyId(String target, Object primaryKeyId) {
-      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
       query.setParameter(1, target);
       if (primaryKeyId == null) {
          query.setParameter(2, null);

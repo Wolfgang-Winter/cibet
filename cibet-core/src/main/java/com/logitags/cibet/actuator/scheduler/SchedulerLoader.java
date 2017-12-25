@@ -54,7 +54,7 @@ public abstract class SchedulerLoader extends DcLoader {
     * @return
     */
    public static List<Controllable> findScheduled(String target) {
-      Query q = Context.internalRequestScope().getEntityManager()
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Controllable.SEL_SCHED_BY_TARGETTYPE);
       q.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       q.setParameter("oclass", target);
@@ -73,7 +73,7 @@ public abstract class SchedulerLoader extends DcLoader {
     * @return
     */
    public static List<Controllable> findAllScheduled(String target) {
-      Query q = Context.internalRequestScope().getEntityManager()
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Controllable.SEL_SCHED_BY_TARGETTYPE_NO_TENANT);
       q.setParameter("oclass", target);
       List<Controllable> list = q.getResultList();
@@ -90,7 +90,8 @@ public abstract class SchedulerLoader extends DcLoader {
     * @return List of Controllable
     */
    public static List<Controllable> findScheduled() {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_SCHED_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_SCHED_BY_TENANT);
       q.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       List<Controllable> list = q.getResultList();
       for (Controllable dc : list) {
@@ -106,7 +107,7 @@ public abstract class SchedulerLoader extends DcLoader {
     * @return List of Controllable
     */
    public static List<Controllable> findAllScheduled() {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_SCHED);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_SCHED);
       List<Controllable> list = q.getResultList();
       for (Controllable dc : list) {
          dc.decrypt();
@@ -174,7 +175,8 @@ public abstract class SchedulerLoader extends DcLoader {
       String uniqueId = DigestUtils.sha256Hex(entityClass.getName() + primaryKey);
       log.debug("uniqueId: " + uniqueId);
 
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_UNIQUEID);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_BY_UNIQUEID);
       q.setParameter("uniqueId", uniqueId);
       List<Controllable> list = (List<Controllable>) q.getResultList();
       for (Controllable dc : list) {

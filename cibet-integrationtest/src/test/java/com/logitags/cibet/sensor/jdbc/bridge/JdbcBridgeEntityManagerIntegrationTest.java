@@ -95,13 +95,13 @@ public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
 
    @Test
    public void createNativeQuery() throws Exception {
-      EntityManager eman = Context.requestScope().getEntityManager();
+      EntityManager eman = Context.internalRequestScope().getOrCreateEntityManager(false);
       Query q = eman.createNativeQuery("INSERT INTO cib_syntetic2entity " + "(ID) VALUES (?)");
       q.setParameter(1, "sasa121");
       int count = q.executeUpdate();
       Assert.assertEquals(1, count);
 
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(true).getDelegate();
       Statement st = conn.createStatement();
       ResultSet rs = st.executeQuery("select id from cib_syntetic2entity");
       Assert.assertTrue(rs.next());
@@ -128,49 +128,49 @@ public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
 
    @Test(expected = CibetJdbcException.class)
    public void find() throws SQLException {
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
       EntityManager em = new JdbcBridgeEntityManager(conn);
       em.find(this.getClass(), "xx");
    }
 
    @Test(expected = CibetJdbcException.class)
    public void merge() throws SQLException {
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
       EntityManager em = new JdbcBridgeEntityManager(conn);
       em.merge(this);
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void merge2() throws SQLException {
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
       EntityManager em = new JdbcBridgeEntityManager(conn);
       em.merge(null);
    }
 
    @Test(expected = CibetJdbcException.class)
    public void persist() throws SQLException {
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
       EntityManager em = new JdbcBridgeEntityManager(conn);
       em.persist(this);
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void persist2() throws SQLException {
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
       EntityManager em = new JdbcBridgeEntityManager(conn);
       em.persist(null);
    }
 
    @Test(expected = CibetJdbcException.class)
    public void remove() throws SQLException {
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
       EntityManager em = new JdbcBridgeEntityManager(conn);
       em.remove(this);
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void remove2() throws SQLException {
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
       EntityManager em = new JdbcBridgeEntityManager(conn);
       em.remove(null);
    }
@@ -215,7 +215,7 @@ public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
 
    @Test
    public void getResultListQuery2() throws SQLException {
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
 
       Statement st = conn.createStatement();
       int count = st.executeUpdate(
@@ -244,7 +244,7 @@ public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
       Timestamp timestamp = new Timestamp(cal.getTimeInMillis());
 
       String sql = "INSERT INTO tpsentity (id, datevalue, timevalue, timestampvalue) " + "VALUES (?,?,?,?)";
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
       JdbcBridgeEntityManager em = new JdbcBridgeEntityManager(conn);
       Query q1 = em.createNativeQuery(sql);
       q1.setParameter("1", 445);
@@ -284,7 +284,7 @@ public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
       Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
 
       String sql = "INSERT INTO tpsentity (id, datevalue, timevalue, timestampvalue) " + "VALUES (?,?,?,?)";
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
 
       PreparedStatement st = conn.prepareStatement(sql);
       st.setLong(1, 445);
@@ -312,7 +312,7 @@ public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
    public void getSingleResultNoResult() throws SQLException {
       Timestamp timestamp = new Timestamp(new java.util.Date().getTime());
 
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
 
       String selSQL = "SELECT id, datevalue, timevalue, timestampvalue from tpsentity" + " WHERE timestampvalue = ?";
       JdbcBridgeEntityManager.registerEntityDefinition(TPSEntity.class, new TPSEntityDefinition());
@@ -330,7 +330,7 @@ public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
       JdbcBridgeEntityManager.registerEntityDefinition(this.getClass(), new PseudoEntityDefinition(sql));
       JdbcBridgeEntityManager.registerEntityDefinition(this.getClass(), new PseudoEntityDefinition(sql2));
 
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
       JdbcBridgeEntityManager em = new JdbcBridgeEntityManager(conn);
       Query q1 = em.createNativeQuery(sql2);
       int count = q1.executeUpdate();
@@ -372,7 +372,7 @@ public class JdbcBridgeEntityManagerIntegrationTest extends JdbcHelper {
       byte[] bytes = teststring.getBytes();
 
       JdbcBridgeEntityManager.registerEntityDefinition(TPSEntity.class, new TPSEntityDefinition());
-      Connection conn = (Connection) Context.requestScope().getEntityManager().getDelegate();
+      Connection conn = (Connection) Context.internalRequestScope().getOrCreateEntityManager(false).getDelegate();
       JdbcBridgeEntityManager em = new JdbcBridgeEntityManager(conn);
       Query q1 = em.createNativeQuery(sql);
       q1.setParameter("1", 448);

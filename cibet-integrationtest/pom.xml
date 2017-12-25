@@ -86,13 +86,6 @@
          <scope>test</scope>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.jboss.spec</groupId> -->
-<!-- 			<artifactId>jboss-javaee-all-6.0</artifactId> -->
-<!-- 			<version>3.0.3.Final</version> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency> -->
-
       <dependency>
       	<groupId>org.jboss.spec</groupId>
       	<artifactId>jboss-javaee-all-7.0</artifactId>
@@ -140,32 +133,6 @@
 			<scope>test</scope>
 			<type>pom</type>
 		</dependency>
-
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.jboss.as</groupId> -->
-<!-- 			<artifactId>jboss-as-ejb-client-bom</artifactId> -->
-<!-- 			<version>7.2.0.Final</version> -->
-<!-- 			<type>pom</type> -->
-<!-- 			<scope>test</scope> -->
-<!-- 			<exclusions> -->
-<!-- 				<exclusion> -->
-<!-- 					<artifactId>jboss-remoting</artifactId> -->
-<!-- 					<groupId>org.jboss.remoting3</groupId> -->
-<!-- 				</exclusion> -->
-<!-- 				<exclusion> -->
-<!-- 					<artifactId>xnio-api</artifactId> -->
-<!-- 					<groupId>org.jboss.xnio</groupId> -->
-<!-- 				</exclusion> -->
-<!-- 				<exclusion> -->
-<!-- 					<groupId>org.jboss.xnio</groupId> -->
-<!-- 					<artifactId>xnio-nio</artifactId> -->
-<!-- 				</exclusion> -->
-<!-- 				<exclusion> -->
-<!-- 					<artifactId>jboss-logging</artifactId> -->
-<!-- 					<groupId>org.jboss.logging</groupId> -->
-<!-- 				</exclusion> -->
-<!-- 			</exclusions> -->
-<!-- 		</dependency> -->
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -330,6 +297,12 @@
 			<type>pom</type>
       </dependency>
 
+		<dependency>
+			<groupId>org.apache.tomee</groupId>
+			<artifactId>openejb-core</artifactId>
+			<version>7.0.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -549,33 +522,6 @@
     				<scope>test</scope>
 				</dependency>
 
-<!-- 				<dependency> -->
-<!-- 					<groupId>org.jboss.xnio</groupId> -->
-<!-- 					<artifactId>xnio-api</artifactId> -->
-<!-- 					<version>3.3.4.Final</version> -->
-<!-- 					<scope>test</scope> -->
-<!-- 				</dependency> -->
-				
-<!-- 				<dependency> -->
-<!-- 					<groupId>org.jboss.xnio</groupId> -->
-<!-- 					<artifactId>xnio-nio</artifactId> -->
-<!-- 					<version>3.3.4.Final</version> -->
-<!-- 					<scope>test</scope> -->
-<!-- 				</dependency> -->
-				
-<!-- 				<dependency> -->
-<!-- 					<groupId>org.jboss.logging</groupId> -->
-<!-- 					<artifactId>jboss-logging</artifactId> -->
-<!-- 					<version>3.3.1.Final</version> -->
-<!-- 					<scope>test</scope> -->
-<!-- 				</dependency> -->
-
-<!-- 				<dependency> -->
-<!--     				<groupId>org.jboss.remoting</groupId> -->
-<!--     				<artifactId>jboss-remoting</artifactId> -->
-<!--     				<version>4.0.18.Final</version> -->
-<!-- 				</dependency> -->
-
 			</dependencies>
 
 			<build>
@@ -589,8 +535,8 @@
 <!-- 								<include>**/it/*IT.java</include> -->
 <!-- 								<include>**/*Test.java</include> -->
 <!--                         <include>com/logitags/cibet/sensor/jdbc/driver/*.java</include> -->
-<!--                         <include>**/CibetContextInterceptorIT.java</include> -->
-                        <include>**/HttpShiroIT.java</include>
+<!--                         <include>**/ActuatorIT.java</include> -->
+                        <include>**/HttpParallelDcIT.java</include>
 							</includes>
 							<enableAssertions>false</enableAssertions>
 							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx1024m -Xms1024m</argLine>
@@ -736,6 +682,115 @@
 		</profile>
 
 		<profile>
+			<id>tomee7</id>
+			<!-- must be started in Eclipse with Run Configuration VM argument: -javaagent:D:\Java\maven-repository\org\apache\openjpa\openjpa-all\2.4.2\openjpa-all-2.4.2.jar -->
+
+			<dependencies>
+			
+				<dependency>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+					<version>1.2.15</version>
+					<scope>test</scope>
+				</dependency>
+
+				<dependency>
+					<groupId>org.apache.tomee</groupId>
+					<artifactId>arquillian-tomee-remote</artifactId>
+					<version>7.0.2</version>
+					<scope>test</scope>
+				</dependency>
+
+<!-- 				<dependency> -->
+<!-- 					<groupId>org.apache.openejb</groupId> -->
+<!-- 					<artifactId>apache-tomee</artifactId> -->
+<!-- 					<version>1.7.4</version> -->
+<!-- 					<classifier>webprofile</classifier> -->
+<!-- 					<type>zip</type> -->
+<!-- 					<scope>test</scope> -->
+<!-- 				</dependency> -->
+
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.16</version>
+						<configuration>
+							<includes>
+<!-- 								<include>**/http/*IT.java</include> -->
+<!-- 								<include>**/it/*IT.java</include> -->
+<!-- 								<include>**/*Test.java</include> -->
+                        <include>**/SimpleEclipseLinkTest.java</include>
+<!--                         <include>**/ActuatorIT.java</include> -->
+							</includes>
+							<enableAssertions>false</enableAssertions>
+							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx1024m -Xms1024m -Duser.language=en</argLine>
+							<systemPropertyVariables>
+								<arquillian.launch>tomee7</arquillian.launch>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.openjpa</groupId>
+						<artifactId>openjpa-maven-plugin</artifactId>
+						<version>2.4.2</version>
+						<configuration>
+							<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+							<persistenceXmlFile>${project.basedir}/src/test/resources/META-INF/openjpa-enhancer-persistence.xml</persistenceXmlFile>
+						</configuration>
+						<executions>
+							<execution>
+								<id>test-enhancer</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>test-enhance</goal>
+								</goals>
+								<configuration>
+									<includes>**/Te1.class , **/Te2.class</includes>
+								</configuration>
+							</execution>
+						</executions>
+						<dependencies>
+                        <!-- set the version to be the same as the level in your runtime -->
+<!-- 							<dependency> -->
+<!-- 								<groupId>org.apache.openjpa</groupId> -->
+<!-- 								<artifactId>openjpa</artifactId> -->
+<!-- 								<version>2.4.2</version> -->
+<!-- 							</dependency> -->
+						</dependencies>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<id>jndi</id>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<echo message="set jndi.properties" />
+										<move failonerror="true"
+											file="${project.build.testOutputDirectory}/jndi-for-tomee7.properties"
+											tofile="${project.build.testOutputDirectory}/jndi_.properties" />
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
 			<id>glassfish3</id>
 
 			<dependencies>
@@ -829,9 +884,80 @@
 						<configuration>
 							<includes>
 								<include>**/TomcatTestJpa.java</include>
+								<include>**/TomcatTestJdbc.java</include>
 							</includes>
 							<systemPropertyVariables>
 								<arquillian.launch>tomcat</arquillian.launch>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <version>1.8</version>
+                  <executions>
+                     <execution>
+                        <id>jndi</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                        <configuration>
+                           <target>
+                              <echo message="set jndi.properties" />
+                              <move failonerror="true"
+                                 file="${project.build.testOutputDirectory}/jndi-for-tomcat.properties"
+                                 tofile="${project.build.testOutputDirectory}/jndi_.properties" />
+                           </target>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>tomcat8</id>
+			<!-- not working as arquillian-tomcat-remote-7 is not compatible with Tomcat 8.5 -->
+			<dependencies>
+<!-- 				<dependency> -->
+<!-- 					<groupId>org.jboss.arquillian.container</groupId> -->
+<!-- 					<artifactId>arquillian-tomcat-remote-7</artifactId> -->
+<!-- 					<version>1.0.0</version> -->
+<!-- 					<scope>test</scope> -->
+<!-- 				</dependency> -->
+
+				<dependency>
+    				<groupId>org.arquillian.container</groupId>
+    				<artifactId>arquillian-container-chameleon</artifactId>
+    				<version>1.0.0.Beta2</version>
+    				<scope>test</scope>
+				</dependency>
+
+            <dependency>
+               <groupId>org.eclipse.persistence</groupId>
+               <artifactId>eclipselink</artifactId>
+               <version>2.7.0</version>
+               <scope>test</scope>
+            </dependency>
+
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.16</version>
+						<configuration>
+							<includes>
+								<include>**/TomcatTestJpa.java</include>
+<!-- 								<include>**/TomcatTestJdbc.java</include> -->
+							</includes>
+							<systemPropertyVariables>
+								<arquillian.launch>tomcat8</arquillian.launch>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>

@@ -145,12 +145,11 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
    private List<Archive> loadArchives(int expected, String url) throws Exception {
 
       List<Archive> list = null;
-      EntityManager cem = Context.requestScope().getEntityManager();
+      EntityManager cem = Context.internalRequestScope().getOrCreateEntityManager(false);
       for (int i = 1; i < 6; i++) {
          Query q = cem.createQuery("SELECT a FROM Archive a ORDER BY a.createDate");
          list = q.getResultList();
-         if (expected == list.size())
-            break;
+         if (expected == list.size()) break;
 
          log.debug("No result. Try query again: " + i);
          cem.clear();
@@ -227,7 +226,9 @@ public class HttpCibetFilter2IT extends AbstractArquillian {
       }
 
       Context.sessionScope().setUser("releaseUser");
+      ut.begin();
       HttpResponse resp = (HttpResponse) co.release(applEman, null);
+      ut.commit();
       Assert.assertNotNull(resp);
       String body = readResponseBody(resp);
       int length = "OK message: ;act=aschenfels;dubi2=Klassenmann".length();

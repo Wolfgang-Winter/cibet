@@ -26,8 +26,6 @@ package com.logitags.cibet.context;
 
 import java.util.Date;
 
-import javax.persistence.EntityManager;
-
 import com.logitags.cibet.core.CibetException;
 import com.logitags.cibet.core.EventResult;
 
@@ -54,22 +52,6 @@ public interface RequestScope extends ApplicationScope {
     * @return
     */
    boolean getRollbackOnly();
-
-   /**
-    * set the applications EntityManager instance for the Cibet entities.
-    * 
-    * @param manager
-    */
-   void setEntityManager(EntityManager manager);
-
-   /**
-    * Return the EntityManager instance for persistence of the Cibet entities.
-    * 
-    * @return
-    * @throws CibetException
-    *            if no EntityManager set in CibetContext
-    */
-   EntityManager getEntityManager();
 
    /**
     * set a remark of the creating, first approving or final approving user

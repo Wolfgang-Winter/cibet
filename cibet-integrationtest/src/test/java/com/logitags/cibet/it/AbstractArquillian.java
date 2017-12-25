@@ -39,6 +39,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.Status;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.http.HttpEntity;
@@ -98,8 +100,9 @@ public abstract class AbstractArquillian extends CoreTestBase {
    }
 
    @Before
-   public void beforeAbstractArquillian() {
+   public void beforeAbstractArquillian() throws SystemException {
       log.info("call beforeAbstractArquillian(");
+      log.debug(applEman);
    }
 
    @After
@@ -111,9 +114,23 @@ public abstract class AbstractArquillian extends CoreTestBase {
       // }
 
       log.info("Arquillian.afterTest()");
-      ut.begin();
 
-      EntityManager cibetEman = Context.requestScope().getEntityManager();
+      Context.start();
+      if (ut.getStatus() == Status.STATUS_NO_TRANSACTION) {
+         log.debug("begin new transaction");
+         ut.begin();
+      } else {
+         log.debug("transaction is active");
+         ut.commit();
+         ut.begin();
+      }
+
+      // applEman.joinTransaction();
+      // log.debug("transaction joined");
+
+      // ut.begin();
+
+      EntityManager cibetEman = Context.internalRequestScope().getOrCreateEntityManager(true);
 
       Query q = applEman.createQuery("SELECT e FROM TComplexEntity e");
       List<TComplexEntity> cList = q.getResultList();
@@ -159,6 +176,7 @@ public abstract class AbstractArquillian extends CoreTestBase {
       }
       log.info(rlist.size() + " Resources removed");
 
+      log.debug("*** " + ut + " TXN Status: " + ut.getStatus());
       q = applEman.createNativeQuery("DELETE FROM CIB_COMPLEXTESTENTITY_AUD");
       int count = q.executeUpdate();
       log.debug(count + " rows deleted in CIB_COMPLEXTESTENTITY_AUD");
@@ -180,6 +198,7 @@ public abstract class AbstractArquillian extends CoreTestBase {
       log.debug(count + " rows deleted in REVINFO");
 
       ut.commit();
+      // Context.end();
 
       try {
          Class rtClass = Thread.currentThread().getContextClassLoader().getParent().loadClass("org.jacoco.agent.rt.RT");
@@ -264,11 +283,9 @@ public abstract class AbstractArquillian extends CoreTestBase {
    }
 
    public <T> void persist(T entity) throws Exception {
-      // applEman.getTransaction().begin();
       ut.begin();
       applEman.persist(entity);
       ut.commit();
-      // applEman.getTransaction().commit();
       applEman.clear();
    }
 

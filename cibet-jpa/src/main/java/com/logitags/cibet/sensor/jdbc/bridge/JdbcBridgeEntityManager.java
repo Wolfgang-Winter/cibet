@@ -45,6 +45,7 @@ import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.core.AnnotationNotFoundException;
 import com.logitags.cibet.core.AnnotationUtil;
+import com.logitags.cibet.core.CEntityManager;
 import com.logitags.cibet.core.EventResult;
 import com.logitags.cibet.sensor.jdbc.def.ArchiveDefinition;
 import com.logitags.cibet.sensor.jdbc.def.ControllableDefinition;
@@ -61,7 +62,7 @@ import com.logitags.cibet.sensor.jdbc.driver.JdbcResource;
  * internal Cibet database operations.
  * 
  */
-public class JdbcBridgeEntityManager implements EntityManager {
+public class JdbcBridgeEntityManager implements EntityManager, CEntityManager {
 
    /**
     * logger for tracing
@@ -612,6 +613,25 @@ public class JdbcBridgeEntityManager implements EntityManager {
    @Override
    public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass) {
       return null;
+   }
+
+   @Override
+   public EntityManager getNativeEntityManager() {
+      return this;
+   }
+
+   @Override
+   public boolean isLoadEager() {
+      return false;
+   }
+
+   @Override
+   public void setLoadEager(boolean loadEager) {
+   }
+
+   @Override
+   public boolean supportsTransactions() {
+      return false;
    }
 
 }

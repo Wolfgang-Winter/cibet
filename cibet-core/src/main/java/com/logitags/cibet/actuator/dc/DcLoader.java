@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.transaction.UserTransaction;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,7 +64,8 @@ public abstract class DcLoader {
     * @return list of Controllable
     */
    public static List<Controllable> findUnreleased(String target) {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT_CLASS);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_BY_TENANT_CLASS);
       q.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       q.setParameter("oclass", target);
       List<Controllable> list = q.getResultList();
@@ -79,7 +81,8 @@ public abstract class DcLoader {
     * @return list of Controllable
     */
    public static List<Controllable> findAllUnreleased(String target) {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_CLASS);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_BY_CLASS);
       q.setParameter("oclass", target);
       List<Controllable> list = q.getResultList();
       decrypt(list);
@@ -92,7 +95,19 @@ public abstract class DcLoader {
     * @return List of Controllable
     */
    public static List<Controllable> findUnreleased() {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_BY_TENANT);
+      q.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
+      List<Controllable> list = q.getResultList();
+
+      decrypt(list);
+      return list;
+   }
+
+   public static List<Controllable> findUnreleased(UserTransaction ut) {
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_BY_TENANT);
+
       q.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       List<Controllable> list = q.getResultList();
 
@@ -106,7 +121,7 @@ public abstract class DcLoader {
     * @return List of Controllable
     */
    public static List<Controllable> findAllUnreleased() {
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_ALL);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_ALL);
       List<Controllable> list = q.getResultList();
       decrypt(list);
       return list;
@@ -120,7 +135,8 @@ public abstract class DcLoader {
     * @return list of Controllable
     */
    public static List<Controllable> loadByCaseId(String caseId) {
-      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_CASEID);
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_BY_CASEID);
       String tenant = Context.internalSessionScope().getTenant();
       query.setParameter("tenant", tenant + "%");
       query.setParameter("caseId", caseId);
@@ -137,7 +153,7 @@ public abstract class DcLoader {
     * @return list of Controllable
     */
    public static List<Controllable> loadAllByCaseId(String caseId) {
-      Query query = Context.internalRequestScope().getEntityManager()
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Controllable.SEL_BY_CASEID_NO_TENANT);
       query.setParameter("caseId", caseId);
       List<Controllable> list = query.getResultList();
@@ -153,7 +169,7 @@ public abstract class DcLoader {
     * @return list of Controllable
     */
    public static List<Controllable> loadByUser(String user) {
-      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+      TypedQuery<Controllable> query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Controllable.SEL_BY_USER, Controllable.class);
       query.setParameter("user", user);
       query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
@@ -171,7 +187,7 @@ public abstract class DcLoader {
     * @return list of Controllable
     */
    public static List<Controllable> loadAllByUser(String user) {
-      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+      TypedQuery<Controllable> query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Controllable.SEL_BY_USER_NO_TENANT, Controllable.class);
       query.setParameter("user", user);
       List<Controllable> list = query.getResultList();
@@ -219,7 +235,7 @@ public abstract class DcLoader {
       }
 
       log.debug("SQL: " + sql);
-      EntityManager em = Context.internalRequestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       Query q = em.createNativeQuery(sql.toString(), Controllable.class);
       for (int i = 0; i < params.size(); i++) {
          q.setParameter(i + 1, params.get(i));
@@ -269,7 +285,7 @@ public abstract class DcLoader {
       }
 
       log.debug("SQL: " + sql);
-      EntityManager em = Context.internalRequestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       Query q = em.createNativeQuery(sql.toString(), Controllable.class);
       for (int i = 0; i < params.size(); i++) {
          q.setParameter(i + 1, params.get(i));
@@ -288,7 +304,7 @@ public abstract class DcLoader {
     * @return
     */
    public static List<Controllable> loadAllByGroupId(String groupId) {
-      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+      TypedQuery<Controllable> query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Controllable.SEL_BY_GROUPID, Controllable.class);
       query.setParameter("groupId", groupId);
       List<Controllable> list = query.getResultList();

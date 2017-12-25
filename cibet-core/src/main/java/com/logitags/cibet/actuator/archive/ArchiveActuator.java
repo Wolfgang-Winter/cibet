@@ -146,7 +146,8 @@ public class ArchiveActuator extends AbstractActuator {
       }
 
       // set primary key of previous archives of this business case
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_CASEID);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_CASEID);
       q.setParameter("tenant", Context.sessionScope().getTenant());
       q.setParameter("caseId", caseId);
       List<Archive> list = q.getResultList();
@@ -186,6 +187,7 @@ public class ArchiveActuator extends AbstractActuator {
     */
    @Override
    public void afterEvent(EventMetadata ctx) {
+      log.debug("afterEvent");
       if (Context.requestScope().isPlaying()) {
          return;
       }
@@ -204,12 +206,11 @@ public class ArchiveActuator extends AbstractActuator {
          ar.createChecksum();
       }
 
-      EntityManager em = Context.internalRequestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(true);
       if (isEncrypt()) {
          ar.getResource().encrypt();
       }
 
-      ar.setResource(em.merge(ar.getResource()));
       em.merge(ar);
    }
 
@@ -218,13 +219,12 @@ public class ArchiveActuator extends AbstractActuator {
          ar.createChecksum();
       }
 
-      EntityManager em = Context.internalRequestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(true);
+      log.debug("resourceId: " + ar.getResource().getResourceId());
       if (ar.getResource().getResourceId() == null) {
          if (isEncrypt()) {
             ar.getResource().encrypt();
          }
-
-         em.persist(ar.getResource());
       }
 
       em.persist(ar);

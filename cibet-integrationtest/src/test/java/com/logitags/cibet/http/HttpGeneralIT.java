@@ -120,7 +120,7 @@ public class HttpGeneralIT extends AbstractArquillian {
    @Before
    public void beforeHttpGeneralIT() {
       Context.start();
-      localcibet = Context.requestScope().getEntityManager();
+      localcibet = Context.internalRequestScope().getOrCreateEntityManager(false);
    }
 
    @Override
@@ -241,7 +241,7 @@ public class HttpGeneralIT extends AbstractArquillian {
 
       Context.end();
       Context.start();
-      localcibet = Context.requestScope().getEntityManager();
+      localcibet = Context.internalRequestScope().getOrCreateEntityManager(false);
 
       List<TEntity> tentList = (List<TEntity>) dbHelper.select("SELECT e FROM TEntity e");
       Assert.assertEquals(0, tentList.size());

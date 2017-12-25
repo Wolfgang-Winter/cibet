@@ -131,7 +131,7 @@ public class HttpSchedulerIT extends AbstractArquillian {
       Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       readResponseBody(response);
 
-      EntityManager cem = Context.requestScope().getEntityManager();
+      EntityManager cem = Context.internalRequestScope().getOrCreateEntityManager(false);
       Query q = cem.createQuery("SELECT c FROM Controllable c");
       List<Controllable> list = q.getResultList();
       Assert.assertEquals(1, list.size());

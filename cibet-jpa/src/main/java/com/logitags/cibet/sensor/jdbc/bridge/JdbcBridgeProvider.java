@@ -127,7 +127,7 @@ public class JdbcBridgeProvider extends Provider {
       try {
          DriverManager.getDriver(CibetDriver.CIBET_PREFIX);
       } catch (SQLException e) {
-         log.error(e.getMessage());
+         log.warn(e.getMessage());
          CibetDriver.register();
       }
    }

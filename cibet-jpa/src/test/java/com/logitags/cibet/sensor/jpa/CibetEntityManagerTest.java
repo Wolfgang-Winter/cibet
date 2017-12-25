@@ -43,7 +43,7 @@ public class CibetEntityManagerTest {
    @Before
    public void initTest() {
       cib = new CibetEntityManager(em, false);
-      Context.requestScope().setEntityManager(em);
+      Context.internalRequestScope().setEntityManager(em);
    }
 
    @Test

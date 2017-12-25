@@ -60,7 +60,7 @@ public class CibetQueryTest {
 
    @Test
    public void getSingleResult() {
-      Context.requestScope().setEntityManager(em);
+      Context.internalRequestScope().setEntityManager(em);
 
       List<String> list = new ArrayList<String>();
       list.add("one");

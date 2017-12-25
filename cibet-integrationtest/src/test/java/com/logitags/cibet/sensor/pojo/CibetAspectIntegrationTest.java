@@ -74,7 +74,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
    }
 
    private void release() throws ResourceApplyException {
-      Context.internalRequestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
       List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
@@ -95,7 +95,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       TComplexEntity ent1 = new TComplexEntity();
       ent1.setCompValue(22);
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -118,7 +119,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       ent1.setStatValue(3434);
       applEman.flush();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -126,7 +128,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -153,7 +155,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       TComplexEntity.setStaticStatValue(44);
       applEman.flush();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -161,7 +164,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setStaticStatValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -187,7 +190,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
 
       ent1.setStatValue("GOGO-Girl");
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -196,7 +200,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("Hasenfuss", res.getInvokerParam());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -223,7 +227,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
 
       ent1.setCompValue(3434);
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -231,7 +236,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -258,7 +263,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       ent1.setCompValue(100);
       applEman.flush();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -267,7 +273,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("Walter", res.getInvokerParam());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -296,7 +302,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       ent1.setCompValue(3434);
       applEman.flush();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -304,7 +311,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -331,7 +338,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       ent1.setCompValue(3434);
       applEman.flush();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -339,7 +347,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -366,7 +374,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       ent1.setCompValue(3434);
       applEman.flush();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -374,7 +383,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("setCompValue", res.getMethod());
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -402,7 +411,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       ent1.setCompValue(3434);
       applEman.flush();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -411,7 +421,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals(FactoryInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("com.cibethelper.base.SingletonFactory.create2()", res.getInvokerParam());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -449,7 +459,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
 
       applEman.flush();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -458,7 +469,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals(SpringBeanInvoker.class.getName(), res.getInvokerClass());
       Assert.assertEquals("MySpringExampleBean", res.getInvokerParam());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -496,7 +507,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
 
       applEman.flush();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -505,7 +517,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals(SpringBeanInvoker.class.getName(), res.getInvokerClass());
       Assert.assertTrue(res.getInvokerParam() == null || "".equals(res.getInvokerParam()));
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -536,7 +548,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
       Assert.assertEquals(10, ent1.getCompValue());
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -568,7 +581,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals(3434, ent1.getCompValue());
       Context.sessionScope().setSecondUser(null);
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       List<Archive> list = q.getResultList();
       Assert.assertEquals(2, list.size());
@@ -685,7 +699,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       String answer = ent1.callWithoutAspect("Hello!");
       Assert.assertEquals("Hello!", answer);
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       q.getSingleResult();
    }
@@ -701,7 +716,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       String answer = ent1.callWithAspect("Hello!");
       Assert.assertEquals("Hello!", answer);
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -725,7 +741,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
       log.debug("name=" + name);
       Assert.assertNull(name);
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       Assert.assertNotNull(ar);
@@ -733,7 +750,7 @@ public class CibetAspectIntegrationTest extends DBHelper {
       Assert.assertEquals("getName", res.getMethod());
       Assert.assertEquals(PojoInvoker.class.getName(), res.getInvokerClass());
 
-      q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      q = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -763,7 +780,8 @@ public class CibetAspectIntegrationTest extends DBHelper {
          Assert.assertEquals("Expected FAIL", e.getMessage());
       }
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive ar = (Archive) q.getSingleResult();
       MethodResource res = (MethodResource) ar.getResource();

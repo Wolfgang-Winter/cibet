@@ -50,6 +50,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.commons.io.IOUtils;
@@ -381,7 +382,8 @@ public class ArquillianTestServlet1 extends HttpServlet {
       return sb;
    }
 
-   private String parallel(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+   private String parallel(HttpServletRequest req, HttpServletResponse resp)
+         throws IOException, IllegalStateException, SecurityException, SystemException {
       TEntity te = new TEntity("Hansi name", 34, "hansis owner");
       te.setCounter(Integer.parseInt(req.getParameter("counter")) + 1);
 
@@ -389,17 +391,26 @@ public class ArquillianTestServlet1 extends HttpServlet {
          log.debug("store " + te);
 
          try {
+            log.debug("*** " + ut + " TXN Status: " + ut.getStatus());
+
             ut.begin();
             appEM.persist(te);
             ut.commit();
+            log.debug("*** " + ut + " TXN Status: " + ut.getStatus());
+
             return "Persist done, counter: " + te.getCounter();
          } catch (Exception e) {
             log.error(e.getMessage(), e);
+            ut.rollback();
+            log.debug("*** " + ut + " TXN Status: " + ut.getStatus());
+
             throw new IOException(e);
          }
 
       } else {
          log.debug("no store " + te);
+         log.debug("*** " + ut + " TXN Status: " + ut.getStatus());
+
          return "NO Persist, counter: " + te.getCounter();
       }
    }
@@ -545,16 +556,17 @@ public class ArquillianTestServlet1 extends HttpServlet {
       Query q2 = appEM.createNamedQuery(TEntity.DEL_ALL);
       q2.executeUpdate();
 
-      Query q3 = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL);
+      Query q3 = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Archive.SEL_ALL);
       List<Archive> alist = q3.getResultList();
       for (Archive ar : alist) {
-         Context.internalRequestScope().getEntityManager().remove(ar);
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(ar);
       }
 
-      Query q4 = Context.internalRequestScope().getEntityManager().createQuery("select d from Controllable d");
+      Query q4 = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createQuery("select d from Controllable d");
       List<Controllable> dclist = q4.getResultList();
       for (Controllable dc : dclist) {
-         Context.internalRequestScope().getEntityManager().remove(dc);
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(dc);
       }
 
       // Query q5 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
@@ -563,10 +575,11 @@ public class ArquillianTestServlet1 extends HttpServlet {
       // Context.internalRequestScope().getEntityManager().remove(itLO.next());
       // }
 
-      Query q6 = Context.internalRequestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
+      Query q6 = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createQuery("SELECT a FROM EventResult a");
       Iterator<EventResult> itEV = q6.getResultList().iterator();
       while (itEV.hasNext()) {
-         Context.internalRequestScope().getEntityManager().remove(itEV.next());
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(itEV.next());
       }
 
       ut.commit();

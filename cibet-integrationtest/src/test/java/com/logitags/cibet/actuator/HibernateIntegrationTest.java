@@ -49,7 +49,7 @@ public class HibernateIntegrationTest extends DBHelper {
       log.info("start persistWithArchive()");
 
       log.info("**********");
-      EntityManager emm = Context.requestScope().getEntityManager();
+      EntityManager emm = Context.internalRequestScope().getOrCreateEntityManager(false);
       log.info(emm);
       log.info(emm.getDelegate());
       log.info(emm.getDelegate().getClass());

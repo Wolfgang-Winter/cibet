@@ -199,6 +199,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
     */
    @Override
    public void afterEvent(EventMetadata ctx) {
+      log.debug("afterEvent");
       if (ctx.getExecutionStatus() == ExecutionStatus.DENIED) {
          log.info("EventProceedStatus is DENIED. Skip afterEvent of " + this.getClass().getSimpleName());
          return;
@@ -255,14 +256,15 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       }
 
       if (dcObj != null) {
+         log.debug("resourceId: " + dcObj.getResource().getResourceId());
          if (dcObj.getResource().getResourceId() == null) {
             if (encrypt) {
                dcObj.getResource().encrypt();
             }
-            Context.internalRequestScope().getEntityManager().persist(dcObj.getResource());
          }
 
-         Context.internalRequestScope().getEntityManager().persist(dcObj);
+         Context.internalRequestScope().getOrCreateEntityManager(true).persist(dcObj);
+         ctx.setResource(dcObj.getResource());
 
          if (ctx.getException() != null && ctx.getException() instanceof PostponedException) {
             ((PostponedException) ctx.getException()).setControllable(dcObj);
@@ -344,7 +346,8 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
       Resource resource = ctx.getResource();
       String uniqueId = resource.getUniqueId();
       log.debug("check unapproved resource with id " + uniqueId);
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_UNIQUEID);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_BY_UNIQUEID);
       q.setParameter("uniqueId", uniqueId);
       List<Controllable> list = (List<Controllable>) q.getResultList();
       for (Controllable dc : list) {
@@ -632,7 +635,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
          co.setReleaseDate(new Date());
          co.setReleaseUser(Context.internalSessionScope().getUser());
          co.setReleaseRemark(Context.internalRequestScope().getRemark());
-         co = Context.internalRequestScope().getEntityManager().merge(co);
+         co = Context.internalRequestScope().getOrCreateEntityManager(true).merge(co);
          if (sendReleaseNotification) {
             notifyApproval(co);
          }
@@ -694,7 +697,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
                // if (encrypt) {
                // co.encrypt();
                // }
-               co = Context.internalRequestScope().getEntityManager().merge(co);
+               co = Context.internalRequestScope().getOrCreateEntityManager(true).merge(co);
                if (sendRejectNotification) {
                   notifyApproval(co);
                }
@@ -741,10 +744,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
                co.setReleaseUser(Context.internalSessionScope().getUser());
                co.setReleaseRemark(Context.internalRequestScope().getRemark());
 
-               // if (encrypt) {
-               // co.encrypt();
-               // }
-               co = Context.internalRequestScope().getEntityManager().merge(co);
+               co = Context.internalRequestScope().getOrCreateEntityManager(true).merge(co);
                if (sendPassBackNotification) {
                   notifyApproval(co);
                }
@@ -797,7 +797,7 @@ public class FourEyesActuator extends AbstractActuator implements DcActuator {
                // if (encrypt) {
                // co.encrypt();
                // }
-               co = Context.internalRequestScope().getEntityManager().merge(co);
+               co = Context.internalRequestScope().getOrCreateEntityManager(true).merge(co);
                notifyAssigned(ExecutionStatus.POSTPONED, co);
             }
 

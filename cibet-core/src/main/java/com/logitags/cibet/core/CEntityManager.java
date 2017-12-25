@@ -34,4 +34,6 @@ public interface CEntityManager {
 
    void setLoadEager(boolean loadEager);
 
+   boolean supportsTransactions();
+
 }

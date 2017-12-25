@@ -93,8 +93,7 @@ public class ArquillianSEServlet extends HttpServlet {
 
       } finally {
          // Closing the input stream will trigger connection release
-         if (instream != null)
-            instream.close();
+         if (instream != null) instream.close();
       }
    }
 
@@ -203,7 +202,7 @@ public class ArquillianSEServlet extends HttpServlet {
       cibet2.getTransaction().commit();
 
       log.debug("after merge");
-      EntityManager emm = Context.requestScope().getEntityManager();
+      EntityManager emm = Context.internalRequestScope().getOrCreateEntityManager(false);
       emm.clear();
       Query q = emm.createQuery("select a from Archive a where a.tenant ='XYCompany' order by a.archiveId");
       List<Archive> list = q.getResultList();
@@ -235,7 +234,7 @@ public class ArquillianSEServlet extends HttpServlet {
          Context.sessionScope().setProperty("Freds", new TEntity());
 
          Calendar cal = Calendar.getInstance();
-         cal.add(Calendar.SECOND, 4);
+         cal.add(Calendar.SECOND, 7);
          Configuration conf = Configuration.instance();
          SchedulerActuator act = (SchedulerActuator) conf.getActuator("schedEE");
          act.setTimerStart(cal.getTime());
@@ -263,8 +262,8 @@ public class ArquillianSEServlet extends HttpServlet {
          Context.requestScope().setScheduledDate(Calendar.SECOND, 3);
          tc = cibet2.merge(tc);
          cibet2.getTransaction().commit();
-         Context.requestScope().getEntityManager().getTransaction().commit();
-         Context.requestScope().getEntityManager().getTransaction().begin();
+         Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+         Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
          cibet2.getTransaction().begin();
 
          cibet2.clear();
@@ -287,7 +286,7 @@ public class ArquillianSEServlet extends HttpServlet {
 
          cibet2.clear();
          log.debug("-------------------- sleep");
-         Thread.sleep(7000);
+         Thread.sleep(8000);
          log.debug("--------------- after TimerTask");
          q = cibet2.createQuery("select a from TEntity a");
          list = q.getResultList();

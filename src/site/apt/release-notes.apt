@@ -4,6 +4,12 @@ Version 2.2
   
   * EJB-CLIENT sensor supports lookups with ejb:/
   
+  * Controllable.release method check if executed in a transaction
+  
+  * Request scope getEntityManager check if executed in a transaction
+  
+  * bugfix in CibetUtil comparison with hashcode instead reference
+  
 
 
 Version 2.1 (1.11.2017)

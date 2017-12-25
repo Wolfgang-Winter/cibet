@@ -337,7 +337,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
          Assert.assertNull(er.getParentResult());
          Assert.assertEquals("FOUR_EYES, ARCHIVE", er.getActuators());
 
-         Context.internalRequestScope().getEntityManager().clear();
+         Context.internalRequestScope().getOrCreateEntityManager(false).clear();
          List<Archive> list = ArchiveLoader.loadArchives(TEntity.class.getName());
          Assert.assertEquals(2, list.size());
          JpaResource res0 = (JpaResource) list.get(0).getResource();
@@ -742,7 +742,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       selEnt.setCompValue(18);
       selEnt = applEman.merge(selEnt);
       ut.commit();
-      Context.internalRequestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
 
       resetContext();
 
@@ -786,7 +786,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       applEman.remove(selEnt);
       ut.commit();
 
-      Context.internalRequestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
 
       schemes = new ArrayList<String>();
       schemes.add(ArchiveActuator.DEFAULTNAME);
@@ -883,7 +883,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
             ControlEvent.DELETE, ControlEvent.RESTORE);
 
       try {
-         Context.internalRequestScope().getEntityManager().clear();
+         Context.internalRequestScope().getOrCreateEntityManager(false).clear();
          List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity.class.getName(),
                String.valueOf(selEnt.getId()));
          Assert.assertEquals(3, list.size());
@@ -1043,7 +1043,7 @@ public class ArchiveContextInterceptorIT extends AbstractArquillian {
       applEman.clear();
       Assert.assertEquals(14, selEnt4.getCompValue());
 
-      Context.requestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
       ut.begin();
       ali = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity.class.getName(), id);
       map = ArchiveLoader.analyzeDifferences(ali);

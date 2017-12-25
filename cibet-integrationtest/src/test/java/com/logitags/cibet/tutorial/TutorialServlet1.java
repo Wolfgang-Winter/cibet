@@ -129,16 +129,17 @@ public class TutorialServlet1 extends HttpServlet {
 
       ut.begin();
 
-      Query q3 = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL);
+      Query q3 = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Archive.SEL_ALL);
       List<Archive> alist = q3.getResultList();
       for (Archive ar : alist) {
-         Context.requestScope().getEntityManager().remove(ar);
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(ar);
       }
 
-      Query q4 = Context.requestScope().getEntityManager().createQuery("select d from Controllable d");
+      Query q4 = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createQuery("select d from Controllable d");
       List<Controllable> dclist = q4.getResultList();
       for (Controllable dc : dclist) {
-         Context.requestScope().getEntityManager().remove(dc);
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(dc);
       }
 
       // Query q5 = Context.requestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
@@ -147,10 +148,11 @@ public class TutorialServlet1 extends HttpServlet {
       // Context.requestScope().getEntityManager().remove(itLO.next());
       // }
 
-      Query q6 = Context.requestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
+      Query q6 = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createQuery("SELECT a FROM EventResult a");
       Iterator<EventResult> itEV = q6.getResultList().iterator();
       while (itEV.hasNext()) {
-         Context.requestScope().getEntityManager().remove(itEV.next());
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(itEV.next());
       }
 
       ut.commit();
@@ -297,10 +299,12 @@ public class TutorialServlet1 extends HttpServlet {
       String lock2Id = req.getParameter("LOCK2");
 
       ut.begin();
-      Controllable lock1 = Context.requestScope().getEntityManager().find(Controllable.class, lock1Id);
+      Controllable lock1 = Context.internalRequestScope().getOrCreateEntityManager(false).find(Controllable.class,
+            lock1Id);
       Locker.unlock(lock1, null);
 
-      Controllable lock2 = Context.requestScope().getEntityManager().find(Controllable.class, lock2Id);
+      Controllable lock2 = Context.internalRequestScope().getOrCreateEntityManager(false).find(Controllable.class,
+            lock2Id);
       Locker.unlock(lock2, null);
       ut.commit();
 

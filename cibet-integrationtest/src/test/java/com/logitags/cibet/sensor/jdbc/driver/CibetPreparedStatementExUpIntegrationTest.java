@@ -362,7 +362,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Controllable co = l.get(0);
 
       Context.sessionScope().setUser("test2");
-      int res = (Integer) co.release(Context.requestScope().getEntityManager(), null);
+      int res = (Integer) co.release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
       Assert.assertEquals(1, res);
 
       Context.end();
@@ -410,7 +410,7 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
       Controllable co = l.get(0);
 
       Context.sessionScope().setUser("test2");
-      int res = (Integer) co.release(Context.requestScope().getEntityManager(), null);
+      int res = (Integer) co.release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
       Assert.assertEquals(1, res);
 
       Context.end();
@@ -1171,12 +1171,9 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
                + ", " + rs2.getInt("SEQUENCE"));
          Object value = CibetUtil.decode(rs2.getBytes("ENCODEDVALUE"));
          log.debug("VALUE: " + value);
-         if (count2 == 2)
-            Assert.assertEquals("rosen", value);
-         if (count2 == 3)
-            Assert.assertEquals(255, value);
-         if (count2 == 4)
-            Assert.assertEquals("Lalla", value);
+         if (count2 == 2) Assert.assertEquals("rosen", value);
+         if (count2 == 3) Assert.assertEquals(255, value);
+         if (count2 == 4) Assert.assertEquals("Lalla", value);
          Assert.assertEquals(count2, rs2.getInt("SEQUENCE"));
       }
       Assert.assertEquals(5, count2);
@@ -1195,12 +1192,9 @@ public class CibetPreparedStatementExUpIntegrationTest extends JdbcHelper {
                + ", " + rs2.getInt("SEQUENCE"));
          Assert.assertEquals(count2, rs2.getInt("SEQUENCE"));
          Object value = CibetUtil.decode(rs2.getBytes("ENCODEDVALUE"));
-         if (count2 == 2)
-            Assert.assertEquals("rosen", value);
-         if (count2 == 3)
-            Assert.assertEquals(444, value);
-         if (count2 == 4)
-            Assert.assertEquals("Kuller", value);
+         if (count2 == 2) Assert.assertEquals("rosen", value);
+         if (count2 == 3) Assert.assertEquals(444, value);
+         if (count2 == 4) Assert.assertEquals("Kuller", value);
       }
       Assert.assertEquals(5, count2);
 

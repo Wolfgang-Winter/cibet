@@ -120,7 +120,7 @@ public class SpringSecurityTest extends SpringTestBase {
       Context.sessionScope().setUser("releaser");
       List<Controllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
       log.debug(l.get(0));
-      l.get(0).release(Context.requestScope().getEntityManager(), null);
+      l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
 
       // CibetContext.getEntityManager().clear();
       l = DcLoader.findUnreleased(TComplexEntity.class.getName());
@@ -137,7 +137,7 @@ public class SpringSecurityTest extends SpringTestBase {
 
       ssa.setThrowDeniedException(true);
       try {
-         l.get(0).release(Context.requestScope().getEntityManager(), null);
+         l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
          Assert.fail();
       } catch (DeniedException e) {
       }
@@ -146,7 +146,7 @@ public class SpringSecurityTest extends SpringTestBase {
       log.debug(l.get(0));
       l = DcLoader.findUnreleased(TComplexEntity.class.getName());
       log.debug(l.get(0));
-      l.get(0).release(Context.requestScope().getEntityManager(), "ok");
+      l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), "ok");
 
       // cibetEman.getTransaction().commit();
       log.debug("end");
@@ -179,7 +179,7 @@ public class SpringSecurityTest extends SpringTestBase {
       // release
       Context.sessionScope().setUser("releaser");
       List<Controllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
-      l.get(0).release(Context.requestScope().getEntityManager(), null);
+      l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
       Assert.assertEquals(22, ent1.getStatValue());
    }
 
@@ -233,7 +233,7 @@ public class SpringSecurityTest extends SpringTestBase {
       // release
       Context.sessionScope().setUser("releaser");
       List<Controllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
-      l.get(0).release(Context.requestScope().getEntityManager(), null);
+      l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
       Assert.assertEquals(33, ent1.getStatValue());
    }
 
@@ -371,7 +371,8 @@ public class SpringSecurityTest extends SpringTestBase {
       Assert.assertEquals(1045, ent2.getCompValue());
       Assert.assertNotSame(ent2, ent1);
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Archive arch = (Archive) q.getSingleResult();
       Assert.assertEquals(ControlEvent.UPDATE, arch.getControlEvent());
@@ -402,10 +403,10 @@ public class SpringSecurityTest extends SpringTestBase {
       Assert.assertEquals(ExecutionStatus.EXECUTED, list.get(2).getExecutionStatus());
 
       for (Archive a : list) {
-         Context.requestScope().getEntityManager().remove(a);
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(a);
       }
-      Context.requestScope().getEntityManager().getTransaction().commit();
-      Context.requestScope().getEntityManager().getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
    }
 
    @Test

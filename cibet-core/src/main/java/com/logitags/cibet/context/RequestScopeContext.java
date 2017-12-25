@@ -132,7 +132,7 @@ public class RequestScopeContext implements InternalRequestScope {
     *            if no EntityManager set in CibetContext
     */
    @Override
-   public EntityManager getEntityManager() {
+   public EntityManager getOrCreateEntityManager(boolean transacted) {
       EntityManager manager = (EntityManager) getProperty(CIBET_ENTITYMANAGER);
       if (manager == null) {
          manager = Context.getOrCreateEntityManagers();
@@ -152,6 +152,25 @@ public class RequestScopeContext implements InternalRequestScope {
          } catch (TransactionRequiredException e) {
             log.info("... but cannot join transaction: " + e.getMessage());
          }
+      }
+
+      if (transacted && manager instanceof CEntityManager && ((CEntityManager) manager).supportsTransactions()
+            && !manager.isJoinedToTransaction()) {
+         throw new TransactionRequiredException();
+      }
+      return manager;
+   }
+
+   /**
+    * Return the Cibet EntityManager instance. Could be null, if not set in context.
+    * 
+    * @return
+    */
+   @Override
+   public EntityManager getEntityManager() {
+      EntityManager manager = (EntityManager) getProperty(CIBET_ENTITYMANAGER);
+      if (log.isDebugEnabled()) {
+         log.debug("get Cibet EntityManager from CibetContext: " + manager);
       }
       return manager;
    }
@@ -273,20 +292,6 @@ public class RequestScopeContext implements InternalRequestScope {
    }
 
    /**
-    * Return the Cibet EntityManager instance. Could be null, if not set in context.
-    * 
-    * @return
-    */
-   @Override
-   public EntityManager getNullableEntityManager() {
-      EntityManager manager = (EntityManager) getProperty(CIBET_ENTITYMANAGER);
-      if (log.isDebugEnabled()) {
-         log.debug("get Cibet EntityManager from CibetContext: " + manager);
-      }
-      return manager;
-   }
-
-   /**
     * returns the applications EntityManager that is used to persist the applications entities (not Cibet entities).
     * Returns null if no EntityManager set in context
     * 
@@ -340,8 +345,7 @@ public class RequestScopeContext implements InternalRequestScope {
    @Override
    public boolean isPlaying() {
       Boolean isPlaying = (Boolean) getProperty(PLAYING_MODE);
-      if (isPlaying == null)
-         return false;
+      if (isPlaying == null) return false;
       return isPlaying;
    }
 

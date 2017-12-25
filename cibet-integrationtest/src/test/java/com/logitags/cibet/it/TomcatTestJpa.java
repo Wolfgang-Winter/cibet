@@ -48,8 +48,6 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -101,11 +99,14 @@ public class TomcatTestJpa extends DBHelper {
             .asFile();
       archive.addAsLibraries(shiro);
 
-      File[] shiro1 = Maven.resolver()
-            .addDependencies(MavenDependencies.createDependency("org.apache.shiro:shiro-web:1.2.2", ScopeType.COMPILE,
-                  false, MavenDependencies.createExclusion("org.slf4j:slf4j-api")))
-            .resolve().withTransitivity().asFile();
-      archive.addAsLibraries(shiro1);
+      File[] shiroweb = Maven.resolver().loadPomFromFile("pom.xml").resolve("org.apache.shiro:shiro-web")
+            .withTransitivity().asFile();
+      archive.addAsLibraries(shiroweb);
+      // File[] shiro1 = Maven.resolver()
+      // .addDependencies(MavenDependencies.createDependency("org.apache.shiro:shiro-web:1.2.2", ScopeType.COMPILE,
+      // false, MavenDependencies.createExclusion("org.slf4j:slf4j-api")))
+      // .resolve().withTransitivity().asFile();
+      // archive.addAsLibraries(shiro1);
 
       archive.delete("/WEB-INF/lib/slf4j-api-1.7.21.jar");
 
@@ -176,8 +177,7 @@ public class TomcatTestJpa extends DBHelper {
 
       } finally {
          // Closing the input stream will trigger connection release
-         if (instream != null)
-            instream.close();
+         if (instream != null) instream.close();
          Thread.sleep(100);
       }
    }
@@ -250,7 +250,7 @@ public class TomcatTestJpa extends DBHelper {
    @Test
    public void testPersistAndRelease() throws Exception {
       log.info("start testPersistAndRelease()");
-      EntityManager cibetEman = Context.requestScope().getEntityManager();
+      EntityManager cibetEman = Context.internalRequestScope().getOrCreateEntityManager(false);
 
       try {
 
@@ -417,7 +417,7 @@ public class TomcatTestJpa extends DBHelper {
    @Test
    public void testFilter() throws Exception {
       log.info("start testFilter()");
-      EntityManager cibetEman = Context.requestScope().getEntityManager();
+      EntityManager cibetEman = Context.internalRequestScope().getOrCreateEntityManager(false);
 
       try {
          String body = executeGET(getBaseURL() + "/login.cibet?USER=Jens&tenant=XYCompany");
@@ -461,7 +461,7 @@ public class TomcatTestJpa extends DBHelper {
    @Test
    public void testFilter2Man() throws Exception {
       log.info("start testFilter2Man()");
-      EntityManager cibetEman = Context.requestScope().getEntityManager();
+      EntityManager cibetEman = Context.internalRequestScope().getOrCreateEntityManager(false);
       try {
          log.info("************** now logout ...");
          String body = executeGET(getBaseURL() + "/logout.cibet");
@@ -561,7 +561,7 @@ public class TomcatTestJpa extends DBHelper {
    @Test
    public void testMerge() throws Exception {
       log.info("start testMerge()");
-      EntityManager cibetEman = Context.requestScope().getEntityManager();
+      EntityManager cibetEman = Context.internalRequestScope().getOrCreateEntityManager(false);
 
       log.info("************** now log in with Shiro ...");
       String body = executeGET(getBaseURL() + "/loginShiro.cibet?USER=Kim&ROLE=MANAGER");
@@ -596,7 +596,7 @@ public class TomcatTestJpa extends DBHelper {
    @Test
    public void testMergeLazyException() throws Exception {
       log.info("start testMergeLazyException()");
-      EntityManager cibetEman = Context.requestScope().getEntityManager();
+      EntityManager cibetEman = Context.internalRequestScope().getOrCreateEntityManager(false);
 
       log.info("************** now log in with Shiro ...");
       String body = executeGET(getBaseURL() + "/loginShiro.cibet?USER=Kim&ROLE=MANAGER");

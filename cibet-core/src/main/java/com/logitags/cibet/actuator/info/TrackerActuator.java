@@ -57,9 +57,7 @@ public class TrackerActuator extends AbstractActuator {
    /*
     * (non-Javadoc)
     * 
-    * @see
-    * com.logitags.cibet.core.AbstractActuator#afterEvent(com.logitags.cibet
-    * .core.EventMetadata)
+    * @see com.logitags.cibet.core.AbstractActuator#afterEvent(com.logitags.cibet .core.EventMetadata)
     */
    @Override
    public void afterEvent(EventMetadata ctx) {
@@ -72,10 +70,10 @@ public class TrackerActuator extends AbstractActuator {
       log.debug(parent);
       if (parent != null) {
          if (parent.getEventResultId() == null) {
-            Context.internalRequestScope().getEntityManager().persist(parent);
+            Context.internalRequestScope().getOrCreateEntityManager(true).persist(parent);
          } else {
             EventResult lastResult = parent.getLastExecutingEventResult();
-            Context.internalRequestScope().getEntityManager().persist(lastResult);
+            Context.internalRequestScope().getOrCreateEntityManager(true).persist(lastResult);
          }
       }
    }

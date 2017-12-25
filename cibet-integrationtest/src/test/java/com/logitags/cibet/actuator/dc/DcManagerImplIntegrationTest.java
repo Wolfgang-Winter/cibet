@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Query;
+import javax.persistence.TransactionRequiredException;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -99,6 +100,33 @@ public class DcManagerImplIntegrationTest extends DBHelper {
       TEntity te = applEman.find(TEntity.class, ((TEntity) res).getId());
       Assert.assertNotNull(te);
       Context.requestScope().setRemark(null);
+   }
+
+   @Test
+   public void releasePersistNoTransaction() throws Exception {
+      log.info("start releasePersistNoTransaction()");
+
+      registerSetpoint(TEntity.class, FourEyesActuator.DEFAULTNAME, ControlEvent.INSERT, ControlEvent.RELEASE);
+      Context.requestScope().setRemark("created");
+
+      TEntity ent = persistTEntity();
+      Assert.assertEquals(0, ent.getId());
+
+      List<Controllable> l = DcLoader.findUnreleased();
+      Assert.assertEquals(1, l.size());
+      Controllable co = l.get(0);
+      Assert.assertEquals("created", co.getCreateRemark());
+      Context.sessionScope().setUser("test2");
+
+      applEman.getTransaction().commit();
+
+      try {
+         co.release(applEman, null);
+         Assert.fail();
+      } catch (TransactionRequiredException e) {
+      }
+
+      applEman.getTransaction().begin();
    }
 
    @Test

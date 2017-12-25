@@ -87,7 +87,7 @@ public abstract class Context {
     * 
     */
    static EntityManager getOrCreateEntityManagers() {
-      EntityManager entityManager = Context.internalRequestScope().getNullableEntityManager();
+      EntityManager entityManager = Context.internalRequestScope().getEntityManager();
       if (entityManager != null) {
          log.debug("EntityManager found in CibetContext: " + entityManager);
          if (Context.requestScope()
@@ -187,10 +187,24 @@ public abstract class Context {
       boolean startManaging = false;
       if (!Context.internalRequestScope().isManaged()) {
          log.info("start fresh new Cibet context");
+
+         // CibetUtil.logStackTrace();
+
          Context.internalSessionScope().clear();
          Context.internalRequestScope().clear();
+
+         if (ejbJndiname != null) {
+            Context.requestScope().setProperty(InternalRequestScope.CONTEXTEJB_JNDINAME, ejbJndiname);
+         }
+         CibetEEContext ejb = EjbLookup.lookupEjb(ejbJndiname, CibetEEContextEJB.class);
+         if (ejb != null) {
+            ejb.setCallerPrincipalNameIntoContext();
+         }
+
          Context.internalRequestScope().setManaged(true);
          startManaging = true;
+      } else {
+         log.info("join Cibet context");
       }
 
       if (authProviders != null) {
@@ -204,14 +218,6 @@ public abstract class Context {
          }
       }
 
-      if (ejbJndiname != null) {
-         Context.requestScope().setProperty(InternalRequestScope.CONTEXTEJB_JNDINAME, ejbJndiname);
-      }
-      CibetEEContext ejb = EjbLookup.lookupEjb(ejbJndiname, CibetEEContextEJB.class);
-      if (ejb != null) {
-         ejb.setCallerPrincipalNameIntoContext();
-      }
-
       if (!isEMInitialized) {
          getOrCreateEntityManagers();
          isEMInitialized = true;
@@ -222,8 +228,10 @@ public abstract class Context {
    }
 
    public static void end() {
+      // CibetUtil.logStackTrace();
+
       try {
-         EntityManager em = Context.internalRequestScope().getNullableEntityManager();
+         EntityManager em = Context.internalRequestScope().getEntityManager();
          if (em != null && em.isOpen()) {
             if (Context.requestScope()
                   .getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == EntityManagerType.RESOURCE_LOCAL) {

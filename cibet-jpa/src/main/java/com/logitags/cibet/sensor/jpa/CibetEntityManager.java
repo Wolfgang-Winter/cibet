@@ -658,6 +658,11 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
    }
 
    @Override
+   public boolean supportsTransactions() {
+      return true;
+   }
+
+   @Override
    public <T> EntityGraph<T> createEntityGraph(Class<T> arg0) {
       return nativeEntityManager.createEntityGraph(arg0);
    }

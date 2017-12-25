@@ -87,7 +87,7 @@ public class ControllerImplTest extends CoreTestBase {
       log.info("start evaluateNoMatch()");
       initConfiguration("config_controller.xml");
       Context.sessionScope().setTenant(null);
-      Context.requestScope().setEntityManager(em);
+      Context.internalRequestScope().setEntityManager(em);
       Context.internalRequestScope().setApplicationEntityManager2(em2);
 
       TComplexEntity cte = createEntity();
@@ -103,7 +103,7 @@ public class ControllerImplTest extends CoreTestBase {
       log.info("start evaluateTenantMatch()");
       Context.sessionScope().setTenant("ten1");
       initConfiguration("config_controller.xml");
-      Context.requestScope().setEntityManager(em);
+      Context.internalRequestScope().setEntityManager(em);
       Context.internalRequestScope().setApplicationEntityManager2(em2);
 
       TComplexEntity cte = createEntity();
@@ -119,7 +119,7 @@ public class ControllerImplTest extends CoreTestBase {
       log.info("start evaluateTenantMatch2()");
       Context.sessionScope().setTenant("ten2|x");
       initConfiguration("config_controller.xml");
-      Context.requestScope().setEntityManager(em);
+      Context.internalRequestScope().setEntityManager(em);
       Context.internalRequestScope().setApplicationEntityManager2(em2);
 
       TComplexEntity cte = createEntity();
@@ -160,7 +160,7 @@ public class ControllerImplTest extends CoreTestBase {
       log.info("start evaluateStateChangeTenant()");
       Context.sessionScope().setTenant("ten2|x|cc");
       initConfiguration("config_controller.xml");
-      Context.requestScope().setEntityManager(em);
+      Context.internalRequestScope().setEntityManager(em);
       Context.internalRequestScope().setApplicationEntityManager2(em2);
 
       TEntity te = createTEntity(5, "Hase");

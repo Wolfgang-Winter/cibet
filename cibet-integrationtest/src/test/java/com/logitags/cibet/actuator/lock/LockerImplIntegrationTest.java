@@ -83,7 +83,7 @@ public class LockerImplIntegrationTest extends DBHelper {
 
       TEntity te = persistTEntity();
       Controllable lo = Locker.lock(te, ControlEvent.UPDATE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       te.setCounter(190);
@@ -123,7 +123,7 @@ public class LockerImplIntegrationTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(te, ControlEvent.UPDATE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("otherUser");
@@ -159,7 +159,7 @@ public class LockerImplIntegrationTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(te, ControlEvent.PERSIST, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       Locker.lock(te, ControlEvent.DELETE, "testremark2");
@@ -177,7 +177,7 @@ public class LockerImplIntegrationTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       try {
@@ -202,7 +202,7 @@ public class LockerImplIntegrationTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(te, ControlEvent.PERSIST, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       Locker.lock(TEntity.class, ControlEvent.DELETE, "testremark2");
@@ -220,7 +220,7 @@ public class LockerImplIntegrationTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Locker.lock(TEntity.class, ControlEvent.DELETE, "testremark2");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
 
       Locker.lock(te, ControlEvent.PERSIST, "testremark");
    }
@@ -237,7 +237,7 @@ public class LockerImplIntegrationTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(TEntity.class, ControlEvent.UPDATE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("otherUser");
@@ -268,7 +268,7 @@ public class LockerImplIntegrationTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(TEntity.class, ControlEvent.UPDATE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("otherUser");
@@ -278,8 +278,8 @@ public class LockerImplIntegrationTest extends DBHelper {
       log.debug("EventResult=" + ev);
       Assert.assertEquals(ExecutionStatus.DENIED, ev.getExecutionStatus());
 
-      Context.requestScope().getEntityManager().getTransaction().commit();
-      Context.requestScope().getEntityManager().getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
 
       // other user tries to remove strict lock
       try {
@@ -322,7 +322,7 @@ public class LockerImplIntegrationTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(TEntity.class, ControlEvent.PERSIST, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
       log.debug(lo);
 
@@ -374,7 +374,7 @@ public class LockerImplIntegrationTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(TEntity.class, ControlEvent.UPDATE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       List<Controllable> l2 = Locker.loadLockedObjects();
@@ -414,7 +414,7 @@ public class LockerImplIntegrationTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(TEntity.class, ControlEvent.UPDATE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       List<Controllable> l2 = Locker.loadLockedObjects();
@@ -429,7 +429,8 @@ public class LockerImplIntegrationTest extends DBHelper {
       List<Archive> list = ArchiveLoader.loadArchives(TEntity.class.getName());
       Assert.assertEquals(1, list.size());
 
-      Query q = Context.requestScope().getEntityManager().createQuery("select a from Controllable a");
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createQuery("select a from Controllable a");
       l2 = q.getResultList();
       Assert.assertEquals(1, l2.size());
       Assert.assertEquals(ExecutionStatus.UNLOCKED, l2.get(0).getExecutionStatus());

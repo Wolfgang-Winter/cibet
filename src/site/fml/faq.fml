@@ -184,5 +184,18 @@
     </answer>
   </faq>  
   
+  <faq id="9">
+    <question>In an application running on Tomee the property com.logitags.cibet.persistence.provider of a JTA persistence unit is set to 
+    org.eclipse.persistence.jpa.PersistenceProvider. I get a TransactionRequiredException even if I am inside a JTA transaction. 
+    This can be observed in Tomee-plume 7.0.2 and eclipselink 2.7.0</question>
+    <answer>
+      <p>OpenEjb auto-detects some known persistence providers like Eclipselink and provisions it with information about the application server platform.  
+      The Cibet persistence provider is not automatically detected, therefore this information is not provided and the Eclipselink provider assumes it were 
+      running on a resource-local platform</p>
+      <p>This can be avoided by setting property &lt;property name="eclipselink.target-server" value="org.apache.openejb.jpa.integration.eclipselink.OpenEJBServerPlatform" /&gt; in the persistence unit</p>
+    </answer>
+  </faq>  
+
+  
   </part>
 </faqs>  

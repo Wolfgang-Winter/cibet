@@ -48,8 +48,6 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
-import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenDependencies;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -88,11 +86,9 @@ public class TomcatTestJdbc extends DBHelper {
             .asFile();
       archive.addAsLibraries(shiro);
 
-      File[] shiro1 = Maven.resolver()
-            .addDependencies(MavenDependencies.createDependency("org.apache.shiro:shiro-web:1.2.2", ScopeType.COMPILE,
-                  false, MavenDependencies.createExclusion("org.slf4j:slf4j-api")))
-            .resolve().withTransitivity().asFile();
-      archive.addAsLibraries(shiro1);
+      File[] shiroweb = Maven.resolver().loadPomFromFile("pom.xml").resolve("org.apache.shiro:shiro-web")
+            .withTransitivity().asFile();
+      archive.addAsLibraries(shiroweb);
 
       archive.delete("/WEB-INF/lib/slf4j-api-1.7.21.jar");
 
@@ -163,8 +159,7 @@ public class TomcatTestJdbc extends DBHelper {
 
       } finally {
          // Closing the input stream will trigger connection release
-         if (instream != null)
-            instream.close();
+         if (instream != null) instream.close();
          Thread.sleep(100);
       }
    }
@@ -172,7 +167,7 @@ public class TomcatTestJdbc extends DBHelper {
    @Test
    public void testJdbc() throws Exception {
       log.info("start testJdbc()");
-      EntityManager cibetEman = Context.requestScope().getEntityManager();
+      EntityManager cibetEman = Context.internalRequestScope().getOrCreateEntityManager(false);
 
       log.info("************** now logout ...");
       String body = executeGET(getBaseURL() + "/logout.cibet");

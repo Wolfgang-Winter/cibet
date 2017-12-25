@@ -94,7 +94,7 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
 
          Context.sessionScope().setUser("SchedulerTask-" + timerConfig.getSchedulerName());
 
-         EntityManager em = Context.internalRequestScope().getEntityManager();
+         EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
          TypedQuery<Controllable> q = em.createNamedQuery(Controllable.SEL_SCHED_BY_DATE, Controllable.class);
          q.setParameter("actuator", timerConfig.getSchedulerName());
          q.setParameter("currentDate", new Date(), TemporalType.TIMESTAMP);
@@ -197,11 +197,11 @@ public class SESchedulerTask extends TimerTask implements SchedulerTask {
                   co.getResource().encrypt();
                }
 
-               Resource merged = Context.internalRequestScope().getEntityManager().merge(co.getResource());
+               Resource merged = Context.internalRequestScope().getOrCreateEntityManager(true).merge(co.getResource());
                co.setResource(merged);
             }
 
-            co = Context.internalRequestScope().getEntityManager().merge(co);
+            co = Context.internalRequestScope().getOrCreateEntityManager(true).merge(co);
          }
       }
    }

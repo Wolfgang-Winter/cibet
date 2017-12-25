@@ -186,7 +186,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       log.info("do before()");
       cman = Configuration.instance();
       new DBHelper().doBefore();
-      localEM = Context.requestScope().getEntityManager();
+      localEM = Context.internalRequestScope().getOrCreateEntityManager(false);
    }
 
    protected void authenticate(String... roles) throws AuthenticationException {
@@ -321,7 +321,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       Assert.assertEquals(1, eventResult.getChildResults().size());
 
       Context.start();
-      localEM = Context.requestScope().getEntityManager();
+      localEM = Context.internalRequestScope().getOrCreateEntityManager(false);
 
       List<Archive> archives = checkArchive("POST", getBaseURL() + "/test/setuser", 2);
       Assert.assertEquals(archives.get(0).getCaseId(), archives.get(1).getCaseId());
@@ -707,7 +707,7 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       HttpPost method = createHttpPost(getBaseURL());
 
       Context.start();
-      localEM = Context.requestScope().getEntityManager();
+      localEM = Context.internalRequestScope().getOrCreateEntityManager(false);
 
       Context.sessionScope().setUser("Olbert");
       Context.requestScope().setRemark("created");
@@ -748,13 +748,13 @@ public class HttpLittleProxyIT extends AbstractArquillian {
       log.debug("-------------------- sleep");
       Thread.sleep(10000);
       log.debug("--------------- after TimerTask");
-      Context.internalRequestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
 
       // log.debug("-------------------- wait...");
       // Thread.sleep(150000);
 
       Context.start();
-      localEM = Context.requestScope().getEntityManager();
+      localEM = Context.internalRequestScope().getOrCreateEntityManager(false);
 
       dc = loadControllable(1);
       Assert.assertEquals(ExecutionStatus.EXECUTED, dc.getExecutionStatus());

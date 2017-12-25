@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
@@ -53,9 +54,10 @@ public abstract class Locker {
          throws AlreadyLockedException {
       isLocked(entity, event);
       JpaResource resource = new JpaResource(entity);
-      Context.internalRequestScope().getEntityManager().persist(resource);
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(true);
+      em.persist(resource);
       Controllable lo = createLockedObject(resource, event, remark);
-      Context.internalRequestScope().getEntityManager().persist(lo);
+      em.persist(lo);
       return lo;
    }
 
@@ -75,9 +77,10 @@ public abstract class Locker {
          throws AlreadyLockedException {
       isLocked(cl.getName(), event);
       JpaResource resource = new JpaResource(cl, JpaResource.CLASSLOCK);
-      Context.internalRequestScope().getEntityManager().persist(resource);
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(true);
+      em.persist(resource);
       Controllable lo = createLockedObject(resource, event, remark);
-      Context.internalRequestScope().getEntityManager().persist(lo);
+      em.persist(lo);
       return lo;
    }
 
@@ -104,10 +107,11 @@ public abstract class Locker {
       MethodResource resource = new MethodResource();
       resource.setTarget(cl.getName());
       resource.setMethod(method);
-      Context.internalRequestScope().getEntityManager().persist(resource);
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(true);
+      em.persist(resource);
 
       Controllable lo = createLockedObject(resource, event, remark);
-      Context.internalRequestScope().getEntityManager().persist(lo);
+      em.persist(lo);
       return lo;
    }
 
@@ -130,10 +134,11 @@ public abstract class Locker {
       HttpRequestResource resource = new HttpRequestResource();
       resource.setTarget(url);
       resource.setMethod(method == null ? null : method.name());
-      Context.internalRequestScope().getEntityManager().persist(resource);
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(true);
+      em.persist(resource);
 
       Controllable lo = createLockedObject(resource, event, remark);
-      Context.internalRequestScope().getEntityManager().persist(lo);
+      em.persist(lo);
       return lo;
    }
 
@@ -157,10 +162,11 @@ public abstract class Locker {
       JdbcResource resource = new JdbcResource();
       resource.setTarget(tableName);
       resource.setPrimaryKeyId(id == null ? JpaResource.CLASSLOCK : id);
-      Context.internalRequestScope().getEntityManager().persist(resource);
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(true);
+      em.persist(resource);
 
       Controllable lo = createLockedObject(resource, event, remark);
-      Context.internalRequestScope().getEntityManager().persist(lo);
+      em.persist(lo);
       return lo;
    }
 
@@ -180,7 +186,7 @@ public abstract class Locker {
       lo.setReleaseDate(new Date());
       lo.setReleaseUser(Context.internalSessionScope().getUser());
       lo.setReleaseRemark(remark);
-      lo = Context.internalRequestScope().getEntityManager().merge(lo);
+      lo = Context.internalRequestScope().getOrCreateEntityManager(true).merge(lo);
       log.debug("unlocked: " + lo);
    }
 
@@ -213,7 +219,7 @@ public abstract class Locker {
     * @return
     */
    public static List<Controllable> loadLockedObjects() {
-      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+      TypedQuery<Controllable> query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Controllable.SEL_LOCKED_ALL, Controllable.class);
       query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       return query.getResultList();
@@ -226,7 +232,7 @@ public abstract class Locker {
     * @return
     */
    public static List<Controllable> loadLockedObjects(String target) {
-      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+      TypedQuery<Controllable> query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Controllable.SEL_LOCKED_BY_TARGETTYPE, Controllable.class);
       query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       query.setParameter("targettype", target);
@@ -240,7 +246,7 @@ public abstract class Locker {
     * @return
     */
    public static List<Controllable> loadLockedObjectsByUser(String user) {
-      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+      TypedQuery<Controllable> query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Controllable.SEL_LOCKED_BY_USER, Controllable.class);
       query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       query.setParameter("user", user);
@@ -255,7 +261,7 @@ public abstract class Locker {
     * @return
     */
    public static List<Controllable> loadLockedObjects(Class<?> cl, String method) {
-      TypedQuery<Controllable> query = Context.internalRequestScope().getEntityManager()
+      TypedQuery<Controllable> query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Controllable.SEL_LOCKED_BY_TARGETTYPE, Controllable.class);
       query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       query.setParameter("targettype", cl.getName());

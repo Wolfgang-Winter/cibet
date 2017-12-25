@@ -75,15 +75,15 @@ import com.logitags.cibet.sensor.jpa.JpaResource;
       @NamedQuery(name = Archive.SEL_ALL_BY_CASEID_NO_TENANT, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE a.caseId = :caseId ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CLASS, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE a.tenant LIKE :tenant AND r.target = :targetType ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_BY_PRIMARYKEYID, query = "SELECT a, r FROM Archive a, JpaResource r LEFT JOIN FETCH r.parameters "
-            + "WHERE a.resource = r AND r.target = ? AND r.primaryKeyId = ? ORDER BY a.createDate"),
+            + "WHERE a.resource = r AND r.target = ?1 AND r.primaryKeyId = ?2 ORDER BY a.createDate"),
 
       @NamedQuery(name = Archive.SEL_ALL_BY_CLASS_NO_TENANT, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE r.target = :targetType ORDER BY a.createDate") })
 
 @NamedNativeQueries({
       @NamedNativeQuery(name = Archive.SEL_BY_METHODNAME, query = "SELECT " + Archive.ARCHIVE
-            + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND a.TENANT LIKE ? AND r.TARGET = ? AND r.METHOD = ? ORDER BY a.CREATEDATE", resultClass = Archive.class),
+            + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND a.TENANT LIKE ?1 AND r.TARGET = ?2 AND r.METHOD = ?3 ORDER BY a.CREATEDATE", resultClass = Archive.class),
       @NamedNativeQuery(name = Archive.SEL_BY_METHODNAME_NO_TENANT, query = "SELECT " + Archive.ARCHIVE
-            + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND r.TARGET = ? AND r.METHOD = ? ORDER BY a.CREATEDATE", resultClass = Archive.class) })
+            + " FROM CIB_ARCHIVE a, CIB_RESOURCE r WHERE a.RESOURCEID = r.RESOURCEID AND r.TARGET = ?1 AND r.METHOD = ?2 ORDER BY a.CREATEDATE", resultClass = Archive.class) })
 public class Archive implements Serializable {
 
    private static final long serialVersionUID = 1L;
@@ -183,7 +183,7 @@ public class Archive implements Serializable {
    @Column(length = 50)
    private ExecutionStatus executionStatus;
 
-   @OneToOne(cascade = CascadeType.DETACH)
+   @OneToOne(cascade = { CascadeType.DETACH, CascadeType.PERSIST, CascadeType.MERGE })
    @JoinColumn(name = "RESOURCEID")
    private Resource resource;
 
@@ -235,7 +235,7 @@ public class Archive implements Serializable {
          log.debug("decrypt Archive");
          // OpenJPA workaround:
          getResource().getParameters().size();
-         Context.internalRequestScope().getEntityManager().detach(this);
+         Context.internalRequestScope().getOrCreateEntityManager(false).detach(this);
          getResource().decrypt();
       }
    }

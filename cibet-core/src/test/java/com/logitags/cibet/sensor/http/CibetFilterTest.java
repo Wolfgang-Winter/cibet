@@ -68,7 +68,7 @@ public class CibetFilterTest {
 
    private void initCibetContext() {
       Mockito.when(em.getTransaction()).thenReturn(emTrans);
-      Context.requestScope().setEntityManager(em);
+      Context.internalRequestScope().setEntityManager(em);
    }
 
    private void initHttpServletRequest() throws IOException {
@@ -146,7 +146,7 @@ public class CibetFilterTest {
    public void doFilterNoEntityManager() throws Exception {
       log.debug("start test doFilterNoEntityManager");
       EjbLookup.clearCache();
-      Context.requestScope().setEntityManager(null);
+      Context.internalRequestScope().setEntityManager(null);
       initHttpServletRequest();
       CibetFilter fi = new CibetFilter();
       Mockito.when(httpRequest.getRequestURI()).thenReturn("xxxx");

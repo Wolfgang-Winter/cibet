@@ -119,16 +119,17 @@ public class TutorialServlet2 extends HttpServlet {
 
       ut.begin();
 
-      Query q3 = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL);
+      Query q3 = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Archive.SEL_ALL);
       List<Archive> alist = q3.getResultList();
       for (Archive ar : alist) {
-         Context.requestScope().getEntityManager().remove(ar);
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(ar);
       }
 
-      Query q4 = Context.requestScope().getEntityManager().createQuery("select d from Controllable d");
+      Query q4 = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createQuery("select d from Controllable d");
       List<Controllable> dclist = q4.getResultList();
       for (Controllable dc : dclist) {
-         Context.requestScope().getEntityManager().remove(dc);
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(dc);
       }
 
       // Query q5 = Context.requestScope().getEntityManager().createQuery("SELECT a FROM LockedObject a");
@@ -137,10 +138,11 @@ public class TutorialServlet2 extends HttpServlet {
       // Context.requestScope().getEntityManager().remove(itLO.next());
       // }
 
-      Query q6 = Context.requestScope().getEntityManager().createQuery("SELECT a FROM EventResult a");
+      Query q6 = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createQuery("SELECT a FROM EventResult a");
       Iterator<EventResult> itEV = q6.getResultList().iterator();
       while (itEV.hasNext()) {
-         Context.requestScope().getEntityManager().remove(itEV.next());
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(itEV.next());
       }
 
       ut.commit();
@@ -275,8 +277,7 @@ public class TutorialServlet2 extends HttpServlet {
 
       } finally {
          // Closing the input stream will trigger connection release
-         if (instream != null)
-            instream.close();
+         if (instream != null) instream.close();
          Thread.sleep(100);
       }
    }

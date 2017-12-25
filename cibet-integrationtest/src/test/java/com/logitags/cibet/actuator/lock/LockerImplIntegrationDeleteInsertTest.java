@@ -78,7 +78,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       Assert.assertEquals(1, res.size());
 
       Controllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       applEman.remove(te);
@@ -115,7 +115,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(te, ControlEvent.DELETE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("otherUser");
@@ -148,7 +148,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(TEntity.class, ControlEvent.DELETE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("otherUser");
@@ -202,7 +202,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       Assert.assertEquals(1, res.size());
 
       Controllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       TEntity te2 = persistTEntity();
@@ -239,7 +239,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(te, ControlEvent.INSERT, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("otherUser");
@@ -272,7 +272,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(TEntity.class, ControlEvent.INSERT, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("otherUser");
@@ -304,7 +304,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
 
       Context.sessionScope().setUser("user1");
       Controllable lo = Locker.lock(TEntity.class, ControlEvent.RELEASE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
       Context.sessionScope().setUser(USER);
 
@@ -359,7 +359,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
 
       Context.sessionScope().setUser("user1");
       Controllable lo = Locker.lock(te, ControlEvent.RELEASE, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       log.debug("user2");
@@ -397,7 +397,7 @@ public class LockerImplIntegrationDeleteInsertTest extends DBHelper {
       registerSetpoint(TEntity.class.getName(), schemes, ControlEvent.PERSIST);
 
       Controllable lo = Locker.lock(te, ControlEvent.SELECT, "testremark");
-      Context.requestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       Assert.assertNotNull(lo);
 
       Context.sessionScope().setUser("otherUser");

@@ -278,10 +278,10 @@ public class SchedulerActuator extends FourEyesActuator {
                dcObj.getResource().encrypt();
             }
 
-            Context.internalRequestScope().getEntityManager().persist(dcObj.getResource());
+            Context.internalRequestScope().getOrCreateEntityManager(true).persist(dcObj.getResource());
          }
          log.debug("persist scheduled Controllable");
-         Context.internalRequestScope().getEntityManager().persist(dcObj);
+         Context.internalRequestScope().getOrCreateEntityManager(true).persist(dcObj);
 
          if (isThrowPostponedException()) {
             try {
@@ -304,7 +304,8 @@ public class SchedulerActuator extends FourEyesActuator {
       Map<Controllable, List<Difference>> scheduledResources = new HashMap<Controllable, List<Difference>>();
 
       Resource resource = ctx.getResource();
-      Query q = Context.internalRequestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_UNIQUEID);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_BY_UNIQUEID);
       q.setParameter("uniqueId", resource.getUniqueId());
       List<Controllable> list = (List<Controllable>) q.getResultList();
       for (Controllable dc : list) {
@@ -358,7 +359,7 @@ public class SchedulerActuator extends FourEyesActuator {
          co.setReleaseUser(Context.internalSessionScope().getUser());
          co.setReleaseRemark(Context.internalRequestScope().getRemark());
          co.setExecutionDate(co.getReleaseDate());
-         Context.internalRequestScope().getEntityManager().merge(co);
+         Context.internalRequestScope().getOrCreateEntityManager(true).merge(co);
       }
    }
 

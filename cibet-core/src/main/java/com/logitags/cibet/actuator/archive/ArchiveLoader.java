@@ -55,7 +55,8 @@ public abstract class ArchiveLoader {
     * @return list of Archives
     */
    public static List<Archive> loadArchives() {
-      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       List<Archive> list = (List<Archive>) query.getResultList();
       // make distinct
@@ -71,7 +72,7 @@ public abstract class ArchiveLoader {
     * @return list of Archives
     */
    public static List<Archive> loadAllArchives() {
-      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL);
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false).createNamedQuery(Archive.SEL_ALL);
       List<Archive> list = (List<Archive>) query.getResultList();
       // make distinct
       Set<Archive> s = new LinkedHashSet<>(list);
@@ -89,7 +90,8 @@ public abstract class ArchiveLoader {
     * @return list of Archives
     */
    public static List<Archive> loadArchives(String target) {
-      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_CLASS);
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_CLASS);
       query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       query.setParameter("targetType", target);
       List<Archive> list = (List<Archive>) query.getResultList();
@@ -109,7 +111,7 @@ public abstract class ArchiveLoader {
     * @return list of Archives
     */
    public static List<Archive> loadAllArchives(String target) {
-      Query query = Context.internalRequestScope().getEntityManager()
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Archive.SEL_ALL_BY_CLASS_NO_TENANT);
       query.setParameter("targetType", target);
       List<Archive> list = (List<Archive>) query.getResultList();
@@ -128,7 +130,8 @@ public abstract class ArchiveLoader {
     * @return list of Archives
     */
    public static List<Archive> loadArchivesByCaseId(String caseId) {
-      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_CASEID);
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_CASEID);
       query.setParameter("tenant", Context.internalSessionScope().getTenant() + "%");
       query.setParameter("caseId", caseId);
       List<Archive> list = (List<Archive>) query.getResultList();
@@ -147,7 +150,7 @@ public abstract class ArchiveLoader {
     * @return list of Archives
     */
    public static List<Archive> loadAllArchivesByCaseId(String caseId) {
-      Query query = Context.internalRequestScope().getEntityManager()
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Archive.SEL_ALL_BY_CASEID_NO_TENANT);
       query.setParameter("caseId", caseId);
       List<Archive> list = (List<Archive>) query.getResultList();
@@ -174,7 +177,7 @@ public abstract class ArchiveLoader {
          log.error(msg);
          throw new RuntimeException(msg);
       }
-      TypedQuery<Archive> query = Context.internalRequestScope().getEntityManager()
+      TypedQuery<Archive> query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Archive.SEL_BY_METHODNAME, Archive.class);
       query.setParameter(1, Context.internalSessionScope().getTenant() + "%");
       query.setParameter(2, objectClass.getName());
@@ -200,7 +203,7 @@ public abstract class ArchiveLoader {
          log.error(msg);
          throw new RuntimeException(msg);
       }
-      TypedQuery<Archive> query = Context.internalRequestScope().getEntityManager()
+      TypedQuery<Archive> query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Archive.SEL_BY_METHODNAME_NO_TENANT, Archive.class);
       query.setParameter(1, objectClass.getName());
       query.setParameter(2, methodName);
@@ -220,7 +223,8 @@ public abstract class ArchiveLoader {
     * @return list of Archives
     */
    public static List<Archive> loadArchivesByPrimaryKeyId(String target, Object primaryKeyId) {
-      Query query = Context.internalRequestScope().getEntityManager().createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
+      Query query = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
       query.setParameter(1, target);
       if (primaryKeyId == null) {
          query.setParameter(2, null);
@@ -260,7 +264,7 @@ public abstract class ArchiveLoader {
     * @return
     */
    public static List<Archive> loadAllArchivesByGroupId(String groupId) {
-      TypedQuery<Archive> query = Context.internalRequestScope().getEntityManager()
+      TypedQuery<Archive> query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Archive.SEL_BY_GROUPID, Archive.class);
       query.setParameter("groupId", groupId);
       List<Archive> list = query.getResultList();
@@ -372,7 +376,7 @@ public abstract class ArchiveLoader {
       }
 
       log.debug("SQL: " + sql);
-      EntityManager em = Context.internalRequestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       Query q = em.createNativeQuery(sql.toString(), Archive.class);
       for (int i = 0; i < params.size(); i++) {
          q.setParameter(i + 1, params.get(i));
@@ -420,7 +424,7 @@ public abstract class ArchiveLoader {
       }
 
       log.debug("SQL: " + sql);
-      EntityManager em = Context.internalRequestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       Query q = em.createNativeQuery(sql.toString(), Archive.class);
       for (int i = 0; i < params.size(); i++) {
          q.setParameter(i + 1, params.get(i));
@@ -450,7 +454,7 @@ public abstract class ArchiveLoader {
    public static List<Archive> checkIntegrity() {
       List<Archive> result = new ArrayList<Archive>();
 
-      EntityManager em = Context.internalRequestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       TypedQuery<Archive> q = em.createNamedQuery(Archive.SEL_ALL, Archive.class);
       List<Archive> list = q.getResultList();
       for (Archive ar : list) {

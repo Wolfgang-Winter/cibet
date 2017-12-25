@@ -85,7 +85,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
    }
 
    private void release() throws ResourceApplyException {
-      Context.internalRequestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
       List<Controllable> l = DcLoader.findUnreleased();
       Assert.assertEquals(1, l.size());
 
@@ -93,7 +93,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       log.debug("size: " + res.getParameters().size());
 
       Context.sessionScope().setUser("test2");
-      l.get(0).release(Context.requestScope().getEntityManager(), null);
+      l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
       l = DcLoader.findUnreleased();
       Assert.assertEquals(0, l.size());
       Context.sessionScope().setUser(USER);
@@ -144,14 +144,14 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       log.debug(co.getScheduledDate());
       Assert.assertNotNull(co.getScheduledDate());
 
-      Context.requestScope().getEntityManager().getTransaction().commit();
-      Context.requestScope().getEntityManager().getTransaction().begin();
-      Context.requestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
 
       log.debug("-------------------- sleep");
       Thread.sleep(10000);
       log.debug("--------------- after TimerTask");
-      Context.internalRequestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
       Query q = applEman.createQuery("SELECT t FROM TEntity t");
@@ -301,7 +301,8 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       ent1.setStatValue(3434);
       applEman.flush();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable co = (Controllable) q.getSingleResult();
       Assert.assertNotNull(co);
@@ -542,8 +543,8 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
 
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
-      Context.requestScope().getEntityManager().getTransaction().commit();
-      Context.requestScope().getEntityManager().getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
 
       List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(1, l.size());
@@ -553,12 +554,12 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       log.debug(co.getScheduledDate());
       Assert.assertNotNull(co.getScheduledDate());
 
-      Context.requestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
 
       log.debug("-------------------- sleep");
       Thread.sleep(10000);
       log.debug("--------------- after TimerTask");
-      Context.internalRequestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
       Query q = applEman.createQuery("SELECT t FROM TComplexEntity t");
@@ -673,9 +674,9 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
       applEman.clear();
-      Context.requestScope().getEntityManager().getTransaction().commit();
-      Context.requestScope().getEntityManager().getTransaction().begin();
-      Context.requestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
 
       log.debug("-------------------- sleep");
       Thread.sleep(10000);
@@ -691,7 +692,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       Assert.assertEquals("owner4", te2.getTen().getOwner());
       Assert.assertEquals(111, te2.getStatValue());
 
-      Context.internalRequestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
 
       l = SchedulerLoader.loadByUser(USER);
       Assert.assertEquals(1, l.size());
@@ -831,14 +832,14 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       sl = SchedulerLoader.findScheduled();
       Assert.assertEquals(1, sl.size());
 
-      Context.requestScope().getEntityManager().getTransaction().commit();
-      Context.requestScope().getEntityManager().getTransaction().begin();
-      Context.requestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
 
       log.debug("-------------------- sleep");
       Thread.sleep(10000);
       log.debug("--------------- after TimerTask");
-      Context.internalRequestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
       applEman.clear();
@@ -915,8 +916,8 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
 
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
-      Context.requestScope().getEntityManager().getTransaction().commit();
-      Context.requestScope().getEntityManager().getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
 
       log.debug("2. merge");
       base2.setCompValue(177);
@@ -949,9 +950,9 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
       co = sl.get(0);
-      Context.internalRequestScope().getEntityManager().remove(co);
-      Context.internalRequestScope().getEntityManager().getTransaction().commit();
-      Context.internalRequestScope().getEntityManager().getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(true).remove(co);
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
 
       Query q = applEman.createQuery("SELECT t FROM TComplexEntity t");
       List<TComplexEntity> tlist = q.getResultList();
@@ -992,14 +993,14 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
 
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
-      Context.requestScope().getEntityManager().getTransaction().commit();
-      Context.requestScope().getEntityManager().getTransaction().begin();
-      Context.requestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
 
       log.debug("-------------------- sleep");
       Thread.sleep(10000);
       log.debug("--------------- after TimerTask");
-      Context.internalRequestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
       applEman.clear();
@@ -1019,9 +1020,9 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
       co = sl.get(0);
-      Context.internalRequestScope().getEntityManager().remove(co);
-      Context.internalRequestScope().getEntityManager().getTransaction().commit();
-      Context.internalRequestScope().getEntityManager().getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(true).remove(co);
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
 
       Query q = applEman.createQuery("SELECT t FROM TComplexEntity t");
       List<TComplexEntity> tlist = q.getResultList();
@@ -1085,7 +1086,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       log.debug("-------------------- sleep");
       Thread.sleep(12000);
       log.debug("--------------- after TimerTask");
-      Context.internalRequestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
       applEman.clear();
@@ -1104,15 +1105,15 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.REJECT_UPDATE, archList.get(2).getControlEvent());
 
       for (Archive ar : archList) {
-         Context.internalRequestScope().getEntityManager().remove(ar);
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(ar);
       }
 
       List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
       co = sl.get(0);
-      Context.internalRequestScope().getEntityManager().remove(co);
-      Context.internalRequestScope().getEntityManager().getTransaction().commit();
-      Context.internalRequestScope().getEntityManager().getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(true).remove(co);
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
 
       Query q = applEman.createQuery("SELECT t FROM TComplexEntity t");
       List<TComplexEntity> tlist = q.getResultList();
@@ -1178,7 +1179,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       log.debug("-------------------- sleep");
       Thread.sleep(12000);
       log.debug("--------------- after TimerTask");
-      Context.internalRequestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
       applEman.clear();
@@ -1197,15 +1198,15 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.REJECT_UPDATE, archList.get(2).getControlEvent());
 
       for (Archive ar : archList) {
-         Context.internalRequestScope().getEntityManager().remove(ar);
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(ar);
       }
 
       List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
       co = sl.get(0);
-      Context.internalRequestScope().getEntityManager().remove(co);
-      Context.internalRequestScope().getEntityManager().getTransaction().commit();
-      Context.internalRequestScope().getEntityManager().getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(true).remove(co);
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
 
       Query q = applEman.createQuery("SELECT t FROM TComplexEntity t");
       List<TComplexEntity> tlist = q.getResultList();
@@ -1275,7 +1276,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       log.debug("-------------------- sleep");
       Thread.sleep(12000);
       log.debug("--------------- after TimerTask");
-      Context.internalRequestScope().getEntityManager().flush();
+      Context.internalRequestScope().getOrCreateEntityManager(true).flush();
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
       applEman.clear();
@@ -1294,15 +1295,15 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       Assert.assertEquals(ControlEvent.RELEASE_UPDATE, archList.get(2).getControlEvent());
 
       for (Archive ar : archList) {
-         Context.internalRequestScope().getEntityManager().remove(ar);
+         Context.internalRequestScope().getOrCreateEntityManager(true).remove(ar);
       }
 
       List<Controllable> l = SchedulerLoader.findScheduled();
       Assert.assertEquals(0, l.size());
       co = sl.get(0);
-      Context.internalRequestScope().getEntityManager().remove(co);
-      Context.internalRequestScope().getEntityManager().getTransaction().commit();
-      Context.internalRequestScope().getEntityManager().getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(true).remove(co);
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
 
       Query q = applEman.createQuery("SELECT t FROM TComplexEntity t");
       List<TComplexEntity> tlist = q.getResultList();

@@ -142,7 +142,7 @@ public class CibetTestEJB {
    }
 
    public List<Archive> findArchives() {
-      EntityManager em = Context.requestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       em.clear();
       Query qa = em.createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       qa.setParameter("tenant", Context.sessionScope().getTenant());
@@ -212,7 +212,7 @@ public class CibetTestEJB {
    }
 
    public List<Controllable> findUnreleased() {
-      EntityManager em = Context.requestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       em.clear();
 
       List<Controllable> l = DcLoader.findUnreleased();
@@ -235,7 +235,8 @@ public class CibetTestEJB {
    }
 
    public Object release() throws ResourceApplyException {
-      log.debug("applEman= " + applEman + ", delegate= " + Context.requestScope().getEntityManager());
+      log.debug(
+            "applEman= " + applEman + ", delegate= " + Context.internalRequestScope().getOrCreateEntityManager(true));
       List<Controllable> l = DcLoader.findUnreleased();
       if (l.size() != 1) {
          throw new RuntimeException("list size is not 1: " + l.size());
@@ -318,7 +319,7 @@ public class CibetTestEJB {
    }
 
    public Object querySingleResult(String query) {
-      EntityManager em = Context.requestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       em.clear();
 
       if ("SELECT a FROM Controllable a".equals(query)) {
@@ -338,7 +339,7 @@ public class CibetTestEJB {
    }
 
    public List<Archive> queryArchive(String tenant, String targetType, String objectId) {
-      EntityManager em = Context.requestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       em.clear();
       // TypedQuery<Archive> q = em.createNamedQuery(Archive.SEL_BY_PRIMARYKEYID, Archive.class);
       // q.setParameter(1, targetType);
@@ -357,7 +358,7 @@ public class CibetTestEJB {
    }
 
    public List<Archive> queryArchiveByTenant() {
-      EntityManager em = Context.requestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       em.clear();
       Query q = em.createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", TENANT);
@@ -370,14 +371,14 @@ public class CibetTestEJB {
    }
 
    public List<Archive> queryArchives() {
-      EntityManager em = Context.requestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       em.clear();
       Query q = em.createNamedQuery(Archive.SEL_ALL);
       return q.getResultList();
    }
 
    public List<Controllable> queryControllable() {
-      EntityManager em = Context.requestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       em.clear();
       Query q = em.createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", Context.sessionScope().getTenant());
@@ -434,7 +435,7 @@ public class CibetTestEJB {
    }
 
    public List<EventResult> selectEventResults() {
-      EntityManager em = Context.requestScope().getEntityManager();
+      EntityManager em = Context.internalRequestScope().getOrCreateEntityManager(false);
       Query q = em.createQuery("SELECT a FROM EventResult a WHERE a.parentResult IS NULL");
       return q.getResultList();
    }

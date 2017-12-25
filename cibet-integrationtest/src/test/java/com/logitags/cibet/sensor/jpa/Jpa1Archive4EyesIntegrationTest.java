@@ -93,7 +93,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Assert.assertNotNull(msg, selEnt);
       Assert.assertEquals(5, selEnt.getCounter());
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Archive.SEL_ALL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Archive.SEL_ALL_BY_TENANT);
       q.setParameter("tenant", "testTenant");
       List<Archive> list = q.getResultList();
       Assert.assertEquals(2, list.size());
@@ -938,7 +939,8 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       Context.end();
       Context.start();
 
-      Query q = Context.requestScope().getEntityManager().createNamedQuery(Controllable.SEL_BY_TENANT);
+      Query q = Context.internalRequestScope().getOrCreateEntityManager(false)
+            .createNamedQuery(Controllable.SEL_BY_TENANT);
       q.setParameter("tenant", TENANT);
       Controllable dcOb = (Controllable) q.getSingleResult();
       Assert.assertNotNull(dcOb);
@@ -1212,7 +1214,7 @@ public class Jpa1Archive4EyesIntegrationTest extends DBHelper {
       } catch (IllegalArgumentException e) {
       }
 
-      Context.internalRequestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TEntity.class.getName(), "-5");
       Assert.assertEquals(1, list.size());
       Archive ar = list.get(0);

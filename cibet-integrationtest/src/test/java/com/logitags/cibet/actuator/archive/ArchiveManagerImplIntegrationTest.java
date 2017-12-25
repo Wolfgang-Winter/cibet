@@ -222,7 +222,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertNull(er.getParentResult());
       Assert.assertEquals("FOUR_EYES, ARCHIVE", er.getActuators());
 
-      Context.internalRequestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
       List<Archive> list = ArchiveLoader.loadArchives(TEntity.class.getName());
       Assert.assertEquals(2, list.size());
       JpaResource res0 = (JpaResource) list.get(0).getResource();
@@ -640,7 +640,7 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       selEnt = applEman.merge(selEnt);
       applEman.flush();
       applEman.clear();
-      Context.requestScope().getEntityManager().clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
 
       log.info("hhhhhhhh");
       List<Archive> list = ArchiveLoader.loadArchivesByPrimaryKeyId(TComplexEntity.class.getName(),
@@ -957,9 +957,9 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       applEman.clear();
       Assert.assertEquals(14, selEnt4.getCompValue());
 
-      Context.requestScope().getEntityManager().getTransaction().commit();
-      Context.requestScope().getEntityManager().clear();
-      Context.requestScope().getEntityManager().getTransaction().begin();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().commit();
+      Context.internalRequestScope().getOrCreateEntityManager(false).clear();
+      Context.internalRequestScope().getOrCreateEntityManager(false).getTransaction().begin();
       applEman.getTransaction().commit();
       applEman.getTransaction().begin();
 

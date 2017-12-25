@@ -526,13 +526,13 @@ public class Jpa1EjbIT extends AbstractArquillian {
       Assert.assertEquals(ControlEvent.INSERT, list.get(1).getControlEvent());
       Assert.assertEquals("0", res1.getPrimaryKeyId());
 
-      log.debug("CEM: " + Context.requestScope().getEntityManager());
+      log.debug("CEM: " + Context.internalRequestScope().getOrCreateEntityManager(false));
 
       List<Controllable> list1 = (List<Controllable>) ejb.queryControllable();
       Assert.assertEquals(2, list1.size());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(0).getControlEvent());
       Assert.assertEquals(ControlEvent.INSERT, list1.get(1).getControlEvent());
-      log.debug("CEM: " + Context.requestScope().getEntityManager());
+      log.debug("CEM: " + Context.internalRequestScope().getOrCreateEntityManager(false));
    }
 
    @Test
