@@ -280,7 +280,8 @@
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
 			<!-- JavaEE 6: 2.4.2 -->
-			<version>2.7.0</version>
+<!-- 			<version>2.7.0</version> -->
+			<version>2.6.1</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -302,6 +303,19 @@
 			<artifactId>openejb-core</artifactId>
 			<version>7.0.2</version>
 			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+    		<groupId>org.javers</groupId>
+    		<artifactId>javers-core</artifactId>
+    		<version>3.7.8</version>
+    		<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.javers</groupId>
+			<artifactId>javers-persistence-sql</artifactId>
+			<version>3.7.8</version>
 		</dependency>
 	</dependencies>
 
@@ -532,11 +546,11 @@
 						<configuration>
 							<includes>
 <!-- 								<include>**/http/*IT.java</include> -->
-<!-- 								<include>**/it/*IT.java</include> -->
+								<include>**/it/*IT.java</include>
 <!-- 								<include>**/*Test.java</include> -->
 <!--                         <include>com/logitags/cibet/sensor/jdbc/driver/*.java</include> -->
 <!--                         <include>**/ActuatorIT.java</include> -->
-                        <include>**/HttpParallelDcIT.java</include>
+<!--                         <include>**/HttpSpringSecurity2IT.java</include> -->
 							</includes>
 							<enableAssertions>false</enableAssertions>
 							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Xmx1024m -Xms1024m</argLine>
@@ -846,6 +860,73 @@
 										<echo message="set jndi.properties" />
 										<move failonerror="true"
 											file="${project.build.testOutputDirectory}/jndi-for-glassfish3.properties"
+											tofile="${project.build.testOutputDirectory}/jndi_.properties" />
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>glassfish4</id>
+
+			<dependencies>
+
+<!-- 				<dependency> -->
+<!-- 					<groupId>org.eclipse.persistence</groupId> -->
+<!-- 					<artifactId>eclipselink</artifactId> -->
+<!-- 					<version>2.7</version> -->
+<!-- 					<scope>test</scope> -->
+<!-- 				</dependency> -->
+
+				<dependency>
+					<groupId>org.jboss.arquillian.container</groupId>
+					<artifactId>arquillian-glassfish-remote-3.1</artifactId>
+					<version>1.0.2</version>
+					<scope>test</scope>
+				</dependency>
+
+			</dependencies>
+
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.16</version>
+						<configuration>
+							<includes>
+								<include>**/SimpleEclipseLinkTest.java</include>
+								<!-- <include>**/http/*IT.java</include> -->
+								<!-- <include>**/it/*IT.java</include> -->
+								<!-- <include>**/*Test.java</include> -->
+							</includes>
+							<argLine>-javaagent:D:\Java\maven-repository\org\aspectj\aspectjweaver\1.8.8\aspectjweaver-1.8.8.jar -Djavax.net.ssl.trustStore=${project.basedir}/src/test/resources/it/glassfish-truststore.jks -Djavax.net.ssl.trustStorePassword=changeit</argLine>
+							<systemPropertyVariables>
+								<arquillian.launch>glassfish4</arquillian.launch>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>1.8</version>
+						<executions>
+							<execution>
+								<id>jndi</id>
+								<phase>process-test-resources</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<echo message="set jndi.properties" />
+										<move failonerror="true"
+											file="${project.build.testOutputDirectory}/jndi-for-glassfish4.properties"
 											tofile="${project.build.testOutputDirectory}/jndi_.properties" />
 									</target>
 								</configuration>

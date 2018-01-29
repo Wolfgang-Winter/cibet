@@ -402,8 +402,10 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       execute("insert into cib_testentity (id, nameValue, counter, userid, owner) "
             + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", 1);
       Context.sessionScope().setSecondUser(null);
-      Assert.assertEquals(ExecutionStatus.POSTPONED,
+      Assert.assertEquals(ExecutionStatus.EXECUTED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED,
+      // Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
       Context.end();
       Context.start();
@@ -516,8 +518,10 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
       Context.sessionScope().setSecondUser("secondUser");
       execute("delete from cib_testentity WHERE id=5 ", 1);
       Context.sessionScope().setSecondUser(null);
-      Assert.assertEquals(ExecutionStatus.POSTPONED,
+      Assert.assertEquals(ExecutionStatus.EXECUTED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED,
+      // Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
       Context.end();
       Context.start();
@@ -634,8 +638,10 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
 
       execute("update cib_testentity set nameValue='R�schen', counter=99 " + "WHERE id=5 and owner='Lalla'", 1);
       Context.sessionScope().setSecondUser(null);
-      Assert.assertEquals(ExecutionStatus.POSTPONED,
+      Assert.assertEquals(ExecutionStatus.EXECUTED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED,
+      // Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
       Context.end();
       Context.start();
@@ -779,8 +785,10 @@ public class CibetStatementExUpIntegrationTest extends JdbcHelper {
             + "values (5, 'rosen', 255, 'Klaus', 'Lalla')", 1);
 
       Context.sessionScope().setSecondUser(null);
-      Assert.assertEquals(ExecutionStatus.POSTPONED,
+      Assert.assertEquals(ExecutionStatus.EXECUTED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED,
+      // Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
       ResultSet rs = query("select namevalue, counter from cib_testentity where id = 5");
       Assert.assertTrue(rs.next());

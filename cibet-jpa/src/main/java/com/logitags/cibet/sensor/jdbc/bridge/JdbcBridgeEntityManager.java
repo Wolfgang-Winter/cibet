@@ -43,6 +43,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.common.Controllable;
+import com.logitags.cibet.context.EntityManagerType;
 import com.logitags.cibet.core.AnnotationNotFoundException;
 import com.logitags.cibet.core.AnnotationUtil;
 import com.logitags.cibet.core.CEntityManager;
@@ -592,7 +593,7 @@ public class JdbcBridgeEntityManager implements EntityManager, CEntityManager {
 
    @Override
    public boolean isJoinedToTransaction() {
-      return false;
+      return true;
    }
 
    @Override
@@ -632,6 +633,11 @@ public class JdbcBridgeEntityManager implements EntityManager, CEntityManager {
    @Override
    public boolean supportsTransactions() {
       return false;
+   }
+
+   @Override
+   public EntityManagerType getEntityManagerType() {
+      return EntityManagerType.JDBC;
    }
 
 }

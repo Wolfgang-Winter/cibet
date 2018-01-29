@@ -52,6 +52,7 @@ import com.cibethelper.entities.TEntity;
 import com.logitags.cibet.actuator.archive.Archive;
 import com.logitags.cibet.actuator.common.Controllable;
 import com.logitags.cibet.actuator.common.PostponedException;
+import com.logitags.cibet.actuator.history.History;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalSessionScope;
 import com.logitags.cibet.core.EventResult;
@@ -147,6 +148,13 @@ public class DBHelper extends CoreTestBase {
          List<Controllable> dclist = q4.getResultList();
          for (Controllable dc : dclist) {
             Context.internalRequestScope().getOrCreateEntityManager(true).remove(dc);
+         }
+
+         Query q5 = Context.internalRequestScope().getOrCreateEntityManager(true)
+               .createQuery("select d from History d");
+         List<History> hlist = q5.getResultList();
+         for (History h : hlist) {
+            Context.internalRequestScope().getOrCreateEntityManager(true).remove(h);
          }
 
          Query q6 = Context.internalRequestScope().getOrCreateEntityManager(true)

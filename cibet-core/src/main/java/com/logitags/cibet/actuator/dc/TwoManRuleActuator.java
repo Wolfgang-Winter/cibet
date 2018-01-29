@@ -245,6 +245,12 @@ public class TwoManRuleActuator extends FourEyesActuator {
          if (Context.internalSessionScope().getSecondUser() != null) {
             try {
                Object result = release(dcObj, "Two-Man-Rule: direct release by second user");
+
+               EventResult eventResult = Context.internalRequestScope().getExecutedEventResult();
+               if (eventResult != null && eventResult.getExecutionStatus() == ExecutionStatus.EXECUTED) {
+                  ctx.setExecutionStatus(eventResult.getExecutionStatus());
+               }
+
                try {
                   CibetUtil.encode(result);
                   ctx.getResource().setResultObject(result);

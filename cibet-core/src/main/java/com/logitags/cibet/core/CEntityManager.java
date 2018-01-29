@@ -26,6 +26,8 @@ package com.logitags.cibet.core;
 
 import javax.persistence.EntityManager;
 
+import com.logitags.cibet.context.EntityManagerType;
+
 public interface CEntityManager {
 
    EntityManager getNativeEntityManager();
@@ -35,5 +37,7 @@ public interface CEntityManager {
    void setLoadEager(boolean loadEager);
 
    boolean supportsTransactions();
+
+   EntityManagerType getEntityManagerType();
 
 }

@@ -31,6 +31,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.logitags.cibet.context.EntityManagerType;
+
 @RunWith(MockitoJUnitRunner.class)
 public class JpaTest {
 
@@ -50,14 +52,14 @@ public class JpaTest {
 
    @Test(expected = IllegalArgumentException.class)
    public void createCibetEntityManagerFactory() {
-      new CibetEntityManagerFactory(null, true);
+      new CibetEntityManagerFactory(null, true, null);
    }
 
    @Test
    public void createEntityManager() {
       Mockito.when(emfMock.createEntityManager()).thenReturn(em);
 
-      EntityManagerFactory emf = new CibetEntityManagerFactory(emfMock, true);
+      EntityManagerFactory emf = new CibetEntityManagerFactory(emfMock, true, EntityManagerType.RESOURCE_LOCAL);
       EntityManager eman = emf.createEntityManager();
       Assert.assertTrue(eman instanceof CibetEntityManager);
    }
@@ -67,7 +69,7 @@ public class JpaTest {
       Map arg0 = null;
       Mockito.when(emfMock.createEntityManager(arg0)).thenReturn(em);
 
-      EntityManagerFactory emf = new CibetEntityManagerFactory(emfMock, true);
+      EntityManagerFactory emf = new CibetEntityManagerFactory(emfMock, true, EntityManagerType.RESOURCE_LOCAL);
       EntityManager eman = emf.createEntityManager(arg0);
       Assert.assertTrue(eman instanceof CibetEntityManager);
    }

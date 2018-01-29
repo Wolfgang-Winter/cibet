@@ -84,6 +84,13 @@ public class TEntity implements Serializable {
       this.owner = owner;
    }
 
+   public TEntity(long id, String nameValue, int counter, String owner) {
+      this.id = id;
+      this.nameValue = nameValue;
+      this.counter = counter;
+      this.owner = owner;
+   }
+
    /**
     * 
     * @return the id
@@ -163,8 +170,7 @@ public class TEntity implements Serializable {
     */
    @Override
    public boolean equals(Object obj) {
-      if (!(obj instanceof TEntity))
-         return false;
+      if (!(obj instanceof TEntity)) return false;
       TEntity t = (TEntity) obj;
 
       return (id == t.getId() && counter == t.getCounter() && nameValue.equals(t.getNameValue())

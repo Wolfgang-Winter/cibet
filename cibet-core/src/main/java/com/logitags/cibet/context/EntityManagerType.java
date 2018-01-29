@@ -26,5 +26,5 @@ package com.logitags.cibet.context;
 
 public enum EntityManagerType {
 
-   RESOURCE_LOCAL, JTA
+   RESOURCE_LOCAL, JTA, JDBC
 }

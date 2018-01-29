@@ -205,11 +205,12 @@ public class HttpSpringSecurity2IT extends AbstractArquillian {
       HttpOptions g = new HttpOptions(URL_TS + "?role=" + URLEncoder.encode("admin", "UTF-8") + "&secondUser="
             + URLEncoder.encode("höl", "UTF-8") + "&secondRole=" + URLEncoder.encode("second", "UTF-8"));
       response = client.execute(g);
-      Assert.assertEquals(HttpStatus.SC_ACCEPTED, response.getStatusLine().getStatusCode());
+      Assert.assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       readResponseBody(response);
       String erString = response.getFirstHeader(Headers.CIBET_EVENTRESULT.name()).getValue();
       EventResult er = CibetUtil.decodeEventResult(erString);
-      Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
+      log.debug(er);
+      Assert.assertEquals(ExecutionStatus.EXECUTED, er.getExecutionStatus());
       Assert.assertEquals(ExecutionStatus.EXECUTED, er.getChildResults().get(0).getExecutionStatus());
 
       g.abort();

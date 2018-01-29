@@ -7,7 +7,7 @@
 		<class>com.logitags.cibet.notification.EmailNotificationProvider
 		</class>
 		<properties>
-			<from>from@test.de</from>
+			<from>from@ttest.de</from>
 			<smtpHost>localhost</smtpHost>
 			<smtpPort>8854</smtpPort>
 		</properties>

@@ -91,7 +91,7 @@ public class PersistServlet extends ShiroServlet {
 
    protected void persist2(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
       log.debug("persist2: " + req.getSession().getId());
-      log.debug("EM: " + Context.internalRequestScope().getOrCreateEntityManager(true));
+      log.debug("EM: " + Context.internalRequestScope().getOrCreateEntityManager(false));
       TEntity te = new TEntity("Rudi", 344, "Ganz");
       ejb.persist(te);
 

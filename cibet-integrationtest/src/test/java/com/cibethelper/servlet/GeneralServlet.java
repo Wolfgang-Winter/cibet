@@ -467,7 +467,7 @@ public class GeneralServlet extends HttpServlet {
       ut.begin();
       try {
          cibet2.persist(te);
-         log.debug("after persist");
+         log.debug("after persist " + cibet2);
       } catch (Exception e) {
          log.error(e.getMessage(), e);
          throw e;

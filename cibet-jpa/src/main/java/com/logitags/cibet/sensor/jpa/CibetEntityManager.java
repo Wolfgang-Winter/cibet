@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import com.logitags.cibet.actuator.circuitbreaker.CircuitBreakerActuator;
 import com.logitags.cibet.actuator.common.Actuator;
 import com.logitags.cibet.context.Context;
+import com.logitags.cibet.context.EntityManagerType;
 import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.control.Controller;
 import com.logitags.cibet.core.AnnotationUtil;
@@ -45,7 +46,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
 
    private static final String SENSOR_NAME = "JPA";
 
-   private EntityManagerFactory cibetEmFactory;
+   private CibetEntityManagerFactory cibetEmFactory;
 
    private EntityManager nativeEntityManager;
 
@@ -69,7 +70,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
       Context.internalRequestScope().setApplicationEntityManager2(nativeEntityManager2);
    }
 
-   public CibetEntityManager(EntityManager em, boolean loadEager) {
+   protected CibetEntityManager(EntityManager em, boolean loadEager) {
       if (em == null) {
          throw new IllegalArgumentException("EntityManager must not be null");
       }
@@ -81,7 +82,6 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
       }
 
       this.loadEager = loadEager;
-      cibetEmFactory = nativeEntityManager.getEntityManagerFactory();
       Context.internalRequestScope().setApplicationEntityManager(this);
    }
 
@@ -715,6 +715,11 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
    @Override
    public boolean isJoinedToTransaction() {
       return nativeEntityManager.isJoinedToTransaction();
+   }
+
+   @Override
+   public EntityManagerType getEntityManagerType() {
+      return cibetEmFactory.getEntityManagerType();
    }
 
 }

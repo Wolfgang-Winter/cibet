@@ -201,6 +201,7 @@ public class CibetUtilTest {
 
    @Test
    public void compare2() {
+      log.debug("start compare2");
       List<Difference> list = new ArrayList<Difference>();
       TEntity t1 = new TEntity("Stung1", 12, "owner1");
       TEntity t2 = new TEntity("Stung1", 13, "owner1");
@@ -248,6 +249,7 @@ public class CibetUtilTest {
 
    @Test
    public void compare3() {
+      log.debug("start compare3");
       List<Difference> list = new ArrayList<Difference>();
       TCompareEntity t1 = new TCompareEntity("Stung1", 12, "owner1");
       TCompareEntity t2 = new TCompareEntity("Stung1", 12, "owner1");
@@ -266,6 +268,7 @@ public class CibetUtilTest {
       list = CibetUtil.compare(t1, t2);
       Assert.assertEquals(1, list.size());
       Difference difObj = list.get(0);
+      log.debug(difObj);
       Assert.assertTrue(difObj.getPropertyPath().equals("/intArray"));
       Assert.assertTrue(difObj.getDifferenceType() == DifferenceType.ADDED);
       Assert.assertTrue(difObj.getOldValue() == null);
@@ -274,6 +277,7 @@ public class CibetUtilTest {
       list = CibetUtil.compare(t2, t1);
       Assert.assertEquals(1, list.size());
       difObj = list.get(0);
+      log.debug(difObj);
       Assert.assertTrue(difObj.getPropertyPath().equals("/intArray"));
       Assert.assertTrue(difObj.getDifferenceType() == DifferenceType.REMOVED);
       Assert.assertTrue(difObj.getNewValue() == null);
@@ -282,6 +286,7 @@ public class CibetUtilTest {
       list = CibetUtil.compare(t1, t2);
       Assert.assertTrue(list.size() == 1);
       difObj = list.get(0);
+      log.debug(difObj);
       Assert.assertTrue(difObj.getPropertyName().equals("intArray"));
       Assert.assertTrue(difObj.getDifferenceType() == DifferenceType.MODIFIED);
       Assert.assertTrue(Arrays.equals((int[]) difObj.getNewValue(), new int[] { 1, 2, 3, 4 }));
@@ -295,6 +300,7 @@ public class CibetUtilTest {
       list = CibetUtil.compare(t1, t2);
       Assert.assertTrue(list.size() == 1);
       difObj = list.get(0);
+      log.debug(difObj);
       Assert.assertTrue(difObj.getPropertyName().equals("intArray"));
       Assert.assertTrue(difObj.getDifferenceType() == DifferenceType.MODIFIED);
 
@@ -302,6 +308,7 @@ public class CibetUtilTest {
       list = CibetUtil.compare(t1, t2);
       Assert.assertEquals(1, list.size());
       difObj = list.get(0);
+      log.debug(difObj);
       Assert.assertTrue(difObj.getPropertyName().equals("intArray"));
       Assert.assertTrue(difObj.getDifferenceType() == DifferenceType.MODIFIED);
 
@@ -311,6 +318,7 @@ public class CibetUtilTest {
       list = CibetUtil.compare(t1, t2);
       Assert.assertTrue(list.size() == 1);
       difObj = list.get(0);
+      log.debug(difObj);
       Assert.assertTrue(difObj.getPropertyName().equals("entList"));
       Assert.assertTrue(difObj.getDifferenceType() == DifferenceType.REMOVED);
       Assert.assertEquals(e4, difObj.getOldValue());
@@ -321,6 +329,7 @@ public class CibetUtilTest {
       list = CibetUtil.compare(t1, t2);
       Assert.assertTrue(list.size() == 1);
       difObj = list.get(0);
+      log.debug(difObj);
       Assert.assertTrue(difObj.getPropertyName().equals("entList"));
       Assert.assertTrue(difObj.getDifferenceType() == DifferenceType.ADDED);
       Assert.assertEquals(e4, difObj.getNewValue());
@@ -331,11 +340,13 @@ public class CibetUtilTest {
       list = CibetUtil.compare(t1, t2);
       Assert.assertTrue(list.size() == 2);
       difObj = list.get(0);
+      log.debug(difObj);
       Assert.assertTrue(difObj.getPropertyName().equals("entList"));
       Assert.assertTrue(difObj.getDifferenceType() == DifferenceType.ADDED);
       Assert.assertTrue(difObj.getNewValue().equals(e4));
       Assert.assertTrue(difObj.getOldValue() == null);
       difObj = list.get(1);
+      log.debug(difObj);
       Assert.assertTrue(difObj.getPropertyName().equals("entList"));
       Assert.assertTrue(difObj.getDifferenceType() == DifferenceType.REMOVED);
       Assert.assertTrue(difObj.getOldValue().equals(e2));
@@ -436,8 +447,7 @@ public class CibetUtilTest {
       Assert.assertTrue(difObj.getDifferenceType() == DifferenceType.MODIFIED);
       Assert.assertTrue(difObj.getOldValue().equals("Karl3"));
       Assert.assertTrue(difObj.getNewValue().equals("Karl2"));
-      if (1 == 1)
-         return;
+      if (1 == 1) return;
    }
 
    @Test

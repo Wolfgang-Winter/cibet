@@ -46,7 +46,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -129,7 +128,7 @@ public class SimpleEclipseLinkTest {
     * 
     * @throws Exception
     */
-   @Ignore
+   // @Ignore
    @Test
    public void test() throws Exception {
       log.info("start test()");
@@ -143,6 +142,8 @@ public class SimpleEclipseLinkTest {
       // EntityManager cib = Context.internalRequestScope().getOrCreateEntityManager(false);
 
       ut.begin();
+
+      cibet.joinTransaction();
       InitialContext context = new InitialContext();
       EntityManagerFactory containerEmf = (EntityManagerFactory) context.lookup("java:comp/env/Cibet");
       EntityManager entityManager = containerEmf.createEntityManager();

@@ -5,7 +5,7 @@
         version="2.0">
   
    <persistence-unit name="CibetLocal" transaction-type="RESOURCE_LOCAL">
-      <provider>org.hibernate.ejb.HibernatePersistence</provider>
+      <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
       <class>com.logitags.cibet.core.EventResult</class>
       <class>com.logitags.cibet.resource.Resource</class>
       <class>com.logitags.cibet.sensor.ejb.EjbResource</class>
@@ -17,17 +17,18 @@
       <class>com.logitags.cibet.resource.ResourceParameter</class>
       <class>com.logitags.cibet.actuator.archive.Archive</class>
       <class>com.logitags.cibet.actuator.common.Controllable</class>
-      <class>com.logitags.cibet.actuator.history.History</class>
       
       <properties>
-         <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/>
-         <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
-         <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
-         <property name="javax.persistence.jdbc.user" value="APP"/>
-         <property name="javax.persistence.jdbc.password" value="x"/>
+         <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@192.168.1.64:1521:xe"/>
+         <property name="javax.persistence.jdbc.user" value="cibet"/>
+         <property name="javax.persistence.jdbc.password" value="cibet"/>
 
-         <property name="hibernate.format_sql" value="true" />
-<!--          <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
+         <property name="eclipselink.weaving" value="false"/>
+         <property name="eclipselink.logging.level.sql" value="FINE"/>
+         <property name="eclipselink.logging.parameters" value="true"/>
+         <property name="eclipselink.logging.file" value="d:/temp/ELoutput.log"/>
+         <property name="eclipselink.logging.logger" value="DefaultLogger"/>
       </properties>
    </persistence-unit>
 
@@ -46,11 +47,10 @@
       <class>com.logitags.cibet.actuator.common.Controllable</class>
       
       <properties>
-         <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/>
-         <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
-         <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
-         <property name="javax.persistence.jdbc.user" value="APP"/>
-         <property name="javax.persistence.jdbc.password" value="x"/>
+         <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@192.168.1.64:1521:xe"/>
+         <property name="javax.persistence.jdbc.user" value="cibet"/>
+         <property name="javax.persistence.jdbc.password" value="cibet"/>
       </properties>
    </persistence-unit>
 
@@ -65,24 +65,24 @@
       <class>com.cibethelper.entities.owner.Company</class>
       <class>com.cibethelper.entities.owner.Merchant</class>
       <class>com.cibethelper.entities.owner.Merchant2</class>
-      <class>com.cibethelper.entities.owner.Merchant3</class>
       <class>com.cibethelper.entities.owner.Product</class>
       <class>com.cibethelper.entities.owner.Product2</class>
-      <class>com.cibethelper.entities.owner.Transaction</class>
       
       <properties>
-         <property name="com.logitags.cibet.persistence.provider" value="org.hibernate.ejb.HibernatePersistence"/>
+         <property name="com.logitags.cibet.persistence.provider" value="org.eclipse.persistence.jpa.PersistenceProvider"/>
          
-         <property name="javax.persistence.jdbc.dialect" value="org.hibernate.dialect.DerbyDialect"/>
-         <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
-         <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/cibettest"/>
-         <property name="javax.persistence.jdbc.user" value="APP"/>
-         <property name="javax.persistence.jdbc.password" value="x"/>
+         <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+         <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@192.168.1.64:1521:xe"/>
+         <property name="javax.persistence.jdbc.user" value="cibet"/>
+         <property name="javax.persistence.jdbc.password" value="cibet"/>
 
-         <property name="hibernate.format_sql" value="true" />
-<!--          <property name="hibernate.hbm2ddl.auto" value="update"/>  -->
-         <property name="hibernate.listeners.envers.autoRegister" value="false"/>
+         <property name="eclipselink.weaving" value="false"/>
+         <property name="eclipselink.logging.level.sql" value="FINE"/>
+         <property name="eclipselink.logging.parameters" value="true"/>
+         <property name="eclipselink.logging.file" value="d:/temp/ELoutput.log"/>
+         <property name="eclipselink.logging.logger" value="DefaultLogger"/>
       </properties>
    </persistence-unit>
+
 
 </persistence>

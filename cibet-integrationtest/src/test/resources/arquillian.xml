@@ -80,6 +80,16 @@ http://tomee.apache.org/refcard/refcard.html
         </configuration>
     </container>
 
+    <container qualifier="glassfish4" >
+        <configuration>
+<!-- 				<property name="adminHost">lenny</property> -->
+				<property name="adminHost">lenny</property> 
+				<property name="adminUser">admin</property>
+				<property name="adminPassword">x</property>
+				<property name="adminHttps">true</property>
+        </configuration>
+    </container>
+
     <container qualifier="tomcat" >
         <configuration>
 <!-- 				<property name="bindHttpPort">8788</property> -->

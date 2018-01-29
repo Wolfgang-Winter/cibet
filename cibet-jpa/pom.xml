@@ -14,14 +14,6 @@
 			<artifactId>cibet-core</artifactId>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.hibernate.javax.persistence</groupId> -->
-<!-- 			<artifactId>hibernate-jpa-2.0-api</artifactId> -->
-<!-- 			<version>1.0.1.Final</version> -->
-<!-- 			<type>jar</type> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency> -->
-
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
@@ -35,13 +27,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-<!--       <dependency> -->
-<!--          <groupId>org.jboss.spec</groupId> -->
-<!--          <artifactId>jboss-javaee-all-6.0</artifactId> -->
-<!--          <version>3.0.3.Final</version> -->
-<!--          <scope>provided</scope> -->
-<!--       </dependency> -->
 
       <dependency>
       	<groupId>org.jboss.spec</groupId>

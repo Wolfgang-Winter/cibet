@@ -107,7 +107,8 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
 
       EventResult er = Context.requestScope().getExecutedEventResult();
       Assert.assertNotNull(er);
-      Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
+      Assert.assertEquals(ExecutionStatus.EXECUTED, er.getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
       Assert.assertEquals(1, er.getChildResults().size());
       Assert.assertEquals(ControlEvent.RELEASE_INSERT, er.getChildResults().get(0).getEvent());
       Assert.assertEquals(ExecutionStatus.EXECUTED, er.getChildResults().get(0).getExecutionStatus());
@@ -149,7 +150,8 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
 
       EventResult er = Context.requestScope().getExecutedEventResult();
       Assert.assertNotNull(er);
-      Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
+      Assert.assertEquals(ExecutionStatus.EXECUTED, er.getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
       Assert.assertEquals(1, er.getChildResults().size());
       Assert.assertEquals(ControlEvent.RELEASE_INSERT, er.getChildResults().get(0).getEvent());
       Assert.assertEquals(ExecutionStatus.EXECUTED, er.getChildResults().get(0).getExecutionStatus());
@@ -367,8 +369,10 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       Context.sessionScope().setSecondUser("secondUser");
       applEman.remove(entity);
       Context.sessionScope().setSecondUser(null);
-      Assert.assertEquals(ExecutionStatus.POSTPONED,
+      Assert.assertEquals(ExecutionStatus.EXECUTED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED,
+      // Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
       log.debug(entity);
       TEntity selEnt = applEman.find(TEntity.class, entity.getId());
@@ -557,8 +561,10 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       entity.setNameValue("newname");
       applEman.merge(entity);
       Context.sessionScope().setSecondUser(null);
-      Assert.assertEquals(ExecutionStatus.POSTPONED,
+      Assert.assertEquals(ExecutionStatus.EXECUTED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED,
+      // Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
       log.debug(entity);
       TEntity selEnt = applEman.find(TEntity.class, entity.getId());
@@ -841,7 +847,8 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       EventResult er = Context.requestScope().stopPlay();
 
       Assert.assertNotNull(er);
-      Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
+      Assert.assertEquals(ExecutionStatus.EXECUTED, er.getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED, er.getExecutionStatus());
       Assert.assertEquals(1, er.getChildResults().size());
       Assert.assertEquals(ControlEvent.RELEASE_INSERT, er.getChildResults().get(0).getEvent());
       Assert.assertEquals(ExecutionStatus.EXECUTED, er.getChildResults().get(0).getExecutionStatus());
@@ -875,8 +882,10 @@ public class Jpa1Archive2ManRuleIntegrationTest extends DBHelper {
       TEntity entity2 = applEman.find(TEntity.class, entity.getId());
       Assert.assertNotNull(entity2);
       Context.sessionScope().setSecondUser(null);
-      Assert.assertEquals(ExecutionStatus.POSTPONED,
+      Assert.assertEquals(ExecutionStatus.EXECUTED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED,
+      // Context.requestScope().getExecutedEventResult().getExecutionStatus());
 
       log.debug(entity2);
 

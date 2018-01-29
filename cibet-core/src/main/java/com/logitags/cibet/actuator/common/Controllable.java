@@ -20,6 +20,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
@@ -324,14 +325,50 @@ public class Controllable implements Serializable {
       log.debug("start release");
 
       if (entityManager != null) {
-         if ((entityManager instanceof CEntityManager && ((CEntityManager) entityManager).supportsTransactions()
-               || !(entityManager instanceof CEntityManager)) && !entityManager.isJoinedToTransaction()) {
-            String err = "release method must be called within a transaction boundary";
-            log.error(err);
-            throw new TransactionRequiredException(err);
+         EntityManager localEm = entityManager;
+
+         if (!(localEm instanceof CEntityManager)) {
+            EntityManagerFactory emf = entityManager.getEntityManagerFactory();
+            localEm = emf.createEntityManager();
          }
+
+         if (!(localEm instanceof CEntityManager)) {
+            String err = "EntityManager " + entityManager
+                  + " is not a Cibet EntityManager. It must be created by com.logitags.cibet.sensor.jpa.Provider "
+                  + "or com.logitags.cibet.sensor.jdbc.JdbcBridgeProvider";
+            log.error(err);
+            throw new IllegalArgumentException(err);
+         }
+
+         CEntityManager em = (CEntityManager) localEm;
+         switch (em.getEntityManagerType()) {
+         case JDBC:
+            break;
+
+         case JTA:
+            try {
+               entityManager.joinTransaction();
+            } catch (TransactionRequiredException e) {
+               throw new TransactionRequiredException("release() method must be called within a transaction boundary");
+            }
+            break;
+
+         case RESOURCE_LOCAL:
+            if (!entityManager.getTransaction().isActive()) {
+               throw new TransactionRequiredException("release() method must be called within a transaction boundary");
+            }
+            break;
+         }
+
+         // if ((entityManager instanceof CEntityManager && ((CEntityManager) entityManager).supportsTransactions()
+         // || !(entityManager instanceof CEntityManager)) && !entityManager.isJoinedToTransaction()) {
+         // String err = "release() method must be called within a transaction boundary";
+         // log.error(err);
+         // throw new TransactionRequiredException(err);
+         // }
          Context.internalRequestScope().setApplicationEntityManager(entityManager);
       }
+
       if (getExecutionStatus() != ExecutionStatus.SCHEDULED) {
          Context.internalRequestScope().setScheduledDate(getScheduledDate());
       }

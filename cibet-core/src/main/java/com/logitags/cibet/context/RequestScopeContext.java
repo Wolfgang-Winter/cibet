@@ -151,13 +151,18 @@ public class RequestScopeContext implements InternalRequestScope {
             log.debug("... and join JTA transaction");
          } catch (TransactionRequiredException e) {
             log.info("... but cannot join transaction: " + e.getMessage());
+            if (transacted) {
+               throw e;
+            }
          }
       }
 
-      if (transacted && manager instanceof CEntityManager && ((CEntityManager) manager).supportsTransactions()
-            && !manager.isJoinedToTransaction()) {
-         throw new TransactionRequiredException();
-      }
+      // if (transacted && (manager instanceof CEntityManager && ((CEntityManager) manager).supportsTransactions()
+      // || !(manager instanceof CEntityManager)) && !manager.isJoinedToTransaction()) {
+      // // if (transacted && manager instanceof CEntityManager && ((CEntityManager) manager).supportsTransactions()
+      // // && !manager.isJoinedToTransaction()) {
+      // throw new TransactionRequiredException();
+      // }
       return manager;
    }
 

@@ -64,16 +64,18 @@ D. Arquillian Tests
    stop Glassfish on Bugarach
 
 3b. [Glassfish 4.1.1 on Lenny]
-   (Glassfish 4 uses JPA 2.1, therefore AbstractMethodException CibetEntityManagerFactory.createEntityManager)
-   - https://192.168.1.63:4848/
+   - Admin: http://192.168.1.65:4848/
 
  
-2. Tomee/OpenJPA/Oracle:
+4. Tomee/OpenJPA/Oracle:
    - start Tomee D:\appserver\apache-tomee-webprofile-1.7.4\bin
    - run mvn clean install with profile tomee, skipTests=true, db=oracle-openjpa on project cibet
    - run mvn clean install with profile tomee, db=oracle-openjpa on project cibet-integration   
       VM args: -javaagent:D:\Java\maven-repository\org\apache\openjpa\openjpa-all\2.4.2\openjpa-all-2.4.2.jar
 
+4.1 Tomee/Eclipselink/Oracle
+	Tomee 7.0.2 buggy
+	Eclipselink 2.7 buggy
 
 
 

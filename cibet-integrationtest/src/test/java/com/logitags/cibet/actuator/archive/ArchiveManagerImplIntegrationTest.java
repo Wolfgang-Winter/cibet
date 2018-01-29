@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
@@ -121,35 +120,6 @@ public class ArchiveManagerImplIntegrationTest extends DBHelper {
       Assert.assertEquals(122, ar2.getCompValue());
       Assert.assertEquals(ControlEvent.UPDATE, archList.get(0).getControlEvent());
       Assert.assertEquals(ControlEvent.RELEASE_UPDATE, archList.get(1).getControlEvent());
-   }
-
-   private void insertNativeArchive(Archive a, EntityManager eman) {
-      Query rq = eman.createNativeQuery("INSERT INTO CIB_RESOURCE "
-            + "(RESOURCEID, TARGET, PRIMARYKEYID, RESOURCETYPE, ENCRYPTED, KEYREFERENCE, UNIQUEID"
-            + ") VALUES (?, ?, ?, 'JpaResource', 1,?,?)");
-      rq.setParameter(1, a.getResource().getResourceId());
-      rq.setParameter(2, a.getResource().getTarget());
-      rq.setParameter(3, ((JpaResource) a.getResource()).getPrimaryKeyId());
-      rq.setParameter(4, a.getResource().getKeyReference());
-      rq.setParameter(5, a.getResource().getUniqueId());
-      rq.executeUpdate();
-
-      Query q = eman.createNativeQuery("INSERT INTO CIB_ARCHIVE "
-            + "(ARCHIVEID, CONTROLEVENT, EXECUTIONSTATUS, CREATEUSER, CREATEDATE, TENANT, REMARK, CHECKSUM, "
-            + "CASEID, VERSION, RESOURCE" + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?)");
-      q.setParameter(1, a.getArchiveId());
-      q.setParameter(2, a.getControlEvent().name());
-      q.setParameter(3, a.getExecutionStatus().name());
-      q.setParameter(4, a.getCreateUser());
-      q.setParameter(5, a.getCreateDate());
-      q.setParameter(6, a.getTenant());
-      q.setParameter(7, a.getRemark());
-      q.setParameter(8, a.getChecksum());
-      q.setParameter(9, a.getCaseId());
-      q.setParameter(10, a.getResource().getResourceId());
-      q.executeUpdate();
-
-      eman.flush();
    }
 
    private Archive createArchive(String archiveId) {

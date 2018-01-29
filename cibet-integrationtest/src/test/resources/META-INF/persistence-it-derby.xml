@@ -35,7 +35,7 @@
 		<class>com.cibethelper.entities.TComplexEntity</class>
 		<class>com.cibethelper.entities.TComplexEntity2</class>
 		<properties>
-			<property name="com.logitags.cibet.persistence.provider" value="org.hibernate.ejb.HibernatePersistence" />
+			<property name="com.logitags.cibet.persistence.provider" value="org.hibernate.jpa.HibernatePersistenceProvider" />
 			<property name="hibernate.transaction.jta.platform"
 				value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
 			<property name="hibernate.listeners.envers.autoRegister" value="false" />
@@ -51,7 +51,7 @@
       <class>com.cibethelper.entities.TComplexEntity</class>
       <class>com.cibethelper.entities.TComplexEntity2</class>
       <properties>
-         <property name="com.logitags.cibet.persistence.provider" value="org.hibernate.ejb.HibernatePersistence" />
+         <property name="com.logitags.cibet.persistence.provider" value="org.hibernate.jpa.HibernatePersistenceProvider" />
          <property name="com.logitags.cibet.persistence.loadEager" value="true"/>
          <property name="hibernate.transaction.jta.platform"
             value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />

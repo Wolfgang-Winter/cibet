@@ -186,7 +186,7 @@ public abstract class Context {
    public static boolean start(String ejbJndiname, AuthenticationProvider... authProviders) {
       boolean startManaging = false;
       if (!Context.internalRequestScope().isManaged()) {
-         log.info("start fresh new Cibet context");
+         log.debug("start fresh new Cibet context");
 
          // CibetUtil.logStackTrace();
 
@@ -204,7 +204,7 @@ public abstract class Context {
          Context.internalRequestScope().setManaged(true);
          startManaging = true;
       } else {
-         log.info("join Cibet context");
+         log.debug("join Cibet context");
       }
 
       if (authProviders != null) {
@@ -262,7 +262,7 @@ public abstract class Context {
          Context.internalSessionScope().clear();
          Context.internalRequestScope().clear();
          isEMInitialized = false;
-         log.info("Cibet Context ended");
+         log.debug("Cibet Context ended");
       }
    }
 

@@ -22,9 +22,9 @@
          <property name="eclipselink.weaving" value="false"/>
          <property name="eclipselink.logging.level.sql" value="FINE"/>
          <property name="eclipselink.logging.parameters" value="true"/>
-         <property name="eclipselink.logging.file" value="D:/appserver/apache-tomee-plume-7.0.2/logs/sql-tomee7.0.2.log"/>
 <!--          <property name="eclipselink.logging.logger" value="DefaultLogger"/> -->
-         <property name="eclipselink.logging.logger" value="ServerLogger"/>
+<!--          <property name="eclipselink.logging.logger" value="ServerLogger"/> -->
+<!--          <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.CommonsLoggingSessionLog"/> -->
 		</properties>
 		
 	</persistence-unit>
@@ -38,13 +38,14 @@
 		<class>com.cibethelper.entities.TComplexEntity2</class>
 		<properties>
 			<property name="com.logitags.cibet.persistence.provider" value="org.eclipse.persistence.jpa.PersistenceProvider" />
-			<property name="eclipselink.target-server" value="org.apache.openejb.jpa.integration.eclipselink.OpenEJBServerPlatform"/>
+			<property name="eclipselink.target-server" value="SunAS9"/>
+			<property name="toplink.target-server" value="SunAS9"/>
          <property name="eclipselink.weaving" value="false"/>
          <property name="eclipselink.logging.level.sql" value="FINE"/>
          <property name="eclipselink.logging.parameters" value="true"/>
-         <property name="eclipselink.logging.file" value="D:/appserver/apache-tomee-plume-7.0.2/logs/sql-tomee7.0.2.log"/>
 <!--          <property name="eclipselink.logging.logger" value="DefaultLogger"/> -->
-         <property name="eclipselink.logging.logger" value="ServerLogger"/>
+<!--          <property name="eclipselink.logging.logger" value="ServerLogger"/> -->
+<!--          <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.CommonsLoggingSessionLog"/> -->
 		</properties>
 	</persistence-unit>
 
@@ -57,14 +58,14 @@
       <properties>
          <property name="com.logitags.cibet.persistence.provider" value="org.eclipse.persistence.jpa.PersistenceProvider" />
          <property name="com.logitags.cibet.persistence.loadEager" value="true"/>
-			<property name="eclipselink.target-server" value="org.apache.openejb.jpa.integration.eclipselink.OpenEJBServerPlatform"/>
+			<property name="eclipselink.target-server" value="SunAS9"/>
+			<property name="toplink.target-server" value="SunAS9"/>
          <property name="eclipselink.weaving" value="false"/>
          <property name="eclipselink.logging.level.sql" value="FINE"/>
          <property name="eclipselink.logging.parameters" value="true"/>
-         <property name="eclipselink.logging.file" value="D:/appserver/apache-tomee-plume-7.0.2/logs/sql-tomee7.0.2.log"/>
 <!--          <property name="eclipselink.logging.file" value="c:/Java/glassfish3/glassfish/domains/cibet/logs/ELoutput.log"/> -->
 <!--          <property name="eclipselink.logging.logger" value="DefaultLogger"/> -->
-         <property name="eclipselink.logging.logger" value="ServerLogger"/>
+<!--          <property name="eclipselink.logging.logger" value="ServerLogger"/> -->
       </properties>
    </persistence-unit>
 

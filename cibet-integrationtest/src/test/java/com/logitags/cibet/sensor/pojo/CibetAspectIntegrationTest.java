@@ -576,8 +576,10 @@ public class CibetAspectIntegrationTest extends DBHelper {
 
       Context.sessionScope().setSecondUser("secondUser");
       ent1.setCompValue(3434);
-      Assert.assertEquals(ExecutionStatus.POSTPONED,
+      Assert.assertEquals(ExecutionStatus.EXECUTED,
             Context.requestScope().getExecutedEventResult().getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED,
+      // Context.requestScope().getExecutedEventResult().getExecutionStatus());
       Assert.assertEquals(3434, ent1.getCompValue());
       Context.sessionScope().setSecondUser(null);
 

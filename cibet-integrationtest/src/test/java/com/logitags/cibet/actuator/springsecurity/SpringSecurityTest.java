@@ -120,7 +120,7 @@ public class SpringSecurityTest extends SpringTestBase {
       Context.sessionScope().setUser("releaser");
       List<Controllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
       log.debug(l.get(0));
-      l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
+      l.get(0).release(null);
 
       // CibetContext.getEntityManager().clear();
       l = DcLoader.findUnreleased(TComplexEntity.class.getName());
@@ -139,6 +139,12 @@ public class SpringSecurityTest extends SpringTestBase {
       try {
          l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
          Assert.fail();
+      } catch (IllegalArgumentException e) {
+      }
+
+      try {
+         l.get(0).release(null);
+         Assert.fail();
       } catch (DeniedException e) {
       }
 
@@ -146,7 +152,7 @@ public class SpringSecurityTest extends SpringTestBase {
       log.debug(l.get(0));
       l = DcLoader.findUnreleased(TComplexEntity.class.getName());
       log.debug(l.get(0));
-      l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), "ok");
+      l.get(0).release("ok");
 
       // cibetEman.getTransaction().commit();
       log.debug("end");
@@ -179,7 +185,7 @@ public class SpringSecurityTest extends SpringTestBase {
       // release
       Context.sessionScope().setUser("releaser");
       List<Controllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
-      l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
+      l.get(0).release(null);
       Assert.assertEquals(22, ent1.getStatValue());
    }
 
@@ -233,7 +239,7 @@ public class SpringSecurityTest extends SpringTestBase {
       // release
       Context.sessionScope().setUser("releaser");
       List<Controllable> l = DcLoader.findUnreleased(TComplexEntity.class.getName());
-      l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
+      l.get(0).release(null);
       Assert.assertEquals(33, ent1.getStatValue());
    }
 

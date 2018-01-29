@@ -673,7 +673,7 @@ public class ActuatorIT extends AbstractArquillian {
          Iterator<SmtpMessage> emailIter = server.getReceivedEmail();
          SmtpMessage email = emailIter.next();
          Assert.assertEquals("Cibet Notification: FIRST_POSTPONED", email.getHeaderValue("Subject"));
-         Assert.assertEquals("from @Test.de", email.getHeaderValue("From"));
+         Assert.assertEquals("from@ttest.de", email.getHeaderValue("From"));
          Assert.assertEquals("fizz@email.de", email.getHeaderValue("To"));
 
          server = SimpleSmtpServer.start(8854);
@@ -691,7 +691,7 @@ public class ActuatorIT extends AbstractArquillian {
          emailIter = server.getReceivedEmail();
          while (emailIter.hasNext()) {
             email = emailIter.next();
-            Assert.assertEquals("from @Test.de", email.getHeaderValue("From"));
+            Assert.assertEquals("from@ttest.de", email.getHeaderValue("From"));
             if ("Cibet Notification: FIRST_RELEASED".equals(email.getHeaderValue("Subject"))) {
                Assert.assertEquals("USER@email.de", email.getHeaderValue("To"));
 
@@ -732,7 +732,7 @@ public class ActuatorIT extends AbstractArquillian {
          emailIter = server.getReceivedEmail();
          email = emailIter.next();
          Assert.assertEquals("Cibet Notification: REJECTED", email.getHeaderValue("Subject"));
-         Assert.assertEquals("from @Test.de", email.getHeaderValue("From"));
+         Assert.assertEquals("from@ttest.de", email.getHeaderValue("From"));
          Assert.assertEquals("USER@email.de", email.getHeaderValue("To"));
 
          l1 = DcLoader.findUnreleased();

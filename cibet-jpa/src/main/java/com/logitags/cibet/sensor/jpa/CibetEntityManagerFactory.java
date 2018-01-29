@@ -15,6 +15,8 @@ import javax.persistence.metamodel.Metamodel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.context.EntityManagerType;
+
 public class CibetEntityManagerFactory implements EntityManagerFactory {
 
    private static Log log = LogFactory.getLog(CibetEntityManagerFactory.class);
@@ -23,12 +25,15 @@ public class CibetEntityManagerFactory implements EntityManagerFactory {
 
    private boolean loadEager;
 
-   public CibetEntityManagerFactory(EntityManagerFactory nativeEMF, boolean lEager) {
+   private EntityManagerType entityManagerType;
+
+   public CibetEntityManagerFactory(EntityManagerFactory nativeEMF, boolean lEager, EntityManagerType type) {
       if (nativeEMF == null) {
          throw new IllegalArgumentException("entityManagerFactory may not be null");
       }
       nativeEntityManagerFactory = nativeEMF;
       loadEager = lEager;
+      entityManagerType = type;
    }
 
    @Override
@@ -114,5 +119,12 @@ public class CibetEntityManagerFactory implements EntityManagerFactory {
    @Override
    public <T> T unwrap(Class<T> arg0) {
       return nativeEntityManagerFactory.unwrap(arg0);
+   }
+
+   /**
+    * @return the entityManagerType
+    */
+   public EntityManagerType getEntityManagerType() {
+      return entityManagerType;
    }
 }

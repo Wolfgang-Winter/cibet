@@ -17,6 +17,8 @@ import javax.persistence.spi.ProviderUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.logitags.cibet.context.EntityManagerType;
+
 public class Provider implements PersistenceProvider {
 
    private Log log = LogFactory.getLog(Provider.class);
@@ -51,7 +53,7 @@ public class Provider implements PersistenceProvider {
       map = createPersistenceProviderProperty(map, persistenceProvider);
       EntityManagerFactory nativeEntityManagerFactory = persistenceProvider.createContainerEntityManagerFactory(info,
             map);
-      return new CibetEntityManagerFactory(nativeEntityManagerFactory, loadEager);
+      return new CibetEntityManagerFactory(nativeEntityManagerFactory, loadEager, EntityManagerType.JTA);
    }
 
    @Override
@@ -72,7 +74,7 @@ public class Provider implements PersistenceProvider {
          map = createPersistenceProviderProperty(map, persistenceProvider);
          EntityManagerFactory nativeEntityManagerFactory = persistenceProvider.createEntityManagerFactory(unitName,
                map);
-         return new CibetEntityManagerFactory(nativeEntityManagerFactory, loadEager);
+         return new CibetEntityManagerFactory(nativeEntityManagerFactory, loadEager, EntityManagerType.RESOURCE_LOCAL);
       } else {
          log.debug(this.getClass().getName() + " does not match provider for persistence unit " + unitName);
          return null;

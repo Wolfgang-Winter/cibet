@@ -268,7 +268,8 @@ public class Jpa1SpringSecurity2ManRuleIntegrationTest extends DBHelper {
       Context.sessionScope().setSecondUser(null);
       EventResult ev = Context.requestScope().getExecutedEventResult();
       log.debug("EventResult=" + ev);
-      Assert.assertEquals(ExecutionStatus.POSTPONED, ev.getExecutionStatus());
+      Assert.assertEquals(ExecutionStatus.EXECUTED, ev.getExecutionStatus());
+      // Assert.assertEquals(ExecutionStatus.POSTPONED, ev.getExecutionStatus());
       Assert.assertEquals(1, ev.getChildResults().size());
       Assert.assertEquals(ControlEvent.RELEASE_INSERT, ev.getChildResults().get(0).getEvent());
       Assert.assertEquals(ExecutionStatus.EXECUTED, ev.getChildResults().get(0).getExecutionStatus());

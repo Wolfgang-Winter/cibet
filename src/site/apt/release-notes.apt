@@ -1,6 +1,6 @@
 Version 2.2
 
-  * Integration with Spring Security 4.2 - 4.2.x
+  * Support of Spring Security 4.1 - 4.2.x
   
   * EJB-CLIENT sensor supports lookups with ejb:/
   
@@ -9,6 +9,10 @@ Version 2.2
   * Request scope getEntityManager check if executed in a transaction
   
   * bugfix in CibetUtil comparison with hashcode instead reference
+  
+  * Support of Hibernate Envers 4.3.x
+  
+  * core-jpa: Support of JPA 2.1
   
 
 

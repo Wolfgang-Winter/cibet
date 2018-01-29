@@ -93,7 +93,7 @@ public class SchedulerActuatorIntegrationTest extends DBHelper {
       log.debug("size: " + res.getParameters().size());
 
       Context.sessionScope().setUser("test2");
-      l.get(0).release(Context.internalRequestScope().getOrCreateEntityManager(true), null);
+      l.get(0).release(null);
       l = DcLoader.findUnreleased();
       Assert.assertEquals(0, l.size());
       Context.sessionScope().setUser(USER);
