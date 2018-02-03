@@ -64,14 +64,10 @@ public class HistoryIntegrationTest extends DBHelper {
       try {
          TComplexEntity ce = createTComplexEntity();
          applEman.persist(ce);
-         applEman.flush();
-         applEman.clear();
          long id = ce.getId();
 
-         // applEman.getTransaction().commit();
-         // Context.end();
-         // Context.start();
-         // applEman.getTransaction().begin();
+         applEman.getTransaction().commit();
+         applEman.getTransaction().begin();
 
          String query = "select h from History h where h.primaryKeyId = '" + id + "' order by h.createDate";
          EntityManager cibem = Context.internalRequestScope().getEntityManager();
@@ -80,21 +76,57 @@ public class HistoryIntegrationTest extends DBHelper {
 
          Assert.assertEquals(1, list.size());
          log.debug("history:: " + list.get(0));
+         Assert.assertEquals(ControlEvent.INSERT, list.get(0).getControlEvent());
 
-         if (1 == 1) return;
-
+         log.info("select 1");
          TComplexEntity selEnt = applEman.find(TComplexEntity.class, id);
+
+         list = q.getResultList();
+         Assert.assertEquals(2, list.size());
+         Assert.assertEquals(ControlEvent.SELECT, list.get(1).getControlEvent());
+
+         log.info("merge 1");
          selEnt.setCompValue(14);
          selEnt = applEman.merge(selEnt);
-         applEman.flush();
+         applEman.getTransaction().commit();
+         applEman.getTransaction().begin();
          applEman.clear();
 
+         list = q.getResultList();
+         Assert.assertEquals(3, list.size());
+         Assert.assertEquals(ControlEvent.UPDATE, list.get(2).getControlEvent());
+         Assert.assertNotNull(list.get(2).getDiffList());
+         Assert.assertEquals(1, list.get(2).getDiffList().size());
+         Difference diff = list.get(2).getDiffList().get(0);
+         log.debug(diff);
+         log.debug(list.get(2).getDifferences());
+         Assert.assertEquals(
+               "[{\"propertyPath\":\"/compValue\",\"canonicalPath\":\"compValue\",\"propertyName\":\"compValue\",\"propertyType\":\"int\",\"differenceType\":\"MODIFIED\",\"oldValue\":12,\"newValue\":14}]",
+               list.get(2).getDifferences());
+
          TComplexEntity selEnt2 = applEman.find(TComplexEntity.class, ce.getId());
+
+         log.info("merge 2");
          TEntity e8 = new TEntity("val8", 8, TENANT);
          selEnt2.addLazyList(e8);
          selEnt2 = applEman.merge(selEnt2);
-         applEman.flush();
+         applEman.getTransaction().commit();
+         applEman.getTransaction().begin();
          applEman.clear();
+
+         list = q.getResultList();
+         Assert.assertEquals(5, list.size());
+         Assert.assertEquals(ControlEvent.UPDATE, list.get(4).getControlEvent());
+         Assert.assertNotNull(list.get(4).getDiffList());
+         Assert.assertEquals(1, list.get(4).getDiffList().size());
+         diff = list.get(4).getDiffList().get(0);
+         log.debug(diff);
+         log.debug(list.get(4).getDifferences());
+         Assert.assertEquals(
+               "[{\"propertyPath\":\"/lazyList[TEntity id: 0, counter: 8, owner: testTenant, xCaltimestamp: null]\",\"canonicalPath\":\"lazyList\",\"propertyName\":\"lazyList\",\"propertyType\":\"com.cibethelper.entities.TEntity\",\"differenceType\":\"ADDED\",\"oldValue\":null,\"newValue\":{\"id\":0,\"nameValue\":\"val8\",\"counter\":8,\"owner\":\"testTenant\",\"xdate\":null,\"xtime\":null,\"xtimestamp\":null,\"xcaldate\":null,\"xcaltimestamp\":null}}]",
+               list.get(4).getDifferences());
+
+         if (1 == 1) return;
 
          resetContext();
 
