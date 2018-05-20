@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,10 +53,13 @@ public class CibetContextFilter implements Filter {
    protected String EJB_JNDINAME;
 
    private static final String ALLOW_ANONYMOUS = "allowAnonymous";
+   private static final String THREAD_CASEID = "threadCaseId";
 
    private List<Pattern> excludePattern = new ArrayList<>();
 
    protected boolean allowAnonymous = false;
+
+   protected boolean threadCaseId;
 
    @Override
    public void init(FilterConfig config) throws ServletException {
@@ -72,6 +76,12 @@ public class CibetContextFilter implements Filter {
       if ("TRUE".equalsIgnoreCase(permit)) {
          log.info("allow anonymous access");
          allowAnonymous = true;
+      }
+
+      String ci = config.getInitParameter(THREAD_CASEID);
+      if ("TRUE".equalsIgnoreCase(ci)) {
+         log.info("thread case id");
+         threadCaseId = true;
       }
 
       // init EMF
@@ -112,6 +122,10 @@ public class CibetContextFilter implements Filter {
       if (isExclude(request)) {
          chain.doFilter(request, response);
          return;
+      }
+
+      if (threadCaseId) {
+         Context.requestScope().setCaseId(UUID.randomUUID().toString());
       }
 
       log.debug("execute CibetContextFilter URL " + ((HttpServletRequest) request).getRequestURL());

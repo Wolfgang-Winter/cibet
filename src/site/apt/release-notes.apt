@@ -14,6 +14,8 @@ Version 2.2
   
   * core-jpa: Support of JPA 2.1
   
+  * new property in CibetFilter and CibetContextFilter: threadCaseId. If set to true a caseId will be generated per thread
+  
 
 
 Version 2.1 (1.11.2017)

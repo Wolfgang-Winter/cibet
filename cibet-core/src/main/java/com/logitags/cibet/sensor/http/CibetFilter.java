@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -69,6 +70,10 @@ public class CibetFilter extends CibetContextFilter implements Filter {
       if (isExclude(req)) {
          chain.doFilter(req, resp);
          return;
+      }
+
+      if (threadCaseId) {
+         Context.requestScope().setCaseId(UUID.randomUUID().toString());
       }
 
       HttpServletRequest request = (HttpServletRequest) req;
