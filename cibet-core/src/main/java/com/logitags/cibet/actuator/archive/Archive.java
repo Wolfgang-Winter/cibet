@@ -75,7 +75,7 @@ import com.logitags.cibet.sensor.jpa.JpaResource;
       @NamedQuery(name = Archive.SEL_ALL_BY_CASEID_NO_TENANT, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE a.caseId = :caseId ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_ALL_BY_CLASS, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE a.tenant LIKE :tenant AND r.target = :targetType ORDER BY a.createDate"),
       @NamedQuery(name = Archive.SEL_BY_PRIMARYKEYID, query = "SELECT a, r FROM Archive a, JpaResource r LEFT JOIN FETCH r.parameters "
-            + "WHERE a.resource = r AND r.target = ?1 AND r.primaryKeyId = ?2 ORDER BY a.createDate"),
+            + "WHERE a.resource = r AND r.target = :target AND r.primaryKeyId = :primaryKeyId ORDER BY a.createDate"),
 
       @NamedQuery(name = Archive.SEL_ALL_BY_CLASS_NO_TENANT, query = "SELECT a FROM Archive a LEFT JOIN FETCH a.resource r LEFT JOIN FETCH r.parameters WHERE r.target = :targetType ORDER BY a.createDate") })
 
