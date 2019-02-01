@@ -225,11 +225,11 @@ public abstract class ArchiveLoader {
    public static List<Archive> loadArchivesByPrimaryKeyId(String target, Object primaryKeyId) {
       Query query = Context.internalRequestScope().getOrCreateEntityManager(false)
             .createNamedQuery(Archive.SEL_BY_PRIMARYKEYID);
-      query.setParameter(1, target);
+      query.setParameter("target", target);
       if (primaryKeyId == null) {
-         query.setParameter(2, null);
+         query.setParameter("primaryKeyId", null);
       } else {
-         query.setParameter(2, primaryKeyId.toString());
+         query.setParameter("primaryKeyId", primaryKeyId.toString());
       }
 
       List<Archive> returnList;
