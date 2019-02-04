@@ -408,18 +408,15 @@ public abstract class ArchiveLoader {
 		List<Object> params = new ArrayList<>();
 		params.add(entityClass.getName());
 		StringBuffer sql = new StringBuffer();
-		sql.append("SELECT a.* FROM CIB_ARCHIVE a WHERE a.TARGET = ?1");
+      sql.append("SELECT a.* FROM CIB_ARCHIVE a WHERE a.TARGET = ?");
 
 		if (properties != null) {
-			int counter = 1;
 			for (Entry<String, Object> entry : properties.entrySet()) {
 				String value = entry.getValue() == null ? null : entry.getValue().toString();
 
-				counter++;
-				sql.append(" AND EXISTS (SELECT 1 FROM CIB_RESOURCEPARAMETER p WHERE p.NAME = ?" + counter);
+            sql.append(" AND EXISTS (SELECT 1 FROM CIB_RESOURCEPARAMETER p WHERE p.NAME = ?");
 				params.add(entry.getKey());
-				counter++;
-				sql.append(" AND p.STRINGVALUE = ?" + counter);
+            sql.append(" AND p.STRINGVALUE = ?");
 				params.add(value);
 				sql.append(" AND p.ARCHIVEID = a.ARCHIVEID");
 				sql.append(")");
