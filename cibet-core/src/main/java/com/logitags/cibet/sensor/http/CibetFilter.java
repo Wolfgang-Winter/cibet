@@ -53,361 +53,364 @@ import com.logitags.cibet.resource.ResourceParameter;
 
 public class CibetFilter extends CibetContextFilter implements Filter {
 
-   private static Log log = LogFactory.getLog(CibetFilter.class);
+	private static Log log = LogFactory.getLog(CibetFilter.class);
 
-   public static final String SENSOR_NAME = "HTTP-FILTER";
+	public static final String SENSOR_NAME = "HTTP-FILTER";
 
-   /**
-    * Allows controlling of anonymous http requests. User is remote IP/port in this case.
-    */
-   @Override
-   public void init(FilterConfig config) throws ServletException {
-      super.init(config);
-   }
+	/**
+	 * Allows controlling of anonymous http requests. User is remote IP/port in this case.
+	 */
+	@Override
+	public void init(FilterConfig config) throws ServletException {
+		super.init(config);
+	}
 
-   public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
-         throws IOException, ServletException {
-      if (isExclude(req)) {
-         chain.doFilter(req, resp);
-         return;
-      }
+	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+			throws IOException, ServletException {
+		if (isExclude(req)) {
+			chain.doFilter(req, resp);
+			return;
+		}
 
-      if (threadCaseId) {
-         Context.requestScope().setCaseId(UUID.randomUUID().toString());
-      }
+		if (threadCaseId) {
+			Context.requestScope().setCaseId(UUID.randomUUID().toString());
+		}
 
-      HttpServletRequest request = (HttpServletRequest) req;
-      HttpServletResponse response = (HttpServletResponse) resp;
+		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) resp;
 
-      if (log.isDebugEnabled()) {
-         log.debug("execute CibetContextFilter URL " + ((HttpServletRequest) req).getRequestURL());
-         log.debug("remote Address: " + req.getRemoteAddr());
-         log.debug("remote host: " + req.getRemoteHost());
-         log.debug("remote port: " + req.getRemotePort());
-         log.debug("remote user: " + request.getRemoteUser());
-         log.debug("principal: " + request.getUserPrincipal());
-      }
+		if (log.isDebugEnabled()) {
+			log.debug("execute CibetContextFilter URL " + ((HttpServletRequest) req).getRequestURL());
+			log.debug("remote Address: " + req.getRemoteAddr());
+			log.debug("remote host: " + req.getRemoteHost());
+			log.debug("remote port: " + req.getRemotePort());
+			log.debug("remote user: " + request.getRemoteUser());
+			log.debug("principal: " + request.getUserPrincipal());
+		}
 
-      AuthenticationProvider auth = null;
-      boolean startManaging = true;
-      EventMetadata metadata = null;
-      EventResult thisResult = null;
-      if (allowAnonymous) {
-         auth = new IPAuthenticationProvider();
-      }
+		AuthenticationProvider auth = null;
+		boolean startManaging = true;
+		EventMetadata metadata = null;
+		EventResult thisResult = null;
+		if (allowAnonymous) {
+			auth = new IPAuthenticationProvider();
+		}
 
-      try {
-         startManaging = Context.start(EJB_JNDINAME, auth);
-         fillCibetContext(request);
+		try {
+			startManaging = Context.start(EJB_JNDINAME, auth);
+			fillCibetContext(request);
 
-         // set header remark and caseid
-         String caseid = request.getHeader(Headers.CIBET_CASEID.name());
-         if (caseid != null) {
-            Context.internalRequestScope().setCaseId(caseid);
-         }
-         String remark = request.getHeader(Headers.CIBET_REMARK.name());
-         if (remark != null) {
-            Context.internalRequestScope().setRemark(remark);
-         }
-         String playMode = request.getHeader(Headers.CIBET_PLAYINGMODE.name());
-         if (playMode != null) {
-            Context.requestScope().startPlay();
-         }
-         String scheduledDate = request.getHeader(Headers.CIBET_SCHEDULEDDATE.name());
-         if (scheduledDate != null) {
-            Date date = new Date();
-            date.setTime(Long.parseLong(scheduledDate));
-            Context.internalRequestScope().setScheduledDate(date);
-         }
+			// set header remark and caseid
+			String caseid = request.getHeader(Headers.CIBET_CASEID.name());
+			if (caseid != null) {
+				Context.internalRequestScope().setCaseId(caseid);
+			}
+			String remark = request.getHeader(Headers.CIBET_REMARK.name());
+			if (remark != null) {
+				Context.internalRequestScope().setRemark(remark);
+			}
+			String playMode = request.getHeader(Headers.CIBET_PLAYINGMODE.name());
+			if (playMode != null) {
+				Context.requestScope().startPlay();
+			}
+			String scheduledDate = request.getHeader(Headers.CIBET_SCHEDULEDDATE.name());
+			if (scheduledDate != null) {
+				Date date = new Date();
+				date.setTime(Long.parseLong(scheduledDate));
+				Context.internalRequestScope().setScheduledDate(date);
+			}
 
-         metadata = createEventMetadata(request, response);
-         Controller.evaluate(metadata);
-         thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
+			metadata = createEventMetadata(request, response);
+			Controller.evaluate(metadata);
+			thisResult = Context.internalRequestScope().registerEventResult(new EventResult(SENSOR_NAME, metadata));
 
-         CibetEEContext ejb = null;
-         try {
-            ejb = before(metadata);
+			CibetEEContext ejb = null;
+			try {
+				ejb = before(metadata);
 
-            if (metadata.getExecutionStatus() == ExecutionStatus.EXECUTING) {
-               metadata.setExecutionStatus(ExecutionStatus.EXECUTED);
-               if (Context.internalRequestScope().isPostponed()) {
-                  thisResult.setExecutionStatus(ExecutionStatus.POSTPONED);
-               } else {
-                  thisResult.setExecutionStatus(metadata.getExecutionStatus());
-               }
+				if (metadata.getExecutionStatus() == ExecutionStatus.EXECUTING) {
+					metadata.setExecutionStatus(ExecutionStatus.EXECUTED);
+					if (Context.internalRequestScope().isPostponed()) {
+						thisResult.setExecutionStatus(ExecutionStatus.POSTPONED);
+					} else {
+						thisResult.setExecutionStatus(metadata.getExecutionStatus());
+					}
 
-               // set header here before response is comitted
-               addEventResultHeader(response);
-               if (!Context.requestScope().isPlaying()) {
-                  chain.doFilter(req, response);
-                  metadata.getResource().setResultObject(response.getStatus());
-               }
-            }
+					// set header here before response is comitted
+					addEventResultHeader(response);
+					if (!Context.requestScope().isPlaying()) {
+						chain.doFilter(req, response);
+						metadata.getResource().setResultObject(response.getStatus());
+					}
+				}
 
-            log.debug("after chain.doFilter");
+				log.debug("after chain.doFilter");
 
-            if (metadata.getExecutionStatus() == ExecutionStatus.POSTPONED) {
-               addBody(req, metadata.getResource());
-            }
+				if (metadata.getExecutionStatus() == ExecutionStatus.POSTPONED) {
+					addBody(req, metadata.getResource());
+				}
 
-         } catch (Throwable e) {
-            log.error(e.getMessage(), e);
-            metadata.setExecutionStatus(ExecutionStatus.ERROR);
-            Context.requestScope().setRemark(e.getMessage());
-            metadata.setException(e);
-         }
+			} catch (Throwable e) {
+				log.error(e.getMessage(), e);
+				metadata.setExecutionStatus(ExecutionStatus.ERROR);
+				Context.requestScope().addRemark(e.getMessage());
+				metadata.setException(e);
+			}
 
-         try {
-            after(ejb, metadata);
-         } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            throw new ServletException(e);
-         }
+			try {
+				after(ejb, metadata);
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+				throw new ServletException(e);
+			}
 
-      } finally {
-         if (metadata != null && thisResult != null) {
-            thisResult.setExecutionStatus(metadata.getExecutionStatus());
-         }
-         addEventResultHeader(response);
+		} finally {
+			if (metadata != null && thisResult != null) {
+				thisResult.setExecutionStatus(metadata.getExecutionStatus());
+			}
+			addEventResultHeader(response);
 
-         if (startManaging) {
-            Context.end();
-         } else {
-            Context.internalRequestScope().getAuthenticationProvider().getProviderChain().remove(auth);
-            if (metadata != null && metadata.getExecutionStatus() == ExecutionStatus.ERROR) {
-               Context.requestScope().setRemark(null);
-            }
-         }
-      }
+			if (startManaging) {
+				Context.end();
+			} else {
+				Context.internalRequestScope().getAuthenticationProvider().getProviderChain().remove(auth);
+				if (metadata != null && metadata.getExecutionStatus() == ExecutionStatus.ERROR) {
+					Context.requestScope().setRemark(null);
+				}
+			}
+		}
 
-      evalProceedStatus(metadata, response);
-      log.debug("CibetFilter finished");
-   }
+		evalProceedStatus(metadata, response);
+		log.debug("CibetFilter finished");
+	}
 
-   private void addEventResultHeader(HttpServletResponse response) {
-      if (response.getHeader(Headers.CIBET_EVENTRESULT.name()) == null) {
-         EventResult result = Context.requestScope().getExecutedEventResult();
-         if (result != null) {
-            try {
-               String strResult = Base64.encodeBase64String(CibetUtil.encode(result));
-               response.setHeader(Headers.CIBET_EVENTRESULT.name(), strResult);
-            } catch (IOException e) {
-               log.error(e.getMessage(), e);
-               response.addHeader(Headers.CIBET_EVENTRESULT.name(), "ERROR: " + e.getMessage());
-            }
-         }
-      }
-   }
+	private void addEventResultHeader(HttpServletResponse response) {
+		if (response.getHeader(Headers.CIBET_EVENTRESULT.name()) == null) {
+			EventResult result = Context.requestScope().getExecutedEventResult();
+			if (result != null) {
+				try {
+					String strResult = Base64.encodeBase64String(CibetUtil.encode(result));
+					response.setHeader(Headers.CIBET_EVENTRESULT.name(), strResult);
+				} catch (IOException e) {
+					log.error(e.getMessage(), e);
+					response.addHeader(Headers.CIBET_EVENTRESULT.name(), "ERROR: " + e.getMessage());
+				}
+			}
+		}
+	}
 
-   private CibetEEContext before(EventMetadata metadata) throws ServletException {
-      if (metadata.getActuators().isEmpty()) return null;
+	private CibetEEContext before(EventMetadata metadata) throws ServletException {
+		if (metadata.getActuators().isEmpty())
+			return null;
 
-      CibetEEContext ejb = EjbLookup.lookupEjb(EJB_JNDINAME, CibetEEContextEJB.class);
-      if (ejb != null) {
-         ejb.beforeEvent(metadata);
-         return ejb;
-      } else {
-         for (Actuator actuator : metadata.getActuators()) {
-            actuator.beforeEvent(metadata);
-         }
-         return null;
-      }
+		CibetEEContext ejb = EjbLookup.lookupEjb(EJB_JNDINAME, CibetEEContextEJB.class);
+		if (ejb != null) {
+			ejb.beforeEvent(metadata);
+			return ejb;
+		} else {
+			for (Actuator actuator : metadata.getActuators()) {
+				actuator.beforeEvent(metadata);
+			}
+			return null;
+		}
 
-      // if
-      // (Context.requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE)
-      // != EntityManagerType.JTA) {
-      // for (Actuator actuator : metadata.getConfig().getActuators()) {
-      // actuator.beforeEvent(metadata);
-      // }
-      // return null;
-      //
-      // } else {
-      // CibetEEContext ejb = EjbLookup.lookupEjb(
-      // (String)
-      // Context.applicationScope().getProperty(CIBETEECONTEXTEJB_JNDINAME),
-      // CibetEEContextEJB.class);
-      // if (ejb != null) {
-      // ejb.beforeEvent(metadata);
-      // return ejb;
-      // } else {
-      // String msg = "Failed to lookup CibetEEContext EJB in JNDI";
-      // log.error(msg);
-      // throw new ServletException(msg);
-      // }
-      // }
-   }
+		// if
+		// (Context.requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE)
+		// != EntityManagerType.JTA) {
+		// for (Actuator actuator : metadata.getConfig().getActuators()) {
+		// actuator.beforeEvent(metadata);
+		// }
+		// return null;
+		//
+		// } else {
+		// CibetEEContext ejb = EjbLookup.lookupEjb(
+		// (String)
+		// Context.applicationScope().getProperty(CIBETEECONTEXTEJB_JNDINAME),
+		// CibetEEContextEJB.class);
+		// if (ejb != null) {
+		// ejb.beforeEvent(metadata);
+		// return ejb;
+		// } else {
+		// String msg = "Failed to lookup CibetEEContext EJB in JNDI";
+		// log.error(msg);
+		// throw new ServletException(msg);
+		// }
+		// }
+	}
 
-   private void after(CibetEEContext ejb, EventMetadata metadata) throws ServletException {
-      if (metadata.getActuators().isEmpty()) return;
-      if (ejb != null) {
-         ejb.afterEvent(metadata);
+	private void after(CibetEEContext ejb, EventMetadata metadata) throws ServletException {
+		if (metadata.getActuators().isEmpty())
+			return;
+		if (ejb != null) {
+			ejb.afterEvent(metadata);
 
-      } else {
-         for (Actuator actuator : metadata.getActuators()) {
-            actuator.afterEvent(metadata);
-         }
-      }
-   }
+		} else {
+			for (Actuator actuator : metadata.getActuators()) {
+				actuator.afterEvent(metadata);
+			}
+		}
+	}
 
-   private EventMetadata createEventMetadata(HttpServletRequest request, HttpServletResponse response) {
-      String targetUrl = request.getRequestURL().toString();
-      String methodName = request.getMethod();
+	private EventMetadata createEventMetadata(HttpServletRequest request, HttpServletResponse response) {
+		String targetUrl = request.getRequestURL().toString();
+		String methodName = request.getMethod();
 
-      ControlEvent controlEvent = ControlEvent.INVOKE;
-      String event = request.getHeader(Headers.CIBET_CONTROLEVENT.name());
-      if (event != null) {
-         controlEvent = ControlEvent.valueOf(event);
-      }
+		ControlEvent controlEvent = ControlEvent.INVOKE;
+		String event = request.getHeader(Headers.CIBET_CONTROLEVENT.name());
+		if (event != null) {
+			controlEvent = ControlEvent.valueOf(event);
+		}
 
-      if (log.isDebugEnabled()) {
-         log.debug("control " + controlEvent + " of " + targetUrl + " for tenant "
-               + Context.internalSessionScope().getTenant() + ". Content-Type=" + request.getContentType());
-      }
+		if (log.isDebugEnabled()) {
+			log.debug("control " + controlEvent + " of " + targetUrl + " for tenant "
+					+ Context.internalSessionScope().getTenant() + ". Content-Type=" + request.getContentType());
+		}
 
-      HttpRequestResource resource = new HttpRequestResource(targetUrl, methodName, request, response);
-      addParameters(request, resource);
-      addHeaders(request, resource);
-      addAttributes(request, resource);
+		HttpRequestResource resource = new HttpRequestResource(targetUrl, methodName, request, response);
+		addParameters(request, resource);
+		addHeaders(request, resource);
+		addAttributes(request, resource);
 
-      // set invoker
-      String ipaddress = request.getHeader("HTTP_X_FORWARDED_FOR");
-      if (ipaddress == null) {
-         ipaddress = request.getRemoteAddr() + ", " + request.getRemoteHost();
-      } else {
-         ipaddress = ipaddress + ", " + request.getRemoteAddr() + ", " + request.getRemoteHost();
-      }
-      log.debug("INVOKER: " + ipaddress);
-      resource.setInvoker(ipaddress);
-      EventMetadata metadata = new EventMetadata(SENSOR_NAME, controlEvent, resource);
-      return metadata;
-   }
+		// set invoker
+		String ipaddress = request.getHeader("HTTP_X_FORWARDED_FOR");
+		if (ipaddress == null) {
+			ipaddress = request.getRemoteAddr() + ", " + request.getRemoteHost();
+		} else {
+			ipaddress = ipaddress + ", " + request.getRemoteAddr() + ", " + request.getRemoteHost();
+		}
+		log.debug("INVOKER: " + ipaddress);
+		resource.setInvoker(ipaddress);
+		EventMetadata metadata = new EventMetadata(SENSOR_NAME, controlEvent, resource);
+		return metadata;
+	}
 
-   private void addHeaders(HttpServletRequest request, Resource resource) {
-      log.debug("HTTP HEADERS:");
-      Enumeration<String> headers = request.getHeaderNames();
-      while (headers.hasMoreElements()) {
-         String headerName = headers.nextElement();
-         if (headerName.toUpperCase().startsWith("CIBET_")) continue;
-         headerName = headerName.toLowerCase();
-         Enumeration<String> header = request.getHeaders(headerName);
-         List<String> headerValues = new ArrayList<String>();
-         while (header.hasMoreElements()) {
-            headerValues.add(header.nextElement());
-         }
-         if (headerValues.size() == 1) {
-            log.debug(headerName + " = " + headerValues.get(0));
-            resource.addParameter(headerName, headerValues.get(0), ParameterType.HTTP_HEADER);
-         } else {
-            if (log.isDebugEnabled()) {
-               for (String v : headerValues) {
-                  log.debug(headerName + " = " + v);
-               }
-            }
-            String[] strValues = headerValues.toArray(new String[headerValues.size()]);
-            resource.addParameter(headerName, strValues, ParameterType.HTTP_HEADER);
-         }
-      }
-   }
+	private void addHeaders(HttpServletRequest request, Resource resource) {
+		log.debug("HTTP HEADERS:");
+		Enumeration<String> headers = request.getHeaderNames();
+		while (headers.hasMoreElements()) {
+			String headerName = headers.nextElement();
+			if (headerName.toUpperCase().startsWith("CIBET_"))
+				continue;
+			headerName = headerName.toLowerCase();
+			Enumeration<String> header = request.getHeaders(headerName);
+			List<String> headerValues = new ArrayList<String>();
+			while (header.hasMoreElements()) {
+				headerValues.add(header.nextElement());
+			}
+			if (headerValues.size() == 1) {
+				log.debug(headerName + " = " + headerValues.get(0));
+				resource.addParameter(headerName, headerValues.get(0), ParameterType.HTTP_HEADER);
+			} else {
+				if (log.isDebugEnabled()) {
+					for (String v : headerValues) {
+						log.debug(headerName + " = " + v);
+					}
+				}
+				String[] strValues = headerValues.toArray(new String[headerValues.size()]);
+				resource.addParameter(headerName, strValues, ParameterType.HTTP_HEADER);
+			}
+		}
+	}
 
-   private void addAttributes(HttpServletRequest request, Resource resource) {
-      log.debug("HTTP ATTRIBUTES:");
-      Enumeration<String> attrs = request.getAttributeNames();
-      while (attrs.hasMoreElements()) {
-         String attrName = attrs.nextElement();
-         Object attr = request.getAttribute(attrName);
+	private void addAttributes(HttpServletRequest request, Resource resource) {
+		log.debug("HTTP ATTRIBUTES:");
+		Enumeration<String> attrs = request.getAttributeNames();
+		while (attrs.hasMoreElements()) {
+			String attrName = attrs.nextElement();
+			Object attr = request.getAttribute(attrName);
 
-         try {
-            ResourceParameter param;
-            if (attr == null) {
-               param = new ResourceParameter(attrName, String.class.getName(), null, ParameterType.HTTP_ATTRIBUTE,
-                     resource.getParameters().size());
-            } else {
-               param = new ResourceParameter(attrName, attr.getClass().getName(), attr, ParameterType.HTTP_ATTRIBUTE,
-                     resource.getParameters().size());
-            }
+			try {
+				ResourceParameter param;
+				if (attr == null) {
+					param = new ResourceParameter(attrName, String.class.getName(), null, ParameterType.HTTP_ATTRIBUTE,
+							resource.getParameters().size());
+				} else {
+					param = new ResourceParameter(attrName, attr.getClass().getName(), attr,
+							ParameterType.HTTP_ATTRIBUTE, resource.getParameters().size());
+				}
 
-            // check if the object could be regenerated
-            // (ClassNotFoundException?)
-            CibetUtil.decode(param.getEncodedValue());
-            resource.addParameter(param);
-            log.debug(attrName + " = " + attr);
-            continue;
-         } catch (Exception e) {
-            log.warn(e.getMessage() + "; Cause: " + e.getCause());
-         }
+				// check if the object could be regenerated
+				// (ClassNotFoundException?)
+				CibetUtil.decode(param.getEncodedValue());
+				resource.addParameter(param);
+				log.debug(attrName + " = " + attr);
+				continue;
+			} catch (Exception e) {
+				log.warn(e.getMessage() + "; Cause: " + e.getCause());
+			}
 
-         String strAttr = attr == null ? null : attr.toString();
-         resource.addParameter(attrName, strAttr, ParameterType.HTTP_ATTRIBUTE);
-         log.warn(
-               "Object " + attr + " will not be archived by ARCHIVE or DC actuators. Instead the String representation "
-                     + " will be archived");
-      }
-   }
+			String strAttr = attr == null ? null : attr.toString();
+			resource.addParameter(attrName, strAttr, ParameterType.HTTP_ATTRIBUTE);
+			log.warn("Object " + attr
+					+ " will not be archived by ARCHIVE or DC actuators. Instead the String representation "
+					+ " will be archived");
+		}
+	}
 
-   private void addParameters(HttpServletRequest request, Resource resource) {
-      log.debug("HTTP PARAMETERS:");
-      for (Object key : request.getParameterMap().keySet()) {
-         String[] values = (String[]) request.getParameterMap().get(key);
-         if (values != null && values.length == 1) {
-            resource.addParameter((String) key, values[0], ParameterType.HTTP_PARAMETER);
-            log.debug(key + " = " + values[0]);
-         } else {
-            resource.addParameter((String) key, values, ParameterType.HTTP_PARAMETER);
-            if (log.isDebugEnabled()) {
-               for (String v : values) {
-                  log.debug(key + " = " + v);
-               }
-            }
-         }
-      }
-   }
+	private void addParameters(HttpServletRequest request, Resource resource) {
+		log.debug("HTTP PARAMETERS:");
+		for (Object key : request.getParameterMap().keySet()) {
+			String[] values = (String[]) request.getParameterMap().get(key);
+			if (values != null && values.length == 1) {
+				resource.addParameter((String) key, values[0], ParameterType.HTTP_PARAMETER);
+				log.debug(key + " = " + values[0]);
+			} else {
+				resource.addParameter((String) key, values, ParameterType.HTTP_PARAMETER);
+				if (log.isDebugEnabled()) {
+					for (String v : values) {
+						log.debug(key + " = " + v);
+					}
+				}
+			}
+		}
+	}
 
-   private void addBody(ServletRequest req, Resource resource) throws IOException {
-      ServletInputStream in = req.getInputStream();
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      int i = in.read();
-      while (i != -1) {
-         bos.write(i);
-         i = in.read();
-      }
-      in.close();
-      byte[] body = bos.toByteArray();
-      if (body.length > 0) {
-         resource.addParameter("__HTTP_BODY", body, ParameterType.HTTP_BODY);
-         log.debug("body length = " + body.length);
-      }
-   }
+	private void addBody(ServletRequest req, Resource resource) throws IOException {
+		ServletInputStream in = req.getInputStream();
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		int i = in.read();
+		while (i != -1) {
+			bos.write(i);
+			i = in.read();
+		}
+		in.close();
+		byte[] body = bos.toByteArray();
+		if (body.length > 0) {
+			resource.addParameter("__HTTP_BODY", body, ParameterType.HTTP_BODY);
+			log.debug("body length = " + body.length);
+		}
+	}
 
-   private void evalProceedStatus(EventMetadata metadata, HttpServletResponse response)
-         throws IOException, ServletException {
-      try {
-         if (!response.isCommitted()) {
-            if (metadata.getExecutionStatus() == ExecutionStatus.DENIED) {
-               log.info("Request to URL " + metadata.getResource().getTarget() + " is in status "
-                     + metadata.getExecutionStatus().name() + " and has been intercepted");
-               // response.reset();
-               response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            } else if (metadata.getExecutionStatus() == ExecutionStatus.POSTPONED) {
-               log.info("Request to URL " + metadata.getResource().getTarget() + " is in status "
-                     + metadata.getExecutionStatus().name() + " and has been intercepted");
-               // response.reset();
-               response.sendError(HttpServletResponse.SC_ACCEPTED);
-            } else if (metadata.getExecutionStatus() == ExecutionStatus.SHED) {
-               log.info("Request to URL " + metadata.getResource().getTarget() + " is in status "
-                     + metadata.getExecutionStatus().name() + " and has been shed");
-               response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-            } else {
-               metadata.evaluateEventExecuteStatus();
-            }
+	private void evalProceedStatus(EventMetadata metadata, HttpServletResponse response)
+			throws IOException, ServletException {
+		try {
+			if (!response.isCommitted()) {
+				if (metadata.getExecutionStatus() == ExecutionStatus.DENIED) {
+					log.info("Request to URL " + metadata.getResource().getTarget() + " is in status "
+							+ metadata.getExecutionStatus().name() + " and has been intercepted");
+					// response.reset();
+					response.sendError(HttpServletResponse.SC_FORBIDDEN);
+				} else if (metadata.getExecutionStatus() == ExecutionStatus.POSTPONED) {
+					log.info("Request to URL " + metadata.getResource().getTarget() + " is in status "
+							+ metadata.getExecutionStatus().name() + " and has been intercepted");
+					// response.reset();
+					response.sendError(HttpServletResponse.SC_ACCEPTED);
+				} else if (metadata.getExecutionStatus() == ExecutionStatus.SHED) {
+					log.info("Request to URL " + metadata.getResource().getTarget() + " is in status "
+							+ metadata.getExecutionStatus().name() + " and has been shed");
+					response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+				} else {
+					metadata.evaluateEventExecuteStatus();
+				}
 
-         } else {
-            metadata.evaluateEventExecuteStatus();
-         }
-      } catch (RuntimeException | ServletException | IOException e) {
-         throw e;
-      } catch (Throwable e) {
-         throw new ServletException(e);
-      }
-   }
+			} else {
+				metadata.evaluateEventExecuteStatus();
+			}
+		} catch (RuntimeException | ServletException | IOException e) {
+			throw e;
+		} catch (Throwable e) {
+			throw new ServletException(e);
+		}
+	}
 
 }

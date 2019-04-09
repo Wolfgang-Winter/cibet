@@ -31,147 +31,157 @@ import com.logitags.cibet.core.EventResult;
 
 public interface RequestScope extends ApplicationScope {
 
-   /**
-    * returns the first EventResult object not in status EXECUTING within the EventResult tree. Returns null if no event
-    * or the event is still executing.
-    * 
-    * @return
-    */
-   EventResult getExecutedEventResult();
+	/**
+	 * returns the first EventResult object not in status EXECUTING within the EventResult tree. Returns null if no
+	 * event or the event is still executing.
+	 * 
+	 * @return
+	 */
+	EventResult getExecutedEventResult();
 
-   /**
-    * enforce transaction rollback of resource-local Cibet EntityManager. Has no effect for JTA type Cibet EntityManager
-    * 
-    * @param b
-    */
-   void setRollbackOnly(boolean b);
+	/**
+	 * enforce transaction rollback of resource-local Cibet EntityManager. Has no effect for JTA type Cibet
+	 * EntityManager
+	 * 
+	 * @param b
+	 */
+	void setRollbackOnly(boolean b);
 
-   /**
-    * Return the rollback only flag for Cibet resource-local EntityManager.
-    * 
-    * @return
-    */
-   boolean getRollbackOnly();
+	/**
+	 * Return the rollback only flag for Cibet resource-local EntityManager.
+	 * 
+	 * @return
+	 */
+	boolean getRollbackOnly();
 
-   /**
-    * set a remark of the creating, first approving or final approving user
-    * 
-    * @param remark
-    */
-   void setRemark(String remark);
+	/**
+	 * set a remark of the creating, first approving or final approving user
+	 * 
+	 * @param remark
+	 */
+	void setRemark(String remark);
 
-   /**
-    * get a remark of the creating, first approving or final approving user
-    */
-   String getRemark();
+	/**
+	 * adds the parameter remark in parenthesis to the remark if one exists.
+	 * 
+	 * @author wow
+	 *
+	 * @param remark
+	 */
+	void addRemark(String remark);
 
-   /**
-    * sets the execution mode to playing. That is, the following actions on resources are not executed, but only played
-    * and evaluated as if executed. In this mode, all Cibet control effects that are applied can be determined in
-    * advance. The playing mode is ended with method endPlay().
-    */
-   void startPlay();
+	/**
+	 * get a remark of the creating, first approving or final approving user
+	 */
+	String getRemark();
 
-   /**
-    * ends the playing mode. The execution status and applied Setpoints and actuators if executed in real mode can be
-    * obtained from the EventResult.
-    * 
-    * @return
-    */
-   EventResult stopPlay();
+	/**
+	 * sets the execution mode to playing. That is, the following actions on resources are not executed, but only played
+	 * and evaluated as if executed. In this mode, all Cibet control effects that are applied can be determined in
+	 * advance. The playing mode is ended with method endPlay().
+	 */
+	void startPlay();
 
-   /**
-    * returns true if the application is in playing mode.
-    * 
-    * @return
-    */
-   boolean isPlaying();
+	/**
+	 * ends the playing mode. The execution status and applied Setpoints and actuators if executed in real mode can be
+	 * obtained from the EventResult.
+	 * 
+	 * @return
+	 */
+	EventResult stopPlay();
 
-   /**
-    * return the case ID of the current event. Returns null if no case ID set in context
-    * 
-    * @return
-    */
-   String getCaseId();
+	/**
+	 * returns true if the application is in playing mode.
+	 * 
+	 * @return
+	 */
+	boolean isPlaying();
 
-   /**
-    * set the case ID of the current event.
-    * 
-    * @param caseId
-    */
-   void setCaseId(String caseId);
+	/**
+	 * return the case ID of the current event. Returns null if no case ID set in context
+	 * 
+	 * @return
+	 */
+	String getCaseId();
 
-   /**
-    * returns true if the current event is postponed due to dual control. This method makes sense only within execution
-    * of a method controlled by ParallelDcActuator. Outside of such a method, this method returns always false.
-    * 
-    * 
-    * @return
-    */
-   boolean isPostponed() throws CibetException;
+	/**
+	 * set the case ID of the current event.
+	 * 
+	 * @param caseId
+	 */
+	void setCaseId(String caseId);
 
-   /**
-    * sets the date when a business case controlled by ScheduleActuator shall be executed. Date must be in the future.
-    * If set to null the business case is executed directly.
-    * 
-    * @param date
-    */
-   void setScheduledDate(Date date);
+	/**
+	 * returns true if the current event is postponed due to dual control. This method makes sense only within execution
+	 * of a method controlled by ParallelDcActuator. Outside of such a method, this method returns always false.
+	 * 
+	 * 
+	 * @return
+	 */
+	boolean isPostponed() throws CibetException;
 
-   /**
-    * sets the scheduled execution date relative to the current date. A business case controlled by ScheduleActuator
-    * will be executed. Amount must be positive. If amount is set to 0 the business case is executed directly.
-    * 
-    * @param field
-    *           the calendar field. see java.util.Calendar
-    * @param amount
-    *           the amount of date or time to be added to the field.
-    */
-   void setScheduledDate(int field, int amount);
+	/**
+	 * sets the date when a business case controlled by ScheduleActuator shall be executed. Date must be in the future.
+	 * If set to null the business case is executed directly.
+	 * 
+	 * @param date
+	 */
+	void setScheduledDate(Date date);
 
-   /**
-    * returns the scheduled date. If a relative date has been set, returns the scheduled date calculated from the time
-    * of calling this method.
-    * 
-    * @return the scheduled date. Null if no date is set or amount is 0.
-    */
-   Date getScheduledDate();
+	/**
+	 * sets the scheduled execution date relative to the current date. A business case controlled by ScheduleActuator
+	 * will be executed. Amount must be positive. If amount is set to 0 the business case is executed directly.
+	 * 
+	 * @param field
+	 *            the calendar field. see java.util.Calendar
+	 * @param amount
+	 *            the amount of date or time to be added to the field.
+	 */
+	void setScheduledDate(int field, int amount);
 
-   /**
-    * flag to signal that in SchedulerActuator a ScheduledException should be ignored. This should be set to true when a
-    * business case shall be scheduled and another scheduled event exists already on that business case. If the second
-    * event shall be scheduled nonetheless after inspection, this must be set to true.
-    * 
-    * @param ignore
-    *           true if ScheduledException shall be ignored
-    */
-   void ignoreScheduledException(boolean ignore);
+	/**
+	 * returns the scheduled date. If a relative date has been set, returns the scheduled date calculated from the time
+	 * of calling this method.
+	 * 
+	 * @return the scheduled date. Null if no date is set or amount is 0.
+	 */
+	Date getScheduledDate();
 
-   /**
-    * returns true if ScheduledException should be ignored. This can be set to true when a business case shall be
-    * scheduled and another scheduled event exists already on that business case. If the second event shall be scheduled
-    * nonetheless after inspection, this flag must be set to true.
-    * 
-    * @return
-    */
-   boolean isIgnoreScheduledException();
+	/**
+	 * flag to signal that in SchedulerActuator a ScheduledException should be ignored. This should be set to true when
+	 * a business case shall be scheduled and another scheduled event exists already on that business case. If the
+	 * second event shall be scheduled nonetheless after inspection, this must be set to true.
+	 * 
+	 * @param ignore
+	 *            true if ScheduledException shall be ignored
+	 */
+	void ignoreScheduledException(boolean ignore);
 
-   /**
-    * Resources in archives and Controllables can be grouped. For JPA resources the group id is per default
-    * 'target'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
-    * scope context before one of the Archive-, Dc- or Scheduler actuators are applied.
-    * 
-    * @return
-    */
-   String getGroupId();
+	/**
+	 * returns true if ScheduledException should be ignored. This can be set to true when a business case shall be
+	 * scheduled and another scheduled event exists already on that business case. If the second event shall be
+	 * scheduled nonetheless after inspection, this flag must be set to true.
+	 * 
+	 * @return
+	 */
+	boolean isIgnoreScheduledException();
 
-   /**
-    * Resources in archives and Controllables can be grouped. For JPA resources the group id is per default
-    * 'target'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
-    * scope context before one of the Archive-, Dc- or Scheduler actuators are applied.
-    * 
-    * @param groupId
-    */
-   void setGroupId(String groupId);
+	/**
+	 * Resources in archives and Controllables can be grouped. For JPA resources the group id is per default
+	 * 'target'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
+	 * scope context before one of the Archive-, Dc- or Scheduler actuators are applied.
+	 * 
+	 * @return
+	 */
+	String getGroupId();
+
+	/**
+	 * Resources in archives and Controllables can be grouped. For JPA resources the group id is per default
+	 * 'target'-'primaryKeyId'. The groupId can always be overwritten by users by setting a groupId into the request
+	 * scope context before one of the Archive-, Dc- or Scheduler actuators are applied.
+	 * 
+	 * @param groupId
+	 */
+	void setGroupId(String groupId);
 
 }
