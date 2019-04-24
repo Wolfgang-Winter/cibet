@@ -357,7 +357,7 @@ public class History implements Serializable {
 	 */
 	public void setDiffList(List<Difference> diffList) {
 		this.diffList = diffList;
-		if (diffList != null) {
+		if (diffList != null && !diffList.isEmpty()) {
 			try {
 				differences = mapper.writeValueAsString(diffList);
 			} catch (JsonProcessingException e) {
