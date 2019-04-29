@@ -314,7 +314,7 @@ public class RequestScopeContext implements InternalRequestScope {
 
 	@Override
 	public void setRemark(String remark) {
-		if (remark.length() > 255) {
+		if (remark != null && remark.length() > 255) {
 			remark = remark.substring(0, 255);
 		}
 		setProperty(REMARK, remark);
@@ -323,8 +323,8 @@ public class RequestScopeContext implements InternalRequestScope {
 	@Override
 	public void addRemark(String remark) {
 		String combined = getRemark();
-		if (remark == null) {
-			combined = "[" + remark + "]";
+		if (combined == null) {
+			combined = remark;
 		} else {
 			combined = combined + " [" + remark + "]";
 		}
