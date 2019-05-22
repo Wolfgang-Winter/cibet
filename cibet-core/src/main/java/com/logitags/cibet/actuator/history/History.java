@@ -59,7 +59,8 @@ import com.logitags.cibet.diff.Difference;
 @Entity
 @Table(name = "CIB_HISTORY")
 @NamedQueries({
-		@NamedQuery(name = History.SEL_ALL_BY_CASEID, query = "SELECT a FROM History a WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate") })
+		@NamedQuery(name = History.SEL_ALL_BY_CASEID, query = "SELECT a FROM History a WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate"),
+		@NamedQuery(name = History.SEL_ALL_BY_TARGET_PK, query = "SELECT h FROM History h WHERE h.tenant LIKE :tenant AND h.target = :target AND h.primaryKeyId = :primaryKeyId ORDER BY c.createDate") })
 
 public class History implements Serializable {
 
@@ -71,6 +72,7 @@ public class History implements Serializable {
 	private transient Log log = LogFactory.getLog(History.class);
 
 	public final static String SEL_ALL_BY_CASEID = "com.logitags.cibet.actuator.history.History.SEL_ALL_BY_CASEID";
+	public final static String SEL_ALL_BY_TARGET_PK = "com.logitags.cibet.actuator.history.History.SEL_ALL_BY_TARGET_PK";
 
 	@Transient
 	private ObjectMapper mapper = new ObjectMapper();
