@@ -60,7 +60,7 @@ import com.logitags.cibet.diff.Difference;
 @Table(name = "CIB_HISTORY")
 @NamedQueries({
 		@NamedQuery(name = History.SEL_ALL_BY_CASEID, query = "SELECT a FROM History a WHERE a.tenant LIKE :tenant AND a.caseId = :caseId ORDER BY a.createDate"),
-		@NamedQuery(name = History.SEL_ALL_BY_TARGET_PK, query = "SELECT h FROM History h WHERE h.tenant LIKE :tenant AND h.target = :target AND h.primaryKeyId = :primaryKeyId ORDER BY c.createDate") })
+		@NamedQuery(name = History.SEL_ALL_BY_TARGET_PK, query = "SELECT h FROM History h WHERE h.tenant LIKE :tenant AND h.target = :target AND h.primaryKeyId = :primaryKeyId ORDER BY h.createDate") })
 
 public class History implements Serializable {
 
