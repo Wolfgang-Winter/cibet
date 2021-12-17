@@ -1,3 +1,12 @@
+Version 2.2.1 (17.12.2021)
+
+  * Bugfix: StateChangeControl may throw exception when EntityManagers with different persistence units are used in the 
+    application. Solution: Always set second EntityManager into request context before calling EntityManager methods
+    
+  * update third-party library versions
+  
+  
+
 Version 2.2 (27.7.2019)
 
   * Support of Spring Security 4.1 - 4.2.x

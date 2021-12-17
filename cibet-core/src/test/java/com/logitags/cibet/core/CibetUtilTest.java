@@ -359,6 +359,29 @@ public class CibetUtilTest {
    }
 
    @Test
+	public void compare3a() {
+		log.debug("start compare3a");
+		List<Difference> list = new ArrayList<Difference>();
+		TCompareEntity t1 = new TCompareEntity("Stung1", 12, "owner1");
+		TCompareEntity t2 = new TCompareEntity("Stung1", 12, "owner1");
+
+		TEntity e1 = new TEntity("Karl", 5, "Putz");
+		TEntity e2 = new TEntity("Karl2", 5, "Putz");
+		TEntity e3 = new TEntity("Karl3", 5, "Putz");
+		TEntity e4 = new TEntity("Karl4", 5, "Putz");
+
+		TEntity e11 = new TEntity("Karl", 5, "Putz");
+		TEntity e22 = new TEntity("Karl2", 5, "Putz");
+		TEntity e33 = new TEntity("Karl3", 5, "Putz");
+		TEntity e44 = new TEntity("Karl4", 5, "Putz");
+
+		t1.setEntList(Arrays.asList(e1, e2, e3, e4));
+		t2.setEntList(Arrays.asList(e22, e33, e44, e11));
+		list = CibetUtil.compare(t1, t2);
+		Assert.assertTrue(list.size() == 0);
+	}
+
+	@Test
    public void compare4() {
       List<Difference> list = new ArrayList<Difference>();
       TCompareEntity t1 = new TCompareEntity("Stung1", 12, "owner1");
