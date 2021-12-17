@@ -13,7 +13,7 @@
     control mechanisms on events on database actions, method calls or http requests.
     With Cibet it is possible to implement in a non-intrusive way functionality for
     audit-proof logging, archiving, dual control mechanisms (4-eyes principle), 
-    authorization, locking etc. 
+    authorization, locking etc..
     </description>
 
 	<url>http://www.logitags.com/cibet</url>
