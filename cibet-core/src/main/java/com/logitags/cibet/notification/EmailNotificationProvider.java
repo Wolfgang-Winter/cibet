@@ -96,7 +96,6 @@ public class EmailNotificationProvider implements NotificationProvider, Serializ
 
    public EmailNotificationProvider() {
       velocity = new VelocityEngine();
-      velocity.setProperty(VelocityEngine.RUNTIME_LOG_LOGSYSTEM_CLASS, VelocityLogger.class.getName());
       velocity.init();
       initTemplates();
    }

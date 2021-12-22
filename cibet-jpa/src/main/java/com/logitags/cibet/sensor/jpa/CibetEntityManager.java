@@ -165,9 +165,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
 	}
 
 	void entityManagerIntoContext() {
-		if (Context.internalRequestScope().getNullableApplicationEntityManager() == null) {
-			Context.internalRequestScope().setApplicationEntityManager(this);
-		}
+		Context.internalRequestScope().setApplicationEntityManager(this);
 		Context.internalRequestScope().setApplicationEntityManager2(nativeEntityManager2);
 	}
 
