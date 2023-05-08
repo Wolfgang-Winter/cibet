@@ -640,4 +640,9 @@ public class JdbcBridgeEntityManager implements EntityManager, CEntityManager {
       return EntityManagerType.JDBC;
    }
 
+	@Override
+	public String getPersistenceUnitName() {
+		return "-";
+	}
+
 }

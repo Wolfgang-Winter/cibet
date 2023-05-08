@@ -53,7 +53,8 @@ public class Provider implements PersistenceProvider {
       map = createPersistenceProviderProperty(map, persistenceProvider);
       EntityManagerFactory nativeEntityManagerFactory = persistenceProvider.createContainerEntityManagerFactory(info,
             map);
-      return new CibetEntityManagerFactory(nativeEntityManagerFactory, loadEager, EntityManagerType.JTA);
+		return new CibetEntityManagerFactory(nativeEntityManagerFactory, loadEager, EntityManagerType.JTA,
+				info.getPersistenceUnitName());
    }
 
    @Override
@@ -74,7 +75,8 @@ public class Provider implements PersistenceProvider {
          map = createPersistenceProviderProperty(map, persistenceProvider);
          EntityManagerFactory nativeEntityManagerFactory = persistenceProvider.createEntityManagerFactory(unitName,
                map);
-         return new CibetEntityManagerFactory(nativeEntityManagerFactory, loadEager, EntityManagerType.RESOURCE_LOCAL);
+			return new CibetEntityManagerFactory(nativeEntityManagerFactory, loadEager,
+					EntityManagerType.RESOURCE_LOCAL, unitName);
       } else {
          log.debug(this.getClass().getName() + " does not match provider for persistence unit " + unitName);
          return null;

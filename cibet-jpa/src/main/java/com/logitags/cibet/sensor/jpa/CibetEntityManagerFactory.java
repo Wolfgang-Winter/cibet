@@ -27,13 +27,17 @@ public class CibetEntityManagerFactory implements EntityManagerFactory {
 
    private EntityManagerType entityManagerType;
 
-   public CibetEntityManagerFactory(EntityManagerFactory nativeEMF, boolean lEager, EntityManagerType type) {
+	private String persistenceUnitName;
+
+	public CibetEntityManagerFactory(EntityManagerFactory nativeEMF, boolean lEager, EntityManagerType type,
+			String puName) {
       if (nativeEMF == null) {
          throw new IllegalArgumentException("entityManagerFactory may not be null");
       }
       nativeEntityManagerFactory = nativeEMF;
       loadEager = lEager;
       entityManagerType = type;
+		persistenceUnitName = puName;
    }
 
    @Override
@@ -43,16 +47,14 @@ public class CibetEntityManagerFactory implements EntityManagerFactory {
 
    @Override
    public EntityManager createEntityManager() {
-      EntityManager em = nativeEntityManagerFactory.createEntityManager();
-      log.debug("create new CibetEntityManager with native " + em);
-      return new CibetEntityManager(this, em, loadEager);
+		EntityManager em = nativeEntityManagerFactory.createEntityManager();
+		return new CibetEntityManager(this, em, loadEager, persistenceUnitName);
    }
 
    @Override
    public EntityManager createEntityManager(Map arg0) {
-      EntityManager em = nativeEntityManagerFactory.createEntityManager(arg0);
-      log.debug("create new CibetEntityManager with native " + em);
-      return new CibetEntityManager(this, em, loadEager);
+		EntityManager em = nativeEntityManagerFactory.createEntityManager(arg0);
+		return new CibetEntityManager(this, em, loadEager, persistenceUnitName);
    }
 
    @Override
@@ -106,14 +108,14 @@ public class CibetEntityManagerFactory implements EntityManagerFactory {
    public EntityManager createEntityManager(SynchronizationType arg0) {
       EntityManager em = nativeEntityManagerFactory.createEntityManager(arg0);
       log.debug("create new CibetEntityManager with native " + em);
-      return new CibetEntityManager(this, em, loadEager);
+		return new CibetEntityManager(this, em, loadEager, persistenceUnitName);
    }
 
    @Override
    public EntityManager createEntityManager(SynchronizationType arg0, Map arg1) {
       EntityManager em = nativeEntityManagerFactory.createEntityManager(arg0, arg1);
       log.debug("create new CibetEntityManager with native " + em);
-      return new CibetEntityManager(this, em, loadEager);
+		return new CibetEntityManager(this, em, loadEager, persistenceUnitName);
    }
 
    @Override

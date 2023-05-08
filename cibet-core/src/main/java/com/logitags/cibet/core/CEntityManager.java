@@ -40,4 +40,6 @@ public interface CEntityManager {
 
    EntityManagerType getEntityManagerType();
 
+	String getPersistenceUnitName();
+
 }

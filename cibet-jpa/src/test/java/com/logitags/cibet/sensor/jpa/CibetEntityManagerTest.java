@@ -142,12 +142,12 @@ public class CibetEntityManagerTest {
 
    @Test(expected = IllegalArgumentException.class)
    public void constructorCibetEntityManager1() {
-      new CibetEntityManager(null, null, true);
+		new CibetEntityManager(null, null, true, "");
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void constructorCibetEntityManager2() {
-      new CibetEntityManager(null, em, true);
+		new CibetEntityManager(null, em, true, "");
    }
 
    @Test

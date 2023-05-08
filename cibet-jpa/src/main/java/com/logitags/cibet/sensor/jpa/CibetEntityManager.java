@@ -58,13 +58,16 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
 
 	private boolean loadEager;
 
-	public CibetEntityManager(CibetEntityManagerFactory fac, EntityManager em, boolean lEager) {
+	private String persistenceUnitName;
+
+	public CibetEntityManager(CibetEntityManagerFactory fac, EntityManager em, boolean lEager, String puName) {
 		this(em, lEager);
-		log.debug("create CibetEntityManager with " + fac + ", " + em);
+		log.debug("create CibetEntityManager with " + fac + ", " + em + ", pu: " + puName);
 		if (fac == null) {
 			throw new IllegalArgumentException("EntityManagerFactory must not be null");
 		}
 		cibetEmFactory = fac;
+		persistenceUnitName = puName;
 
 		nativeEntityManager2 = fac.getNativeEntityManagerFactory().createEntityManager();
 		Context.internalRequestScope().setApplicationEntityManager2(nativeEntityManager2);
@@ -93,7 +96,7 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
 	@Override
 	public void close() {
 		if (log.isDebugEnabled()) {
-			log.debug("close EntityManager " + this + " [" + nativeEntityManager + "]");
+			log.debug("close EntityManager " + this + " [" + nativeEntityManager + "], PU: " + persistenceUnitName);
 		}
 		nativeEntityManager.close();
 		EntityManager em2 = Context.internalRequestScope().getApplicationEntityManager2();
@@ -165,12 +168,8 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
 	}
 
 	void entityManagerIntoContext() {
-		if (Context.internalRequestScope().getNullableApplicationEntityManager() == null) {
-			Context.internalRequestScope().setApplicationEntityManager(this);
-		}
-		if (Context.internalRequestScope().getApplicationEntityManager2() == null) {
-			Context.internalRequestScope().setApplicationEntityManager2(nativeEntityManager2);
-		}
+		Context.internalRequestScope().setApplicationEntityManager(this);
+		Context.internalRequestScope().setApplicationEntityManager2(nativeEntityManager2);
 	}
 
 	@Override
@@ -721,6 +720,10 @@ public class CibetEntityManager implements EntityManager, CEntityManager {
 	@Override
 	public EntityManagerType getEntityManagerType() {
 		return cibetEmFactory.getEntityManagerType();
+	}
+
+	public String getPersistenceUnitName() {
+		return persistenceUnitName;
 	}
 
 }

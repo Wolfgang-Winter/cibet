@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.logitags</groupId>
 	<artifactId>cibet</artifactId>
-	<version>2.2</version>
+	<version>2.2.1.1</version>
 	<packaging>pom</packaging>
 
 	<name>Better control with cibet</name>
@@ -375,7 +375,8 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>3.0.1-CIBET</version>
+<!--             <version>3.0.1-CIBET</version> -->
+			<version>3.2.1</version>
             <executions>
                <execution>
                   <id>attach-sources</id>
@@ -386,14 +387,14 @@
                   </goals>
                </execution>
 
-               <execution>
-                  <id>aggregate</id>
-                  <phase>verify</phase>
-                  <goals>
-                     <goal>aggregate</goal>
-                     <goal>test-aggregate</goal>
-                  </goals>
-               </execution>
+<!--                <execution> -->
+<!--                   <id>aggregate</id> -->
+<!--                   <phase>verify</phase> -->
+<!--                   <goals> -->
+<!--                      <goal>aggregate</goal> -->
+<!--                      <goal>test-aggregate</goal> -->
+<!--                   </goals> -->
+<!--                </execution> -->
 
             </executions>
          </plugin>

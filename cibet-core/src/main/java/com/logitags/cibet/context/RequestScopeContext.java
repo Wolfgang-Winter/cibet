@@ -241,7 +241,7 @@ public class RequestScopeContext implements InternalRequestScope {
 		log.debug("set second application EntityManager in CibetContext: " + manager);
 		if (manager instanceof CEntityManager) {
 			manager = ((CEntityManager) manager).getNativeEntityManager();
-			log.debug("set second application EntityManager from CibetEntityManager into CibetContext");
+			log.debug("set second application EntityManager " + manager + " into CibetContext");
 		}
 
 		setProperty(SECOND_APPLICATION_ENTITYMANAGER, manager);
@@ -270,7 +270,8 @@ public class RequestScopeContext implements InternalRequestScope {
 		if (log.isDebugEnabled()) {
 			if (manager instanceof CEntityManager) {
 				log.debug("set application EntityManager in CibetContext: " + manager + " ["
-						+ ((CEntityManager) manager).getNativeEntityManager() + "]");
+						+ ((CEntityManager) manager).getNativeEntityManager() + "] for PU "
+						+ ((CEntityManager) manager).getPersistenceUnitName());
 			} else {
 				log.debug("set application EntityManager in CibetContext: " + manager);
 			}
