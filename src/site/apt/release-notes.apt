@@ -1,3 +1,11 @@
+Version 2.2.2 (31.8.2023)
+  
+  * update third-party library versions
+  
+  * bugfix for Nexus
+  
+
+
 Version 2.2.1 (17.12.2021)
 
   * Bugfix: StateChangeControl may throw exception when EntityManagers with different persistence units are used in the 
@@ -5,7 +13,7 @@ Version 2.2.1 (17.12.2021)
     
   * update third-party library versions
   
-  
+
 
 Version 2.2 (27.7.2019)
 

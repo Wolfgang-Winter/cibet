@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.logitags</groupId>
 		<artifactId>cibet</artifactId>
-		<version>2.2.1.1</version>
+		<version>2.2.2</version>
 	</parent>
 	<artifactId>cibet-jpa</artifactId>
 
@@ -46,7 +46,6 @@
 
 	</dependencies>
 	
-<<<<<<< HEAD
 	<profiles>
 		<profile>
 			<id>japedo</id>
@@ -97,53 +96,4 @@
 		</profile>
 	
 	</profiles>
-=======
-	<build>
-		<plugins>
-
-		
-			<plugin>
-				<groupId>com.logitags</groupId>
-				<artifactId>japedo-maven-plugin</artifactId>
-				<version>1.1-SNAPSHOT</version>
-				<configuration>
-					<japedoDirectory>G:\Projekte12\test2</japedoDirectory>
-					<jobs>
-						<job>
-<!-- 							<name>cibet2.2</name> -->
-							<includeSources>
-								<includeSource>com.logitags</includeSource>
-							</includeSources>
-							<additionalDependencies>
-								<dependency>com.h2database:h2:1.4.200</dependency>
-								<dependency>org.springframewrk:spring-beans:4.3.3.RELEASE</dependency>
-								<dependency>springframewrk:xx:4.3.3.RELEASE</dependency>
-								<additionalDependency>org.springframework:spring-beans:4.3.3.RELEASE</additionalDependency>
-							</additionalDependencies>
-<!-- 							<version>2.0</version> -->
-						</job>
-						<job>
-<!-- 							<name>cibet2.0</name> -->
-							<includeSources>
-								<includeSource>com.logitags</includeSource>
-							</includeSources>
-							<additionalDependencies>
-								<dependency>com.h2database:h2:1.4.200</dependency>
-								<dependency>org.springframewrk:spring-beans:4.3.3.RELEASE</dependency>
-								<dependency>springframewrk:xx:4.3.3.RELEASE</dependency>
-								<additionalDependency>org.springframework:spring-beans:4.3.3.RELEASE</additionalDependency>
-							</additionalDependencies>
-							<projectVersion>LATEST</projectVersion>
-						</job>
-						<job>
-<!-- 							<name>prev</name> -->
-							<dataFile>G:\Projekte12\japedo\src\test\resources\test3-job.js</dataFile>
-						</job>
-					</jobs>
-				</configuration>
-			</plugin>
-		
-		</plugins>
-	</build>
->>>>>>> branch 'master' of https://github.com/Wolfgang-Winter/cibet.git
 </project>
