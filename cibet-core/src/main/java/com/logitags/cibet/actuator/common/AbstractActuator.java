@@ -157,36 +157,6 @@ public abstract class AbstractActuator implements Actuator, Serializable {
    }
 
    /**
-    * Sets the DeniedException class either to com.logitags.cibet.actuator.common.DeniedEjbException or to
-    * com.logitags.cibet.actuator.common.DeniedException. The EJB variant is annotated with ApplicationException to
-    * prevent transaction rollback. The Exception classes are not used explicitly to prevent dependencies to JavaEE
-    * classes if we are not in a JavaEE environment.
-    * 
-    * @return resolved class type
-    */
-   protected Class<? extends DeniedException> resolveDeniedExceptionType() {
-      try {
-         Class.forName("javax.ejb.ApplicationException");
-         log.debug("we are in EJB environment");
-         try {
-            return (Class<? extends DeniedException>) Class
-                  .forName("com.logitags.cibet.actuator.common.DeniedEjbException");
-         } catch (Exception e1) {
-            log.error(e1.getMessage(), e1);
-            throw new RuntimeException(e1);
-         }
-      } catch (ClassNotFoundException e) {
-         log.debug("we are in non-EJB environment");
-         try {
-            return DeniedException.class;
-         } catch (Exception e1) {
-            log.error(e1.getMessage(), e1);
-            throw new RuntimeException(e1);
-         }
-      }
-   }
-
-   /**
     * loads all lazy properties of an entity and detaches all properties from the persistence context.
     * 
     * @param metadata

@@ -1,7 +1,5 @@
 package com.logitags.cibet.actuator.lock;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -35,8 +33,6 @@ public class LockActuator extends AbstractActuator {
 
    private boolean automaticUnlock = false;
 
-   private Class<? extends DeniedException> deniedExceptionType;
-
    public LockActuator() {
       setName(DEFAULTNAME);
    }
@@ -48,7 +44,8 @@ public class LockActuator extends AbstractActuator {
    /*
     * (non-Javadoc)
     * 
-    * @see com.logitags.cibet.core.AbstractActuator#beforeEvent(com.logitags.cibet .core.EventMetadata)
+    * @see com.logitags.cibet.core.AbstractActuator#beforeEvent(com.logitags.cibet
+    * .core.EventMetadata)
     */
    @Override
    public void beforeEvent(EventMetadata ctx) {
@@ -129,21 +126,8 @@ public class LockActuator extends AbstractActuator {
 
    private void initDeniedException(EventMetadata ctx) {
       if (throwDeniedException) {
-         try {
-            Constructor<? extends DeniedException> constr = deniedExceptionType.getConstructor(String.class,
-                  String.class);
-            DeniedException ex = constr.newInstance("Access denied", Context.internalSessionScope().getUser());
-            ctx.setException(ex);
-
-         } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-         } catch (NoSuchMethodException ie) {
-            throw new RuntimeException(ie);
-         } catch (InvocationTargetException ie) {
-            throw new RuntimeException(ie);
-         }
+         DeniedException ex = new DeniedException("Access denied", Context.internalSessionScope().getUser());
+         ctx.setException(ex);
       }
    }
 
@@ -155,14 +139,10 @@ public class LockActuator extends AbstractActuator {
    }
 
    /**
-    * @param throwD
-    *           true if DeniedException shall be thrown
+    * @param throwD true if DeniedException shall be thrown
     */
    public void setThrowDeniedException(boolean throwD) {
       this.throwDeniedException = throwD;
-      if (this.throwDeniedException == true) {
-         deniedExceptionType = resolveDeniedExceptionType();
-      }
    }
 
    private boolean isLocked(Resource dcResource, Resource ctxResource) {
@@ -205,8 +185,7 @@ public class LockActuator extends AbstractActuator {
    }
 
    /**
-    * @param automaticU
-    *           the automaticUnlock to set
+    * @param automaticU the automaticUnlock to set
     */
    public void setAutomaticUnlock(boolean automaticU) {
       this.automaticUnlock = automaticU;

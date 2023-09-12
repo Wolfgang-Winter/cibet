@@ -11,26 +11,26 @@
  */
 package com.logitags.cibet.actuator.common;
 
-import javax.ejb.ApplicationException;
+//import javax.ejb.ApplicationException;
 
 
-@ApplicationException
-public class DeniedEjbException extends DeniedException {
+//@ApplicationException
+public class XDeniedEjbException extends DeniedException {
 
    /**
     * 
     */
    private static final long serialVersionUID = 4629067956898863304L;
 
-   public DeniedEjbException(String user) {
+   public XDeniedEjbException(String user) {
       super(user);
    }
 
-   public DeniedEjbException(String message, Throwable e, String user) {
+   public XDeniedEjbException(String message, Throwable e, String user) {
       super(message, e, user);
    }
 
-   public DeniedEjbException(String message, String user) {
+   public XDeniedEjbException(String message, String user) {
       super(message, user);
    }
 

@@ -11,8 +11,6 @@
  */
 package com.logitags.cibet.actuator.shiro;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -49,31 +47,33 @@ public class ShiroActuator extends AbstractActuator {
    private Collection<String> hasAllRoles = new ArrayList<String>();
 
    /**
-    * authorized if the Subject is permitted all of the specified String permissions.
+    * authorized if the Subject is permitted all of the specified String
+    * permissions.
     */
    private String[] isPermittedAll;
 
    /**
-    * The requiresAuthentication property requires the current Subject to have been authenticated during their current
-    * session for the given class/instance/method to be accessed or invoked.
+    * The requiresAuthentication property requires the current Subject to have been
+    * authenticated during their current session for the given
+    * class/instance/method to be accessed or invoked.
     */
    private Boolean requiresAuthentication;
 
    /**
-    * The requiresGuest property requires the current Subject to be a "guest", that is, they are not authenticated or
-    * remembered from a previous session for the given class/instance/method to be accessed or invoked.
+    * The requiresGuest property requires the current Subject to be a "guest", that
+    * is, they are not authenticated or remembered from a previous session for the
+    * given class/instance/method to be accessed or invoked.
     */
    private Boolean requiresGuest;
 
    /**
-    * The requiresUser property requires the current Subject to be an application user for the given
-    * class/instance/method to be accessed or invoked. An 'application user' is defined as a Subject that has a known
-    * identity, either known due to being authenticated during the current session or remembered from 'RememberMe'
-    * services from a previous session.
+    * The requiresUser property requires the current Subject to be an application
+    * user for the given class/instance/method to be accessed or invoked. An
+    * 'application user' is defined as a Subject that has a known identity, either
+    * known due to being authenticated during the current session or remembered
+    * from 'RememberMe' services from a previous session.
     */
    private Boolean requiresUser;
-
-   private Class<? extends DeniedException> deniedExceptionType;
 
    /**
     * throw an DeniedException if event is not authorized.
@@ -81,7 +81,8 @@ public class ShiroActuator extends AbstractActuator {
    private boolean throwDeniedException = false;
 
    /**
-    * if set to true, this actuator is applied on the second user in a two-man-rule dual control event.
+    * if set to true, this actuator is applied on the second user in a two-man-rule
+    * dual control event.
     */
    private boolean secondPrincipal = false;
 
@@ -92,7 +93,8 @@ public class ShiroActuator extends AbstractActuator {
    /*
     * (non-Javadoc)
     * 
-    * @see com.logitags.cibet.core.AbstractActuator#beforeEvent(com.logitags.cibet .core.EventMetadata)
+    * @see com.logitags.cibet.core.AbstractActuator#beforeEvent(com.logitags.cibet
+    * .core.EventMetadata)
     */
    @Override
    public void beforeEvent(EventMetadata ctx) {
@@ -161,21 +163,8 @@ public class ShiroActuator extends AbstractActuator {
       }
 
       if (throwDeniedException) {
-         try {
-            Constructor<? extends DeniedException> constr = deniedExceptionType.getConstructor(String.class,
-                  String.class);
-            DeniedException ex = constr.newInstance("Access denied", deniedUser);
-            ctx.setException(ex);
-
-         } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-         } catch (NoSuchMethodException ie) {
-            throw new RuntimeException(ie);
-         } catch (InvocationTargetException ie) {
-            throw new RuntimeException(ie);
-         }
+         DeniedException ex = new DeniedException("Access denied", deniedUser);
+         ctx.setException(ex);
       }
    }
 
@@ -187,8 +176,7 @@ public class ShiroActuator extends AbstractActuator {
    }
 
    /**
-    * @param hasAllRoles
-    *           the hasAllRoles to set
+    * @param hasAllRoles the hasAllRoles to set
     */
    public void setHasAllRoles(Collection<String> hasAllRoles) {
       this.hasAllRoles = hasAllRoles;
@@ -202,8 +190,7 @@ public class ShiroActuator extends AbstractActuator {
    }
 
    /**
-    * @param isPermittedAll
-    *           the isPermittedAll to set
+    * @param isPermittedAll the isPermittedAll to set
     */
    public void setIsPermittedAll(String[] isPermittedAll) {
       this.isPermittedAll = isPermittedAll;
@@ -217,11 +204,11 @@ public class ShiroActuator extends AbstractActuator {
    }
 
    /**
-    * @param req
-    *           true if authentication is required
+    * @param req true if authentication is required
     */
    public void setRequiresAuthentication(Boolean req) {
-      if (req == null) req = true;
+      if (req == null)
+         req = true;
       this.requiresAuthentication = req;
       log.debug("set requiresAuthentication: " + requiresAuthentication);
       if (req) {
@@ -238,12 +225,12 @@ public class ShiroActuator extends AbstractActuator {
    }
 
    /**
-    * @param req
-    *           true if user must have guest role
+    * @param req true if user must have guest role
     * 
     */
    public void setRequiresGuest(Boolean req) {
-      if (req == null) req = true;
+      if (req == null)
+         req = true;
       this.requiresGuest = req;
       log.debug("set requiresGuest: " + requiresGuest);
       if (req) {
@@ -260,12 +247,12 @@ public class ShiroActuator extends AbstractActuator {
    }
 
    /**
-    * @param req
-    *           if true user must be in context
+    * @param req if true user must be in context
     * 
     */
    public void setRequiresUser(Boolean req) {
-      if (req == null) req = true;
+      if (req == null)
+         req = true;
       this.requiresUser = req;
       log.debug("set requiresUser: " + requiresUser);
       if (req) {
@@ -282,14 +269,10 @@ public class ShiroActuator extends AbstractActuator {
    }
 
    /**
-    * @param throwD
-    *           true if DeniedException shall be thrown
+    * @param throwD true if DeniedException shall be thrown
     */
    public void setThrowDeniedException(boolean throwD) {
       this.throwDeniedException = throwD;
-      if (this.throwDeniedException == true) {
-         deniedExceptionType = resolveDeniedExceptionType();
-      }
    }
 
    /**
@@ -300,18 +283,10 @@ public class ShiroActuator extends AbstractActuator {
    }
 
    /**
-    * @param secP
-    *           the secondPrincipal to set
+    * @param secP the secondPrincipal to set
     */
    public void setSecondPrincipal(boolean secP) {
       this.secondPrincipal = secP;
-   }
-
-   /**
-    * @return the deniedExceptionType
-    */
-   public Class<? extends DeniedException> getDeniedExceptionType() {
-      return deniedExceptionType;
    }
 
 }

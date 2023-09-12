@@ -18,12 +18,15 @@ import java.util.TreeSet;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.InvocationContext;
+import javax.transaction.Transactional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.circuitbreaker.CircuitBreakerActuator;
 import com.logitags.cibet.actuator.common.Actuator;
+import com.logitags.cibet.actuator.common.DeniedException;
+import com.logitags.cibet.actuator.common.PostponedException;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.context.InternalRequestScope;
 import com.logitags.cibet.control.Controller;
@@ -61,6 +64,7 @@ public class CibetInterceptor implements Serializable {
 	 * @throws Exception
 	 */
 	@AroundInvoke
+	@Transactional(dontRollbackOn = { DeniedException.class, PostponedException.class })
 	public Object controlInvoke(InvocationContext ctx) throws Exception {
 		String classname = ctx.getTarget().getClass().getName();
 		Method method = ctx.getMethod();

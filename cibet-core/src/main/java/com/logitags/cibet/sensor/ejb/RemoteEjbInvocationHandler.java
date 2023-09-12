@@ -31,11 +31,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.naming.Name;
+import javax.transaction.Transactional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.logitags.cibet.actuator.common.Actuator;
+import com.logitags.cibet.actuator.common.DeniedException;
+import com.logitags.cibet.actuator.common.PostponedException;
 import com.logitags.cibet.context.Context;
 import com.logitags.cibet.control.Controller;
 import com.logitags.cibet.core.ControlEvent;
@@ -81,6 +84,7 @@ public class RemoteEjbInvocationHandler extends CibetInterceptor implements Invo
 	}
 
 	@Override
+	@Transactional(dontRollbackOn = { DeniedException.class, PostponedException.class })
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		boolean startManaging = true;
 		EventMetadata metadata = null;

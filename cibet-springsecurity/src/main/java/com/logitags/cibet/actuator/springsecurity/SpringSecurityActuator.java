@@ -14,8 +14,6 @@
  */
 package com.logitags.cibet.actuator.springsecurity;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -73,8 +71,6 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
 
    private boolean throwDeniedException = false;
 
-   private Class<? extends DeniedException> deniedExceptionType;
-
    private String preAuthorize;
 
    private String preFilter;
@@ -109,7 +105,8 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    /*
     * (non-Javadoc)
     * 
-    * @see com.logitags.cibet.core.AbstractActuator#beforeEvent(com.logitags.cibet .core.EventMetadata)
+    * @see com.logitags.cibet.core.AbstractActuator#beforeEvent(com.logitags.cibet
+    * .core.EventMetadata)
     */
    @Override
    public void beforeEvent(EventMetadata ctx) {
@@ -138,7 +135,8 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    /*
     * (non-Javadoc)
     * 
-    * @see com.logitags.cibet.core.AbstractActuator#afterEvent(com.logitags.cibet .core.EventMetadata)
+    * @see com.logitags.cibet.core.AbstractActuator#afterEvent(com.logitags.cibet
+    * .core.EventMetadata)
     */
    @Override
    public void afterEvent(EventMetadata ctx) {
@@ -163,7 +161,8 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    public void afterInvoke(EventMetadata ctx) {
-      if (ctx.getResource() instanceof HttpRequestResource) return;
+      if (ctx.getResource() instanceof HttpRequestResource)
+         return;
 
       // 1. if no Post-rules --> return
       if (postAuthorize == null && postFilter == null) {
@@ -189,10 +188,14 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
             arguments, ctx.getSetpointIds() + this.getName(), ctx.getResource().getResultObject());
 
       // 2.c set pre- and post access roles
-      if (preAuthorize != null) methodInv.addRule(CibetMethodInvocation.PREAUTHORIZE_RULE, preAuthorize);
-      if (preFilter != null) methodInv.addRule(CibetMethodInvocation.PREFILTER_RULE, preFilter);
-      if (postAuthorize != null) methodInv.addRule(CibetMethodInvocation.POSTAUTHORIZE_RULE, postAuthorize);
-      if (postFilter != null) methodInv.addRule(CibetMethodInvocation.POSTFILTER_RULE, postFilter);
+      if (preAuthorize != null)
+         methodInv.addRule(CibetMethodInvocation.PREAUTHORIZE_RULE, preAuthorize);
+      if (preFilter != null)
+         methodInv.addRule(CibetMethodInvocation.PREFILTER_RULE, preFilter);
+      if (postAuthorize != null)
+         methodInv.addRule(CibetMethodInvocation.POSTAUTHORIZE_RULE, postAuthorize);
+      if (postFilter != null)
+         methodInv.addRule(CibetMethodInvocation.POSTFILTER_RULE, postFilter);
 
       // 3. Get MethodSecurityInterceptor from Spring context
       MethodSecurityInterceptor interceptor;
@@ -273,12 +276,12 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    /**
     * Fixes comma errors
     * 
-    * @param rule
-    *           rule
+    * @param rule rule
     * @return fixed rule
     */
    protected String fixRule(String rule) {
-      if (rule == null || rule.length() == 0) return rule;
+      if (rule == null || rule.length() == 0)
+         return rule;
       rule = rule.trim();
 
       Matcher m = hasAnyRolePattern.matcher(rule);
@@ -329,14 +332,10 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    /**
-    * @param throwD
-    *           the throwDeniedException to set
+    * @param throwD the throwDeniedException to set
     */
    public void setThrowDeniedException(boolean throwD) {
       this.throwDeniedException = throwD;
-      if (this.throwDeniedException == true) {
-         deniedExceptionType = resolveDeniedExceptionType();
-      }
    }
 
    protected void before(EventMetadata ctx, CibetMethodInvocation methodInv) {
@@ -356,12 +355,18 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
       }
 
       // 2. set pre- access roles in CibetContext
-      if (preAuthorize != null) methodInv.addRule(CibetMethodInvocation.PREAUTHORIZE_RULE, preAuthorize);
-      if (preFilter != null) methodInv.addRule(CibetMethodInvocation.PREFILTER_RULE, preFilter);
-      if (secured != null) methodInv.addRule(CibetMethodInvocation.SECURED_RULE, secured);
-      if (denyAll == true) methodInv.addRule(CibetMethodInvocation.JSR250_DENYALL_RULE, "true");
-      if (permitAll == true) methodInv.addRule(CibetMethodInvocation.JSR250_PERMITALL_RULE, "true");
-      if (rolesAllowed != null) methodInv.addRule(CibetMethodInvocation.JSR250_ROLESALLOWED_RULE, rolesAllowed);
+      if (preAuthorize != null)
+         methodInv.addRule(CibetMethodInvocation.PREAUTHORIZE_RULE, preAuthorize);
+      if (preFilter != null)
+         methodInv.addRule(CibetMethodInvocation.PREFILTER_RULE, preFilter);
+      if (secured != null)
+         methodInv.addRule(CibetMethodInvocation.SECURED_RULE, secured);
+      if (denyAll == true)
+         methodInv.addRule(CibetMethodInvocation.JSR250_DENYALL_RULE, "true");
+      if (permitAll == true)
+         methodInv.addRule(CibetMethodInvocation.JSR250_PERMITALL_RULE, "true");
+      if (rolesAllowed != null)
+         methodInv.addRule(CibetMethodInvocation.JSR250_ROLESALLOWED_RULE, rolesAllowed);
 
       // 3. Get MethodSecurityInterceptor from Spring context
       MethodSecurityInterceptor interceptor;
@@ -416,21 +421,8 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
       }
 
       if (throwDeniedException) {
-         try {
-            Constructor<? extends DeniedException> constr = deniedExceptionType.getConstructor(String.class,
-                  Throwable.class, String.class);
-            DeniedException ex = constr.newInstance(e.getMessage(), e, deniedUser);
-            ctx.setException(ex);
-
-         } catch (InstantiationException ie) {
-            throw new RuntimeException(ie);
-         } catch (IllegalAccessException ie) {
-            throw new RuntimeException(ie);
-         } catch (NoSuchMethodException ie) {
-            throw new RuntimeException(ie);
-         } catch (InvocationTargetException ie) {
-            throw new RuntimeException(ie);
-         }
+         DeniedException ex = new DeniedException(e.getMessage(), e, deniedUser);
+         ctx.setException(ex);
       }
    }
 
@@ -503,8 +495,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    /**
-    * @param pa
-    *           the preAuthorize to set
+    * @param pa the preAuthorize to set
     */
    public void setPreAuthorize(String pa) {
       preAuthorize = fixRule(pa);
@@ -518,8 +509,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    /**
-    * @param pf
-    *           the preFilter to set
+    * @param pf the preFilter to set
     */
    public void setPreFilter(String pf) {
       preFilter = fixRule(pf);
@@ -533,8 +523,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    /**
-    * @param pa
-    *           the postAuthorize to set
+    * @param pa the postAuthorize to set
     */
    public void setPostAuthorize(String pa) {
       postAuthorize = fixRule(pa);
@@ -548,8 +537,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    /**
-    * @param pf
-    *           the postFilter to set
+    * @param pf the postFilter to set
     */
    public void setPostFilter(String pf) {
       postFilter = fixRule(pf);
@@ -563,8 +551,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    /**
-    * @param s
-    *           the secured to set
+    * @param s the secured to set
     */
    public void setSecured(String s) {
       secured = s;
@@ -578,8 +565,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    /**
-    * @param value
-    *           the denyAll to set
+    * @param value the denyAll to set
     */
    public void setDenyAll(Boolean value) {
       if (value == null) {
@@ -587,7 +573,8 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
       } else {
          this.denyAll = value;
       }
-      if (denyAll == true) permitAll = false;
+      if (denyAll == true)
+         permitAll = false;
    }
 
    /**
@@ -598,8 +585,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    /**
-    * @param pa
-    *           the permitAll to set
+    * @param pa the permitAll to set
     */
    public void setPermitAll(Boolean pa) {
       if (pa == null) {
@@ -607,7 +593,8 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
       } else {
          this.permitAll = pa;
       }
-      if (permitAll == true) denyAll = false;
+      if (permitAll == true)
+         denyAll = false;
    }
 
    /**
@@ -618,8 +605,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    /**
-    * @param ra
-    *           the rolesAllowed to set
+    * @param ra the rolesAllowed to set
     */
    public void setRolesAllowed(String ra) {
       rolesAllowed = ra;
@@ -633,19 +619,11 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    /**
-    * @param interceptUrlAccess
-    *           the interceptUrlAccess to set
+    * @param interceptUrlAccess the interceptUrlAccess to set
     */
    public void setUrlAccess(String interceptUrlAccess) {
       this.urlAccess = fixRule(interceptUrlAccess);
       checkUrlAccessExpression();
-   }
-
-   /**
-    * @return the deniedExceptionType
-    */
-   public Class<? extends DeniedException> getDeniedExceptionType() {
-      return deniedExceptionType;
    }
 
    private void checkUrlAccessExpression() {
@@ -697,8 +675,7 @@ public class SpringSecurityActuator extends AbstractActuator implements Applicat
    }
 
    /**
-    * @param secondP
-    *           the secondPrincipal to set
+    * @param secondP the secondPrincipal to set
     */
    public void setSecondPrincipal(boolean secondP) {
       this.secondPrincipal = secondP;
