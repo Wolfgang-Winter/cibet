@@ -49,7 +49,15 @@
 	<profiles>
 		<profile>
 			<id>japedo</id>
-			
+
+			<dependencies>
+				<dependency>
+					<groupId>com.h2database</groupId>
+					<artifactId>h2</artifactId>
+					<version>1.4.200</version>
+				</dependency>
+			</dependencies>
+						
 			<build>
 				<plugins>
 					<plugin>
@@ -57,11 +65,15 @@
 						<artifactId>japedo-maven-plugin</artifactId>
 						<version>1.3-SNAPSHOT</version>
 						<configuration>
-							<japedoDirectory>C:\Projekte\japedo\testplugin</japedoDirectory>
+<!-- 							<japedoDirectory>C:\Projekte\japedo\testplugin</japedoDirectory> -->
+							<japedoDirectory>G:\Projekte12\japedo\target</japedoDirectory>
 <!-- 							<proxyHost>proxy-internet.localnet</proxyHost> -->
 <!-- 							<proxyPort>8080</proxyPort> -->
-							<jobs>
-								<job>
+							<outputFilename>cib</outputFilename>
+							<prettyPrint>true</prettyPrint>
+							<showCounts>true</showCounts>
+							<applications>
+								<application>
 									<projectVersion>RELEASE</projectVersion>
 									<includeSources>
 										<includeSource>com.logitags</includeSource>
@@ -71,14 +83,17 @@
 <!-- 										<additionalDependency>com.oracle:ojdbc6:12.1.0.1</additionalDependency> -->
 										<additionalDependency>com.oracle.database.jdbc:ojdbc6:11.2.0.4</additionalDependency>
 									</additionalDependencies>
-									<dbConnectionUrl>jdbc:oracle:thin:@localhost:1521:XE</dbConnectionUrl>
-									<dbDriverClassName>oracle.jdbc.OracleDriver</dbDriverClassName>
+<!-- 									<dbConnectionUrl>jdbc:oracle:thin:@localhost:1521:XE</dbConnectionUrl> -->
+<!-- 									<dbDriverClassName>oracle.jdbc.OracleDriver</dbDriverClassName> -->
+									<dbConnectionUrl>jdbc:h2:mem:test2;INIT=RUNSCRIPT FROM 'G:/Projekte12/japedo/src/test/resources/h2/create.sql'</dbConnectionUrl>
+									<dbDriverClassName>org.h2.Driver</dbDriverClassName>
 									<dbPassword>cibet</dbPassword>
 									<dbUsername>cibet</dbUsername>
-									<dbSchema>CIBET</dbSchema>
+<!-- 									<dbSchema>CIBET</dbSchema> -->
+									<dbNbThreads>1</dbNbThreads>
 									<ignoredIssues>2344,1684789067</ignoredIssues>
-								</job>
-								<job>
+								</application>
+								<application>
 									<name>cibet-2.0</name>
 									<projectVersion>2.0</projectVersion>
 									<includeSources>
@@ -87,8 +102,8 @@
 									<additionalDependencies>
 										<additionalDependency>org.springframework:spring-beans:4.3.3.RELEASE</additionalDependency>
 									</additionalDependencies>
-								</job>
-							</jobs>
+								</application>
+							</applications>
 						</configuration>
 					</plugin>
 				</plugins>
