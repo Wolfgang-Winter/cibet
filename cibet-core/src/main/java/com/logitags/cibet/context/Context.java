@@ -24,32 +24,32 @@
  */
 package com.logitags.cibet.context;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.Map.Entry;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.logitags.cibet.authentication.AuthenticationProvider;
 import com.logitags.cibet.authentication.ChainedAuthenticationProvider;
 import com.logitags.cibet.config.Configuration;
 import com.logitags.cibet.core.CEntityManager;
 import com.logitags.cibet.core.CibetUtil;
 import com.logitags.cibet.jndi.EjbLookup;
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
+import java.net.URLEncoder;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
+import javax.enterprise.inject.spi.CDI;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * abstract class for retrieving Cibet contexts.
@@ -87,49 +87,61 @@ public abstract class Context {
     * 
     */
    static EntityManager getOrCreateEntityManagers() {
-      EntityManager entityManager = Context.internalRequestScope().getEntityManager();
+      EntityManager entityManager = internalRequestScope().getEntityManager();
       if (entityManager != null) {
          log.debug("EntityManager found in CibetContext: " + entityManager);
-         if (Context.requestScope()
-               .getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == EntityManagerType.RESOURCE_LOCAL
-               && entityManager.isOpen() && !entityManager.getTransaction().isActive()) {
+         if (requestScope().getProperty("__ENTITYMANAGER_TYPE") == EntityManagerType.RESOURCE_LOCAL && entityManager.isOpen() && !entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
          }
+
+         return entityManager;
+      } else {
+         if (EMF != null) {
+            entityManager = EMF.createEntityManager();
+            if (entityManager instanceof CEntityManager) {
+               entityManager = ((CEntityManager)entityManager).getNativeEntityManager();
+            }
+
+            requestScope().setProperty("__ENTITYMANAGER_TYPE", EntityManagerType.RESOURCE_LOCAL);
+            internalRequestScope().setEntityManager(entityManager);
+            entityManager.getTransaction().begin();
+            log.debug("EntityManager created from resource-local EntityManagerFactory");
+         } else {
+            try {
+               log.debug("Try EntityManager from CDI bean");
+               EntityManagerProvider emProvider = (EntityManagerProvider) CDI.current().select(EntityManagerProvider.class, new Annotation[0]).get();
+               entityManager = emProvider.getEntityManager();
+               if (entityManager != null) {
+                  internalRequestScope().setEntityManager(entityManager);
+                  if (requestScope().getProperty("__ENTITYMANAGER_TYPE") == null) {
+                     requestScope().setProperty("__ENTITYMANAGER_TYPE", EntityManagerType.JTA);
+                  }
+
+                  log.debug("EntityManager created from CDI bean");
+               }
+            }catch(Exception e){
+               log.warn("get EntityManager from CDI Context didn't work");
+            }
+         }
+
+         if (entityManager == null) {
+            try {
+               InitialContext context = new InitialContext();
+               EntityManagerFactory containerEmf = (EntityManagerFactory)context.lookup("java:comp/env/Cibet");
+               entityManager = containerEmf.createEntityManager();
+               if (requestScope().getProperty("__ENTITYMANAGER_TYPE") == null) {
+                  requestScope().setProperty("__ENTITYMANAGER_TYPE", EntityManagerType.JTA);
+               }
+
+               internalRequestScope().setEntityManager(entityManager);
+               log.debug("EE EntityManager created from JNDI EntityManagerFactory");
+            } catch (NamingException var3) {
+               log.info("\n-----------------------------\nEntityManagerFactory for JTA persistence unit Cibet could not be created. If this is NOT a Java EE application this is not an error. Otherwise, the EntityManagerFactory must be made available in JNDI like\n<persistence-unit-ref>\n  <persistence-unit-ref-name>java:comp/env/Cibet</persistence-unit-ref-name>\n  <persistence-unit-name>Cibet</persistence-unit-name>\n</persistence-unit-ref>\n[Original error message: " + var3.getMessage() + "]\n-----------------------------");
+            }
+         }
+
          return entityManager;
       }
-
-      if (EMF != null) {
-         entityManager = EMF.createEntityManager();
-         if (entityManager instanceof CEntityManager) {
-            entityManager = ((CEntityManager) entityManager).getNativeEntityManager();
-         }
-         Context.requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.RESOURCE_LOCAL);
-         Context.internalRequestScope().setEntityManager(entityManager);
-         entityManager.getTransaction().begin();
-         log.debug("EntityManager created from resource-local EntityManagerFactory");
-      } else {
-
-         try {
-            InitialContext context = new InitialContext();
-            EntityManagerFactory containerEmf = (EntityManagerFactory) context.lookup(EMF_JNDINAME);
-            entityManager = containerEmf.createEntityManager();
-            if (Context.requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == null) {
-               Context.requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.JTA);
-            }
-            Context.internalRequestScope().setEntityManager(entityManager);
-            log.debug("EE EntityManager created from JNDI EntityManagerFactory");
-
-         } catch (NamingException e) {
-            log.info("\n-----------------------------\n"
-                  + "EntityManagerFactory for JTA persistence unit Cibet could not be created. If this is NOT a Java EE application this "
-                  + "is not an error. Otherwise, the EntityManagerFactory must be made available in JNDI like\n"
-                  + "<persistence-unit-ref>\n" + "  <persistence-unit-ref-name>" + EMF_JNDINAME
-                  + "</persistence-unit-ref-name>\n" + "  <persistence-unit-name>Cibet</persistence-unit-name>\n"
-                  + "</persistence-unit-ref>" + "\n[Original error message: " + e.getMessage()
-                  + "]\n-----------------------------");
-         }
-      }
-      return entityManager;
    }
 
    private static void initialize() {
@@ -361,60 +373,71 @@ public abstract class Context {
     */
    public static String encodeContext() {
       StringBuffer b = new StringBuffer();
+
       try {
-         String secCtx = Context.internalRequestScope().getAuthenticationProvider().createSecurityContextHeader();
+         String secCtx = internalRequestScope().getAuthenticationProvider().createSecurityContextHeader();
          if (secCtx != null && secCtx.length() > 0) {
             b.append(secCtx);
          }
 
-         for (Entry<String, Object> entry : Context.internalSessionScope().getProperties().entrySet()) {
+         Iterator var2 = internalSessionScope().getProperties().entrySet().iterator();
+
+         Map.Entry entry;
+         byte[] bytes;
+         String encodedValue;
+         while(var2.hasNext()) {
+            entry = (Map.Entry)var2.next();
             if (entry.getValue() != null && entry.getValue() instanceof Serializable) {
-               byte[] bytes = CibetUtil.encode(entry.getValue());
-               String encodedValue = Base64.encodeBase64String(bytes);
+               bytes = CibetUtil.encode(entry.getValue());
+               encodedValue = Base64.encodeBase64String(bytes);
                if (b.length() > 0) {
                   b.append("&");
                }
-               b.append(PREFIX_SESSION);
-               b.append(entry.getKey());
+
+               b.append("CS_");
+               b.append((String)entry.getKey());
                b.append("=");
                b.append(URLEncoder.encode(encodedValue, "UTF-8"));
-               log.debug("encode session value " + entry.getKey() + " = " + entry.getValue());
+               log.debug("encode session value " + (String)entry.getKey() + " = " + entry.getValue());
             }
          }
 
-         for (Entry<String, Object> entry : Context.internalRequestScope().getProperties().entrySet()) {
-            if (entry.getValue() != null && entry.getValue() instanceof Serializable
-                  && !(entry.getValue() instanceof EntityManager)) {
-               byte[] bytes = CibetUtil.encode(entry.getValue());
-               String encodedValue = Base64.encodeBase64String(bytes);
+         var2 = internalRequestScope().getProperties().entrySet().iterator();
+
+         while(var2.hasNext()) {
+            entry = (Map.Entry)var2.next();
+            if (entry.getValue() != null && entry.getValue() instanceof Serializable && !(entry.getValue() instanceof EntityManager)) {
+               bytes = CibetUtil.encode(entry.getValue());
+               encodedValue = Base64.encodeBase64String(bytes);
                if (b.length() > 0) {
                   b.append("&");
                }
-               b.append(PREFIX_REQUEST);
-               b.append(entry.getKey());
+
+               b.append("CR_");
+               b.append((String)entry.getKey());
                b.append("=");
                b.append(URLEncoder.encode(encodedValue, "UTF-8"));
-               log.debug("encode request value " + entry.getKey() + " = " + entry.getValue());
+               log.debug("encode request value " + (String)entry.getKey() + " = " + entry.getValue());
             }
          }
 
          log.debug("contextHeader: " + b.toString());
-
          if (b.length() > 8190) {
-            log.warn("\nThe Cibet context header value has a length of " + b.length()
-                  + "!\nThis may exceed the maximum allowed length of HTTP header fields of some web servers. "
-                  + "If you encounter errors when sending HTTP requests with the Cibet context header set, "
-                  + "try to increase the maximum header length in the web server configuration\n");
+            log.warn("\nThe Cibet context header value has a length of " + b.length() + "!\nThis may exceed the maximum allowed length of HTTP header fields of some web servers. If you encounter errors when sending HTTP requests with the Cibet context header set, try to increase the maximum header length in the web server configuration\n");
          }
 
          return b.toString();
-      } catch (UnsupportedEncodingException e) {
-         log.error(e.getMessage(), e);
-         throw new RuntimeException(e);
-      } catch (IOException e) {
-         log.error(e.getMessage(), e);
-         throw new RuntimeException(e);
+      } catch (UnsupportedEncodingException var6) {
+         log.error(var6.getMessage(), var6);
+         throw new RuntimeException(var6);
+      } catch (IOException var7) {
+         log.error(var7.getMessage(), var7);
+         throw new RuntimeException(var7);
       }
+   }
+
+   static {
+      initialize();
    }
 
 }
