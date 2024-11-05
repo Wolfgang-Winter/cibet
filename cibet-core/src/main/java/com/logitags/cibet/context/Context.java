@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Map.Entry;
 
+import javax.enterprise.inject.spi.CDI;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -108,7 +109,19 @@ public abstract class Context {
          entityManager.getTransaction().begin();
          log.debug("EntityManager created from resource-local EntityManagerFactory");
       } else {
+         log.debug("Try EntityManager from CDI bean");
+         EntityManagerProvider emProvider = CDI.current().select(EntityManagerProvider.class).get();
+         entityManager = emProvider.getEntityManager();
+         if (entityManager != null) {
+            Context.internalRequestScope().setEntityManager(entityManager);
+            if (Context.requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == null) {
+               Context.requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.JTA);
+            }
+            log.debug("EntityManager created from CDI bean");
+         }
+      }
 
+      if (entityManager == null) {
          try {
             InitialContext context = new InitialContext();
             EntityManagerFactory containerEmf = (EntityManagerFactory) context.lookup(EMF_JNDINAME);
