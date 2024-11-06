@@ -1,10 +1,10 @@
 package com.logitags.cibet.context;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@RequestScoped
+@Dependent
 public class EntityManagerProvider {
 
    @PersistenceContext(unitName = "Cibet")
@@ -13,5 +13,4 @@ public class EntityManagerProvider {
    public EntityManager getEntityManager() {
       return entityManager;
    }
-
 }
