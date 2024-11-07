@@ -109,15 +109,19 @@ public abstract class Context {
          entityManager.getTransaction().begin();
          log.debug("EntityManager created from resource-local EntityManagerFactory");
       } else {
-         log.debug("Try EntityManager from CDI bean");
-         EntityManagerProvider emProvider = CDI.current().select(EntityManagerProvider.class).get();
-         entityManager = emProvider.getEntityManager();
-         if (entityManager != null) {
-            Context.internalRequestScope().setEntityManager(entityManager);
-            if (Context.requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == null) {
-               Context.requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.JTA);
+         try {
+            log.debug("Try EntityManager from CDI bean");
+            EntityManagerProvider emProvider = CDI.current().select(EntityManagerProvider.class).get();
+            entityManager = emProvider.getEntityManager();
+            if (entityManager != null) {
+               Context.internalRequestScope().setEntityManager(entityManager);
+               if (Context.requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == null) {
+                  Context.requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.JTA);
+               }
+               log.debug("EntityManager created from CDI bean");
             }
-            log.debug("EntityManager created from CDI bean");
+         }catch(Exception e){
+            log.error("EntityManager couldn't be created from CDI bean",e);
          }
       }
 
