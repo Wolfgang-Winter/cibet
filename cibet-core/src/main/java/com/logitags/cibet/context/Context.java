@@ -269,8 +269,10 @@ public abstract class Context {
             }
 
             try {
-               log.debug("close EM");
-               em.close();
+            	if (em != null && em.isOpen() && !em.isJoinedToTransaction()) {
+            		log.debug("close EM");
+                    em.close();
+    			}
             } catch (IllegalStateException e) {
                log.warn(e.getMessage());
             }

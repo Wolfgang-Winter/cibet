@@ -1,10 +1,10 @@
 package com.logitags.cibet.context;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@Dependent
+@ApplicationScoped
 public class EntityManagerProvider {
 
    @PersistenceContext(unitName = "Cibet")
