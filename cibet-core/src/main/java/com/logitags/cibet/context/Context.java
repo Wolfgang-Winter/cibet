@@ -88,10 +88,10 @@ public abstract class Context {
     * 
     */
    static EntityManager getOrCreateEntityManagers() {
-      EntityManager entityManager = Context.internalRequestScope().getEntityManager();
+      EntityManager entityManager = internalRequestScope().getEntityManager();
       if (entityManager != null) {
          log.debug("EntityManager found in CibetContext: " + entityManager);
-         if (Context.requestScope()
+         if (requestScope()
                .getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == EntityManagerType.RESOURCE_LOCAL
                && entityManager.isOpen() && !entityManager.getTransaction().isActive()) {
             entityManager.getTransaction().begin();
@@ -104,8 +104,8 @@ public abstract class Context {
          if (entityManager instanceof CEntityManager) {
             entityManager = ((CEntityManager) entityManager).getNativeEntityManager();
          }
-         Context.requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.RESOURCE_LOCAL);
-         Context.internalRequestScope().setEntityManager(entityManager);
+         requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.RESOURCE_LOCAL);
+         internalRequestScope().setEntityManager(entityManager);
          entityManager.getTransaction().begin();
          log.debug("EntityManager created from resource-local EntityManagerFactory");
       } else {
@@ -114,9 +114,9 @@ public abstract class Context {
             EntityManagerProvider emProvider = CDI.current().select(EntityManagerProvider.class).get();
             entityManager = emProvider.getEntityManager();
             if (entityManager != null) {
-               Context.internalRequestScope().setEntityManager(entityManager);
-               if (Context.requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == null) {
-                  Context.requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.JTA);
+               internalRequestScope().setEntityManager(entityManager);
+               if (requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == null) {
+                  requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.JTA);
                }
                log.debug("EntityManager created from CDI bean");
             }
@@ -130,10 +130,10 @@ public abstract class Context {
             InitialContext context = new InitialContext();
             EntityManagerFactory containerEmf = (EntityManagerFactory) context.lookup(EMF_JNDINAME);
             entityManager = containerEmf.createEntityManager();
-            if (Context.requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == null) {
-               Context.requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.JTA);
+            if (requestScope().getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == null) {
+               requestScope().setProperty(InternalRequestScope.ENTITYMANAGER_TYPE, EntityManagerType.JTA);
             }
-            Context.internalRequestScope().setEntityManager(entityManager);
+            internalRequestScope().setEntityManager(entityManager);
             log.debug("EE EntityManager created from JNDI EntityManagerFactory");
 
          } catch (NamingException e) {
@@ -202,30 +202,30 @@ public abstract class Context {
     */
    public static boolean start(String ejbJndiname, AuthenticationProvider... authProviders) {
       boolean startManaging = false;
-      if (!Context.internalRequestScope().isManaged()) {
+      if (!internalRequestScope().isManaged()) {
          log.debug("start fresh new Cibet context");
 
          // CibetUtil.logStackTrace();
 
-         Context.internalSessionScope().clear();
-         Context.internalRequestScope().clear();
+         internalSessionScope().clear();
+         internalRequestScope().clear();
 
          if (ejbJndiname != null) {
-            Context.requestScope().setProperty(InternalRequestScope.CONTEXTEJB_JNDINAME, ejbJndiname);
+            requestScope().setProperty(InternalRequestScope.CONTEXTEJB_JNDINAME, ejbJndiname);
          }
          CibetEEContext ejb = EjbLookup.lookupEjb(ejbJndiname, CibetEEContextEJB.class);
          if (ejb != null) {
             ejb.setCallerPrincipalNameIntoContext();
          }
 
-         Context.internalRequestScope().setManaged(true);
+         internalRequestScope().setManaged(true);
          startManaging = true;
       } else {
          log.debug("join Cibet context");
       }
 
       if (authProviders != null) {
-         ChainedAuthenticationProvider requestScopeAuthProvider = Context.internalRequestScope()
+         ChainedAuthenticationProvider requestScopeAuthProvider = internalRequestScope()
                .getAuthenticationProvider();
          for (AuthenticationProvider a : authProviders) {
             if (a != null) {
@@ -248,13 +248,13 @@ public abstract class Context {
       // CibetUtil.logStackTrace();
 
       try {
-         EntityManager em = Context.internalRequestScope().getEntityManager();
+         EntityManager em = internalRequestScope().getEntityManager();
          if (em != null && em.isOpen()) {
-            if (Context.requestScope()
+            if (requestScope()
                   .getProperty(InternalRequestScope.ENTITYMANAGER_TYPE) == EntityManagerType.RESOURCE_LOCAL) {
                try {
                   if (em.getTransaction().isActive()) {
-                     if (Context.internalRequestScope().getRollbackOnly()) {
+                     if (internalRequestScope().getRollbackOnly()) {
                         log.debug("rollback Cibet");
                         em.getTransaction().rollback();
                      } else {
@@ -276,8 +276,8 @@ public abstract class Context {
             }
          }
       } finally {
-         Context.internalSessionScope().clear();
-         Context.internalRequestScope().clear();
+         internalSessionScope().clear();
+         internalRequestScope().clear();
          isEMInitialized = false;
          log.debug("Cibet Context ended");
       }
@@ -379,12 +379,12 @@ public abstract class Context {
    public static String encodeContext() {
       StringBuffer b = new StringBuffer();
       try {
-         String secCtx = Context.internalRequestScope().getAuthenticationProvider().createSecurityContextHeader();
+         String secCtx = internalRequestScope().getAuthenticationProvider().createSecurityContextHeader();
          if (secCtx != null && secCtx.length() > 0) {
             b.append(secCtx);
          }
 
-         for (Entry<String, Object> entry : Context.internalSessionScope().getProperties().entrySet()) {
+         for (Entry<String, Object> entry : internalSessionScope().getProperties().entrySet()) {
             if (entry.getValue() != null && entry.getValue() instanceof Serializable) {
                byte[] bytes = CibetUtil.encode(entry.getValue());
                String encodedValue = Base64.encodeBase64String(bytes);
@@ -399,7 +399,7 @@ public abstract class Context {
             }
          }
 
-         for (Entry<String, Object> entry : Context.internalRequestScope().getProperties().entrySet()) {
+         for (Entry<String, Object> entry : internalRequestScope().getProperties().entrySet()) {
             if (entry.getValue() != null && entry.getValue() instanceof Serializable
                   && !(entry.getValue() instanceof EntityManager)) {
                byte[] bytes = CibetUtil.encode(entry.getValue());
