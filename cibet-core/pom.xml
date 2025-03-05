@@ -73,40 +73,7 @@
 <!--    	<version>15.6</version>-->
 <!--	</dependency>-->
 
-<!-- https://mvnrepository.com/artifact/org.mozilla/rhino-engine -->
-<!--<dependency>-->
-<!--    <groupId>org.mozilla</groupId>-->
-<!--    <artifactId>rhino-engine</artifactId>-->
-<!--    <version>1.8.0</version>-->
-<!--    <scope>runtime</scope>-->
-<!--</dependency>-->
-
-<!--<dependency>-->
-<!--    <groupId>org.mozilla</groupId>-->
-<!--    <artifactId>rhino</artifactId>-->
-<!--    <version>1.8.0</version>-->
-<!--</dependency>-->
-
-<!--<dependency>-->
-<!--    <groupId>org.graalvm.js</groupId>-->
-<!--    <artifactId>js-scriptengine</artifactId>-->
-<!--    <version>24.1.0</version>-->
-<!--</dependency>-->
-<!--<dependency>-->
-<!--    <groupId>org.graalvm.polyglot</groupId>-->
-<!--    <artifactId>js</artifactId>-->
-<!--    <version>24.1.0</version>-->
-<!--    <type>pom</type>-->
-<!--</dependency>-->
-
 		<!-- PROVIDED DEPENDENCIES -->
-
-<!--		<dependency>-->
-<!--			<groupId>org.jboss.spec</groupId>-->
-<!--			<artifactId>jboss-javaee-all-6.0</artifactId>-->
-<!--			<version>3.0.3.Final</version>-->
-<!--			<scope>provided</scope>-->
-<!--		</dependency>-->
 
 		<dependency>
 			<groupId>org.jboss.spec</groupId>
@@ -115,13 +82,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-<!--       <dependency> -->
-<!--       	<groupId>org.jboss.spec</groupId> -->
-<!--       	<artifactId>jboss-javaee-all-7.0</artifactId> -->
-<!--       	<version>1.1.0.Final</version> -->
-<!--       	<scope>provided</scope> -->
-<!--       </dependency> -->
- 		
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
