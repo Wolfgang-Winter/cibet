@@ -117,31 +117,31 @@ public class EESchedulerTask extends SESchedulerTask implements SchedulerTask {
    }
 
    private EntityManager setApplicationEntityManager(String reference) {
-	  if(reference.startsWith("cdi:")) {
-		  try {
-			  // cdi:com.worldline.merchsubscrmgmt.services.MSMDaoService.getEntityManager
-				log.debug("set EntityManager per CDI");
-			  int  count = reference.lastIndexOf(".");
-			  String bean = reference.substring(4,count);
-			  String method = reference.substring(count + 1);
-			  if(method.endsWith("()")) {
-				  method = method.substring(0, method.length() - 2);
-			  }
-		  
-			  Class clazz = Class.forName(bean);
-			  Method m = clazz.getMethod(method);
-			  
-			  Object producer = CDI.current().select(clazz).get();
-				EntityManager entityManager = (EntityManager) m.invoke(producer);
-			  Context.internalRequestScope().setApplicationEntityManager(entityManager);
-		      return entityManager;
-			  
-		  } catch(Exception e) {
-			  log.error("Failed to get EntityManager from " + reference + ": " + e.getMessage(), e);
-		      throw new RuntimeException(e);
-		  }
-	  }
-	   
+      if (reference.startsWith("cdi:")) {
+         try {
+            // cdi:com.worldline.merchsubscrmgmt.services.MSMDaoService.getEntityManager
+            log.debug("set EntityManager per CDI");
+            int count = reference.lastIndexOf(".");
+            String beanClass = reference.substring(4, count);
+            String method = reference.substring(count + 1);
+            if (method.endsWith("()")) {
+               method = method.substring(0, method.length() - 2);
+            }
+
+            Class clazz = Class.forName(beanClass);
+            Method m = clazz.getMethod(method);
+
+            Object bean = CDI.current().select(clazz).get();
+            EntityManager entityManager = (EntityManager) m.invoke(bean);
+            Context.internalRequestScope().setApplicationEntityManager(entityManager);
+            return entityManager;
+
+         } catch (Exception e) {
+            log.error("Failed to get EntityManager from " + reference + ": " + e.getMessage(), e);
+            throw new RuntimeException(e);
+         }
+      }
+
       if (!reference.startsWith("java:comp/env/")) {
          reference = "java:comp/env/" + reference;
       }
