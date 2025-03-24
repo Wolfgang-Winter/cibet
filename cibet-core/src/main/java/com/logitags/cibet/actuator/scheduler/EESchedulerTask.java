@@ -24,6 +24,7 @@
  */
 package com.logitags.cibet.actuator.scheduler;
 
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
+import javax.enterprise.inject.spi.CDI;
 import javax.naming.Binding;
 import javax.naming.InitialContext;
 import javax.naming.NamingEnumeration;
@@ -115,6 +117,31 @@ public class EESchedulerTask extends SESchedulerTask implements SchedulerTask {
    }
 
    private EntityManager setApplicationEntityManager(String reference) {
+	  if(reference.startsWith("cdi:")) {
+		  try {
+			  // cdi:com.worldline.merchsubscrmgmt.services.MSMDaoService.getEntityManager
+				log.debug("set EntityManager per CDI");
+			  int  count = reference.lastIndexOf(".");
+			  String bean = reference.substring(4,count);
+			  String method = reference.substring(count + 1);
+			  if(method.endsWith("()")) {
+				  method = method.substring(0, method.length() - 2);
+			  }
+		  
+			  Class clazz = Class.forName(bean);
+			  Method m = clazz.getMethod(method);
+			  
+			  Object producer = CDI.current().select(clazz).get();
+				EntityManager entityManager = (EntityManager) m.invoke(producer);
+			  Context.internalRequestScope().setApplicationEntityManager(entityManager);
+		      return entityManager;
+			  
+		  } catch(Exception e) {
+			  log.error("Failed to get EntityManager from " + reference + ": " + e.getMessage(), e);
+		      throw new RuntimeException(e);
+		  }
+	  }
+	   
       if (!reference.startsWith("java:comp/env/")) {
          reference = "java:comp/env/" + reference;
       }
